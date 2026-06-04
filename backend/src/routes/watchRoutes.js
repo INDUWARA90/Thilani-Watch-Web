@@ -9,7 +9,9 @@ const {
 
 const router = express.Router()
 
+
 router.route('/').get(getWatches).post(createWatch)
+
 router.route('/:id').get(getWatch).put(updateWatch).delete(deleteWatch)
 
 module.exports = router

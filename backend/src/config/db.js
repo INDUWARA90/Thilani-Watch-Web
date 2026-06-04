@@ -8,7 +8,7 @@ const connectDB = async () => {
   }
 
   const connection = await mongoose.connect(mongoUri)
-  console.log(`MongoDB connected: ${connection.connection.host}`)
+  console.log(`MongoDB connected !`);
 }
 
 module.exports = connectDB

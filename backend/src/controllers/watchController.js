@@ -1,11 +1,13 @@
 const Watch = require('../models/Watch')
+const asyncHandler = require('../utils/asyncHandler')
 
-const getWatches = async (req, res) => {
+
+const getWatches = asyncHandler(async (req, res) => {
   const watches = await Watch.find().sort({ createdAt: -1 })
   res.json(watches)
-}
+})
 
-const getWatch = async (req, res) => {
+const getWatch = asyncHandler(async (req, res) => {
   const watch = await Watch.findById(req.params.id)
 
   if (!watch) {
@@ -13,14 +15,14 @@ const getWatch = async (req, res) => {
   }
 
   res.json(watch)
-}
+})
 
-const createWatch = async (req, res) => {
+const createWatch = asyncHandler(async (req, res) => {
   const watch = await Watch.create(req.body)
   res.status(201).json(watch)
-}
+})
 
-const updateWatch = async (req, res) => {
+const updateWatch = asyncHandler(async (req, res) => {
   const watch = await Watch.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
     runValidators: true,
@@ -31,9 +33,9 @@ const updateWatch = async (req, res) => {
   }
 
   res.json(watch)
-}
+})
 
-const deleteWatch = async (req, res) => {
+const deleteWatch = asyncHandler(async (req, res) => {
   const watch = await Watch.findByIdAndDelete(req.params.id)
 
   if (!watch) {
@@ -41,7 +43,7 @@ const deleteWatch = async (req, res) => {
   }
 
   res.json({ message: 'Watch deleted' })
-}
+})
 
 module.exports = {
   createWatch,
