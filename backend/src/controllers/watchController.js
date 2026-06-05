@@ -24,7 +24,7 @@ const createWatch = asyncHandler(async (req, res) => {
 
 const updateWatch = asyncHandler(async (req, res) => {
   const watch = await Watch.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
+    returnDocument: 'after',
     runValidators: true,
   })
 
