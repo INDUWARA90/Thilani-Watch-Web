@@ -1,4 +1,5 @@
 const cors = require('cors')
+const cookieParser = require('cookie-parser')
 const express = require('express')
 const routes = require('./routes')
 const { errorHandler, notFound } = require('./middleware/errorMiddleware')
@@ -10,10 +11,12 @@ const app = express()
 app.use(
   cors({
     origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    credentials: true,
   }),
 )
 
 // Parse JSON and form request bodies before routes receive them.
+app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 

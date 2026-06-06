@@ -10,56 +10,6 @@
 - `PUT /api/watches/:id`
 - `DELETE /api/watches/:id`
 
-### TODO
-
-Improve these routes for real ecommerce usage.
-
-### Public customer routes
-
-- `GET /api/watches`
-  - Return only published watches.
-  - Support pagination.
-  - Support sorting.
-  - Support searching.
-  - Support category, brand, price, stock, and featured filters.
-
-- `GET /api/watches/:id`
-  - Return one published watch by MongoDB id.
-
-- `GET /api/watches/slug/:slug`
-  - Return one published watch by slug for product detail pages.
-
-- `GET /api/watches/featured`
-  - Return watches marked as featured.
-
-- `GET /api/watches/new-arrivals`
-  - Return recently created watches.
-
-- `GET /api/watches/best-sellers`
-  - Return watches sorted by sales count after order system is added.
-
-### Admin routes
-
-- `POST /api/watches`
-  - Admin only.
-  - Create a watch.
-
-- `PUT /api/watches/:id`
-  - Admin only.
-  - Update all watch fields.
-
-- `PATCH /api/watches/:id/stock`
-  - Admin only.
-  - Update stock quantity and `inStock`.
-
-- `PATCH /api/watches/:id/publish`
-  - Admin only.
-  - Publish or unpublish a watch.
-
-- `DELETE /api/watches/:id`
-  - Admin only.
-  - Prefer soft delete instead of permanent delete.
-
 ### Query examples
 
 ```txt
@@ -73,46 +23,6 @@ GET /api/watches?sort=price_desc
 GET /api/watches?sort=newest
 GET /api/watches?featured=true
 ```
-
-## 4. Authentication And Authorization
-
-### TODO
-
-Add user authentication before creating admin-only routes.
-
-### Suggested user roles
-
-- `customer`: can browse watches, manage cart, place orders, and write reviews.
-- `admin`: can manage watches, orders, customers, and site settings.
-
-### Suggested routes
-
-- `POST /api/auth/register`
-- `POST /api/auth/login`
-- `POST /api/auth/logout`
-- `GET /api/auth/me`
-- `PUT /api/auth/profile`
-- `PUT /api/auth/change-password`
-
-### Suggested user model fields
-
-- `name`
-- `email`
-- `password`
-- `phone`
-- `role`
-- `isActive`
-- `addresses`
-- timestamps
-
-### Security requirements
-
-- Hash passwords using `bcrypt`.
-- Use JWT authentication.
-- Keep JWT secret in `.env`.
-- Add `protect` middleware for logged-in users.
-- Add `adminOnly` middleware for admin routes.
-- Never return password hashes in API responses.
 
 ## 5. Cart Backend
 

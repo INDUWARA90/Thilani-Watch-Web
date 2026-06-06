@@ -133,12 +133,24 @@ const watchSchema = new mongoose.Schema(
       default: 0,
       min: 0,
     },
+    salesCount: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    deletedAt: {
+      type: Date,
+      default: null,
+    },
   },
   {
     timestamps: true,
     suppressReservedKeysWarning: true,
   },
 )
+
+watchSchema.index({ isPublished: 1, deletedAt: 1, createdAt: -1 })
+watchSchema.index({ category: 1, brand: 1, price: 1 })
 
 watchSchema.pre('validate', function setDerivedWatchFields() {
   if (!this.thumbnail) {
