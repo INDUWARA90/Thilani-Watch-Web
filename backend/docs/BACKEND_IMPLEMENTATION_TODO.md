@@ -1,36 +1,13 @@
 # Thilani Watch Backend Implementation TODO
 
-## 3. Watch API Improvements
+<!-- ## 5. Cart Backend (Completed)
 
-### Current routes
+### DONE
 
-- `GET /api/watches`
-- `POST /api/watches`
-- `GET /api/watches/:id`
-- `PUT /api/watches/:id`
-- `DELETE /api/watches/:id`
-
-### Query examples
-
-```txt
-GET /api/watches?page=1&limit=12
-GET /api/watches?search=casio
-GET /api/watches?brand=Rolex
-GET /api/watches?category=men
-GET /api/watches?minPrice=5000&maxPrice=25000
-GET /api/watches?sort=price_asc
-GET /api/watches?sort=price_desc
-GET /api/watches?sort=newest
-GET /api/watches?featured=true
-```
-
-## 5. Cart Backend
-
-### TODO
-
-Decide whether cart data should be stored in the database or only in frontend local storage.
-
-For a better ecommerce backend, create a cart system.
+- Decision: Cart data is stored in MongoDB for cross-device persistence.
+- Implemented `Cart` model with subtotal recalculation logic.
+- Implemented `cartController` with stock and publication validation.
+- Added routes for GET, POST, PUT, and DELETE operations.
 
 ### Suggested cart routes
 
@@ -55,8 +32,8 @@ For a better ecommerce backend, create a cart system.
 - Customers should not add unpublished watches.
 - Customers should not add more quantity than available stock.
 - Cart totals should be recalculated on the backend.
-- Store the watch price at the time it was added to the cart.
-
+- Store the watch price at the time it was added to the cart. -->
+<!-- 
 ## 6. Order Management
 
 ### TODO
@@ -120,113 +97,80 @@ Add order creation and management.
 - Reduce stock after successful order creation or payment confirmation.
 - Prevent customers from viewing other customers' orders.
 - Admins should be able to update order status.
-- Customers should only cancel orders before shipping.
+- Customers should only cancel orders before shipping. -->
 
-## 7. Image Uploads
+<!-- ## 7. Image Uploads (Completed)
 
-### TODO
+### DONE
 
-Add product image upload support.
+- Integrated Cloudinary for image storage.
+- Configured Multer with Cloudinary storage.
+- Implemented image validation (type and size).
+- Added routes for uploading multiple images and deleting by public ID.
 
-### Suggested approach
+### Routes
 
-- Use Cloudinary, S3, or another image storage provider.
-- Use `multer` for receiving uploaded files.
-- Store only image URLs in MongoDB.
-- Add image validation.
+- `POST /api/uploads/watch-images` (Admin only, up to 5 images)
+- `DELETE /api/uploads/watch-images` (Admin only)
 
-### Suggested routes
+### Validation
 
-- `POST /api/uploads/watch-images`
-- `DELETE /api/uploads/watch-images`
+- Only image mimetypes allowed.
+- Max file size: 2MB.
+- Foldering in Cloudinary: `thilani-watches`.
+- Returns both `url` and `publicId` for database storage and future deletion. -->
 
-### Validation rules
+<!-- <!-- ## 8. Product Reviews And Ratings (Completed)
 
-- Only allow image files.
-- Limit file size.
-- Limit number of images per watch.
-- Reject unsupported file extensions.
+### DONE
 
-## 8. Product Reviews And Ratings
+- Implemented `Review` model with automated aggregate rating calculations on the `Watch` model.
+- Implemented `reviewController` with ownership checks and admin management.
+- Implemented `Wishlist` model with unique constraints.
+- Implemented `wishlistController` with automatic filtering of unavailable products.
 
-### TODO
+### Review Routes
 
-Add customer reviews for watches.
+- `GET /api/watches/:watchId/reviews` (Public)
+- `POST /api/watches/:watchId/reviews` (Auth user, once per watch)
+- `PUT /api/reviews/:id` (Review owner or Admin)
+- `DELETE /api/reviews/:id` (Review owner or Admin)
+- `PATCH /api/reviews/:id/approve` (Admin only)
 
-### Suggested routes
+### Wishlist Routes
 
-- `GET /api/watches/:watchId/reviews`
-- `POST /api/watches/:watchId/reviews`
-- `PUT /api/reviews/:id`
-- `DELETE /api/reviews/:id`
-
-### Suggested review model fields
-
-- `watch`
-- `user`
-- `rating`
-- `title`
-- `comment`
-- `isApproved`
-- timestamps
+- `GET /api/wishlist` (Auth user)
+- `POST /api/wishlist/:watchId` (Auth user)
+- `DELETE /api/wishlist/:watchId` (Auth user)
 
 ### Rules
 
-- Only logged-in customers can create reviews.
-- A customer should only review the same watch once.
-- Rating should be between 1 and 5.
-- Admin may approve, hide, or delete reviews.
-- Update `ratingAverage` and `ratingCount` on the watch after review changes.
+- Ratings must be 1-5.
+- One review per user per watch.
+- Wishlist prevents duplicates.
+- Unpublished watches are automatically hidden from wishlist views. -->
 
-## 9. Wishlist
+<!-- ## 10. Categories And Brands (Completed)
 
-### TODO
+### DONE
 
-Add a wishlist feature for logged-in customers.
+- Implemented separate collections for `Category` and `Brand`.
+- Updated `Watch` model to use `ObjectId` references.
+- Added CRUD controllers and routes for management.
 
-### Suggested routes
+### Routes
 
-- `GET /api/wishlist`
-- `POST /api/wishlist/:watchId`
-- `DELETE /api/wishlist/:watchId`
+- `GET /api/categories` & `/api/brands` (Public)
+- `POST`, `PUT`, `DELETE` routes (Admin only)
 
-### Rules
+### Fields
 
-- Only logged-in customers can use wishlist.
-- Prevent duplicate wishlist items.
-- Hide or clean up wishlist items for unpublished watches.
+- `name`, `slug`, `description`, `imageUrl`, `isActive`, `sortOrder`.
 
-## 10. Categories And Brands
+### Notes
 
-### TODO
-
-Decide whether categories and brands should be strings inside the watch model or separate collections.
-
-For a growing store, use separate collections.
-
-### Suggested category routes
-
-- `GET /api/categories`
-- `POST /api/categories`
-- `PUT /api/categories/:id`
-- `DELETE /api/categories/:id`
-
-### Suggested brand routes
-
-- `GET /api/brands`
-- `POST /api/brands`
-- `PUT /api/brands/:id`
-- `DELETE /api/brands/:id`
-
-### Suggested fields
-
-- `name`
-- `slug`
-- `description`
-- `imageUrl`
-- `isActive`
-- `sortOrder`
-- timestamps
+- This setup allows the frontend to show category/brand descriptions and logos on listing pages.
+- Transitioning existing string data to ObjectIds will require a migration script if there is already data in the DB. -->
 
 ## 11. Search, Filter, Sort, And Pagination
 
@@ -529,170 +473,3 @@ Add automated tests after the main backend features are implemented.
 - Cart rejects quantity above stock.
 - Order creation reduces stock.
 - Review rating must be between 1 and 5.
-
-## 23. Database Seeding
-
-### TODO
-
-Create seed scripts for local development.
-
-### Suggested scripts
-
-- `npm run seed`
-- `npm run seed:destroy`
-
-### Seed data to include
-
-- Admin user.
-- Customer user.
-- Watch categories.
-- Watch brands.
-- 20 to 50 sample watches.
-- Sample orders.
-- Sample reviews.
-
-## 24. API Documentation
-
-### TODO
-
-Document the API so the frontend can be connected smoothly.
-
-### Suggested options
-
-- Create `API_DOCUMENTATION.md`.
-- Add Postman collection.
-- Add Swagger/OpenAPI docs.
-
-### Documentation should include
-
-- Endpoint path.
-- HTTP method.
-- Auth requirement.
-- Request body.
-- Query parameters.
-- Success response.
-- Error response.
-- Example request.
-
-## 25. Deployment Preparation
-
-### TODO
-
-Prepare backend for production deployment.
-
-### Deployment checklist
-
-- Set `NODE_ENV=production`.
-- Use production MongoDB connection string.
-- Set production `CLIENT_URL`.
-- Set strong `JWT_SECRET`.
-- Confirm CORS only allows real frontend domain.
-- Confirm uploaded images use external storage.
-- Confirm logs do not expose private data.
-- Confirm error responses hide stack traces.
-- Add production start command.
-- Check server health endpoint after deployment.
-
-## 26. Suggested Implementation Order
-
-Follow this order to avoid building features on unstable foundations.
-
-1. Add `.env.example` and improve setup documentation.
-2. Expand `Watch` model.
-3. Add request validation.
-4. Improve watch list filtering, search, sorting, and pagination.
-5. Standardize API success and error responses.
-6. Add authentication and user roles.
-7. Protect admin watch routes.
-8. Add image upload support.
-9. Add cart.
-10. Add orders.
-11. Add inventory stock rules.
-12. Add reviews and ratings.
-13. Add wishlist.
-14. Add categories and brands.
-15. Add admin dashboard endpoints.
-16. Add coupons if needed.
-17. Add payment integration.
-18. Add shipping and delivery tracking.
-19. Add security middleware.
-20. Add logging.
-21. Add seed scripts.
-22. Add automated tests.
-23. Add API documentation.
-24. Prepare for deployment.
-
-## 27. Minimum Backend Version For First Launch
-
-If you want to launch a simple first version, implement only these items first:
-
-- Expanded watch model.
-- Watch listing with search, filter, sort, and pagination.
-- Admin authentication.
-- Admin-only create, update, delete watches.
-- Image upload.
-- Basic order creation.
-- Stock quantity updates.
-- Simple order status management.
-- Production `.env` setup.
-- Basic API documentation.
-
-## 28. Recommended Folder Structure Later
-
-The current structure is good for a small backend. After adding more features, use this structure:
-
-```txt
-src/
-  app.js
-  config/
-    db.js
-    env.js
-  controllers/
-    authController.js
-    watchController.js
-    cartController.js
-    orderController.js
-    reviewController.js
-    uploadController.js
-    adminController.js
-  middleware/
-    authMiddleware.js
-    errorMiddleware.js
-    validateMiddleware.js
-  models/
-    User.js
-    Watch.js
-    Cart.js
-    Order.js
-    Review.js
-    Category.js
-    Brand.js
-    Coupon.js
-  routes/
-    index.js
-    authRoutes.js
-    watchRoutes.js
-    cartRoutes.js
-    orderRoutes.js
-    reviewRoutes.js
-    uploadRoutes.js
-    adminRoutes.js
-  utils/
-    asyncHandler.js
-    apiResponse.js
-    createToken.js
-    slugify.js
-  validators/
-    authValidators.js
-    watchValidators.js
-    orderValidators.js
-```
-
-## 29. Final Notes
-
-- Keep customer routes and admin routes clearly separated.
-- Do not trust frontend prices, stock values, or user roles.
-- Always calculate cart and order totals on the backend.
-- Always check stock on the backend before creating orders.
-- Use soft delete for important business data such as orders and products.
-- Add tests especially around authentication, checkout, and stock updates.

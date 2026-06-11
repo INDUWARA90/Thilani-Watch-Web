@@ -1,10 +1,15 @@
 // these are the valid .Env Variables 
-const REQUIRED_ENV_VARS = ['MONGO_URI', 'CLIENT_URL', 'JWT_SECRET']
+const REQUIRED_ENV_VARS = [
+  'MONGO_URI',
+  'CLIENT_URL',
+  'JWT_SECRET',
+  'CLOUDINARY_CLOUD_NAME',
+  'CLOUDINARY_UPLOAD_PRESET',
+]
 const VALID_NODE_ENVS = new Set(['development', 'production', 'test'])
 const CLOUDINARY_ENV_VARS = [
   'CLOUDINARY_CLOUD_NAME',
-  'CLOUDINARY_API_KEY',
-  'CLOUDINARY_API_SECRET',
+  'CLOUDINARY_UPLOAD_PRESET',
 ]
 
 // helping method that check is blank

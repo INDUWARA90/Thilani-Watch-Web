@@ -6,9 +6,10 @@ dotenv.config()
 validateEnv()
 
 const app = require('./src/app')
+
 const port = process.env.PORT || 5000
 
-// Connect to MongoDB first; only start listening if the database is ready.
+// Connect to MongoDB 
 const startServer = async () => {
   try {
     await connectDB()

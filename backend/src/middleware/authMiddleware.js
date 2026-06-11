@@ -13,7 +13,7 @@ const protect = asyncHandler(async (req, res, next) => {
 
   try {
     const payload = jwt.verify(token, process.env.JWT_SECRET)
-    const user = await User.findById(payload.id)
+    const user = await User.findById(payload.id);
 
     if (!user || !user.isActive) {
       return res.status(401).json({ message: 'User not found or inactive' })

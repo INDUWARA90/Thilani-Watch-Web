@@ -1,10 +1,25 @@
 const express = require('express')
 const authRoutes = require('./authRoutes')
 const watchRoutes = require('./watchRoutes')
+const cartRoutes = require('./cartRoutes')
+const uploadRoutes = require('./uploadRoutes')
+const reviewRoutes = require('./reviewRoutes')
+const wishlistRoutes = require('./wishlistRoutes')
+const orderRoutes = require('./orderRoutes')
+const categoryRoutes = require('./categoryRoutes')
+const brandRoutes = require('./brandRoutes')
 
 const router = express.Router()
 
 router.use('/auth', authRoutes)
 router.use('/watches', watchRoutes)
+router.use('/watches/:watchId/reviews', reviewRoutes)
+router.use('/cart', cartRoutes)
+router.use('/uploads', uploadRoutes)
+router.use('/reviews', reviewRoutes)
+router.use('/wishlist', wishlistRoutes)
+router.use('/orders', orderRoutes)
+router.use('/categories', categoryRoutes)
+router.use('/brands', brandRoutes)
 
 module.exports = router
