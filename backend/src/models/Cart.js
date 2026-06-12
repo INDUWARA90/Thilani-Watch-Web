@@ -38,13 +38,12 @@ const cartSchema = new mongoose.Schema(
 )
 
 // Automatically recalculate subtotal before saving
-cartSchema.pre('save', function (next) {
+cartSchema.pre('save', async function () {
   if (this.isModified('items')) {
     this.subtotal = this.items.reduce((acc, item) => {
       return acc + (item.quantity * item.priceAtTime)
     }, 0)
   }
-  next()
 })
 
 module.exports = mongoose.model('Cart', cartSchema)

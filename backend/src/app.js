@@ -1,20 +1,29 @@
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
 const express = require('express')
-const routes = require('./routes')
+const helmet = require('helmet')
+const hpp = require('hpp')
+const morgan = require('morgan')
+const routes = require('./routes/index')
 const { errorHandler, notFound } = require('./middleware/errorMiddleware')
 
 // create APP
 const app = express()
 
-// allowing cors communication 
+// allowing cors communication
 app.use(
   cors({
     origin: process.env.CLIENT_URL || 'http://localhost:5173',
     credentials: true,
   }),
 )
-// Middleware
+
+// Security & Logging Middleware
+app.use(helmet()) // Set security HTTP headers
+app.use(hpp()) // Prevent HTTP Parameter Pollution
+app.use(morgan('dev')) // Log requests to console
+
+// Standard Middleware
 app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -27,7 +36,7 @@ app.get('/api/health', (req, res) => {
   })
 })
 
-// mount the all routes 
+// mount the all routes
 app.use('/api', routes)
 
 // Error handling

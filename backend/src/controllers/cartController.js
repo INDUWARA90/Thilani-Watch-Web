@@ -1,6 +1,7 @@
 const Cart = require('../models/Cart')
 const Watch = require('../models/Watch')
 const asyncHandler = require('../utils/asyncHandler')
+const ErrorResponse = require('../utils/ErrorResponse')
 
 /**
  * Returns the current user's cart.
@@ -12,19 +13,22 @@ const getCart = asyncHandler(async (req, res) => {
   if (!cart) {
     // Return a virtual empty cart structure for frontend consistency
     return res.json({
-      user: req.user._id,
-      items: [],
-      subtotal: 0,
+      success: true,
+      data: {
+        user: req.user._id,
+        items: [],
+        subtotal: 0,
+      },
     })
   }
 
-  res.json(cart)
+  res.json({ success: true, data: cart })
 })
 
 /**
  * Adds an item to the cart or increases quantity if it exists.
  */
-const addItem = asyncHandler(async (req, res) => {
+const addItem = asyncHandler(async (req, res, next) => {
   const { watchId, quantity } = req.body
   const qty = Math.max(1, Number.parseInt(quantity, 10) || 1)
 
@@ -35,11 +39,11 @@ const addItem = asyncHandler(async (req, res) => {
   })
 
   if (!watch) {
-    return res.status(404).json({ message: 'Watch not found or unavailable' })
+    return next(new ErrorResponse('Watch not found or unavailable', 404))
   }
 
   if (qty > watch.stockQuantity) {
-    return res.status(400).json({ message: `Insufficient stock. Only ${watch.stockQuantity} available.` })
+    return next(new ErrorResponse(`Insufficient stock. Only ${watch.stockQuantity} available.`, 400))
   }
 
   let cart = await Cart.findOne({ user: req.user._id })
@@ -53,9 +57,12 @@ const addItem = asyncHandler(async (req, res) => {
   if (existingItem) {
     const totalRequested = existingItem.quantity + qty
     if (totalRequested > watch.stockQuantity) {
-      return res.status(400).json({
-        message: `Cannot add more. You have ${existingItem.quantity} in cart and only ${watch.stockQuantity} are in stock.`,
-      })
+      return next(
+        new ErrorResponse(
+          `Cannot add more. You have ${existingItem.quantity} in cart and only ${watch.stockQuantity} are in stock.`,
+          400
+        )
+      )
     }
     existingItem.quantity = totalRequested
   } else {
@@ -68,19 +75,19 @@ const addItem = asyncHandler(async (req, res) => {
 
   await cart.save()
   const populatedCart = await cart.populate('items.watch')
-  res.json(populatedCart)
+  res.json({ success: true, data: populatedCart })
 })
 
 /**
  * Updates the quantity of a specific item in the cart.
  */
-const updateItemQuantity = asyncHandler(async (req, res) => {
+const updateItemQuantity = asyncHandler(async (req, res, next) => {
   const { watchId } = req.params
   const { quantity } = req.body
   const qty = Number.parseInt(quantity, 10)
 
   if (!qty || qty < 1) {
-    return res.status(400).json({ message: 'Quantity must be at least 1' })
+    return next(new ErrorResponse('Quantity must be at least 1', 400))
   }
 
   const [watch, cart] = await Promise.all([
@@ -89,22 +96,22 @@ const updateItemQuantity = asyncHandler(async (req, res) => {
   ])
 
   if (!watch || !cart) {
-    return res.status(404).json({ message: 'Cart or watch not found' })
+    return next(new ErrorResponse('Cart or watch not found', 404))
   }
 
   if (qty > watch.stockQuantity) {
-    return res.status(400).json({ message: `Only ${watch.stockQuantity} items in stock` })
+    return next(new ErrorResponse(`Only ${watch.stockQuantity} items in stock`, 400))
   }
 
   const item = cart.items.find((i) => i.watch.toString() === watchId)
   if (!item) {
-    return res.status(404).json({ message: 'Item not found in cart' })
+    return next(new ErrorResponse('Item not found in cart', 404))
   }
 
   item.quantity = qty
   await cart.save()
   const populatedCart = await cart.populate('items.watch')
-  res.json(populatedCart)
+  res.json({ success: true, data: populatedCart })
 })
 
 /**
@@ -120,7 +127,7 @@ const removeItem = asyncHandler(async (req, res) => {
   }
 
   const populatedCart = await cart?.populate('items.watch') || { items: [], subtotal: 0 }
-  res.json(populatedCart)
+  res.json({ success: true, data: populatedCart })
 })
 
 /**
@@ -128,7 +135,7 @@ const removeItem = asyncHandler(async (req, res) => {
  */
 const clearCart = asyncHandler(async (req, res) => {
   await Cart.findOneAndDelete({ user: req.user._id })
-  res.json({ message: 'Cart cleared', items: [], subtotal: 0 })
+  res.json({ success: true, message: 'Cart cleared', data: { items: [], subtotal: 0 } })
 })
 
 module.exports = {

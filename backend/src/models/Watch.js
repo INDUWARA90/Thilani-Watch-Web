@@ -15,9 +15,9 @@ const watchSchema = new mongoose.Schema(
       trim: true,
     },
     brand: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Brand',
       required: true,
-      trim: true,
     },
     description: {
       type: String,
@@ -51,10 +51,9 @@ const watchSchema = new mongoose.Schema(
       trim: true,
     },
     category: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Category',
       required: true,
-      trim: true,
-      lowercase: true,
     },
     collection: {
       type: String,

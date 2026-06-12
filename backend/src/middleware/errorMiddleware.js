@@ -1,39 +1,53 @@
-const mongoose = require('mongoose')
+const ErrorResponse = require('../utils/ErrorResponse')
 
-// Creates a 404 error for any request that reaches this middleware.
 const notFound = (req, res, next) => {
-  const error = new Error(`Route not found - ${req.originalUrl}`)
-  res.status(404)
+  const error = new ErrorResponse(`Not Found - ${req.originalUrl}`, 404)
   next(error)
 }
 
-// Sends one consistent JSON error response for controller and routing errors.
-const errorHandler = (error, req, res, next) => {
-  let statusCode = res.statusCode === 200 ? 500 : res.statusCode
-  let message = error.message || 'Server error'
+const errorHandler = (err, req, res, next) => {
+  let error = { ...err }
+  error.message = err.message
 
-  // Mongoose throws CastError when a route receives an invalid MongoDB id.
-  if (error instanceof mongoose.Error.CastError) {
-    statusCode = 400
-    message = 'Invalid resource id'
+  // Log to console for dev
+  if (process.env.NODE_ENV !== 'production') {
+    console.error(err)
   }
 
-  // Convert schema validation errors into a readable API response.
-  if (error instanceof mongoose.Error.ValidationError) {
-    statusCode = 400
-    message = Object.values(error.errors)
-      .map((validationError) => validationError.message)
-      .join(', ')
+  // Mongoose bad ObjectId (Invalid ID)
+  if (err.name === 'CastError') {
+    const message = 'Resource not found'
+    error = new ErrorResponse(message, 404)
   }
 
-  res.status(statusCode).json({
-    message,
-    // Hide stack traces in production so internal details are not exposed.
-    stack: process.env.NODE_ENV === 'production' ? undefined : error.stack,
+  // Mongoose validation error
+  if (err.name === 'ValidationError') {
+    const message = 'Validation failed'
+    const errors = Object.keys(err.errors).map((key) => ({
+      field: key,
+      message: err.errors[key].message,
+    }))
+    error = new ErrorResponse(message, 400, errors)
+  }
+
+  // Mongoose duplicate key (11000)
+  if (err.code === 11000) {
+    const field = Object.keys(err.keyValue)[0]
+    const message = `Duplicate field value entered: ${field}`
+    const errors = [{ field, message: `The ${field} already exists.` }]
+    error = new ErrorResponse(message, 400, errors)
+  }
+
+  // Invalid JSON Body
+  if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+    error = new ErrorResponse('Invalid JSON body', 400)
+  }
+
+  res.status(error.statusCode || 500).json({
+    success: false,
+    message: error.message || 'Server Error',
+    errors: error.errors || [],
   })
 }
 
-module.exports = {
-  errorHandler,
-  notFound,
-}
+module.exports = { notFound, errorHandler }
