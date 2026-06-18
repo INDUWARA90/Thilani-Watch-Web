@@ -1,5 +1,4 @@
 const Watch = require('../models/Watch')
-const mongoose = require('mongoose')
 const asyncHandler = require('../utils/asyncHandler')
 const ErrorResponse = require('../utils/ErrorResponse')
 const {
@@ -37,15 +36,16 @@ const buildListFilter = (query) => {
       { description: search },
       { shortDescription: search },
       { sku: search },
+      { category: search },
     ]
   }
 
-  if (query.category && mongoose.Types.ObjectId.isValid(query.category)) {
-    filter.category = query.category
+  if (query.category) {
+    filter.category = String(query.category).trim().toLowerCase()
   }
 
-  if (query.brand && mongoose.Types.ObjectId.isValid(query.brand)) {
-    filter.brand = query.brand
+  if (query.brand) {
+    filter.brand = new RegExp(`^${escapeRegex(String(query.brand).trim())}$`, 'i')
   }
 
   const minPrice = Number(query.minPrice)
@@ -170,6 +170,7 @@ const updateWatchStock = asyncHandler(async (req, res, next) => {
     req.params.id,
     {
       stockQuantity,
+      inStock: stockQuantity > 0,
     },
     {
       returnDocument: 'after',
