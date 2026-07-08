@@ -58,6 +58,10 @@ export const getApiErrorMessage = (error, fallback = 'Something went wrong.') =>
     return 'You do not have permission to perform this action.'
   }
 
+  if (typeof error?.message === 'string') {
+    return error.message
+  }
+
   return fallback
 }
 

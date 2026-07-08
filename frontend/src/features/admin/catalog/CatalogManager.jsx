@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { getApiErrorMessage } from '@/shared/api/apiClient'
+import { cloudinaryApi } from '../api/cloudinaryApi'
 import { getId, normalizeList } from '../lib/adminUtils'
 import { CatalogForm } from './CatalogForm'
 import { CatalogHeader } from './CatalogHeader'
@@ -13,6 +14,7 @@ export const CatalogManager = ({ api, label, plural }) => {
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
   const [isLoading, setIsLoading] = useState(true)
+  const [isUploadingImage, setIsUploadingImage] = useState(false)
 
   const loadItems = async () => {
     setIsLoading(true)
@@ -65,6 +67,21 @@ export const CatalogManager = ({ api, label, plural }) => {
     setForm((current) => ({ ...current, [name]: type === 'checkbox' ? checked : value }))
   }
 
+  const uploadCatalogImage = async (file) => {
+    if (!file) return
+
+    setError('')
+    setIsUploadingImage(true)
+    try {
+      const image = await cloudinaryApi.uploadImage(file)
+      setForm((current) => ({ ...current, imageUrl: image.url || '' }))
+    } catch (apiError) {
+      setError(getApiErrorMessage(apiError, `${label} image upload failed.`))
+    } finally {
+      setIsUploadingImage(false)
+    }
+  }
+
   const editItem = (item) => {
     setEditingItem(item)
     setForm({
@@ -113,7 +130,16 @@ export const CatalogManager = ({ api, label, plural }) => {
       <CatalogHeader editingItem={editingItem} label={label} onReset={resetForm} plural={plural} />
       {error && <div className="rounded-lg border border-red-200 bg-red-50 px-3.5 py-3 font-bold text-red-800">{error}</div>}
       {message && <div className="rounded-lg border border-green-200 bg-green-50 px-3.5 py-3 font-bold text-green-800">{message}</div>}
-      <CatalogForm editingItem={editingItem} form={form} label={label} setForm={setForm} submitItem={submitItem} updateForm={updateForm} />
+      <CatalogForm
+        editingItem={editingItem}
+        form={form}
+        isUploadingImage={isUploadingImage}
+        label={label}
+        setForm={setForm}
+        submitItem={submitItem}
+        updateForm={updateForm}
+        uploadCatalogImage={uploadCatalogImage}
+      />
       <CatalogTable deleteItem={deleteItem} editItem={editItem} isLoading={isLoading} items={items} plural={plural} />
     </section>
   )

@@ -1,5 +1,6 @@
 const Brand = require('../models/Brand')
 const asyncHandler = require('../utils/asyncHandler')
+const { buildCatalogPayload } = require('../utils/catalogPayload')
 const ErrorResponse = require('../utils/ErrorResponse')
 
 const getBrands = asyncHandler(async (req, res) => {
@@ -8,12 +9,12 @@ const getBrands = asyncHandler(async (req, res) => {
 })
 
 const createBrand = asyncHandler(async (req, res, next) => {
-  const brand = await Brand.create(req.body)
+  const brand = await Brand.create(buildCatalogPayload(req.body))
   res.status(201).json({ success: true, data: brand })
 })
 
 const updateBrand = asyncHandler(async (req, res, next) => {
-  const brand = await Brand.findByIdAndUpdate(req.params.id, req.body, {
+  const brand = await Brand.findByIdAndUpdate(req.params.id, buildCatalogPayload(req.body), {
     new: true,
     runValidators: true,
   })

@@ -1,5 +1,6 @@
 const Category = require('../models/Category')
 const asyncHandler = require('../utils/asyncHandler')
+const { buildCatalogPayload } = require('../utils/catalogPayload')
 const ErrorResponse = require('../utils/ErrorResponse')
 
 const getCategories = asyncHandler(async (req, res) => {
@@ -8,12 +9,12 @@ const getCategories = asyncHandler(async (req, res) => {
 })
 
 const createCategory = asyncHandler(async (req, res, next) => {
-  const category = await Category.create(req.body)
+  const category = await Category.create(buildCatalogPayload(req.body))
   res.status(201).json({ success: true, data: category })
 })
 
 const updateCategory = asyncHandler(async (req, res, next) => {
-  const category = await Category.findByIdAndUpdate(req.params.id, req.body, {
+  const category = await Category.findByIdAndUpdate(req.params.id, buildCatalogPayload(req.body), {
     new: true,
     runValidators: true,
   })
