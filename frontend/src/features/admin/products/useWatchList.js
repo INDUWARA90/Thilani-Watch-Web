@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
-import { getApiErrorMessage } from '../../../lib/apiClient'
-import { adminApi } from '../adminApi'
-import { normalizeList, readBoolean } from '../adminUtils'
+import { getApiErrorMessage } from '@/shared/api/apiClient'
+import { adminApi } from '../api/adminApi'
+import { normalizeList, readBoolean } from '../lib/adminUtils'
 
 export const useWatchList = (filters, setError) => {
   const [watches, setWatches] = useState([])

@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { getApiErrorMessage } from '../../../lib/apiClient'
-import { adminApi } from '../adminApi'
-import { getId } from '../adminUtils'
+import { getApiErrorMessage } from '@/shared/api/apiClient'
+import { adminApi } from '../api/adminApi'
+import { getId } from '../lib/adminUtils'
 import { orderStatuses, paymentStatuses } from './orderStatusOptions'
 
 export const OrderStatusControls = ({ order, onUpdated }) => {

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
-import { getApiErrorMessage } from '../../../lib/apiClient'
-import { adminApi } from '../adminApi'
-import { normalizeList } from '../adminUtils'
+import { getApiErrorMessage } from '@/shared/api/apiClient'
+import { adminApi } from '../api/adminApi'
+import { normalizeList } from '../lib/adminUtils'
 
 export const useProductReferences = (setError) => {
   const [brands, setBrands] = useState([])

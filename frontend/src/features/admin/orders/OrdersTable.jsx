@@ -1,5 +1,5 @@
 import { Link } from 'react-router'
-import { formatDate, formatMoney, getId, getTitle } from '../adminUtils'
+import { formatDate, formatMoney, getId, getTitle } from '../lib/adminUtils'
 
 export const OrdersTable = ({ orders }) => (
   <div className="w-full overflow-x-auto">

@@ -1,8 +1,8 @@
 import { useCallback, useState } from 'react'
-import { getApiErrorMessage } from '../../../lib/apiClient'
-import { adminApi } from '../adminApi'
-import { getId, normalizeList } from '../adminUtils'
-import { buildWatchPayload, emptyWatchForm, watchFromApi } from './watchFormModel'
+import { getApiErrorMessage } from '@/shared/api/apiClient'
+import { adminApi } from '../api/adminApi'
+import { getId, normalizeList } from '../lib/adminUtils'
+import { buildWatchPayload, emptyWatchForm, getImageUrl, mergeImageUrls, splitImageUrls, watchFromApi } from './watchFormModel'
 import { useProductReferences } from './useProductReferences'
 import { useWatchList } from './useWatchList'
 
@@ -70,11 +70,11 @@ export const useAdminProducts = () => {
     try {
       const payload = await adminApi.uploadWatchImages(files)
       const uploaded = normalizeList(payload?.images || payload, ['images'])
-      const urls = uploaded.map((image) => image.url || image.secure_url || image.path).filter(Boolean)
+      const urls = uploaded.map(getImageUrl).filter(Boolean)
       setUploadedImages((current) => [...current, ...uploaded])
       setForm((current) => ({
         ...current,
-        images: [...current.images.split('\n').filter(Boolean), ...urls].join('\n'),
+        images: mergeImageUrls(current.images, urls),
         thumbnail: current.thumbnail || urls[0] || '',
       }))
     } catch (apiError) {
@@ -88,13 +88,12 @@ export const useAdminProducts = () => {
 
     try {
       await adminApi.deleteWatchImage(publicId)
-      const url = image.url || image.secure_url || image.path
+      const url = getImageUrl(image)
       setUploadedImages((current) => current.filter((item) => item !== image))
       setForm((current) => ({
         ...current,
-        images: current.images
-          .split('\n')
-          .filter((item) => item && item !== url)
+        images: splitImageUrls(current.images)
+          .filter((item) => item !== url)
           .join('\n'),
         thumbnail: current.thumbnail === url ? '' : current.thumbnail,
       }))

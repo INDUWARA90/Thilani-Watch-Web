@@ -1,8 +1,9 @@
-import { getId, getTitle } from '../adminUtils'
+import { LoadingState } from '@/shared/ui/LoadingState'
+import { getId, getTitle } from '../lib/adminUtils'
 
 export const WatchTable = ({ deleteWatch, editWatch, isLoading, quickStock, togglePublish, watches }) => {
   if (isLoading) {
-    return <div className="rounded-lg border border-emerald-100 bg-emerald-50 px-3.5 py-3 font-bold text-emerald-950">Loading watches...</div>
+    return <LoadingState label="Loading watches" variant="table" rows={6} />
   }
 
   return (

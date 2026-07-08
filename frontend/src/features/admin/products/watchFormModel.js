@@ -1,4 +1,4 @@
-import { getId } from '../adminUtils'
+import { getId } from '../lib/adminUtils'
 
 export const emptyWatchForm = {
   name: '',
@@ -9,6 +9,7 @@ export const emptyWatchForm = {
   price: '',
   currency: 'LKR',
   images: '',
+  imageUrlDraft: '',
   thumbnail: '',
   category: '',
   collection: '',
@@ -43,6 +44,27 @@ export const watchTextFields = [
   ['thumbnail', 'Thumbnail URL'],
 ]
 
+export const getImageUrl = (image) => {
+  if (!image) return ''
+  if (typeof image === 'string') return image
+  return image.secure_url || image.secureUrl || image.url || image.path || image.src || ''
+}
+
+export const splitImageUrls = (images) =>
+  String(images || '')
+    .split(/\r?\n|,/)
+    .map((item) => item.trim())
+    .filter(Boolean)
+
+export const mergeImageUrls = (currentImages, nextImages) => {
+  const urls = [
+    ...splitImageUrls(currentImages),
+    ...nextImages.map(getImageUrl).map((item) => item.trim()).filter(Boolean),
+  ]
+
+  return [...new Set(urls)].join('\n')
+}
+
 export const watchFromApi = (watch) => ({
   ...emptyWatchForm,
   ...watch,
@@ -50,7 +72,7 @@ export const watchFromApi = (watch) => ({
   category: getId(watch.category),
   price: String(watch.price ?? ''),
   stockQuantity: String(watch.stockQuantity ?? 0),
-  images: Array.isArray(watch.images) ? watch.images.join('\n') : '',
+  images: Array.isArray(watch.images) ? watch.images.map(getImageUrl).filter(Boolean).join('\n') : '',
   isFeatured: Boolean(watch.isFeatured),
   isPublished: watch.isPublished !== false,
 })
@@ -63,10 +85,7 @@ export const buildWatchPayload = (form) => ({
   shortDescription: form.shortDescription.trim(),
   price: Number(form.price),
   currency: form.currency.trim() || 'LKR',
-  images: form.images
-    .split('\n')
-    .map((item) => item.trim())
-    .filter(Boolean),
+  images: splitImageUrls(form.images),
   thumbnail: form.thumbnail.trim(),
   category: form.category,
   collection: form.collection.trim(),

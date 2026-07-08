@@ -2,9 +2,10 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Eye, Heart, ShoppingBag, Star } from 'lucide-react'
 import { Link, useNavigate } from 'react-router'
-import { useAuth } from '../../auth/useAuth'
-import { useCommerce } from '../../commerce/useCommerce'
-import { formatMoney, getId, getTitle, getWatchImage } from '../storefrontUtils'
+import { ButtonSpinner } from '@/shared/ui/LoadingState'
+import { useAuth } from '@/features/auth/hooks/useAuth'
+import { useCommerce } from '@/features/commerce/hooks/useCommerce'
+import { formatMoney, getId, getTitle, getWatchImage } from '../lib/storefrontUtils'
 
 const imageFallback = '/favicon.svg'
 
@@ -106,7 +107,7 @@ export const WatchCard = ({ watch }) => {
         </div>
         <div className="mt-4 grid gap-2 sm:grid-cols-2">
           <button className="inline-flex min-h-10 cursor-pointer items-center justify-center gap-2 rounded-lg bg-slate-950 px-3 text-sm font-extrabold text-white transition hover:bg-[#D4AF37] hover:text-slate-950 disabled:cursor-not-allowed disabled:opacity-60" disabled={!isAvailable || isBusy} type="button" onClick={handleAddToCart}>
-            <ShoppingBag className="h-4 w-4" /> {isBusy ? 'Working...' : 'Add'}
+            {isBusy ? <ButtonSpinner /> : <ShoppingBag className="h-4 w-4" />} {isBusy ? 'Adding' : 'Add'}
           </button>
           <Link className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-sm font-extrabold text-slate-950 no-underline transition hover:border-[#D4AF37] hover:text-[#8f6f10]" to={detailPath}>
             <Eye className="h-4 w-4" /> Quick view

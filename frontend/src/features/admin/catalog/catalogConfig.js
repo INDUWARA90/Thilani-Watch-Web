@@ -1,4 +1,4 @@
-import { adminApi } from '../adminApi'
+import { adminApi } from '../api/adminApi'
 
 export const emptyCatalogForm = {
   name: '',

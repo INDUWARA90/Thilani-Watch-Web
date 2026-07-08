@@ -1,4 +1,4 @@
-import { formatDate, formatMoney, getTitle } from '../adminUtils'
+import { formatDate, formatMoney, getTitle } from '../lib/adminUtils'
 import { OrderStatusControls } from './OrderStatusControls'
 
 export const OrderDetailSections = ({ order, onUpdated }) => (

@@ -1,4 +1,4 @@
-import { getId, getTitle } from '../adminUtils'
+import { getId, getTitle } from '../lib/adminUtils'
 
 export const WatchFilters = ({ brands, categories, filters, setFilters }) => {
   const updateFilter = (name, value) => {

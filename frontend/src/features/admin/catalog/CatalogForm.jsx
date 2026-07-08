@@ -1,4 +1,4 @@
-import { toSlug } from '../adminUtils'
+import { toSlug } from '../lib/adminUtils'
 
 export const CatalogForm = ({ editingItem, form, label, setForm, submitItem, updateForm }) => (
   <form className="grid gap-4" onSubmit={submitItem}>

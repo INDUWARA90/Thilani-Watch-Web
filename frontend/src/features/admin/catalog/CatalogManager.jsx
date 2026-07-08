@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { getApiErrorMessage } from '../../../lib/apiClient'
-import { getId, normalizeList } from '../adminUtils'
+import { getApiErrorMessage } from '@/shared/api/apiClient'
+import { getId, normalizeList } from '../lib/adminUtils'
 import { CatalogForm } from './CatalogForm'
 import { CatalogHeader } from './CatalogHeader'
 import { CatalogTable } from './CatalogTable'

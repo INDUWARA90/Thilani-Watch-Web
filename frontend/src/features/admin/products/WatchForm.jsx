@@ -1,5 +1,6 @@
-import { getId, getTitle, toSlug } from '../adminUtils'
-import { watchTextFields } from './watchFormModel'
+import { ButtonSpinner } from '@/shared/ui/LoadingState'
+import { getId, getTitle, toSlug } from '../lib/adminUtils'
+import { mergeImageUrls, splitImageUrls, watchTextFields } from './watchFormModel'
 
 export const WatchForm = ({
   brands,
@@ -28,6 +29,32 @@ export const WatchForm = ({
   const handleUpload = async (event) => {
     await uploadImages(Array.from(event.target.files || []))
     event.target.value = ''
+  }
+
+  const addImageUrl = () => {
+    setForm((current) => {
+      const nextImages = mergeImageUrls(current.images, [current.imageUrlDraft])
+      const [firstImage] = splitImageUrls(nextImages)
+
+      return {
+        ...current,
+        imageUrlDraft: '',
+        images: nextImages,
+        thumbnail: current.thumbnail || firstImage || '',
+      }
+    })
+  }
+
+  const removeImageUrl = (url) => {
+    setForm((current) => {
+      const images = splitImageUrls(current.images).filter((item) => item !== url)
+
+      return {
+        ...current,
+        images: images.join('\n'),
+        thumbnail: current.thumbnail === url ? images[0] || '' : current.thumbnail,
+      }
+    })
   }
 
   const submitWatch = async (event) => {
@@ -105,13 +132,54 @@ export const WatchForm = ({
         <label className="grid gap-2 text-sm font-extrabold text-slate-700">
           Images
           <textarea className="min-w-0 rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-slate-950 outline-none focus:border-teal-700 focus:ring-4 focus:ring-teal-700/15" name="images" value={form.images} onChange={updateForm} rows="4" />
+          <span className="text-sm font-semibold text-slate-500">One Cloudinary image URL per line. These URLs are sent in the watch create/update request.</span>
         </label>
 
-        <label className="grid gap-2 text-sm font-extrabold text-slate-700">
-          Upload watch images
-          <input className="min-w-0 rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-slate-950 outline-none focus:border-teal-700 focus:ring-4 focus:ring-teal-700/15" accept="image/*" multiple onChange={handleUpload} type="file" />
-          <span className="text-sm font-semibold text-slate-500">Up to 5 images per upload request.</span>
-        </label>
+        <section className="grid gap-3 rounded-lg border border-slate-200 bg-slate-50 p-4">
+          <div>
+            <h3 className="text-lg font-black text-slate-950">Cloudinary images</h3>
+            <p className="mt-1 text-sm font-semibold text-slate-500">
+              Upload through the backend Cloudinary endpoint, or paste a Cloudinary URL you already uploaded.
+            </p>
+          </div>
+
+          <label className="grid gap-2 text-sm font-extrabold text-slate-700">
+            Paste Cloudinary image URL
+            <div className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_auto]">
+              <input
+                className="min-w-0 rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-slate-950 outline-none focus:border-teal-700 focus:ring-4 focus:ring-teal-700/15"
+                name="imageUrlDraft"
+                placeholder="https://res.cloudinary.com/..."
+                type="url"
+                value={form.imageUrlDraft}
+                onChange={updateForm}
+              />
+              <button className="inline-flex min-h-10 cursor-pointer items-center justify-center rounded-lg border border-slate-300 bg-white px-4 font-extrabold text-slate-950 hover:bg-slate-100" type="button" onClick={addImageUrl}>
+                Add URL
+              </button>
+            </div>
+          </label>
+
+          <label className="grid gap-2 text-sm font-extrabold text-slate-700">
+            Upload watch images
+            <input className="min-w-0 rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-slate-950 outline-none focus:border-teal-700 focus:ring-4 focus:ring-teal-700/15" accept="image/*" multiple onChange={handleUpload} type="file" />
+            <span className="text-sm font-semibold text-slate-500">Up to 5 images per upload request. Returned Cloudinary URLs are added above automatically.</span>
+          </label>
+
+          {splitImageUrls(form.images).length > 0 && (
+            <div className="grid gap-2">
+              {splitImageUrls(form.images).map((url) => (
+                <div className="grid gap-3 rounded-lg border border-slate-200 bg-white p-3 sm:grid-cols-[64px_minmax(0,1fr)_auto] sm:items-center" key={url}>
+                  <img className="h-16 w-16 rounded-lg bg-slate-100 object-cover" src={url} alt="Watch upload preview" />
+                  <span className="min-w-0 break-all text-sm font-semibold text-slate-600">{url}</span>
+                  <button className="inline-flex min-h-9 w-fit cursor-pointer items-center justify-center rounded-lg border border-red-200 bg-red-50 px-3 text-sm font-extrabold text-red-800 hover:bg-red-100" type="button" onClick={() => removeImageUrl(url)}>
+                    Remove
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
 
         {uploadedImages.length > 0 && (
           <div className="grid gap-2.5">
@@ -137,8 +205,8 @@ export const WatchForm = ({
           </label>
         </div>
 
-        <button className="inline-flex min-h-11 w-fit cursor-pointer items-center justify-center rounded-lg border border-transparent bg-teal-700 px-4 font-extrabold text-white hover:bg-teal-800 disabled:cursor-not-allowed disabled:opacity-65" disabled={isSaving} type="submit">
-          {isSaving ? 'Saving...' : editingWatch ? 'Update watch' : 'Create watch'}
+        <button className="inline-flex min-h-11 w-fit cursor-pointer items-center justify-center gap-2 rounded-lg border border-transparent bg-teal-700 px-4 font-extrabold text-white hover:bg-teal-800 disabled:cursor-not-allowed disabled:opacity-65" disabled={isSaving} type="submit">
+          {isSaving && <ButtonSpinner />} {isSaving ? 'Saving' : editingWatch ? 'Update watch' : 'Create watch'}
         </button>
       </form>
     </>

@@ -1,7 +1,8 @@
-import { getId } from '../adminUtils'
+import { LoadingState } from '@/shared/ui/LoadingState'
+import { getId } from '../lib/adminUtils'
 
 export const CatalogTable = ({ deleteItem, editItem, isLoading, items, plural }) => {
-  if (isLoading) return <div className="rounded-lg border border-emerald-100 bg-emerald-50 px-3.5 py-3 font-bold text-emerald-950">Loading {plural.toLowerCase()}...</div>
+  if (isLoading) return <LoadingState label={`Loading ${plural.toLowerCase()}`} variant="table" rows={5} />
 
   return (
     <div className="w-full overflow-x-auto">
