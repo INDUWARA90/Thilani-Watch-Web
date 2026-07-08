@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react'
 import { getApiErrorMessage } from '@/shared/api/apiClient'
 import { adminApi } from '../api/adminApi'
+import { cloudinaryApi } from '../api/cloudinaryApi'
 import { getId, normalizeList } from '../lib/adminUtils'
 import { buildWatchPayload, emptyWatchForm, getImageUrl, mergeImageUrls, splitImageUrls, watchFromApi } from './watchFormModel'
 import { useProductReferences } from './useProductReferences'
@@ -68,7 +69,7 @@ export const useAdminProducts = () => {
 
     setError('')
     try {
-      const payload = await adminApi.uploadWatchImages(files)
+      const payload = await cloudinaryApi.uploadWatchImages(files)
       const uploaded = normalizeList(payload?.images || payload, ['images'])
       const urls = uploaded.map(getImageUrl).filter(Boolean)
       setUploadedImages((current) => [...current, ...uploaded])
@@ -82,24 +83,16 @@ export const useAdminProducts = () => {
     }
   }
 
-  const deleteUploadedImage = async (image) => {
-    const publicId = image.publicId || image.public_id
-    if (!publicId) return
-
-    try {
-      await adminApi.deleteWatchImage(publicId)
-      const url = getImageUrl(image)
-      setUploadedImages((current) => current.filter((item) => item !== image))
-      setForm((current) => ({
-        ...current,
-        images: splitImageUrls(current.images)
-          .filter((item) => item !== url)
-          .join('\n'),
-        thumbnail: current.thumbnail === url ? '' : current.thumbnail,
-      }))
-    } catch (apiError) {
-      setError(getApiErrorMessage(apiError, 'Unable to delete uploaded image.'))
-    }
+  const deleteUploadedImage = (image) => {
+    const url = getImageUrl(image)
+    setUploadedImages((current) => current.filter((item) => item !== image))
+    setForm((current) => ({
+      ...current,
+      images: splitImageUrls(current.images)
+        .filter((item) => item !== url)
+        .join('\n'),
+      thumbnail: current.thumbnail === url ? '' : current.thumbnail,
+    }))
   }
 
   const quickStock = async (watch, value) => {

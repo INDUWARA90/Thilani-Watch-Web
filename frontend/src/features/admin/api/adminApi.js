@@ -44,23 +44,6 @@ export const adminApi = {
     return unwrapApiData(await apiClient.delete(`/watches/${id}`))
   },
 
-  async uploadWatchImages(files) {
-    const formData = new FormData()
-    Array.from(files)
-      .slice(0, 5)
-      .forEach((file) => formData.append('images', file))
-
-    return unwrapApiData(
-      await apiClient.post('/uploads/watch-images', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      }),
-    )
-  },
-
-  async deleteWatchImage(publicId) {
-    return unwrapApiData(await apiClient.delete('/uploads/watch-images', { data: { publicId } }))
-  },
-
   async getCategories() {
     return unwrapList(await apiClient.get('/categories'), ['categories'])
   },
