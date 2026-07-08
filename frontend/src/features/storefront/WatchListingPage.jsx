@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { Filter, Search, SlidersHorizontal } from 'lucide-react'
 import { Link, useSearchParams } from 'react-router'
 import { getApiErrorMessage } from '../../lib/apiClient'
 import { usePageTitle } from '../../lib/usePageTitle'
@@ -13,6 +14,8 @@ const sortOptions = [
   { label: 'Rating', value: 'rating' },
   { label: 'Popularity', value: 'popularity' },
 ]
+
+const fieldClass = 'min-w-0 rounded-lg border border-slate-200 bg-white px-3 py-3 text-sm font-semibold text-slate-950 outline-none transition focus:border-[#D4AF37] focus:ring-4 focus:ring-[#D4AF37]/15'
 
 export const WatchListingPage = () => {
   usePageTitle('Shop Watches | Thilani Watch Web')
@@ -108,79 +111,122 @@ export const WatchListingPage = () => {
 
   return (
     <main>
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="mb-2 text-sm font-extrabold uppercase tracking-normal text-teal-700">Storefront</p>
-          <h1 className="text-4xl font-bold leading-tight text-slate-950">Watches</h1>
-        </div>
-        <Link className="font-bold text-teal-700 no-underline hover:underline" to="/">
-          Back home
-        </Link>
-      </div>
-
-      <section className="mb-6 rounded-lg border border-slate-200 bg-white p-4">
-        <div className="grid gap-3 md:grid-cols-4">
-          <input className="min-w-0 rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-slate-950 outline-none focus:border-teal-700 focus:ring-4 focus:ring-teal-700/15" placeholder="Search watches" value={filters.search} onChange={(event) => updateFilter('search', event.target.value)} />
-          <select className="min-w-0 rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-slate-950 outline-none focus:border-teal-700 focus:ring-4 focus:ring-teal-700/15" value={filters.category} onChange={(event) => updateFilter('category', event.target.value)}>
-            <option value="">Any category</option>
-            {categories.map((category) => (
-              <option key={getId(category)} value={getCatalogValue(category)}>{getTitle(category)}</option>
-            ))}
-          </select>
-          <select className="min-w-0 rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-slate-950 outline-none focus:border-teal-700 focus:ring-4 focus:ring-teal-700/15" value={filters.brand} onChange={(event) => updateFilter('brand', event.target.value)}>
-            <option value="">Any brand</option>
-            {brands.map((brand) => (
-              <option key={getId(brand)} value={getCatalogValue(brand)}>{getTitle(brand)}</option>
-            ))}
-          </select>
-          <select className="min-w-0 rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-slate-950 outline-none focus:border-teal-700 focus:ring-4 focus:ring-teal-700/15" value={filters.sort} onChange={(event) => updateFilter('sort', event.target.value)}>
-            {sortOptions.map((option) => (
-              <option key={option.value} value={option.value}>{option.label}</option>
-            ))}
-          </select>
-          <input className="min-w-0 rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-slate-950 outline-none focus:border-teal-700 focus:ring-4 focus:ring-teal-700/15" min="0" placeholder="Min price" type="number" value={filters.minPrice} onChange={(event) => updateFilter('minPrice', event.target.value)} />
-          <input className="min-w-0 rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-slate-950 outline-none focus:border-teal-700 focus:ring-4 focus:ring-teal-700/15" min="0" placeholder="Max price" type="number" value={filters.maxPrice} onChange={(event) => updateFilter('maxPrice', event.target.value)} />
-          <select className="min-w-0 rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-slate-950 outline-none focus:border-teal-700 focus:ring-4 focus:ring-teal-700/15" value={filters.stock} onChange={(event) => updateFilter('stock', event.target.value)}>
-            <option value="">Any stock</option>
-            <option value="true">In stock</option>
-            <option value="false">Out of stock</option>
-          </select>
-          <select className="min-w-0 rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-slate-950 outline-none focus:border-teal-700 focus:ring-4 focus:ring-teal-700/15" value={filters.featured} onChange={(event) => updateFilter('featured', event.target.value)}>
-            <option value="">Any featured</option>
-            <option value="true">Featured only</option>
-            <option value="false">Not featured</option>
-          </select>
+      <section className="mb-7 rounded-lg bg-slate-950 p-6 text-white shadow-[0_22px_70px_rgba(15,23,42,0.16)] sm:p-8">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="mb-3 text-xs font-black uppercase tracking-[0.22em] text-[#D4AF37]">Storefront</p>
+            <h1 className="text-4xl font-black leading-tight sm:text-5xl">Watches</h1>
+            <p className="mt-3 max-w-2xl text-slate-300">Filter curated luxury watches by house, collection, price, stock, and popularity.</p>
+          </div>
+          <Link className="inline-flex min-h-11 w-fit items-center justify-center rounded-lg border border-white/15 bg-white/10 px-4 font-extrabold text-white no-underline backdrop-blur transition hover:bg-white hover:text-slate-950" to="/">
+            Back home
+          </Link>
         </div>
       </section>
 
-      {error && <div className="mb-5 rounded-lg border border-red-200 bg-red-50 px-3.5 py-3 font-bold text-red-800">{error}</div>}
-      {isLoading ? (
-        <div className="rounded-lg border border-emerald-100 bg-emerald-50 px-3.5 py-3 font-bold text-emerald-950">Loading watches...</div>
-      ) : (
-        <>
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {watches.map((watch) => (
-              <WatchCard key={getId(watch)} watch={watch} />
-            ))}
+      <section className="mb-7 grid gap-5 lg:grid-cols-[280px_minmax(0,1fr)]">
+        <aside className="h-fit rounded-lg border border-slate-200 bg-white p-5 shadow-sm lg:sticky lg:top-24">
+          <div className="mb-4 flex items-center gap-2">
+            <Filter className="h-5 w-5 text-[#8f6f10]" />
+            <h2 className="text-lg font-black text-slate-950">Filters</h2>
           </div>
-          {watches.length === 0 && <div className="rounded-lg border border-slate-200 bg-white px-4 py-5 font-bold text-slate-600">No watches match these filters.</div>}
-          <Pagination pagination={pagination} updateFilter={updateFilter} />
-        </>
-      )}
+          <div className="grid gap-3">
+            <label className="grid gap-2 text-xs font-black uppercase tracking-[0.16em] text-slate-500">
+              Search
+              <span className="flex items-center rounded-lg border border-slate-200 bg-white px-3 focus-within:border-[#D4AF37] focus-within:ring-4 focus-within:ring-[#D4AF37]/15">
+                <Search className="h-4 w-4 text-slate-400" />
+                <input className="min-w-0 flex-1 bg-transparent px-2 py-3 text-sm font-semibold text-slate-950 outline-none" placeholder="Search watches" value={filters.search} onChange={(event) => updateFilter('search', event.target.value)} />
+              </span>
+            </label>
+            <FilterSelect label="Category" value={filters.category} onChange={(value) => updateFilter('category', value)}>
+              <option value="">Any category</option>
+              {categories.map((category) => (
+                <option key={getId(category)} value={getCatalogValue(category)}>{getTitle(category)}</option>
+              ))}
+            </FilterSelect>
+            <FilterSelect label="Brand" value={filters.brand} onChange={(value) => updateFilter('brand', value)}>
+              <option value="">Any brand</option>
+              {brands.map((brand) => (
+                <option key={getId(brand)} value={getCatalogValue(brand)}>{getTitle(brand)}</option>
+              ))}
+            </FilterSelect>
+            <div className="grid grid-cols-2 gap-3">
+              <input className={fieldClass} min="0" placeholder="Min price" type="number" value={filters.minPrice} onChange={(event) => updateFilter('minPrice', event.target.value)} />
+              <input className={fieldClass} min="0" placeholder="Max price" type="number" value={filters.maxPrice} onChange={(event) => updateFilter('maxPrice', event.target.value)} />
+            </div>
+            <FilterSelect label="Stock" value={filters.stock} onChange={(value) => updateFilter('stock', value)}>
+              <option value="">Any stock</option>
+              <option value="true">In stock</option>
+              <option value="false">Out of stock</option>
+            </FilterSelect>
+            <FilterSelect label="Featured" value={filters.featured} onChange={(value) => updateFilter('featured', value)}>
+              <option value="">Any featured</option>
+              <option value="true">Featured only</option>
+              <option value="false">Not featured</option>
+            </FilterSelect>
+          </div>
+        </aside>
+
+        <section className="min-w-0">
+          <div className="mb-5 flex flex-col gap-3 rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-sm font-bold text-slate-500">{pagination.total || watches.length} watches found</p>
+              <h2 className="text-xl font-black text-slate-950">Collection Results</h2>
+            </div>
+            <label className="flex items-center gap-2 text-sm font-black uppercase tracking-[0.14em] text-slate-500">
+              <SlidersHorizontal className="h-4 w-4" />
+              Sort
+              <select className={fieldClass} value={filters.sort} onChange={(event) => updateFilter('sort', event.target.value)}>
+                {sortOptions.map((option) => (
+                  <option key={option.value} value={option.value}>{option.label}</option>
+                ))}
+              </select>
+            </label>
+          </div>
+
+          {error && <div className="mb-5 rounded-lg border border-red-200 bg-red-50 px-3.5 py-3 font-bold text-red-800">{error}</div>}
+          {isLoading ? (
+            <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+              {Array.from({ length: 6 }).map((_, index) => (
+                <div className="h-96 animate-pulse rounded-lg border border-slate-200 bg-white" key={index} />
+              ))}
+            </div>
+          ) : (
+            <>
+              <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                {watches.map((watch) => (
+                  <WatchCard key={getId(watch)} watch={watch} />
+                ))}
+              </div>
+              {watches.length === 0 && <div className="rounded-lg border border-dashed border-slate-300 bg-white px-4 py-10 text-center font-bold text-slate-600">No watches match these filters.</div>}
+              <Pagination pagination={pagination} updateFilter={updateFilter} />
+            </>
+          )}
+        </section>
+      </section>
     </main>
   )
 }
 
+const FilterSelect = ({ children, label, onChange, value }) => (
+  <label className="grid gap-2 text-xs font-black uppercase tracking-[0.16em] text-slate-500">
+    {label}
+    <select className={fieldClass} value={value} onChange={(event) => onChange(event.target.value)}>
+      {children}
+    </select>
+  </label>
+)
+
 const Pagination = ({ pagination, updateFilter }) => (
-  <div className="mt-6 flex flex-col gap-3 rounded-lg border border-slate-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
+  <div className="mt-6 flex flex-col gap-3 rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
     <p className="font-bold text-slate-700">
       Page {pagination.page} of {pagination.pages} · {pagination.total} watches
     </p>
     <div className="flex gap-2">
-      <button className="inline-flex min-h-10 cursor-pointer items-center justify-center rounded-lg border border-slate-300 bg-white px-4 font-extrabold text-slate-950 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50" disabled={!pagination.hasPrevPage} type="button" onClick={() => updateFilter('page', String(Math.max(1, pagination.page - 1)))}>
+      <button className="inline-flex min-h-10 cursor-pointer items-center justify-center rounded-lg border border-slate-300 bg-white px-4 font-extrabold text-slate-950 transition hover:border-[#D4AF37] hover:text-[#8f6f10] disabled:cursor-not-allowed disabled:opacity-50" disabled={!pagination.hasPrevPage} type="button" onClick={() => updateFilter('page', String(Math.max(1, pagination.page - 1)))}>
         Previous
       </button>
-      <button className="inline-flex min-h-10 cursor-pointer items-center justify-center rounded-lg border border-slate-300 bg-white px-4 font-extrabold text-slate-950 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50" disabled={!pagination.hasNextPage} type="button" onClick={() => updateFilter('page', String(pagination.page + 1))}>
+      <button className="inline-flex min-h-10 cursor-pointer items-center justify-center rounded-lg bg-slate-950 px-4 font-extrabold text-white transition hover:bg-[#D4AF37] hover:text-slate-950 disabled:cursor-not-allowed disabled:opacity-50" disabled={!pagination.hasNextPage} type="button" onClick={() => updateFilter('page', String(pagination.page + 1))}>
         Next
       </button>
     </div>

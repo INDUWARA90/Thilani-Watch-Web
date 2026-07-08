@@ -1,12 +1,13 @@
 import { Link, NavLink, Navigate, Outlet, useLocation } from 'react-router'
+import { BarChart3, Boxes, ClipboardList, LayoutDashboard, MessageSquareText, Tags } from 'lucide-react'
 import { useAuth } from '../auth/useAuth'
 
 const adminLinks = [
-  { to: '/admin', label: 'Overview', end: true },
-  { to: '/admin/products', label: 'Products' },
-  { to: '/admin/catalog', label: 'Categories & Brands' },
-  { to: '/admin/orders', label: 'Orders' },
-  { to: '/admin/reviews', label: 'Reviews' },
+  { to: '/admin', label: 'Overview', end: true, icon: LayoutDashboard },
+  { to: '/admin/products', label: 'Products', icon: Boxes },
+  { to: '/admin/catalog', label: 'Categories & Brands', icon: Tags },
+  { to: '/admin/orders', label: 'Orders', icon: ClipboardList },
+  { to: '/admin/reviews', label: 'Reviews', icon: MessageSquareText },
 ]
 
 export const RequireAdmin = () => {
@@ -40,16 +41,26 @@ export const RequireAdmin = () => {
 
 export const AdminLayout = () => (
   <section className="grid items-start gap-6 lg:grid-cols-[260px_minmax(0,1fr)]">
-    <aside className="rounded-lg border border-slate-200 bg-white p-6 lg:sticky lg:top-5">
-      <p className="mb-3 text-sm font-extrabold uppercase tracking-normal text-teal-700">Admin</p>
-      <h1 className="mb-5 text-3xl font-bold leading-tight text-slate-950">Store Control</h1>
+    <aside className="rounded-lg border border-slate-200 bg-slate-950 p-6 text-white shadow-[0_24px_80px_rgba(15,23,42,0.16)] lg:sticky lg:top-24">
+      <div className="mb-5 flex items-center gap-3">
+        <span className="grid h-11 w-11 place-items-center rounded-lg bg-[#D4AF37] text-slate-950">
+          <BarChart3 className="h-5 w-5" />
+        </span>
+        <div>
+          <p className="text-xs font-black uppercase tracking-[0.22em] text-[#D4AF37]">Admin</p>
+          <h1 className="text-2xl font-black leading-tight">Store Control</h1>
+        </div>
+      </div>
       <nav className="grid gap-2 sm:grid-cols-2 lg:grid-cols-1" aria-label="Admin navigation">
-        {adminLinks.map((link) => (
+        {adminLinks.map((link) => {
+          const Icon = link.icon
+
+          return (
           <NavLink
             className={({ isActive }) =>
               [
-                'rounded-lg px-3 py-2.5 font-bold text-slate-700 no-underline hover:bg-teal-50 hover:text-teal-700',
-                isActive && 'bg-teal-50 text-teal-700',
+                'inline-flex items-center gap-3 rounded-lg px-3 py-2.5 font-bold text-slate-300 no-underline transition hover:bg-white/10 hover:text-white',
+                isActive && 'bg-white text-slate-950 hover:bg-white hover:text-slate-950',
               ]
                 .filter(Boolean)
                 .join(' ')
@@ -58,9 +69,11 @@ export const AdminLayout = () => (
             key={link.to}
             to={link.to}
           >
+            <Icon className="h-4 w-4" />
             {link.label}
           </NavLink>
-        ))}
+          )
+        })}
       </nav>
     </aside>
 
