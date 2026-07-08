@@ -13,7 +13,7 @@ const app = express()
 // allowing cors communication
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    origin: process.env.CLIENT_URL || 'https://thilani-watch-web.vercel.app',
     credentials: true,
   }),
 )
