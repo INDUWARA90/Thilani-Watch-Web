@@ -25,7 +25,8 @@ export const WatchCard = ({ watch }) => {
     navigate('/login', { state: { from: { pathname: detailPath } } })
   }
 
-  const handleAddToCart = async () => {
+  const handleAddToCart = async (e) => {
+    e.preventDefault() // Prevents link triggering if nested awkwardly
     if (!isAuthenticated) {
       requireLogin()
       return
@@ -41,7 +42,8 @@ export const WatchCard = ({ watch }) => {
     }
   }
 
-  const handleWishlist = async () => {
+  const handleWishlist = async (e) => {
+    e.preventDefault()
     if (!isAuthenticated) {
       requireLogin()
       return
@@ -59,61 +61,118 @@ export const WatchCard = ({ watch }) => {
 
   return (
     <motion.article
-      className="group overflow-hidden rounded-lg border border-slate-200 bg-white shadow-[0_18px_50px_rgba(15,23,42,0.08)] transition hover:-translate-y-1 hover:border-[#D4AF37]/70 hover:shadow-[0_24px_70px_rgba(15,23,42,0.14)]"
-      initial={{ opacity: 0, y: 18 }}
+      className="group relative flex flex-col overflow-hidden rounded-2xl bg-white p-3 transition-all duration-300 hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)]"
+      initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-40px' }}
-      transition={{ duration: 0.35 }}
+      viewport={{ once: true, margin: '-20px' }}
+      transition={{ duration: 0.4, ease: 'easeOut' }}
     >
-      <div className="relative overflow-hidden bg-slate-100">
-        <Link className="block no-underline" to={detailPath}>
-        <img
-          alt={watch.name || 'Watch'}
-          className="aspect-[4/3] w-full object-cover transition duration-500 group-hover:scale-105"
-          loading="lazy"
-          src={image || imageFallback}
-        />
+      {/* Image Container */}
+      <div className="relative aspect-[1/1] overflow-hidden rounded-xl bg-slate-50">
+        <Link className="block h-full w-full" to={detailPath}>
+          <img
+            alt={watch.name || 'Watch'}
+            className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+            loading="lazy"
+            src={image || imageFallback}
+          />
         </Link>
-        <div className="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 text-[11px] font-black uppercase tracking-[0.16em] text-slate-950 shadow-sm backdrop-blur">
-          {isAvailable ? 'In stock' : 'Sold out'}
+
+        {/* Badges */}
+        <div className="absolute left-3 top-3 flex flex-col gap-1.5 pointer-events-none">
+          <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-semibold tracking-wider uppercase backdrop-blur-md shadow-sm ${
+            isAvailable 
+              ? 'bg-white/80 text-slate-900 border border-white/20' 
+              : 'bg-red-500/10 text-red-600 border border-red-500/20'
+          }`}>
+            {isAvailable ? 'In stock' : 'Sold out'}
+          </span>
         </div>
+
+        {/* Wishlist Button */}
         <button
-          className="absolute right-3 top-3 inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-white/80 bg-white/90 text-slate-950 shadow-sm backdrop-blur transition hover:border-[#D4AF37] hover:text-[#8f6f10] disabled:cursor-not-allowed disabled:opacity-60"
+          className="absolute right-3 top-3 z-10 inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-white/40 bg-white/70 backdrop-blur-md text-slate-900 shadow-sm transition-all duration-300 hover:scale-105 hover:bg-white active:scale-95 disabled:opacity-50"
           disabled={isBusy}
           type="button"
           aria-label={isWishlisted(watchId) ? 'Remove from wishlist' : 'Save to wishlist'}
           onClick={handleWishlist}
         >
-          <Heart className={`h-5 w-5 ${isWishlisted(watchId) ? 'fill-[#D4AF37] text-[#8f6f10]' : ''}`} />
+          <Heart className={`h-4 w-4 transition-colors ${isWishlisted(watchId) ? 'fill-amber-500 text-amber-500' : 'text-slate-700 group-hover/btn:text-slate-900'}`} />
         </button>
-      </div>
-      <div className="p-4">
-        <div className="mb-2 flex flex-wrap items-center gap-2 text-[11px] font-black uppercase tracking-[0.16em] text-[#8f6f10]">
-          <span>{getTitle(watch.brand, 'Brand')}</span>
-          <span className="text-slate-300">/</span>
-          <span>{getTitle(watch.category, 'Category')}</span>
+
+        {/* Desktop Quick-Action Hover Overlay */}
+        <div className="absolute inset-0 hidden items-end justify-center bg-gradient-to-t from-slate-950/40 via-transparent to-transparent p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100 md:flex">
+          <div className="flex w-full gap-2 transform translate-y-2 transition-transform duration-300 group-hover:translate-y-0">
+            <button 
+              className="flex-1 inline-flex h-10 cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-white text-xs font-bold text-slate-950 shadow-md transition hover:bg-amber-500 hover:text-slate-950 disabled:opacity-50" 
+              disabled={!isAvailable || isBusy} 
+              type="button" 
+              onClick={handleAddToCart}
+            >
+              {isBusy ? <ButtonSpinner /> : <ShoppingBag className="h-3.5 w-3.5" />} 
+              {isBusy ? 'Adding...' : 'Add to Cart'}
+            </button>
+            <Link 
+              className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-white/20 backdrop-blur-md text-white border border-white/20 transition hover:bg-white hover:text-slate-950" 
+              to={detailPath}
+              title="Quick view"
+            >
+              <Eye className="h-4 w-4" />
+            </Link>
+          </div>
         </div>
-        <h3 className="mb-2 text-lg font-black leading-snug text-slate-950">
-          <Link className="text-slate-950 no-underline hover:text-[#8f6f10]" to={detailPath}>
+      </div>
+
+      {/* Product Content Details */}
+      <div className="flex flex-1 flex-col p-2 pt-4">
+        <div className="mb-1 flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-slate-400">
+          <span>{getTitle(watch.brand, 'Brand')}</span>
+          <span className="inline-flex items-center gap-0.5 font-semibold text-amber-600">
+            <Star className="h-3 w-3 fill-amber-500 text-amber-500" /> 
+            {watch.ratingAverage ? Number(watch.ratingAverage).toFixed(1) : 'New'}
+          </span>
+        </div>
+
+        <h3 className="mb-1 text-base font-semibold tracking-tight text-slate-900 line-clamp-1">
+          <Link className="text-slate-900 no-underline transition-colors hover:text-amber-600" to={detailPath}>
             {watch.name || 'Untitled watch'}
           </Link>
         </h3>
-        <p className="mb-4 line-clamp-2 text-sm text-slate-600">{watch.shortDescription || watch.description || 'A refined watch ready for your collection.'}</p>
-        <div className="flex items-center justify-between gap-3">
-          <strong className="text-lg text-slate-950">{formatMoney(watch.price, watch.currency)}</strong>
-          <span className="inline-flex items-center gap-1 rounded-full bg-[#D4AF37]/15 px-2.5 py-1 text-xs font-extrabold text-[#8f6f10]">
-            <Star className="h-3.5 w-3.5 fill-[#D4AF37]" /> {watch.ratingAverage ? Number(watch.ratingAverage).toFixed(1) : 'New'}
+        
+        <p className="mb-3 line-clamp-1 text-xs text-slate-400">
+          {watch.shortDescription || watch.description || 'A refined minimalist timepiece.'}
+        </p>
+
+        <div className="mt-auto flex items-center justify-between border-t border-slate-50 pt-3">
+          <span className="text-base font-bold text-slate-900">
+            {formatMoney(watch.price, watch.currency)}
           </span>
         </div>
-        <div className="mt-4 grid gap-2 sm:grid-cols-2">
-          <button className="inline-flex min-h-10 cursor-pointer items-center justify-center gap-2 rounded-lg bg-slate-950 px-3 text-sm font-extrabold text-white transition hover:bg-[#D4AF37] hover:text-slate-950 disabled:cursor-not-allowed disabled:opacity-60" disabled={!isAvailable || isBusy} type="button" onClick={handleAddToCart}>
-            {isBusy ? <ButtonSpinner /> : <ShoppingBag className="h-4 w-4" />} {isBusy ? 'Adding' : 'Add'}
+
+        {/* Mobile-Only Action Row */}
+        <div className="mt-3 grid gap-2 grid-cols-2 md:hidden">
+          <button 
+            className="inline-flex min-h-9 cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-slate-950 text-xs font-bold text-white transition disabled:opacity-50" 
+            disabled={!isAvailable || isBusy} 
+            type="button" 
+            onClick={handleAddToCart}
+          >
+            {isBusy ? <ButtonSpinner /> : <ShoppingBag className="h-3.5 w-3.5" />} Add
           </button>
-          <Link className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-sm font-extrabold text-slate-950 no-underline transition hover:border-[#D4AF37] hover:text-[#8f6f10]" to={detailPath}>
-            <Eye className="h-4 w-4" /> Quick view
+          <Link 
+            className="inline-flex min-h-9 items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-white text-xs font-bold text-slate-900 no-underline" 
+            to={detailPath}
+          >
+            <Eye className="h-3.5 w-3.5" /> View
           </Link>
         </div>
-        {(message || error) && <p className={`mt-3 text-sm font-bold ${error ? 'text-red-700' : 'text-emerald-700'}`}>{error || message}</p>}
+
+        {/* Dynamic Status Feedback */}
+        {(message || error) && (
+          <p className={`mt-2 text-center text-[11px] font-medium ${error ? 'text-red-500' : 'text-emerald-600'}`}>
+            {error || message}
+          </p>
+        )}
       </div>
     </motion.article>
   )

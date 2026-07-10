@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { Heart, ShoppingBag, Star } from 'lucide-react'
+import { ArrowLeft, Heart, ShoppingBag, Star } from 'lucide-react'
 import { Link, useNavigate, useParams } from 'react-router'
 import { ButtonSpinner, LoadingState } from '@/shared/ui/LoadingState'
 import { getApiErrorMessage } from '@/shared/api/apiClient'
@@ -84,8 +84,11 @@ export const WatchDetailPage = () => {
 
   if (error || !watch) {
     return (
-      <div className="rounded-lg border border-red-200 bg-red-50 px-3.5 py-3 font-bold text-red-800">
-        {error || 'Watch not found.'} <Link className="text-red-900 underline" to="/watches">Back to watches</Link>
+      <div className="max-w-xl mx-auto mt-12 rounded-xl border border-red-200 bg-red-50/50 p-4 font-semibold text-red-800 backdrop-blur-sm text-center">
+        {error || 'Watch not found.'}{' '}
+        <Link className="text-red-900 underline ml-1 hover:text-red-950" to="/watches">
+          Back to watches
+        </Link>
       </div>
     )
   }
@@ -146,77 +149,149 @@ export const WatchDetailPage = () => {
   }
 
   return (
-    <main>
-      <Link className="mb-5 inline-flex rounded-lg border border-slate-200 bg-white px-4 py-2 font-extrabold text-slate-700 no-underline shadow-sm transition hover:border-[#D4AF37] hover:text-[#8f6f10]" to="/watches">
-        Back to watches
+    <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      {/* Back Navigation Button */}
+      <Link 
+        className="group mb-8 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500 transition-colors hover:text-slate-900" 
+        to="/watches"
+      >
+        <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+        Back to collection
       </Link>
-      <section className="grid gap-8 rounded-lg border border-slate-200 bg-white p-5 shadow-[0_24px_80px_rgba(15,23,42,0.10)] lg:grid-cols-[minmax(0,1fr)_440px] lg:p-7">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
-          <div className="overflow-hidden rounded-lg bg-slate-100">
-            <img className="aspect-[4/3] w-full object-cover transition duration-500 hover:scale-105" src={selectedImage || '/favicon.svg'} alt={watch.name} />
+
+      <section className="grid gap-12 lg:grid-cols-2 lg:items-start">
+        {/* Media Column Gallery */}
+        <motion.div 
+          initial={{ opacity: 0, x: -15 }} 
+          animate={{ opacity: 1, x: 0 }} 
+          transition={{ duration: 0.5, ease: 'easeOut' }}
+          className="flex flex-col gap-4"
+        >
+          <div className="overflow-hidden rounded-2xl bg-slate-50 border border-slate-100">
+            <img 
+              className="aspect-square w-full object-cover transition-transform duration-700 hover:scale-102" 
+              src={selectedImage || '/favicon.svg'} 
+              alt={watch.name} 
+            />
           </div>
           {images.length > 1 && (
-            <div className="mt-3 grid grid-cols-5 gap-2">
+            <div className="flex flex-wrap gap-2.5">
               {images.map((image) => (
-                <button className={`overflow-hidden rounded-lg border bg-white p-0 transition ${selectedImage === image ? 'border-[#D4AF37] ring-4 ring-[#D4AF37]/15' : 'border-slate-200 hover:border-[#D4AF37]'}`} key={image} type="button" onClick={() => setSelectedImage(image)}>
-                  <img className="aspect-square w-full object-cover" src={image} alt={watch.name} />
+                <button 
+                  className={`relative h-16 w-16 cursor-pointer overflow-hidden rounded-xl border bg-white p-0 transition-all duration-200 ${
+                    selectedImage === image 
+                      ? 'border-amber-500 ring-2 ring-amber-500/20 scale-95' 
+                      : 'border-slate-200 hover:border-slate-400'
+                  }`} 
+                  key={image} 
+                  type="button" 
+                  onClick={() => setSelectedImage(image)}
+                >
+                  <img className="h-full w-full object-cover" src={image} alt={watch.name} />
                 </button>
               ))}
             </div>
           )}
         </motion.div>
 
-        <div className="lg:sticky lg:top-24 lg:self-start">
-          <p className="mb-3 text-xs font-black uppercase tracking-[0.22em] text-[#8f6f10]">
-            {getTitle(watch.brand, 'Brand')} / {getTitle(watch.category, 'Category')}
-          </p>
-          <h1 className="mb-3 text-4xl font-black leading-tight text-slate-950 sm:text-5xl">{watch.name}</h1>
-          <p className="mb-4 text-lg leading-8 text-slate-600">{watch.shortDescription || watch.description}</p>
-          <div className="mb-5 flex flex-wrap items-center gap-3">
-            <strong className="text-3xl text-slate-950">{formatMoney(watch.price, watch.currency)}</strong>
-            <span className={`rounded-full px-3 py-1 text-xs font-extrabold ${watch.inStock || watch.stockQuantity > 0 ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-600'}`}>
-              {watch.inStock || watch.stockQuantity > 0 ? `${watch.stockQuantity ?? 'Available'} in stock` : 'Out of stock'}
-            </span>
-            {watch.ratingAverage ? <span className="inline-flex items-center gap-1 rounded-full bg-[#D4AF37]/15 px-3 py-1 text-xs font-extrabold text-[#8f6f10]"><Star className="h-3.5 w-3.5 fill-[#D4AF37]" /> {Number(watch.ratingAverage).toFixed(1)} rating</span> : null}
-          </div>
-          {watch.description && <p className="mb-6 leading-7 text-slate-700">{watch.description}</p>}
+        {/* Product Meta Content Info Column */}
+        <div className="flex flex-col">
+          <span className="mb-2 text-[11px] font-bold uppercase tracking-widest text-amber-700">
+            {getTitle(watch.brand, 'Brand')} &middot; {getTitle(watch.category, 'Category')}
+          </span>
+          
+          <h1 className="mb-4 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+            {watch.name}
+          </h1>
 
-          <div className="mb-6 rounded-lg border border-slate-200 bg-slate-50 p-4 shadow-inner">
-            {(actionMessage || actionError) && <div className={`mb-4 rounded-lg border px-3.5 py-3 font-bold ${actionError ? 'border-red-200 bg-red-50 text-red-800' : 'border-emerald-100 bg-emerald-50 text-emerald-950'}`}>{actionError || actionMessage}</div>}
-            <div className="grid gap-3 sm:grid-cols-[120px_1fr_1fr]">
-              <label className="grid gap-2 text-sm font-extrabold text-slate-700">
-                Quantity
+          <div className="mb-6 flex flex-wrap items-center gap-4">
+            <span className="text-2xl font-bold text-slate-900">
+              {formatMoney(watch.price, watch.currency)}
+            </span>
+            <div className="h-4 w-px bg-slate-200" />
+            <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+              watch.inStock || watch.stockQuantity > 0 ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/50' : 'bg-slate-100 text-slate-600'
+            }`}>
+              {watch.inStock || watch.stockQuantity > 0 ? `${watch.stockQuantity ?? 'Available'} Available` : 'Out of Stock'}
+            </span>
+            {watch.ratingAverage && (
+              <span className="inline-flex items-center gap-1 text-sm font-semibold text-slate-700">
+                <Star className="h-4 w-4 fill-amber-500 text-amber-500" /> 
+                {Number(watch.ratingAverage).toFixed(1)} Rating
+              </span>
+            )}
+          </div>
+
+          <p className="mb-8 text-base leading-relaxed text-slate-500">
+            {watch.shortDescription || watch.description || 'A refined modern classic designed to elevate any collection.'}
+          </p>
+
+          {/* Actions Workspace Panel */}
+          <div className="mb-8 rounded-2xl border border-slate-100 bg-slate-50/50 p-5">
+            {/* Action Messaging */}
+            {(actionMessage || actionError) && (
+              <div className={`mb-4 rounded-xl border p-3 text-sm font-medium ${
+                actionError ? 'border-red-100 bg-red-50 text-red-800' : 'border-emerald-100 bg-emerald-50 text-emerald-800'
+              }`}>
+                {actionError || actionMessage}
+              </div>
+            )}
+            
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+              <label className="flex flex-col gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500 sm:w-28">
+                Qty
                 <input
-                  className="min-w-0 rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-slate-950 outline-none focus:border-[#D4AF37] focus:ring-4 focus:ring-[#D4AF37]/15"
+                  className="h-11 rounded-xl border border-slate-200 bg-white text-center font-bold text-slate-900 outline-none transition focus:border-amber-500 focus:ring-2 focus:ring-amber-500/15"
                   max={stockQuantity || undefined}
                   min="1"
                   type="number"
                   value={quantity}
-                  onChange={(event) => setQuantity(Number(event.target.value || 1))}
+                  onChange={(event) => setQuantity(Math.max(1, Number(event.target.value || 1)))}
                 />
               </label>
-              <button className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 self-end rounded-lg bg-slate-950 px-4 font-extrabold text-white transition hover:bg-[#D4AF37] hover:text-slate-950 disabled:cursor-not-allowed disabled:opacity-60" disabled={!isAvailable || isBusy} type="button" onClick={handleAddToCart}>
-                {isBusy ? <ButtonSpinner /> : <ShoppingBag className="h-4 w-4" />} {isBusy ? 'Adding' : 'Add to cart'}
+
+              <button 
+                className="flex-1 inline-flex h-11 cursor-pointer items-center justify-center gap-2 rounded-xl bg-slate-950 px-6 text-sm font-bold text-white transition-colors hover:bg-amber-600 disabled:opacity-40" 
+                disabled={!isAvailable || isBusy} 
+                type="button" 
+                onClick={handleAddToCart}
+              >
+                {isBusy ? <ButtonSpinner /> : <ShoppingBag className="h-4 w-4" />} 
+                {isBusy ? 'Adding to Cart...' : 'Add to Cart'}
               </button>
-              <button className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 self-end rounded-lg border border-slate-300 bg-white px-4 font-extrabold text-slate-950 transition hover:border-[#D4AF37] hover:text-[#8f6f10] disabled:cursor-not-allowed disabled:opacity-60" disabled={isBusy} type="button" onClick={handleWishlist}>
-                <Heart className={`h-4 w-4 ${isWishlisted(watchId) ? 'fill-[#D4AF37] text-[#8f6f10]' : ''}`} /> {isWishlisted(watchId) ? 'Saved' : 'Wishlist'}
+
+              <button 
+                className="inline-flex h-11 w-11 cursor-pointer items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 transition-colors hover:border-amber-500 hover:text-amber-600 disabled:opacity-40" 
+                disabled={isBusy} 
+                type="button" 
+                onClick={handleWishlist}
+              >
+                <Heart className={`h-4 w-4 transition-all ${isWishlisted(watchId) ? 'fill-amber-500 text-amber-500 scale-105' : ''}`} />
               </button>
             </div>
           </div>
 
-          <dl className="grid gap-3 sm:grid-cols-2">
-            {detailFields.map(([label, key]) => (
-              watch[key] ? (
-                <div className="rounded-lg border border-slate-200 bg-white p-3 shadow-sm" key={key}>
-                  <dt className="text-xs font-extrabold uppercase text-slate-500">{label}</dt>
-                  <dd className="mt-1 font-bold text-slate-950">{watch[key]}</dd>
-                </div>
-              ) : null
-            ))}
-          </dl>
+          {/* Specifications Definition Details List */}
+          <div className="border-t border-slate-100 pt-6">
+            <h2 className="mb-4 text-xs font-bold uppercase tracking-wider text-slate-900">Specifications</h2>
+            <dl className="grid gap-x-6 gap-y-3 sm:grid-cols-2">
+              {detailFields.map(([label, key]) => (
+                watch[key] ? (
+                  <div className="flex justify-between border-b border-slate-100/70 py-2 sm:flex-col sm:gap-0.5 sm:border-none" key={key}>
+                    <dt className="text-xs font-medium text-slate-400">{label}</dt>
+                    <dd className="text-xs font-semibold text-slate-800">{watch[key]}</dd>
+                  </div>
+                ) : null
+              ))}
+            </dl>
+          </div>
         </div>
       </section>
-      <ReviewSection onReviewsChanged={refreshWatchSummary} watchId={watchId} />
+
+      {/* Review Integration Section */}
+      <div className="mt-16 border-t border-slate-100 pt-12">
+        <ReviewSection onReviewsChanged={refreshWatchSummary} watchId={watchId} />
+      </div>
     </main>
   )
 }
