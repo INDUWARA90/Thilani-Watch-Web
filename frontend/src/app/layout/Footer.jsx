@@ -1,58 +1,41 @@
 import { Link } from 'react-router'
 
 export const Footer = () => (
-  <footer className="mt-20 border-t border-slate-100 bg-white pt-12 pb-16 text-xs text-slate-400">
-    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      
-      {/* Footer Main Ledger Grid */}
-      <div className="grid gap-10 md:grid-cols-[1.5fr_1fr_1fr] lg:gap-16">
-        
-        {/* Brand Column */}
-        <div className="flex flex-col gap-3">
-          <span className="text-sm font-bold tracking-tight text-slate-900">
-            Thilani Watch Web
-          </span>
-          <p className="max-w-sm leading-relaxed text-slate-400">
-            Curated horology houses, elegant procurement architecture, and a highly refined transactional ecosystem from discovery to delivery.
-          </p>
-        </div>
-
-        {/* Directory Columns */}
-        <div className="flex flex-col gap-4">
-          <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-slate-900">
-            Explore Registry
-          </span>
-          <nav className="flex flex-col gap-2.5">
-            <Link className="text-slate-400 no-underline transition-colors duration-200 hover:text-amber-700" to="/watches">
-              All Timepieces
-            </Link>
-            <Link className="text-slate-400 no-underline transition-colors duration-200 hover:text-amber-700" to="/cart">
-              Shopping Cart
-            </Link>
-            <Link className="text-slate-400 no-underline transition-colors duration-200 hover:text-amber-700" to="/wishlist">
-              Personal Vault
-            </Link>
-          </nav>
-        </div>
-
-        {/* Brand Commitment Column */}
-        <div className="flex flex-col gap-4">
-          <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-slate-900">
-            Client Concierge
-          </span>
-          <p className="leading-relaxed text-slate-400">
-            Bespoke watch presentations, end-to-end encrypted account profiles, and live fulfillment tracking for every acquisition.
-          </p>
-        </div>
-
+  <footer className="mt-20 bg-[#121212] px-4 py-12 text-white sm:px-6 lg:px-10">
+    <div className="mx-auto grid max-w-[1200px] gap-10 md:grid-cols-[1.5fr_1fr_1fr]">
+      <div>
+        <span className="text-xl font-extrabold text-white">Thilani Watch Web</span>
+        <p className="mt-4 max-w-sm text-sm leading-6 text-white/75">
+          A bright, modern storefront for premium watches, secure shopping, and clear order tracking from discovery to delivery.
+        </p>
       </div>
 
-      {/* Modern Horizontal Row Break & Copyright Base */}
-      <div className="mt-12 border-t border-slate-50 pt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between text-[11px] font-medium text-slate-400">
+      <div>
+        <span className="text-sm font-normal text-white/70">Explore</span>
+        <nav className="mt-4 grid gap-3">
+          <FooterLink to="/watches">All Watches</FooterLink>
+          <FooterLink to="/cart">Shopping Cart</FooterLink>
+          <FooterLink to="/wishlist">Wishlist</FooterLink>
+        </nav>
+      </div>
+
+      <div>
+        <span className="text-sm font-normal text-white/70">Customer Care</span>
+        <p className="mt-4 text-sm leading-6 text-white/75">
+          Authentic watch presentation, simple checkout, and account tools built for confident buying.
+        </p>
+      </div>
+
+      <div className="border-t border-white/15 pt-6 text-sm text-white/65 md:col-span-3 md:flex md:items-center md:justify-between">
         <p>&copy; {new Date().getFullYear()} Thilani Watch Web. All rights reserved.</p>
-        <p className="text-slate-300">Certified Authentic Luxury Storefront</p>
+        <p className="mt-3 md:mt-0">Premium Watch Storefront</p>
       </div>
-
     </div>
   </footer>
+)
+
+const FooterLink = ({ children, to }) => (
+  <Link className="text-sm text-white no-underline transition hover:text-[#F49006]" to={to}>
+    {children}
+  </Link>
 )

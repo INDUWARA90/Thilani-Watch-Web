@@ -16,7 +16,7 @@ const sortOptions = [
   { label: 'Popularity', value: 'popularity' },
 ]
 
-const fieldClass = 'min-w-0 rounded-lg border border-slate-200 bg-white px-3 py-3 text-sm font-semibold text-slate-950 outline-none transition focus:border-[#D4AF37] focus:ring-4 focus:ring-[#D4AF37]/15'
+const fieldClass = 'min-h-[45px] min-w-0 border border-[#DEE2E6] bg-white px-[15px] py-3 text-base font-normal text-[#121212] outline-none transition focus:border-[#0D6EFD] focus:ring-2 focus:ring-[#0D6EFD]/25'
 
 export const WatchListingPage = () => {
   usePageTitle('Shop Watches | Thilani Watch Web')
@@ -111,32 +111,35 @@ export const WatchListingPage = () => {
   }
 
   return (
-    <main>
-      <section className="mb-7 rounded-lg bg-slate-950 p-6 text-white shadow-[0_22px_70px_rgba(15,23,42,0.16)] sm:p-8">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+    <main className="-mx-4 -mt-8 bg-white sm:-mx-6 lg:-mx-8">
+      <section className="relative overflow-hidden bg-[linear-gradient(135deg,#F49006_0%,#EB960E_100%)] px-4 pb-28 pt-16 text-white sm:px-6 sm:pt-20 lg:px-10">
+        <div className="mx-auto flex max-w-[1200px] flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="mb-3 text-xs font-black uppercase tracking-[0.22em] text-[#D4AF37]">Storefront</p>
-            <h1 className="text-4xl font-black leading-tight sm:text-5xl">Watches</h1>
-            <p className="mt-3 max-w-2xl text-slate-300">Filter curated luxury watches by house, collection, price, stock, and popularity.</p>
+            <p className="mb-4 inline-flex min-h-11 items-center rounded-[14px] border border-white bg-white/20 px-5 text-sm font-normal text-white">Storefront</p>
+            <h1 className="text-[44px] font-extrabold leading-[1.1] text-white sm:text-[56px] lg:text-[65px] lg:leading-[71px]">Watches</h1>
+            <p className="mt-4 max-w-2xl text-base leading-7 text-white sm:text-lg lg:text-[22px] lg:leading-[31px]">Filter curated watches by house, collection, price, stock, and popularity.</p>
           </div>
-          <Link className="inline-flex min-h-11 w-fit items-center justify-center rounded-lg border border-white/15 bg-white/10 px-4 font-extrabold text-white no-underline backdrop-blur transition hover:bg-white hover:text-slate-950" to="/">
+          <Link className="inline-flex min-h-11 w-fit items-center justify-center rounded-[14px] bg-[#121212] px-8 text-sm font-normal text-white no-underline transition hover:bg-[#272222]" to="/">
             Back home
           </Link>
         </div>
+        <svg className="absolute bottom-[-1px] left-0 h-20 w-full text-white" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
+          <path fill="currentColor" d="M0 70L60 62.7C120 55 240 41 360 49.3C480 58 600 88 720 92.7C840 98 960 77 1080 63.3C1200 50 1320 44 1380 41.3L1440 39V120H0V70Z" />
+        </svg>
       </section>
 
-      <section className="mb-7 grid gap-5 lg:grid-cols-[280px_minmax(0,1fr)]">
-        <aside className="h-fit rounded-lg border border-slate-200 bg-white p-5 shadow-sm lg:sticky lg:top-24">
+      <section className="mx-auto grid max-w-[1200px] gap-5 px-4 py-12 sm:px-6 lg:grid-cols-[280px_minmax(0,1fr)] lg:px-10">
+        <aside className="h-fit border border-[#DEE2E6] bg-white p-5 shadow-[13px_14px_12.6px_0_rgba(0,0,0,0.05)] lg:sticky lg:top-28">
           <div className="mb-4 flex items-center gap-2">
-            <Filter className="h-5 w-5 text-[#8f6f10]" />
-            <h2 className="text-lg font-black text-slate-950">Filters</h2>
+            <Filter className="h-5 w-5 text-[#F49006]" />
+            <h2 className="text-lg font-bold text-[#121212]">Filters</h2>
           </div>
           <div className="grid gap-3">
-            <label className="grid gap-2 text-xs font-black uppercase tracking-[0.16em] text-slate-500">
+            <label className="grid gap-2 text-base font-normal text-[#121212]">
               Search
-              <span className="flex items-center rounded-lg border border-slate-200 bg-white px-3 focus-within:border-[#D4AF37] focus-within:ring-4 focus-within:ring-[#D4AF37]/15">
-                <Search className="h-4 w-4 text-slate-400" />
-                <input className="min-w-0 flex-1 bg-transparent px-2 py-3 text-sm font-semibold text-slate-950 outline-none" placeholder="Search watches" value={filters.search} onChange={(event) => updateFilter('search', event.target.value)} />
+              <span className="flex items-center border border-[#DEE2E6] bg-white px-[15px] focus-within:border-[#0D6EFD] focus-within:ring-2 focus-within:ring-[#0D6EFD]/25">
+                <Search className="h-4 w-4 text-[#6C757D]" />
+                <input className="min-h-[45px] min-w-0 flex-1 bg-transparent px-2 text-base font-normal text-[#121212] outline-none" placeholder="Search watches" value={filters.search} onChange={(event) => updateFilter('search', event.target.value)} />
               </span>
             </label>
             <FilterSelect label="Category" value={filters.category} onChange={(value) => updateFilter('category', value)}>
@@ -169,12 +172,12 @@ export const WatchListingPage = () => {
         </aside>
 
         <section className="min-w-0">
-          <div className="mb-5 flex flex-col gap-3 rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+          <div className="mb-5 flex flex-col gap-3 border border-[#DEE2E6] bg-white p-4 shadow-[13px_14px_12.6px_0_rgba(0,0,0,0.05)] sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-sm font-bold text-slate-500">{pagination.total || watches.length} watches found</p>
-              <h2 className="text-xl font-black text-slate-950">Collection Results</h2>
+              <p className="text-sm font-normal text-[#6C757D]">{pagination.total || watches.length} watches found</p>
+              <h2 className="text-xl font-bold text-[#121212]">Collection Results</h2>
             </div>
-            <label className="flex items-center gap-2 text-sm font-black uppercase tracking-[0.14em] text-slate-500">
+            <label className="flex items-center gap-2 text-sm font-normal text-[#121212]">
               <SlidersHorizontal className="h-4 w-4" />
               Sort
               <select className={fieldClass} value={filters.sort} onChange={(event) => updateFilter('sort', event.target.value)}>
@@ -185,7 +188,7 @@ export const WatchListingPage = () => {
             </label>
           </div>
 
-          {error && <div className="mb-5 rounded-lg border border-red-200 bg-red-50 px-3.5 py-3 font-bold text-red-800">{error}</div>}
+          {error && <div className="mb-5 border border-[#DC3545] bg-red-50 px-4 py-3 font-normal text-[#DC3545]">{error}</div>}
           {isLoading ? (
             <LoadingState label="Finding matching watches" variant="cards" rows={6} />
           ) : (
@@ -195,7 +198,7 @@ export const WatchListingPage = () => {
                   <WatchCard key={getId(watch)} watch={watch} />
                 ))}
               </div>
-              {watches.length === 0 && <div className="rounded-lg border border-dashed border-slate-300 bg-white px-4 py-10 text-center font-bold text-slate-600">No watches match these filters.</div>}
+              {watches.length === 0 && <div className="border border-dashed border-[#DEE2E6] bg-[#F8F9FA] px-4 py-10 text-center font-normal text-[#6C757D]">No watches match these filters.</div>}
               <Pagination pagination={pagination} updateFilter={updateFilter} />
             </>
           )}
@@ -206,7 +209,7 @@ export const WatchListingPage = () => {
 }
 
 const FilterSelect = ({ children, label, onChange, value }) => (
-  <label className="grid gap-2 text-xs font-black uppercase tracking-[0.16em] text-slate-500">
+  <label className="grid gap-2 text-base font-normal text-[#121212]">
     {label}
     <select className={fieldClass} value={value} onChange={(event) => onChange(event.target.value)}>
       {children}
@@ -215,15 +218,15 @@ const FilterSelect = ({ children, label, onChange, value }) => (
 )
 
 const Pagination = ({ pagination, updateFilter }) => (
-  <div className="mt-6 flex flex-col gap-3 rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
-    <p className="font-bold text-slate-700">
-      Page {pagination.page} of {pagination.pages} · {pagination.total} watches
+  <div className="mt-6 flex flex-col gap-3 border border-[#DEE2E6] bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
+    <p className="font-normal text-[#212529]">
+      Page {pagination.page} of {pagination.pages} - {pagination.total} watches
     </p>
     <div className="flex gap-2">
-      <button className="inline-flex min-h-10 cursor-pointer items-center justify-center rounded-lg border border-slate-300 bg-white px-4 font-extrabold text-slate-950 transition hover:border-[#D4AF37] hover:text-[#8f6f10] disabled:cursor-not-allowed disabled:opacity-50" disabled={!pagination.hasPrevPage} type="button" onClick={() => updateFilter('page', String(Math.max(1, pagination.page - 1)))}>
+      <button className="inline-flex min-h-11 cursor-pointer items-center justify-center rounded-[14px] border border-[#DEE2E6] bg-[rgba(18,18,18,0.04)] px-8 text-sm font-normal text-[#121212] transition hover:bg-[rgba(18,18,18,0.08)] disabled:cursor-not-allowed disabled:opacity-50" disabled={!pagination.hasPrevPage} type="button" onClick={() => updateFilter('page', String(Math.max(1, pagination.page - 1)))}>
         Previous
       </button>
-      <button className="inline-flex min-h-10 cursor-pointer items-center justify-center rounded-lg bg-slate-950 px-4 font-extrabold text-white transition hover:bg-[#D4AF37] hover:text-slate-950 disabled:cursor-not-allowed disabled:opacity-50" disabled={!pagination.hasNextPage} type="button" onClick={() => updateFilter('page', String(pagination.page + 1))}>
+      <button className="inline-flex min-h-11 cursor-pointer items-center justify-center rounded-[14px] bg-[#121212] px-8 text-sm font-normal text-white transition hover:bg-[#272222] disabled:cursor-not-allowed disabled:opacity-50" disabled={!pagination.hasNextPage} type="button" onClick={() => updateFilter('page', String(pagination.page + 1))}>
         Next
       </button>
     </div>

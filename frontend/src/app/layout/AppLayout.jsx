@@ -10,14 +10,14 @@ export const AppLayout = ({ children }) => {
 
   if (isAuthPage) {
     return (
-      <div className="grid min-h-screen bg-[#f8fafc] px-4 py-8 font-sans text-slate-950 sm:px-6 lg:px-8">
+      <div className="grid min-h-screen bg-[linear-gradient(135deg,#F49006_0%,#EB960E_100%)] px-4 py-8 text-[#121212] sm:px-6 lg:px-8">
         <div className="m-auto w-full">{children}</div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] font-sans text-slate-950">
+    <div className="min-h-screen bg-white text-[#121212]">
       <Header />
       <div className="mx-auto min-h-screen w-full max-w-[1280px] px-4 py-8 sm:px-6 lg:px-8">
         <div className="pb-14">{children}</div>

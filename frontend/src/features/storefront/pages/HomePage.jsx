@@ -67,8 +67,8 @@ export const HomePage = () => {
   }
 
   return (
-    <main className="space-y-10">
-      {error && <div className="mb-5 rounded-lg border border-red-200 bg-red-50 px-3.5 py-3 font-bold text-red-800">{error}</div>}
+    <main>
+      {error && <div className="mb-5 border border-[#DC3545] bg-red-50 px-4 py-3 font-normal text-[#DC3545]">{error}</div>}
 
       <HomeSlider />
       <BrandBar brands={state.brands} />

@@ -61,14 +61,14 @@ export const WatchCard = ({ watch }) => {
 
   return (
     <motion.article
-      className="group relative flex flex-col overflow-hidden rounded-2xl bg-white p-3 transition-all duration-300 hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)]"
+      className="group relative flex flex-col overflow-hidden rounded-[20px] border border-[#DEE2E6] bg-white p-3 shadow-[13px_14px_12.6px_0_rgba(0,0,0,0.05)] transition hover:shadow-[16px_18px_16px_0_rgba(0,0,0,0.1)]"
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-20px' }}
       transition={{ duration: 0.4, ease: 'easeOut' }}
     >
       {/* Image Container */}
-      <div className="relative aspect-[1/1] overflow-hidden rounded-xl bg-slate-50">
+      <div className="relative aspect-[1/1] overflow-hidden rounded-[20px] bg-[#F8F9FA]">
         <Link className="block h-full w-full" to={detailPath}>
           <img
             alt={watch.name || 'Watch'}
@@ -80,10 +80,10 @@ export const WatchCard = ({ watch }) => {
 
         {/* Badges */}
         <div className="absolute left-3 top-3 flex flex-col gap-1.5 pointer-events-none">
-          <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-semibold tracking-wider uppercase backdrop-blur-md shadow-sm ${
+          <span className={`rounded-full border px-3 py-1 text-xs font-normal backdrop-blur ${
             isAvailable 
-              ? 'bg-white/80 text-slate-900 border border-white/20' 
-              : 'bg-red-500/10 text-red-600 border border-red-500/20'
+              ? 'border-[#198754] bg-green-50 text-[#198754]' 
+              : 'border-[#DC3545] bg-red-50 text-[#DC3545]'
           }`}>
             {isAvailable ? 'In stock' : 'Sold out'}
           </span>
@@ -91,20 +91,20 @@ export const WatchCard = ({ watch }) => {
 
         {/* Wishlist Button */}
         <button
-          className="absolute right-3 top-3 z-10 inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-white/40 bg-white/70 backdrop-blur-md text-slate-900 shadow-sm transition-all duration-300 hover:scale-105 hover:bg-white active:scale-95 disabled:opacity-50"
+          className="absolute right-3 top-3 z-10 inline-flex h-11 w-11 cursor-pointer items-center justify-center rounded-full bg-white text-[#121212] transition hover:bg-[rgba(244,144,6,0.1)] hover:text-[#F49006] active:scale-95 disabled:opacity-50"
           disabled={isBusy}
           type="button"
           aria-label={isWishlisted(watchId) ? 'Remove from wishlist' : 'Save to wishlist'}
           onClick={handleWishlist}
         >
-          <Heart className={`h-4 w-4 transition-colors ${isWishlisted(watchId) ? 'fill-amber-500 text-amber-500' : 'text-slate-700 group-hover/btn:text-slate-900'}`} />
+          <Heart className={`h-4 w-4 transition-colors ${isWishlisted(watchId) ? 'fill-[#F49006] text-[#F49006]' : 'text-[#121212]'}`} />
         </button>
 
         {/* Desktop Quick-Action Hover Overlay */}
         <div className="absolute inset-0 hidden items-end justify-center bg-gradient-to-t from-slate-950/40 via-transparent to-transparent p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100 md:flex">
           <div className="flex w-full gap-2 transform translate-y-2 transition-transform duration-300 group-hover:translate-y-0">
             <button 
-              className="flex-1 inline-flex h-10 cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-white text-xs font-bold text-slate-950 shadow-md transition hover:bg-amber-500 hover:text-slate-950 disabled:opacity-50" 
+              className="inline-flex h-11 flex-1 cursor-pointer items-center justify-center gap-2 rounded-[14px] bg-[#121212] text-sm font-normal text-white transition hover:bg-[#272222] disabled:opacity-50" 
               disabled={!isAvailable || isBusy} 
               type="button" 
               onClick={handleAddToCart}
@@ -113,7 +113,7 @@ export const WatchCard = ({ watch }) => {
               {isBusy ? 'Adding...' : 'Add to Cart'}
             </button>
             <Link 
-              className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-white/20 backdrop-blur-md text-white border border-white/20 transition hover:bg-white hover:text-slate-950" 
+              className="inline-flex h-11 w-11 items-center justify-center rounded-[14px] border border-white bg-white/20 text-white backdrop-blur transition hover:bg-white hover:text-[#121212]" 
               to={detailPath}
               title="Quick view"
             >
@@ -125,26 +125,26 @@ export const WatchCard = ({ watch }) => {
 
       {/* Product Content Details */}
       <div className="flex flex-1 flex-col p-2 pt-4">
-        <div className="mb-1 flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-slate-400">
+        <div className="mb-1 flex items-center justify-between text-sm font-normal text-[#6C757D]">
           <span>{getTitle(watch.brand, 'Brand')}</span>
-          <span className="inline-flex items-center gap-0.5 font-semibold text-amber-600">
-            <Star className="h-3 w-3 fill-amber-500 text-amber-500" /> 
+          <span className="inline-flex items-center gap-1 text-[#F49006]">
+            <Star className="h-3 w-3 fill-[#F49006] text-[#F49006]" /> 
             {watch.ratingAverage ? Number(watch.ratingAverage).toFixed(1) : 'New'}
           </span>
         </div>
 
-        <h3 className="mb-1 text-base font-semibold tracking-tight text-slate-900 line-clamp-1">
-          <Link className="text-slate-900 no-underline transition-colors hover:text-amber-600" to={detailPath}>
+        <h3 className="mb-1 line-clamp-1 text-xl font-bold text-[#121212]">
+          <Link className="text-[#121212] no-underline transition-colors hover:text-[#F49006]" to={detailPath}>
             {watch.name || 'Untitled watch'}
           </Link>
         </h3>
         
-        <p className="mb-3 line-clamp-1 text-xs text-slate-400">
+        <p className="mb-3 line-clamp-1 text-sm text-[#6C757D]">
           {watch.shortDescription || watch.description || 'A refined minimalist timepiece.'}
         </p>
 
-        <div className="mt-auto flex items-center justify-between border-t border-slate-50 pt-3">
-          <span className="text-base font-bold text-slate-900">
+        <div className="mt-auto flex items-center justify-between border-t border-[#DEE2E6] pt-3">
+          <span className="text-xl font-bold text-[#121212]">
             {formatMoney(watch.price, watch.currency)}
           </span>
         </div>
@@ -152,7 +152,7 @@ export const WatchCard = ({ watch }) => {
         {/* Mobile-Only Action Row */}
         <div className="mt-3 grid gap-2 grid-cols-2 md:hidden">
           <button 
-            className="inline-flex min-h-9 cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-slate-950 text-xs font-bold text-white transition disabled:opacity-50" 
+            className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-[14px] bg-[#121212] text-sm font-normal text-white transition hover:bg-[#272222] disabled:opacity-50" 
             disabled={!isAvailable || isBusy} 
             type="button" 
             onClick={handleAddToCart}
@@ -160,7 +160,7 @@ export const WatchCard = ({ watch }) => {
             {isBusy ? <ButtonSpinner /> : <ShoppingBag className="h-3.5 w-3.5" />} Add
           </button>
           <Link 
-            className="inline-flex min-h-9 items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-white text-xs font-bold text-slate-900 no-underline" 
+            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-[14px] border border-[#DEE2E6] bg-[rgba(18,18,18,0.04)] text-sm font-normal text-[#121212] no-underline" 
             to={detailPath}
           >
             <Eye className="h-3.5 w-3.5" /> View

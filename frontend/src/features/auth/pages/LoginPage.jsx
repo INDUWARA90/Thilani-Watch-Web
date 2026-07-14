@@ -43,48 +43,48 @@ export const LoginPage = () => {
   }
 
   return (
-    <section className="mx-auto w-full max-w-[520px] rounded-lg border border-white/70 bg-white/90 p-6 shadow-[0_24px_80px_rgba(15,23,42,0.12)] backdrop-blur sm:p-8">
+    <section className="mx-auto w-full max-w-[520px] rounded-[20px] border border-white bg-white/20 p-6 text-white shadow-[13px_14px_12.6px_0_rgba(0,0,0,0.05)] backdrop-blur sm:p-8">
       <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-xs font-black uppercase tracking-[0.22em] text-[#8f6f10]">Welcome back</p>
+        <p className="text-sm font-normal text-white">Welcome back</p>
         <Link
-          className="inline-flex min-h-10 w-fit items-center justify-center rounded-lg border border-slate-200 bg-white px-3.5 text-sm font-extrabold text-slate-700 no-underline transition hover:border-[#D4AF37] hover:text-[#8f6f10]"
+          className="inline-flex min-h-11 w-fit items-center justify-center rounded-[14px] border border-white bg-white/20 px-8 text-sm font-normal text-white no-underline transition hover:bg-white hover:text-[#121212]"
           to="/"
         >
           Visit Store
         </Link>
       </div>
-      <h1 className="mb-4 text-4xl font-black leading-tight text-slate-950">Log in</h1>
-      <p className="mb-7 text-lg text-slate-600">Access your account, saved addresses, wishlist, and orders.</p>
+      <h1 className="mb-4 text-[44px] font-extrabold leading-tight text-white">Log in</h1>
+      <p className="mb-7 text-base leading-7 text-white">Access your account, saved addresses, wishlist, and orders.</p>
 
       <form className="grid gap-5" onSubmit={handleSubmit}>
-        {error && <div className="rounded-lg border border-red-200 bg-red-50 px-3.5 py-3 font-bold text-red-800">{error}</div>}
+        {error && <div className="border border-[#DC3545] bg-red-50 px-4 py-3 font-normal text-[#DC3545]">{error}</div>}
 
-        <label className="grid gap-2 text-sm font-extrabold text-slate-700">
+        <label className="grid gap-2 text-base font-normal text-white">
           Email
-          <span className="flex items-center rounded-lg border border-slate-300 bg-white px-3 focus-within:border-[#D4AF37] focus-within:ring-4 focus-within:ring-[#D4AF37]/15">
-            <Mail className="h-4 w-4 text-slate-400" />
-            <input className="min-w-0 flex-1 px-3 py-3 text-slate-950 outline-none" name="email" type="email" value={form.email} onChange={handleChange} required />
+          <span className="flex items-center border border-white bg-white px-[15px] focus-within:border-[#0D6EFD] focus-within:ring-2 focus-within:ring-[#0D6EFD]/25">
+            <Mail className="h-4 w-4 text-[#6C757D]" />
+            <input className="min-h-[45px] min-w-0 flex-1 px-3 text-[#121212] outline-none" name="email" type="email" value={form.email} onChange={handleChange} required />
           </span>
         </label>
 
-        <label className="grid gap-2 text-sm font-extrabold text-slate-700">
+        <label className="grid gap-2 text-base font-normal text-white">
           Password
-          <span className="flex items-center rounded-lg border border-slate-300 bg-white px-3 focus-within:border-[#D4AF37] focus-within:ring-4 focus-within:ring-[#D4AF37]/15">
-            <LockKeyhole className="h-4 w-4 text-slate-400" />
-            <input className="min-w-0 flex-1 px-3 py-3 text-slate-950 outline-none" name="password" type={showPassword ? 'text' : 'password'} value={form.password} onChange={handleChange} required />
-            <button className="cursor-pointer text-slate-400 hover:text-[#8f6f10]" type="button" aria-label="Toggle password visibility" onClick={() => setShowPassword((current) => !current)}>
+          <span className="flex items-center border border-white bg-white px-[15px] focus-within:border-[#0D6EFD] focus-within:ring-2 focus-within:ring-[#0D6EFD]/25">
+            <LockKeyhole className="h-4 w-4 text-[#6C757D]" />
+            <input className="min-h-[45px] min-w-0 flex-1 px-3 text-[#121212] outline-none" name="password" type={showPassword ? 'text' : 'password'} value={form.password} onChange={handleChange} required />
+            <button className="cursor-pointer text-[#6C757D] hover:text-[#F49006]" type="button" aria-label="Toggle password visibility" onClick={() => setShowPassword((current) => !current)}>
               <Eye className="h-4 w-4" />
             </button>
           </span>
         </label>
 
-        <button className="inline-flex min-h-11 w-fit cursor-pointer items-center justify-center gap-2 rounded-lg border border-transparent bg-slate-950 px-5 font-extrabold text-white transition hover:bg-[#D4AF37] hover:text-slate-950 disabled:cursor-not-allowed disabled:opacity-65" type="submit" disabled={isSubmitting}>
+        <button className="inline-flex min-h-11 w-fit cursor-pointer items-center justify-center gap-2 rounded-[14px] bg-[#121212] px-8 text-sm font-normal text-white transition hover:bg-[#272222] disabled:cursor-not-allowed disabled:opacity-65" type="submit" disabled={isSubmitting}>
           {isSubmitting && <ButtonSpinner />} {isSubmitting ? 'Logging in' : 'Log in'}
         </button>
       </form>
 
-      <p className="mt-5 text-slate-600">
-        New to Thilani Watch Web? <Link className="font-bold text-[#8f6f10] no-underline hover:underline" to="/register">Create an account</Link>
+      <p className="mt-5 text-white">
+        New to Thilani Watch Web? <Link className="font-bold text-white no-underline hover:text-[#121212]" to="/register">Create an account</Link>
       </p>
     </section>
   )

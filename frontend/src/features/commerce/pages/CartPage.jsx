@@ -45,55 +45,62 @@ export const CartPage = () => {
   }
 
   return (
-    <main>
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="mb-2 text-xs font-black uppercase tracking-[0.22em] text-[#8f6f10]">Shopping cart</p>
-          <h1 className="text-4xl font-black leading-tight text-slate-950">Your Cart</h1>
-        </div>
-        <Link className="inline-flex min-h-11 w-fit items-center justify-center rounded-lg border border-slate-200 bg-white px-4 font-extrabold text-slate-700 no-underline shadow-sm transition hover:border-[#D4AF37] hover:text-[#8f6f10]" to="/watches">
-          Continue shopping
-        </Link>
-      </div>
-
-      {(error || actionError) && <div className="mb-5 rounded-lg border border-red-200 bg-red-50 px-3.5 py-3 font-bold text-red-800">{actionError || error}</div>}
-      {message && <div className="mb-5 rounded-lg border border-emerald-100 bg-emerald-50 px-3.5 py-3 font-bold text-emerald-950">{message}</div>}
-
-      {isLoading ? (
-        <LoadingState label="Refreshing your cart" variant="form" />
-      ) : cart.items.length === 0 ? (
-        <section className="rounded-lg border border-dashed border-slate-300 bg-white p-8 text-center shadow-sm">
-          <ShoppingBag className="mx-auto mb-4 h-12 w-12 text-[#8f6f10]" />
-          <h2 className="mb-2 text-2xl font-black text-slate-950">Your cart is empty</h2>
-          <p className="mb-5 text-slate-600">Add a watch from the storefront to start checkout later.</p>
-          <Link className="inline-flex min-h-11 w-fit items-center justify-center rounded-lg bg-slate-950 px-4 font-extrabold text-white no-underline transition hover:bg-[#D4AF37] hover:text-slate-950" to="/watches">
-            Browse watches
-          </Link>
-        </section>
-      ) : (
-        <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
-          <div className="grid gap-3">
-            {cart.items.map((item) => (
-              <CartItem key={getCartItemWatchId(item)} item={item} onQuantityChange={handleQuantityChange} onRemove={handleRemove} />
-            ))}
+    <main className="-mx-4 -mt-8 bg-white sm:-mx-6 lg:-mx-8">
+      <section className="relative overflow-hidden bg-[linear-gradient(135deg,#F49006_0%,#EB960E_100%)] px-4 pb-28 pt-16 text-white sm:px-6 sm:pt-20 lg:px-10">
+        <div className="mx-auto flex max-w-[1200px] flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="mb-4 inline-flex min-h-11 items-center rounded-[14px] border border-white bg-white/20 px-5 text-sm font-normal text-white">Shopping cart</p>
+            <h1 className="text-[44px] font-extrabold leading-[1.1] text-white sm:text-[56px] lg:text-[65px] lg:leading-[71px]">Your Cart</h1>
           </div>
+          <Link className="inline-flex min-h-11 w-fit items-center justify-center rounded-[14px] bg-[#121212] px-8 text-sm font-normal text-white no-underline transition hover:bg-[#272222]" to="/watches">
+            Continue shopping
+          </Link>
+        </div>
+        <svg className="absolute bottom-[-1px] left-0 h-20 w-full text-white" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
+          <path fill="currentColor" d="M0 70L60 62.7C120 55 240 41 360 49.3C480 58 600 88 720 92.7C840 98 960 77 1080 63.3C1200 50 1320 44 1380 41.3L1440 39V120H0V70Z" />
+        </svg>
+      </section>
 
-          <aside className="h-fit rounded-lg border border-slate-200 bg-white p-5 shadow-[0_18px_60px_rgba(15,23,42,0.08)] lg:sticky lg:top-24">
-            <h2 className="mb-4 text-xl font-black text-slate-950">Summary</h2>
-            <div className="mb-5 flex items-center justify-between gap-3 text-lg">
-              <span className="font-bold text-slate-600">Subtotal</span>
-              <strong>{formatMoney(cart.subtotal, cart.currency || 'LKR')}</strong>
-            </div>
-            <Link className="mb-3 inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-slate-950 px-4 font-extrabold text-white no-underline transition hover:bg-[#D4AF37] hover:text-slate-950" to="/checkout">
-              Checkout
+      <section className="mx-auto max-w-[1200px] px-4 py-12 sm:px-6 lg:px-10">
+        {(error || actionError) && <div className="mb-5 border border-[#DC3545] bg-red-50 px-4 py-3 font-normal text-[#DC3545]">{actionError || error}</div>}
+        {message && <div className="mb-5 border border-[#198754] bg-green-50 px-4 py-3 font-normal text-[#198754]">{message}</div>}
+
+        {isLoading ? (
+          <LoadingState label="Refreshing your cart" variant="form" />
+        ) : cart.items.length === 0 ? (
+          <section className="border border-dashed border-[#DEE2E6] bg-[#F8F9FA] p-8 text-center">
+            <ShoppingBag className="mx-auto mb-4 h-12 w-12 text-[#F49006]" />
+            <h2 className="mb-2 text-2xl font-bold text-[#121212]">Your cart is empty</h2>
+            <p className="mb-5 text-[#212529]">Add a watch from the storefront to start checkout later.</p>
+            <Link className="inline-flex min-h-11 w-fit items-center justify-center rounded-[14px] bg-[#121212] px-8 text-sm font-normal text-white no-underline transition hover:bg-[#272222]" to="/watches">
+              Browse watches
             </Link>
-            <button className="mb-3 inline-flex min-h-11 w-full cursor-pointer items-center justify-center rounded-lg border border-red-200 bg-red-50 px-4 font-extrabold text-red-800 hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-65" type="button" onClick={handleClear}>
-              Clear cart
-            </button>
-            <p className="text-sm text-slate-500">Shipping is calculated during checkout.</p>
-          </aside>
-        </section>
-      )}
+          </section>
+        ) : (
+          <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
+            <div className="grid gap-4">
+              {cart.items.map((item) => (
+                <CartItem key={getCartItemWatchId(item)} item={item} onQuantityChange={handleQuantityChange} onRemove={handleRemove} />
+              ))}
+            </div>
+
+            <aside className="h-fit border border-[#DEE2E6] bg-white p-5 shadow-[13px_14px_12.6px_0_rgba(0,0,0,0.05)] lg:sticky lg:top-28">
+              <h2 className="mb-4 text-xl font-bold text-[#121212]">Summary</h2>
+              <div className="mb-5 flex items-center justify-between gap-3 text-lg">
+                <span className="font-normal text-[#6C757D]">Subtotal</span>
+                <strong className="text-[#121212]">{formatMoney(cart.subtotal, cart.currency || 'LKR')}</strong>
+              </div>
+              <Link className="mb-3 inline-flex min-h-11 w-full items-center justify-center rounded-[14px] bg-[#121212] px-8 text-sm font-normal text-white no-underline transition hover:bg-[#272222]" to="/checkout">
+                Checkout
+              </Link>
+              <button className="mb-3 inline-flex min-h-11 w-full cursor-pointer items-center justify-center rounded-[14px] border border-[#DC3545] bg-red-50 px-4 text-sm font-normal text-[#DC3545] hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-65" type="button" onClick={handleClear}>
+                Clear cart
+              </button>
+              <p className="text-sm text-[#6C757D]">Shipping is calculated during checkout.</p>
+            </aside>
+          </section>
+        )}
+      </section>
     </main>
   )
 }
@@ -103,25 +110,25 @@ const CartItem = ({ item, onQuantityChange, onRemove }) => {
   const stockQuantity = getStockQuantity(watch)
 
   return (
-    <article className="grid gap-4 rounded-lg border border-slate-200 bg-white p-4 shadow-sm transition hover:border-[#D4AF37]/70 hover:shadow-lg hover:shadow-slate-950/5 sm:grid-cols-[120px_minmax(0,1fr)_160px]">
+    <article className="grid gap-4 border border-[#DEE2E6] bg-white p-4 shadow-[13px_14px_12.6px_0_rgba(0,0,0,0.05)] transition hover:shadow-[16px_18px_16px_0_rgba(0,0,0,0.1)] sm:grid-cols-[120px_minmax(0,1fr)_170px]">
       <Link to={`/watches/${watch.slug || getCartItemWatchId(item)}`}>
-        <img className="aspect-square w-full rounded-lg bg-slate-100 object-cover" src={getWatchImage(watch) || '/favicon.svg'} alt={watch.name || 'Watch'} />
+        <img className="aspect-square w-full rounded-[20px] bg-[#F8F9FA] object-cover" src={getWatchImage(watch) || '/favicon.svg'} alt={watch.name || 'Watch'} />
       </Link>
       <div>
-        <p className="mb-1 text-xs font-black uppercase tracking-[0.18em] text-[#8f6f10]">{getTitle(watch.brand, 'Brand')}</p>
-        <h2 className="mb-2 text-xl font-black text-slate-950">
-          <Link className="text-slate-950 no-underline hover:text-[#8f6f10]" to={`/watches/${watch.slug || getCartItemWatchId(item)}`}>
+        <p className="mb-1 text-sm font-normal text-[#F49006]">{getTitle(watch.brand, 'Brand')}</p>
+        <h2 className="mb-2 text-xl font-bold text-[#121212]">
+          <Link className="text-[#121212] no-underline hover:text-[#F49006]" to={`/watches/${watch.slug || getCartItemWatchId(item)}`}>
             {watch.name || 'Untitled watch'}
           </Link>
         </h2>
-        <p className="text-sm text-slate-600">Price at time: {formatMoney(item.priceAtTime ?? watch.price, watch.currency)}</p>
-        <p className="text-sm text-slate-600">{stockQuantity > 0 ? `${stockQuantity} in stock` : 'Out of stock'}</p>
+        <p className="text-sm text-[#212529]">Price at time: {formatMoney(item.priceAtTime ?? watch.price, watch.currency)}</p>
+        <p className="text-sm text-[#212529]">{stockQuantity > 0 ? `${stockQuantity} in stock` : 'Out of stock'}</p>
       </div>
       <div className="grid content-start gap-3">
-        <label className="grid gap-2 text-sm font-extrabold text-slate-700">
+        <label className="grid gap-2 text-base font-normal text-[#121212]">
           Quantity
           <input
-            className="min-w-0 rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-slate-950 outline-none focus:border-[#D4AF37] focus:ring-4 focus:ring-[#D4AF37]/15"
+            className="min-h-[45px] min-w-0 border border-[#DEE2E6] bg-white px-[15px] text-[#121212] outline-none focus:border-[#0D6EFD] focus:ring-2 focus:ring-[#0D6EFD]/25"
             defaultValue={item.quantity || 1}
             max={stockQuantity || undefined}
             min="1"
@@ -129,7 +136,7 @@ const CartItem = ({ item, onQuantityChange, onRemove }) => {
             onBlur={(event) => onQuantityChange(item, event.target.value)}
           />
         </label>
-        <button className="inline-flex min-h-10 cursor-pointer items-center justify-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 font-extrabold text-red-800 hover:bg-red-100" type="button" onClick={() => onRemove(item)}>
+        <button className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-[14px] border border-[#DC3545] bg-red-50 px-4 text-sm font-normal text-[#DC3545] hover:bg-red-100" type="button" onClick={() => onRemove(item)}>
           <Trash2 className="h-4 w-4" /> Remove
         </button>
       </div>

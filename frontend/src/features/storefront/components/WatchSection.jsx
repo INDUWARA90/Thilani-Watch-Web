@@ -3,13 +3,13 @@ import { ArrowRight } from 'lucide-react'
 import { WatchCard } from './WatchCard'
 
 export const WatchSection = ({ emptyText = 'No watches found yet.', title, watches }) => (
-  <section className="py-10">
+  <section className="mx-auto max-w-[1200px] py-16">
     <div className="mb-5 flex items-end justify-between gap-4">
       <div>
-        <p className="mb-2 text-xs font-black uppercase tracking-[0.22em] text-[#8f6f10]">Curated edit</p>
-        <h2 className="text-2xl font-black text-slate-950 sm:text-3xl">{title}</h2>
+        <p className="mb-2 text-sm font-normal text-[#F49006]">Curated edit</p>
+        <h2 className="text-[34px] font-bold leading-tight text-[#121212] sm:text-[50px] sm:leading-[48px]">{title}</h2>
       </div>
-      <Link className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-extrabold text-slate-950 no-underline shadow-sm transition hover:border-[#D4AF37] hover:text-[#8f6f10]" to="/watches">
+      <Link className="inline-flex min-h-11 items-center gap-2 rounded-[14px] border border-[#DEE2E6] bg-[rgba(18,18,18,0.04)] px-8 text-sm font-normal text-[#121212] no-underline transition hover:border-[#A7A7A7] hover:bg-[rgba(18,18,18,0.08)]" to="/watches">
         View all <ArrowRight className="h-4 w-4" />
       </Link>
     </div>
@@ -20,7 +20,7 @@ export const WatchSection = ({ emptyText = 'No watches found yet.', title, watch
         ))}
       </div>
     ) : (
-      <div className="rounded-lg border border-dashed border-slate-300 bg-white px-5 py-8 text-center font-bold text-slate-600">{emptyText}</div>
+      <div className="border border-dashed border-[#DEE2E6] bg-[#F8F9FA] px-5 py-8 text-center font-normal text-[#6C757D]">{emptyText}</div>
     )}
   </section>
 )

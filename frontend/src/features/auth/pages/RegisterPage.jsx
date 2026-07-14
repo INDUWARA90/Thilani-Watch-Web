@@ -51,49 +51,51 @@ export const RegisterPage = () => {
   }
 
   return (
-    <section className="mx-auto w-full max-w-[760px] rounded-lg border border-white/70 bg-white/90 p-6 shadow-[0_24px_80px_rgba(15,23,42,0.12)] backdrop-blur sm:p-8">
-      <p className="mb-3 text-xs font-black uppercase tracking-[0.22em] text-[#8f6f10]">Create account</p>
-      <h1 className="mb-4 text-4xl font-black leading-tight text-slate-950">Register</h1>
-      <p className="mb-7 text-lg text-slate-600">Create a customer account with your contact details.</p>
+    <section className="mx-auto w-full max-w-[760px] rounded-[20px] border border-white bg-white/20 p-6 text-white shadow-[13px_14px_12.6px_0_rgba(0,0,0,0.05)] backdrop-blur sm:p-8">
+      <p className="mb-3 text-sm font-normal text-white">Create account</p>
+      <h1 className="mb-4 text-[44px] font-extrabold leading-tight text-white">Register</h1>
+      <p className="mb-7 text-base leading-7 text-white">Create a customer account with your contact details.</p>
 
       <form className="grid gap-5" onSubmit={handleSubmit}>
-        {error && <div className="rounded-lg border border-red-200 bg-red-50 px-3.5 py-3 font-bold text-red-800">{error}</div>}
+        {error && <div className="border border-[#DC3545] bg-red-50 px-4 py-3 font-normal text-[#DC3545]">{error}</div>}
 
         <div className="grid gap-4 md:grid-cols-2">
-          <label className="grid gap-2 text-sm font-extrabold text-slate-700">
+          <label className="grid gap-2 text-base font-normal text-white">
             Name
-            <input className="min-w-0 rounded-lg border border-slate-300 bg-white px-3 py-3 text-slate-950 outline-none focus:border-[#D4AF37] focus:ring-4 focus:ring-[#D4AF37]/15" name="name" value={form.name} onChange={handleChange} required />
+            <input className={authInputClass} name="name" value={form.name} onChange={handleChange} required />
           </label>
 
-          <label className="grid gap-2 text-sm font-extrabold text-slate-700">
+          <label className="grid gap-2 text-base font-normal text-white">
             Email
-            <input className="min-w-0 rounded-lg border border-slate-300 bg-white px-3 py-3 text-slate-950 outline-none focus:border-[#D4AF37] focus:ring-4 focus:ring-[#D4AF37]/15" name="email" type="email" value={form.email} onChange={handleChange} required />
+            <input className={authInputClass} name="email" type="email" value={form.email} onChange={handleChange} required />
           </label>
 
-          <label className="grid gap-2 text-sm font-extrabold text-slate-700">
+          <label className="grid gap-2 text-base font-normal text-white">
             Password
-            <span className="flex items-center rounded-lg border border-slate-300 bg-white px-3 focus-within:border-[#D4AF37] focus-within:ring-4 focus-within:ring-[#D4AF37]/15">
-              <input className="min-w-0 flex-1 py-3 text-slate-950 outline-none" name="password" type={showPassword ? 'text' : 'password'} value={form.password} minLength={6} onChange={handleChange} required />
-              <button className="cursor-pointer text-slate-400 hover:text-[#8f6f10]" type="button" aria-label="Toggle password visibility" onClick={() => setShowPassword((current) => !current)}>
+            <span className="flex items-center border border-white bg-white px-[15px] focus-within:border-[#0D6EFD] focus-within:ring-2 focus-within:ring-[#0D6EFD]/25">
+              <input className="min-h-[45px] min-w-0 flex-1 text-[#121212] outline-none" name="password" type={showPassword ? 'text' : 'password'} value={form.password} minLength={6} onChange={handleChange} required />
+              <button className="cursor-pointer text-[#6C757D] hover:text-[#F49006]" type="button" aria-label="Toggle password visibility" onClick={() => setShowPassword((current) => !current)}>
                 <Eye className="h-4 w-4" />
               </button>
             </span>
           </label>
 
-          <label className="grid gap-2 text-sm font-extrabold text-slate-700">
+          <label className="grid gap-2 text-base font-normal text-white">
             Phone
-            <input className="min-w-0 rounded-lg border border-slate-300 bg-white px-3 py-3 text-slate-950 outline-none focus:border-[#D4AF37] focus:ring-4 focus:ring-[#D4AF37]/15" name="phone" type="tel" value={form.phone} onChange={handleChange} />
+            <input className={authInputClass} name="phone" type="tel" value={form.phone} onChange={handleChange} />
           </label>
         </div>
 
-        <button className="inline-flex min-h-11 w-fit cursor-pointer items-center justify-center gap-2 rounded-lg border border-transparent bg-slate-950 px-5 font-extrabold text-white transition hover:bg-[#D4AF37] hover:text-slate-950 disabled:cursor-not-allowed disabled:opacity-65" type="submit" disabled={isSubmitting}>
+        <button className="inline-flex min-h-11 w-fit cursor-pointer items-center justify-center gap-2 rounded-[14px] bg-[#121212] px-8 text-sm font-normal text-white transition hover:bg-[#272222] disabled:cursor-not-allowed disabled:opacity-65" type="submit" disabled={isSubmitting}>
           {isSubmitting && <ButtonSpinner />} {isSubmitting ? 'Creating account' : 'Create account'}
         </button>
       </form>
 
-      <p className="mt-5 text-slate-600">
-        Already registered? <Link className="font-bold text-[#8f6f10] no-underline hover:underline" to="/login">Log in</Link>
+      <p className="mt-5 text-white">
+        Already registered? <Link className="font-bold text-white no-underline hover:text-[#121212]" to="/login">Log in</Link>
       </p>
     </section>
   )
 }
+
+const authInputClass = 'min-h-[45px] min-w-0 border border-white bg-white px-[15px] text-[#121212] outline-none focus:border-[#0D6EFD] focus:ring-2 focus:ring-[#0D6EFD]/25'

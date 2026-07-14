@@ -84,7 +84,7 @@ export const WatchDetailPage = () => {
 
   if (error || !watch) {
     return (
-      <div className="max-w-xl mx-auto mt-12 rounded-xl border border-red-200 bg-red-50/50 p-4 font-semibold text-red-800 backdrop-blur-sm text-center">
+      <div className="mx-auto mt-12 max-w-xl border border-[#DC3545] bg-red-50 p-4 text-center font-normal text-[#DC3545]">
         {error || 'Watch not found.'}{' '}
         <Link className="text-red-900 underline ml-1 hover:text-red-950" to="/watches">
           Back to watches
@@ -152,7 +152,7 @@ export const WatchDetailPage = () => {
     <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       {/* Back Navigation Button */}
       <Link 
-        className="group mb-8 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500 transition-colors hover:text-slate-900" 
+        className="group mb-8 inline-flex min-h-11 items-center gap-2 rounded-[14px] border border-[#DEE2E6] bg-[rgba(18,18,18,0.04)] px-8 text-sm font-normal text-[#121212] no-underline transition hover:bg-[rgba(18,18,18,0.08)]" 
         to="/watches"
       >
         <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
@@ -167,7 +167,7 @@ export const WatchDetailPage = () => {
           transition={{ duration: 0.5, ease: 'easeOut' }}
           className="flex flex-col gap-4"
         >
-          <div className="overflow-hidden rounded-2xl bg-slate-50 border border-slate-100">
+          <div className="overflow-hidden rounded-[20px] border border-[#DEE2E6] bg-[#F8F9FA] shadow-[13px_14px_12.6px_0_rgba(0,0,0,0.05)]">
             <img 
               className="aspect-square w-full object-cover transition-transform duration-700 hover:scale-102" 
               src={selectedImage || '/favicon.svg'} 
@@ -178,10 +178,10 @@ export const WatchDetailPage = () => {
             <div className="flex flex-wrap gap-2.5">
               {images.map((image) => (
                 <button 
-                  className={`relative h-16 w-16 cursor-pointer overflow-hidden rounded-xl border bg-white p-0 transition-all duration-200 ${
+                  className={`relative h-16 w-16 cursor-pointer overflow-hidden rounded-[14px] border bg-white p-0 transition-all duration-200 ${
                     selectedImage === image 
-                      ? 'border-amber-500 ring-2 ring-amber-500/20 scale-95' 
-                      : 'border-slate-200 hover:border-slate-400'
+                      ? 'scale-95 border-[#F49006] ring-2 ring-[#F49006]/20' 
+                      : 'border-[#DEE2E6] hover:border-[#A7A7A7]'
                   }`} 
                   key={image} 
                   type="button" 
@@ -196,52 +196,52 @@ export const WatchDetailPage = () => {
 
         {/* Product Meta Content Info Column */}
         <div className="flex flex-col">
-          <span className="mb-2 text-[11px] font-bold uppercase tracking-widest text-amber-700">
+          <span className="mb-2 text-sm font-normal text-[#F49006]">
             {getTitle(watch.brand, 'Brand')} &middot; {getTitle(watch.category, 'Category')}
           </span>
           
-          <h1 className="mb-4 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+          <h1 className="mb-4 text-[44px] font-extrabold leading-tight text-[#121212]">
             {watch.name}
           </h1>
 
           <div className="mb-6 flex flex-wrap items-center gap-4">
-            <span className="text-2xl font-bold text-slate-900">
+            <span className="text-2xl font-bold text-[#121212]">
               {formatMoney(watch.price, watch.currency)}
             </span>
-            <div className="h-4 w-px bg-slate-200" />
+            <div className="h-4 w-px bg-[#DEE2E6]" />
             <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-              watch.inStock || watch.stockQuantity > 0 ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/50' : 'bg-slate-100 text-slate-600'
+              watch.inStock || watch.stockQuantity > 0 ? 'border border-[#198754] bg-green-50 text-[#198754]' : 'border border-[#DEE2E6] bg-[#F8F9FA] text-[#6C757D]'
             }`}>
               {watch.inStock || watch.stockQuantity > 0 ? `${watch.stockQuantity ?? 'Available'} Available` : 'Out of Stock'}
             </span>
             {watch.ratingAverage && (
-              <span className="inline-flex items-center gap-1 text-sm font-semibold text-slate-700">
-                <Star className="h-4 w-4 fill-amber-500 text-amber-500" /> 
+              <span className="inline-flex items-center gap-1 text-sm font-normal text-[#121212]">
+                <Star className="h-4 w-4 fill-[#F49006] text-[#F49006]" /> 
                 {Number(watch.ratingAverage).toFixed(1)} Rating
               </span>
             )}
           </div>
 
-          <p className="mb-8 text-base leading-relaxed text-slate-500">
+          <p className="mb-8 text-base leading-7 text-[#212529]">
             {watch.shortDescription || watch.description || 'A refined modern classic designed to elevate any collection.'}
           </p>
 
           {/* Actions Workspace Panel */}
-          <div className="mb-8 rounded-2xl border border-slate-100 bg-slate-50/50 p-5">
+          <div className="mb-8 rounded-[20px] border border-[#DEE2E6] bg-[#F8F9FA] p-5">
             {/* Action Messaging */}
             {(actionMessage || actionError) && (
-              <div className={`mb-4 rounded-xl border p-3 text-sm font-medium ${
-                actionError ? 'border-red-100 bg-red-50 text-red-800' : 'border-emerald-100 bg-emerald-50 text-emerald-800'
+              <div className={`mb-4 border p-3 text-sm font-normal ${
+                actionError ? 'border-[#DC3545] bg-red-50 text-[#DC3545]' : 'border-[#198754] bg-green-50 text-[#198754]'
               }`}>
                 {actionError || actionMessage}
               </div>
             )}
             
             <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
-              <label className="flex flex-col gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500 sm:w-28">
+              <label className="flex flex-col gap-1.5 text-base font-normal text-[#121212] sm:w-28">
                 Qty
                 <input
-                  className="h-11 rounded-xl border border-slate-200 bg-white text-center font-bold text-slate-900 outline-none transition focus:border-amber-500 focus:ring-2 focus:ring-amber-500/15"
+                  className="h-11 border border-[#DEE2E6] bg-white text-center font-normal text-[#121212] outline-none transition focus:border-[#0D6EFD] focus:ring-2 focus:ring-[#0D6EFD]/25"
                   max={stockQuantity || undefined}
                   min="1"
                   type="number"
@@ -251,7 +251,7 @@ export const WatchDetailPage = () => {
               </label>
 
               <button 
-                className="flex-1 inline-flex h-11 cursor-pointer items-center justify-center gap-2 rounded-xl bg-slate-950 px-6 text-sm font-bold text-white transition-colors hover:bg-amber-600 disabled:opacity-40" 
+                className="inline-flex h-11 flex-1 cursor-pointer items-center justify-center gap-2 rounded-[14px] bg-[#121212] px-8 text-sm font-normal text-white transition hover:bg-[#272222] disabled:opacity-40" 
                 disabled={!isAvailable || isBusy} 
                 type="button" 
                 onClick={handleAddToCart}
@@ -261,25 +261,25 @@ export const WatchDetailPage = () => {
               </button>
 
               <button 
-                className="inline-flex h-11 w-11 cursor-pointer items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 transition-colors hover:border-amber-500 hover:text-amber-600 disabled:opacity-40" 
+                className="inline-flex h-11 w-11 cursor-pointer items-center justify-center rounded-[14px] border border-[#DEE2E6] bg-white text-[#121212] transition hover:bg-[rgba(244,144,6,0.1)] hover:text-[#F49006] disabled:opacity-40" 
                 disabled={isBusy} 
                 type="button" 
                 onClick={handleWishlist}
               >
-                <Heart className={`h-4 w-4 transition-all ${isWishlisted(watchId) ? 'fill-amber-500 text-amber-500 scale-105' : ''}`} />
+                <Heart className={`h-4 w-4 transition-all ${isWishlisted(watchId) ? 'scale-105 fill-[#F49006] text-[#F49006]' : ''}`} />
               </button>
             </div>
           </div>
 
           {/* Specifications Definition Details List */}
-          <div className="border-t border-slate-100 pt-6">
-            <h2 className="mb-4 text-xs font-bold uppercase tracking-wider text-slate-900">Specifications</h2>
+          <div className="border-t border-[#DEE2E6] pt-6">
+            <h2 className="mb-4 text-xl font-bold text-[#121212]">Specifications</h2>
             <dl className="grid gap-x-6 gap-y-3 sm:grid-cols-2">
               {detailFields.map(([label, key]) => (
                 watch[key] ? (
-                  <div className="flex justify-between border-b border-slate-100/70 py-2 sm:flex-col sm:gap-0.5 sm:border-none" key={key}>
-                    <dt className="text-xs font-medium text-slate-400">{label}</dt>
-                    <dd className="text-xs font-semibold text-slate-800">{watch[key]}</dd>
+                  <div className="flex justify-between border-b border-[#DEE2E6] py-2 sm:flex-col sm:gap-0.5 sm:border-none" key={key}>
+                    <dt className="text-sm font-normal text-[#6C757D]">{label}</dt>
+                    <dd className="text-sm font-bold text-[#121212]">{watch[key]}</dd>
                   </div>
                 ) : null
               ))}
@@ -289,7 +289,7 @@ export const WatchDetailPage = () => {
       </section>
 
       {/* Review Integration Section */}
-      <div className="mt-16 border-t border-slate-100 pt-12">
+      <div className="mt-16 border-t border-[#DEE2E6] pt-12">
         <ReviewSection onReviewsChanged={refreshWatchSummary} watchId={watchId} />
       </div>
     </main>

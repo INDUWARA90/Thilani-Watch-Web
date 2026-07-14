@@ -1,78 +1,32 @@
 import { ArrowRight } from 'lucide-react'
 import { Link } from 'react-router'
 
-export const DummyContent = ({ actionLabel, copy, eyebrow, title, to, variant = 'dark' }) => {
-  const isLight = variant === 'light'
-
-  return (
-    <section 
-      className={`relative overflow-hidden rounded-3xl p-8 sm:p-12 transition-all duration-300 ${
-        isLight 
-          ? 'border border-slate-100 bg-white text-slate-900 shadow-[0_20px_50px_rgba(0,0,0,0.04)]' 
-          : 'bg-slate-950 text-white shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)]'
-      }`}
-    >
-      {/* Structural Minimal Grid */}
-      <div className="grid gap-10 lg:grid-cols-[1fr_360px] lg:items-center">
-        
-        {/* Copy Column */}
-        <div className="flex flex-col">
-          <span className={`text-[10px] font-bold uppercase tracking-[0.25em] ${
-            isLight ? 'text-amber-700' : 'text-amber-500'
-          }`}>
-            {eyebrow}
-          </span>
-          
-          <h2 className="mt-3 mb-4 max-w-2xl text-3xl font-bold tracking-tight leading-tight sm:text-4xl">
-            {title}
-          </h2>
-          
-          <p className={`max-w-xl text-sm leading-relaxed ${
-            isLight ? 'text-slate-500' : 'text-slate-400'
-          }`}>
-            {copy}
-          </p>
-        </div>
-
-        {/* Dynamic Context Interactivity Card Block */}
-        <div 
-          className={`rounded-2xl p-6 backdrop-blur-sm border transition-all duration-300 ${
-            isLight 
-              ? 'bg-slate-50/70 border-slate-100' 
-              : 'bg-white/[0.03] border-white/[0.06] hover:border-white/10'
-          }`}
-        >
-          {/* Accent Badge Row */}
-          <div className="mb-6 flex flex-wrap gap-2">
-            {['Classic', 'Modern', 'Premium'].map((item) => (
-              <span 
-                key={item}
-                className={`flex-1 text-center rounded-xl py-3 text-[10px] font-bold uppercase tracking-wider transition-colors ${
-                  isLight 
-                    ? 'bg-white border border-slate-200/60 text-slate-700 shadow-sm' 
-                    : 'bg-white/[0.04] border border-white/[0.05] text-slate-300'
-                }`}
-              >
-                {item}
-              </span>
-            ))}
-          </div>
-
-          {/* Luxury Primary CTA Action Link */}
-          <Link 
-            className={`group inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl text-xs font-bold uppercase tracking-wider no-underline transition-all duration-300 transform active:scale-98 ${
-              isLight 
-                ? 'bg-slate-950 text-white hover:bg-amber-600' 
-                : 'bg-white text-slate-950 hover:bg-amber-500'
-            }`} 
-            to={to}
-          >
-            {actionLabel} 
-            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-          </Link>
-        </div>
-
+export const DummyContent = ({ actionLabel, copy, eyebrow, title, to }) => (
+  <section className="bg-[#F8F9FA] px-4 py-16 sm:px-6 lg:px-10">
+    <div className="mx-auto grid max-w-[1200px] gap-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-center">
+      <div>
+        <span className="text-sm font-normal text-[#F49006]">{eyebrow}</span>
+        <h2 className="mt-3 max-w-3xl text-[36px] font-bold leading-tight text-[#121212] sm:text-[50px] sm:leading-[48px]">
+          {title}
+        </h2>
+        <p className="mt-5 max-w-2xl text-base leading-7 text-[#212529] sm:text-lg">
+          {copy}
+        </p>
       </div>
-    </section>
-  )
-}
+
+      <div className="rounded-[20px] border border-white bg-white p-6 shadow-[13px_14px_12.6px_0_rgba(0,0,0,0.05)]">
+        <div className="mb-6 grid grid-cols-3 gap-3">
+          {['Classic', 'Modern', 'Premium'].map((item) => (
+            <span className="rounded-[14px] border border-[#DEE2E6] bg-[#F8F9FA] px-3 py-3 text-center text-sm font-normal text-[#121212]" key={item}>
+              {item}
+            </span>
+          ))}
+        </div>
+        <Link className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-[14px] bg-[#121212] px-8 text-sm font-normal text-white no-underline transition hover:bg-[#272222] active:scale-[0.98]" to={to}>
+          {actionLabel}
+          <ArrowRight className="h-4 w-4" />
+        </Link>
+      </div>
+    </div>
+  </section>
+)
