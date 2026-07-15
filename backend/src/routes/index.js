@@ -7,6 +7,9 @@ const wishlistRoutes = require('./wishlistRoutes')
 const orderRoutes = require('./orderRoutes')
 const categoryRoutes = require('./categoryRoutes')
 const brandRoutes = require('./brandRoutes')
+const couponRoutes = require('./couponRoutes')
+const adminDashboardRoutes = require('./adminDashboardRoutes')
+const userRoutes = require('./userRoutes')
 
 const router = express.Router()
 
@@ -19,5 +22,8 @@ router.use('/wishlist', wishlistRoutes)
 router.use('/orders', orderRoutes)
 router.use('/categories', categoryRoutes)
 router.use('/brands', brandRoutes)
+router.use('/coupons', couponRoutes)
+router.use('/admin/dashboard', adminDashboardRoutes)
+router.use('/admin', userRoutes)
 
 module.exports = router

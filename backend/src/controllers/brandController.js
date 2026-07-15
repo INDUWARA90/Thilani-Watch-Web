@@ -8,6 +8,15 @@ const getBrands = asyncHandler(async (req, res) => {
   res.json({ success: true, data: brands })
 })
 
+const getAdminBrands = asyncHandler(async (req, res) => {
+  const filter = {}
+  if (req.query.active === 'true') filter.isActive = true
+  if (req.query.active === 'false') filter.isActive = false
+
+  const brands = await Brand.find(filter).sort('sortOrder name')
+  res.json({ success: true, data: brands })
+})
+
 const createBrand = asyncHandler(async (req, res, next) => {
   const brand = await Brand.create(buildCatalogPayload(req.body))
   res.status(201).json({ success: true, data: brand })
@@ -23,10 +32,30 @@ const updateBrand = asyncHandler(async (req, res, next) => {
 })
 
 const deleteBrand = asyncHandler(async (req, res, next) => {
-  const brand = await Brand.findById(req.params.id)
+  const brand = await Brand.findByIdAndUpdate(
+    req.params.id,
+    { isActive: false },
+    { new: true, runValidators: true },
+  )
   if (!brand) return next(new ErrorResponse('Brand not found', 404))
-  await brand.deleteOne()
-  res.json({ success: true, message: 'Brand removed' })
+  res.json({ success: true, data: brand, message: 'Brand deactivated' })
 })
 
-module.exports = { getBrands, createBrand, updateBrand, deleteBrand }
+const restoreBrand = asyncHandler(async (req, res, next) => {
+  const brand = await Brand.findByIdAndUpdate(
+    req.params.id,
+    { isActive: true },
+    { new: true, runValidators: true },
+  )
+  if (!brand) return next(new ErrorResponse('Brand not found', 404))
+  res.json({ success: true, data: brand, message: 'Brand restored' })
+})
+
+module.exports = {
+  createBrand,
+  deleteBrand,
+  getAdminBrands,
+  getBrands,
+  restoreBrand,
+  updateBrand,
+}

@@ -2,6 +2,7 @@ const Review = require('../models/Review')
 const Watch = require('../models/Watch')
 const asyncHandler = require('../utils/asyncHandler')
 const ErrorResponse = require('../utils/ErrorResponse')
+const { getPaginationParams, formatPaginatedResponse } = require('../utils/queryHelpers')
 
 /**
  * Get reviews for a specific watch.
@@ -15,6 +16,27 @@ const getWatchReviews = asyncHandler(async (req, res) => {
     .sort('-createdAt')
 
   res.json({ success: true, data: reviews })
+})
+
+const getAdminReviews = asyncHandler(async (req, res) => {
+  const { page, limit, skip } = getPaginationParams(req.query, 20, 100)
+  const filter = {}
+
+  if (req.query.approved === 'true') filter.isApproved = true
+  if (req.query.approved === 'false') filter.isApproved = false
+  if (req.query.watchId) filter.watch = req.query.watchId
+
+  const [reviews, total] = await Promise.all([
+    Review.find(filter)
+      .populate('user', 'name email')
+      .populate('watch', 'name slug sku thumbnail')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit),
+    Review.countDocuments(filter),
+  ])
+
+  res.json(formatPaginatedResponse(reviews, total, page, limit))
 })
 
 /**
@@ -89,4 +111,11 @@ const toggleReviewApproval = asyncHandler(async (req, res, next) => {
   res.json({ success: true, data: review })
 })
 
-module.exports = { getWatchReviews, createReview, updateReview, deleteReview, toggleReviewApproval }
+module.exports = {
+  createReview,
+  deleteReview,
+  getAdminReviews,
+  getWatchReviews,
+  toggleReviewApproval,
+  updateReview,
+}

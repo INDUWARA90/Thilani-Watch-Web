@@ -1,6 +1,7 @@
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
 const express = require('express')
+const rateLimit = require('express-rate-limit')
 const helmet = require('helmet')
 const hpp = require('hpp')
 const morgan = require('morgan')
@@ -9,6 +10,7 @@ const { errorHandler, notFound } = require('./middleware/errorMiddleware')
 
 // create APP
 const app = express()
+app.set('trust proxy', 1)
 
 // allowing cors communication
 app.use(
@@ -22,6 +24,24 @@ app.use(
 app.use(helmet()) // Set security HTTP headers
 app.use(hpp()) // Prevent HTTP Parameter Pollution
 app.use(morgan('dev')) // Log requests to console
+
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 300,
+  standardHeaders: true,
+  legacyHeaders: false,
+})
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 30,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: 'Too many authentication attempts. Please try again later.',
+  },
+})
 
 // Standard Middleware
 app.use(cookieParser())
@@ -37,6 +57,8 @@ app.get('/api/health', (req, res) => {
 })
 
 // mount the all routes
+app.use('/api/auth', authLimiter)
+app.use('/api', apiLimiter)
 app.use('/api', routes)
 
 // Error handling

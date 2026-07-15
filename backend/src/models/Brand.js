@@ -12,4 +12,6 @@ const brandSchema = new mongoose.Schema(
   { timestamps: true }
 )
 
+brandSchema.index({ isActive: 1, sortOrder: 1, name: 1 })
+
 module.exports = mongoose.model('Brand', brandSchema)

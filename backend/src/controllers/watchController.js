@@ -1,4 +1,7 @@
+const mongoose = require('mongoose')
 const Watch = require('../models/Watch')
+const Brand = require('../models/Brand')
+const Category = require('../models/Category')
 const asyncHandler = require('../utils/asyncHandler')
 const ErrorResponse = require('../utils/ErrorResponse')
 const {
@@ -25,27 +28,61 @@ const listSort = (sort) =>
     popularity: { salesCount: -1 },
   })[sort] || { createdAt: -1 }
 
-const buildListFilter = (query) => {
-  const filter = publishedFilter()
+const findCatalogIds = async (Model, value) => {
+  const rawValue = String(value).trim()
+  const exact = new RegExp(`^${escapeRegex(rawValue)}$`, 'i')
+  const docs = await Model.find({
+    $or: [{ slug: exact }, { name: exact }],
+  }).select('_id')
+
+  return docs.map((doc) => doc._id)
+}
+
+const buildListFilter = async (query, options = {}) => {
+  const { publicOnly = true } = options
+  const filter = publicOnly ? publishedFilter() : { deletedAt: null }
 
   if (query.search) {
     const search = new RegExp(escapeRegex(String(query.search).trim()), 'i')
+    const [matchingBrands, matchingCategories] = await Promise.all([
+      Brand.find({ $or: [{ name: search }, { slug: search }] }).select('_id'),
+      Category.find({ $or: [{ name: search }, { slug: search }] }).select('_id'),
+    ])
+
     filter.$or = [
       { name: search },
-      { brand: search },
       { description: search },
       { shortDescription: search },
       { sku: search },
-      { category: search },
     ]
+
+    if (matchingBrands.length > 0) {
+      filter.$or.push({ brand: { $in: matchingBrands.map((brand) => brand._id) } })
+    }
+
+    if (matchingCategories.length > 0) {
+      filter.$or.push({ category: { $in: matchingCategories.map((category) => category._id) } })
+    }
   }
 
   if (query.category) {
-    filter.category = String(query.category).trim().toLowerCase()
+    const categoryIds = await findCatalogIds(Category, query.category)
+    const rawCategory = String(query.category).trim()
+    filter.category = categoryIds.length > 0
+      ? { $in: categoryIds }
+      : mongoose.Types.ObjectId.isValid(rawCategory)
+        ? rawCategory
+        : { $in: [] }
   }
 
   if (query.brand) {
-    filter.brand = new RegExp(`^${escapeRegex(String(query.brand).trim())}$`, 'i')
+    const brandIds = await findCatalogIds(Brand, query.brand)
+    const rawBrand = String(query.brand).trim()
+    filter.brand = brandIds.length > 0
+      ? { $in: brandIds }
+      : mongoose.Types.ObjectId.isValid(rawBrand)
+        ? rawBrand
+        : { $in: [] }
   }
 
   const minPrice = Number(query.minPrice)
@@ -68,10 +105,30 @@ const buildListFilter = (query) => {
 
 const getWatches = asyncHandler(async (req, res, next) => {
   const { page, limit, skip } = getPaginationParams(req.query, DEFAULT_LIMIT, MAX_LIMIT)
-  const filter = buildListFilter(req.query)
+  const filter = await buildListFilter(req.query)
 
   const [watches, total] = await Promise.all([
     Watch.find(filter)
+      .sort(listSort(req.query.sort))
+      .skip(skip)
+      .limit(limit),
+    Watch.countDocuments(filter),
+  ])
+
+  res.json(formatPaginatedResponse(watches, total, page, limit))
+})
+
+const getAdminWatches = asyncHandler(async (req, res, next) => {
+  const { page, limit, skip } = getPaginationParams(req.query, 20, MAX_LIMIT)
+  const filter = await buildListFilter(req.query, { publicOnly: false })
+
+  if (req.query.published === 'true') filter.isPublished = true
+  if (req.query.published === 'false') filter.isPublished = false
+
+  const [watches, total] = await Promise.all([
+    Watch.find(filter)
+      .populate('brand', 'name slug')
+      .populate('category', 'name slug')
       .sort(listSort(req.query.sort))
       .skip(skip)
       .limit(limit),
@@ -237,6 +294,7 @@ const deleteWatch = asyncHandler(async (req, res, next) => {
 module.exports = {
   createWatch,
   deleteWatch,
+  getAdminWatches,
   getBestSellers,
   getFeaturedWatches,
   getNewArrivals,

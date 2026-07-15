@@ -2,8 +2,10 @@ const express = require('express')
 const {
   createWatch,
   deleteWatch,
+  getAdminWatches,
   getBestSellers,
   getFeaturedWatches,
+  getLowStockWatches,
   getNewArrivals,
   getWatch,
   getWatchBySlug,
@@ -19,6 +21,8 @@ const router = express.Router()
 
 router.route('/').get(getWatches).post(protect, adminOnly, createWatch)
 
+router.get('/admin/all', protect, adminOnly, getAdminWatches)
+router.get('/admin/low-stock', protect, adminOnly, getLowStockWatches)
 router.get('/featured', getFeaturedWatches)
 router.get('/new-arrivals', getNewArrivals)
 router.get('/best-sellers', getBestSellers)

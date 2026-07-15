@@ -88,6 +88,8 @@ const orderSchema = new mongoose.Schema(
 // Indexing for faster queries
 orderSchema.index({ user: 1, createdAt: -1 })
 orderSchema.index({ orderStatus: 1 })
+orderSchema.index({ paymentStatus: 1 })
+orderSchema.index({ createdAt: -1 })
 
 // Recalculate total before saving if not provided
 orderSchema.pre('validate', async function () {

@@ -4,6 +4,10 @@ const Cart = require('../models/Cart')
 const Coupon = require('../models/Coupon')
 const asyncHandler = require('../utils/asyncHandler')
 const ErrorResponse = require('../utils/ErrorResponse')
+const { getPaginationParams, formatPaginatedResponse } = require('../utils/queryHelpers')
+
+const ORDER_STATUSES = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled']
+const PAYMENT_STATUSES = ['pending', 'paid', 'failed', 'refunded']
 
 /**
  * Create a new order from current cart or direct items.
@@ -45,26 +49,34 @@ const createOrder = asyncHandler(async (req, res, next) => {
   let discount = 0
   if (couponCode) {
     const coupon = await Coupon.findOne({
-      code: couponCode.toUpperCase(),
+      code: String(couponCode).trim().toUpperCase(),
       isActive: true,
       startsAt: { $lte: new Date() },
       expiresAt: { $gte: new Date() },
     })
 
-    if (coupon) {
-      const subtotal = cart.items.reduce((acc, item) => acc + item.quantity * item.watch.price, 0)
-      if (subtotal >= coupon.minimumOrderAmount) {
-        if (coupon.discountType === 'percentage') {
-          discount = (subtotal * coupon.discountValue) / 100
-          if (coupon.maxDiscountAmount) discount = Math.min(discount, coupon.maxDiscountAmount)
-        } else {
-          discount = coupon.discountValue
-        }
-        discount = Math.min(discount, subtotal)
-        coupon.usedCount += 1
-        await coupon.save()
-      }
+    if (!coupon) {
+      return next(new ErrorResponse('Invalid or expired coupon code', 400))
     }
+
+    if (coupon.usageLimit && coupon.usedCount >= coupon.usageLimit) {
+      return next(new ErrorResponse('Coupon usage limit reached', 400))
+    }
+
+    const subtotal = cart.items.reduce((acc, item) => acc + item.quantity * item.watch.price, 0)
+    if (subtotal < coupon.minimumOrderAmount) {
+      return next(new ErrorResponse(`Minimum order amount of ${coupon.minimumOrderAmount} not met`, 400))
+    }
+
+    if (coupon.discountType === 'percentage') {
+      discount = (subtotal * coupon.discountValue) / 100
+      if (coupon.maxDiscountAmount) discount = Math.min(discount, coupon.maxDiscountAmount)
+    } else {
+      discount = coupon.discountValue
+    }
+    discount = Math.min(discount, subtotal)
+    coupon.usedCount += 1
+    await coupon.save()
   }
 
   // 5. Create Order
@@ -140,7 +152,7 @@ const cancelOrder = asyncHandler(async (req, res, next) => {
   // Restore stock
   const restoreUpdates = order.items.map((item) =>
     Watch.findByIdAndUpdate(item.watch, {
-      $inc: { stockQuantity: item.quantity, salesCount: Math.max(0, -item.quantity) },
+      $inc: { stockQuantity: item.quantity, salesCount: -item.quantity },
     }),
   )
   await Promise.all(restoreUpdates)
@@ -152,8 +164,23 @@ const cancelOrder = asyncHandler(async (req, res, next) => {
  * Admin: Get all orders.
  */
 const getAllOrders = asyncHandler(async (req, res, next) => {
-  const orders = await Order.find().populate('user', 'name email').sort({ createdAt: -1 })
-  res.json({ success: true, data: orders })
+  const { page, limit, skip } = getPaginationParams(req.query, 20, 100)
+  const filter = {}
+
+  if (req.query.orderStatus) filter.orderStatus = req.query.orderStatus
+  if (req.query.paymentStatus) filter.paymentStatus = req.query.paymentStatus
+  if (req.query.user) filter.user = req.query.user
+
+  const [orders, total] = await Promise.all([
+    Order.find(filter)
+      .populate('user', 'name email')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit),
+    Order.countDocuments(filter),
+  ])
+
+  res.json(formatPaginatedResponse(orders, total, page, limit))
 })
 
 /**
@@ -161,11 +188,17 @@ const getAllOrders = asyncHandler(async (req, res, next) => {
  */
 const updateOrderStatus = asyncHandler(async (req, res, next) => {
   const { orderStatus } = req.body
-  const order = await Order.findByIdAndUpdate(
-    req.params.id,
-    { orderStatus, [orderStatus === 'shipped' ? 'shippedAt' : 'deliveredAt']: new Date() },
-    { new: true, runValidators: true },
-  )
+
+  if (!ORDER_STATUSES.includes(orderStatus)) {
+    return next(new ErrorResponse('Invalid order status', 400))
+  }
+
+  const update = { orderStatus }
+  if (orderStatus === 'shipped') update.shippedAt = new Date()
+  if (orderStatus === 'delivered') update.deliveredAt = new Date()
+  if (orderStatus === 'cancelled') update.cancelledAt = new Date()
+
+  const order = await Order.findByIdAndUpdate(req.params.id, update, { new: true, runValidators: true })
 
   if (!order) return next(new ErrorResponse('Order not found', 404))
   res.json({ success: true, data: order })
@@ -176,6 +209,11 @@ const updateOrderStatus = asyncHandler(async (req, res, next) => {
  */
 const updateOrderShipping = asyncHandler(async (req, res, next) => {
   const { trackingNumber, courierName, estimatedDeliveryDate, orderStatus } = req.body
+  const nextStatus = orderStatus || 'shipped'
+
+  if (!ORDER_STATUSES.includes(nextStatus)) {
+    return next(new ErrorResponse('Invalid order status', 400))
+  }
 
   const order = await Order.findByIdAndUpdate(
     req.params.id,
@@ -183,8 +221,9 @@ const updateOrderShipping = asyncHandler(async (req, res, next) => {
       trackingNumber,
       courierName,
       estimatedDeliveryDate,
-      orderStatus: orderStatus || 'shipped',
-      shippedAt: orderStatus === 'shipped' ? new Date() : undefined,
+      orderStatus: nextStatus,
+      ...(nextStatus === 'shipped' ? { shippedAt: new Date() } : {}),
+      ...(nextStatus === 'delivered' ? { deliveredAt: new Date() } : {}),
     },
     { new: true, runValidators: true }
   )
@@ -198,6 +237,11 @@ const updateOrderShipping = asyncHandler(async (req, res, next) => {
  */
 const updatePaymentStatus = asyncHandler(async (req, res, next) => {
   const { paymentStatus } = req.body
+
+  if (!PAYMENT_STATUSES.includes(paymentStatus)) {
+    return next(new ErrorResponse('Invalid payment status', 400))
+  }
+
   const order = await Order.findByIdAndUpdate(req.params.id, { paymentStatus }, { new: true, runValidators: true })
 
   if (!order) return next(new ErrorResponse('Order not found', 404))
