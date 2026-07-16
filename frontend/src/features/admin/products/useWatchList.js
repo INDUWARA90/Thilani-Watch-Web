@@ -1,57 +1,38 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo } from 'react'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { getApiErrorMessage } from '@/shared/api/apiClient'
 import { adminApi } from '../api/adminApi'
 import { normalizeList, readBoolean } from '../lib/adminUtils'
 
 export const useWatchList = (filters, setError) => {
-  const [watches, setWatches] = useState([])
-  const [isLoading, setIsLoading] = useState(true)
+  const queryClient = useQueryClient()
 
   const loadWatches = async () => {
     setError('')
-    setIsLoading(true)
     try {
-      const payload = await adminApi.getWatches({ ...filters, limit: 100 })
-      setWatches(normalizeList(payload, ['watches']))
+      await queryClient.invalidateQueries({ queryKey: ['admin', 'watches'] })
     } catch (apiError) {
       setError(getApiErrorMessage(apiError, 'Unable to load watches.'))
-    } finally {
-      setIsLoading(false)
     }
   }
 
+  const watchQuery = useQuery({
+    queryFn: async () => {
+      const payload = await adminApi.getWatches({ ...filters, limit: 100 })
+      return normalizeList(payload, ['watches'])
+    },
+    queryKey: ['admin', 'watches', filters],
+  })
+
   useEffect(() => {
-    let isMounted = true
-
-    const run = async () => {
-      try {
-        const payload = await adminApi.getWatches({ ...filters, limit: 100 })
-        if (isMounted) {
-          setWatches(normalizeList(payload, ['watches']))
-          setError('')
-        }
-      } catch (apiError) {
-        if (isMounted) {
-          setError(getApiErrorMessage(apiError, 'Unable to load watches.'))
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoading(false)
-        }
-      }
-    }
-
-    run()
-
-    return () => {
-      isMounted = false
-    }
-  }, [filters, setError])
+    setError(watchQuery.error ? getApiErrorMessage(watchQuery.error, 'Unable to load watches.') : '')
+  }, [setError, watchQuery.error])
 
   const visibleWatches = useMemo(() => {
+    const watches = watchQuery.data || []
     if (filters.published === '') return watches
     return watches.filter((watch) => Boolean(watch.isPublished) === readBoolean(filters.published))
-  }, [filters.published, watches])
+  }, [filters.published, watchQuery.data])
 
-  return { isLoading, loadWatches, visibleWatches }
+  return { isLoading: watchQuery.isLoading, loadWatches, visibleWatches }
 }

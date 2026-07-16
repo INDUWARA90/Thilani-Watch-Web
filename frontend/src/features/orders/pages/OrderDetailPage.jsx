@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link, useParams } from 'react-router'
 import { LoadingState } from '@/shared/ui/LoadingState'
 import { getApiErrorMessage } from '@/shared/api/apiClient'
@@ -23,52 +24,16 @@ export const OrderDetailPage = () => {
   const { id } = useParams()
   usePageTitle('Order Details | Thilani Watch Web')
 
-  const [order, setOrder] = useState(null)
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
-  const [paymentIntent, setPaymentIntent] = useState(null)
   const [returnForm, setReturnForm] = useState({ notes: '', reason: '' })
-  const [isLoading, setIsLoading] = useState(true)
+  const queryClient = useQueryClient()
 
-  const loadOrder = async () => {
-    setError('')
-    setIsLoading(true)
-    try {
-      setOrder(normalizeOrder(await ordersApi.getOrder(id)))
-    } catch (apiError) {
-      setError(getApiErrorMessage(apiError, 'Unable to load order.'))
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    let isMounted = true
-
-    const run = async () => {
-      try {
-        const payload = await ordersApi.getOrder(id)
-        if (isMounted) {
-          setOrder(normalizeOrder(payload))
-          setError('')
-        }
-      } catch (apiError) {
-        if (isMounted) {
-          setError(getApiErrorMessage(apiError, 'Unable to load order.'))
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoading(false)
-        }
-      }
-    }
-
-    run()
-
-    return () => {
-      isMounted = false
-    }
-  }, [id])
+  const orderQuery = useQuery({
+    queryFn: async () => normalizeOrder(await ordersApi.getOrder(id)),
+    queryKey: ['orders', 'detail', id],
+  })
+  const order = orderQuery.data
 
   const handleCancel = async () => {
     setError('')
@@ -76,21 +41,12 @@ export const OrderDetailPage = () => {
     try {
       await ordersApi.cancelOrder(getOrderId(order))
       setMessage('Order cancelled.')
-      await loadOrder()
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['orders', 'detail', id] }),
+        queryClient.invalidateQueries({ queryKey: ['orders', 'mine'] }),
+      ])
     } catch (apiError) {
       setError(getApiErrorMessage(apiError, 'Unable to cancel order.'))
-    }
-  }
-
-  const handleRefreshPaymentIntent = async () => {
-    setError('')
-    setMessage('')
-    try {
-      const payload = await ordersApi.refreshPaymentIntent(getOrderId(order))
-      setPaymentIntent(payload?.payment || payload)
-      setMessage('Payment intent refreshed.')
-    } catch (apiError) {
-      setError(getApiErrorMessage(apiError, 'Unable to refresh payment intent.'))
     }
   }
 
@@ -105,13 +61,16 @@ export const OrderDetailPage = () => {
       })
       setReturnForm({ notes: '', reason: '' })
       setMessage('Return request submitted.')
-      await loadOrder()
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['orders', 'detail', id] }),
+        queryClient.invalidateQueries({ queryKey: ['orders', 'mine'] }),
+      ])
     } catch (apiError) {
       setError(getApiErrorMessage(apiError, 'Unable to request return.'))
     }
   }
 
-  if (isLoading) {
+  if (orderQuery.isLoading) {
     return <LoadingState label="Loading order details" variant="form" />
   }
 
@@ -121,7 +80,7 @@ export const OrderDetailPage = () => {
         Back to orders
       </Link>
 
-      {error && <div className="mb-5 border border-[#DC3545] bg-red-50 px-4 py-3 font-normal text-[#DC3545]">{error}</div>}
+      {(error || orderQuery.error) && <div className="mb-5 border border-[#DC3545] bg-red-50 px-4 py-3 font-normal text-[#DC3545]">{error || getApiErrorMessage(orderQuery.error, 'Unable to load order.')}</div>}
       {message && <div className="mb-5 border border-[#198754] bg-green-50 px-4 py-3 font-normal text-[#198754]">{message}</div>}
 
       {order && (
@@ -139,17 +98,6 @@ export const OrderDetailPage = () => {
                 <button className="mt-4 inline-flex min-h-11 cursor-pointer items-center justify-center rounded-[14px] border border-[#DC3545] bg-red-50 px-4 text-sm font-normal text-[#DC3545] hover:bg-red-100" type="button" onClick={handleCancel}>
                   Cancel order
                 </button>
-              )}
-              {order.paymentMethod === 'card' && getPaymentStatus(order) !== 'paid' && (
-                <button className="mt-4 ml-3 inline-flex min-h-11 cursor-pointer items-center justify-center rounded-[14px] border border-[#DEE2E6] bg-[rgba(18,18,18,0.04)] px-4 text-sm font-normal text-[#121212] hover:bg-[rgba(18,18,18,0.08)]" type="button" onClick={handleRefreshPaymentIntent}>
-                  Refresh payment intent
-                </button>
-              )}
-              {paymentIntent?.clientSecret && (
-                <div className="mt-4 rounded-[14px] border border-[#DEE2E6] bg-[#F8F9FA] p-4 text-sm text-[#212529]">
-                  <p className="m-0 font-bold text-[#121212]">Payment client secret</p>
-                  <p className="mt-2 break-all">{paymentIntent.clientSecret}</p>
-                </div>
               )}
             </div>
 

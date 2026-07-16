@@ -25,10 +25,8 @@ const paymentSchema = new mongoose.Schema(
   {
     provider: {
       type: String,
-      enum: ['cod', 'bank_transfer', 'stripe', 'mock'],
+      enum: ['cod'],
     },
-    providerPaymentId: String,
-    clientSecret: String,
     transactionId: String,
     amount: Number,
     currency: {
@@ -101,7 +99,7 @@ const orderSchema = new mongoose.Schema(
     paymentMethod: {
       type: String,
       required: true,
-      enum: ['cod', 'card', 'bank_transfer'],
+      enum: ['cod'],
       default: 'cod',
     },
     paymentStatus: {

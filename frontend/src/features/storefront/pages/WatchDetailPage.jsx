@@ -16,10 +16,13 @@ const detailFields = [
   ['Movement', 'movementType'],
   ['Case material', 'caseMaterial'],
   ['Strap material', 'strapMaterial'],
+  ['Strap size', 'strapSize'],
   ['Water resistance', 'waterResistance'],
   ['Color', 'color'],
   ['Dial color', 'dialColor'],
+  ['Dial size', 'dialSize'],
   ['Size', 'size'],
+  ['Gender', 'gender'],
   ['SKU', 'sku'],
 ]
 

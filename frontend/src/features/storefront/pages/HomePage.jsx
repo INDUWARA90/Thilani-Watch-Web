@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { LoadingState } from '@/shared/ui/LoadingState'
 import { getApiErrorMessage } from '@/shared/api/apiClient'
 import { usePageTitle } from '@/shared/hooks/usePageTitle'
@@ -13,56 +13,31 @@ import { normalizeList } from '@/features/storefront/lib/storefrontUtils'
 export const HomePage = () => {
   usePageTitle('Thilani Watch Web | Luxury Watches')
 
-  const [state, setState] = useState({
-    bestSellers: [],
-    brands: [],
-    categories: [],
-    featured: [],
-    isLoading: true,
-    newArrivals: [],
-  })
-  const [error, setError] = useState('')
+  const homeQuery = useQuery({
+    queryFn: async () => {
+      const [featured, newArrivals, bestSellers, categories, brands] = await Promise.all([
+        storefrontApi.getFeaturedWatches(),
+        storefrontApi.getNewArrivals(),
+        storefrontApi.getBestSellers(),
+        storefrontApi.getCategories(),
+        storefrontApi.getBrands(),
+      ])
 
-  useEffect(() => {
-    let isMounted = true
-
-    const loadHome = async () => {
-      try {
-        const [featured, newArrivals, bestSellers, categories, brands] = await Promise.all([
-          storefrontApi.getFeaturedWatches(),
-          storefrontApi.getNewArrivals(),
-          storefrontApi.getBestSellers(),
-          storefrontApi.getCategories(),
-          storefrontApi.getBrands(),
-        ])
-
-        if (isMounted) {
-          setState({
-            bestSellers: normalizeList(bestSellers, ['watches', 'bestSellers']),
-            brands: normalizeList(brands, ['brands']),
-            categories: normalizeList(categories, ['categories']),
-            featured: normalizeList(featured, ['watches', 'featured']),
-            isLoading: false,
-            newArrivals: normalizeList(newArrivals, ['watches', 'newArrivals']),
-          })
-          setError('')
-        }
-      } catch (apiError) {
-        if (isMounted) {
-          setError(getApiErrorMessage(apiError, 'Unable to load storefront.'))
-          setState((current) => ({ ...current, isLoading: false }))
-        }
+      return {
+        bestSellers: normalizeList(bestSellers, ['watches', 'bestSellers']),
+        brands: normalizeList(brands, ['brands']),
+        categories: normalizeList(categories, ['categories']),
+        featured: normalizeList(featured, ['watches', 'featured']),
+        newArrivals: normalizeList(newArrivals, ['watches', 'newArrivals']),
       }
-    }
+    },
+    queryKey: ['storefront', 'home'],
+  })
 
-    loadHome()
+  const state = homeQuery.data || { bestSellers: [], brands: [], categories: [], featured: [], newArrivals: [] }
+  const error = homeQuery.error ? getApiErrorMessage(homeQuery.error, 'Unable to load storefront.') : ''
 
-    return () => {
-      isMounted = false
-    }
-  }, [])
-
-  if (state.isLoading) {
+  if (homeQuery.isLoading) {
     return <LoadingState label="Curating the storefront" variant="detail" />
   }
 

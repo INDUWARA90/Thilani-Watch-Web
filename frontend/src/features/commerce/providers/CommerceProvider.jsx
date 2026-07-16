@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { getApiErrorMessage } from '@/shared/api/apiClient'
 import { useAuth } from '@/features/auth/hooks/useAuth'
 import { getId } from '@/features/storefront/lib/storefrontUtils'
@@ -7,14 +8,34 @@ import { CommerceContext } from './commerceContextValue'
 import { getCartItemWatchId, getStockQuantity, getWishlistWatchId, normalizeCart, normalizeWishlist } from '@/features/commerce/lib/commerceUtils'
 
 const emptyCart = { items: [], subtotal: 0 }
+const commerceKeys = {
+  cart: ['commerce', 'cart'],
+  wishlist: ['commerce', 'wishlist'],
+}
 
 export const CommerceProvider = ({ children }) => {
   const { isAuthenticated, isRestoring } = useAuth()
-  const [cart, setCart] = useState(emptyCart)
-  const [wishlist, setWishlist] = useState([])
   const [error, setError] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
   const [pendingIds, setPendingIds] = useState([])
+  const queryClient = useQueryClient()
+
+  const cartQuery = useQuery({
+    enabled: !isRestoring && isAuthenticated,
+    initialData: emptyCart,
+    queryFn: async () => normalizeCart(await commerceApi.getCart()),
+    queryKey: commerceKeys.cart,
+  })
+
+  const wishlistQuery = useQuery({
+    enabled: !isRestoring && isAuthenticated,
+    initialData: [],
+    queryFn: async () => normalizeWishlist(await commerceApi.getWishlist()),
+    queryKey: commerceKeys.wishlist,
+  })
+
+  const cart = useMemo(() => (isAuthenticated ? cartQuery.data : emptyCart), [cartQuery.data, isAuthenticated])
+  const wishlist = useMemo(() => (isAuthenticated ? wishlistQuery.data : []), [isAuthenticated, wishlistQuery.data])
+  const isLoading = cartQuery.isFetching || wishlistQuery.isFetching
 
   const setPending = (watchId, isPending) => {
     setPendingIds((current) => (isPending ? [...new Set([...current, watchId])] : current.filter((id) => id !== watchId)))
@@ -22,73 +43,29 @@ export const CommerceProvider = ({ children }) => {
 
   const loadCommerce = useCallback(async () => {
     if (!isAuthenticated) {
-      setCart(emptyCart)
-      setWishlist([])
+      queryClient.setQueryData(commerceKeys.cart, emptyCart)
+      queryClient.setQueryData(commerceKeys.wishlist, [])
       return
     }
 
-    setIsLoading(true)
     try {
-      const [cartData, wishlistData] = await Promise.all([commerceApi.getCart(), commerceApi.getWishlist()])
-      setCart(normalizeCart(cartData))
-      setWishlist(normalizeWishlist(wishlistData))
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: commerceKeys.cart }),
+        queryClient.invalidateQueries({ queryKey: commerceKeys.wishlist }),
+      ])
       setError('')
     } catch (apiError) {
       setError(getApiErrorMessage(apiError, 'Unable to load cart and wishlist.'))
-    } finally {
-      setIsLoading(false)
     }
-  }, [isAuthenticated])
+  }, [isAuthenticated, queryClient])
 
   const refreshCart = useCallback(async () => {
-    const cartData = await commerceApi.getCart()
-    setCart(normalizeCart(cartData))
-  }, [])
+    await queryClient.invalidateQueries({ queryKey: commerceKeys.cart })
+  }, [queryClient])
 
   const refreshWishlist = useCallback(async () => {
-    const wishlistData = await commerceApi.getWishlist()
-    setWishlist(normalizeWishlist(wishlistData))
-  }, [])
-
-  useEffect(() => {
-    let isMounted = true
-
-    const run = async () => {
-      if (isRestoring) return
-
-      if (!isAuthenticated) {
-        if (isMounted) {
-          setCart(emptyCart)
-          setWishlist([])
-        }
-        return
-      }
-
-      setIsLoading(true)
-      try {
-        const [cartData, wishlistData] = await Promise.all([commerceApi.getCart(), commerceApi.getWishlist()])
-        if (isMounted) {
-          setCart(normalizeCart(cartData))
-          setWishlist(normalizeWishlist(wishlistData))
-          setError('')
-        }
-      } catch (apiError) {
-        if (isMounted) {
-          setError(getApiErrorMessage(apiError, 'Unable to load cart and wishlist.'))
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoading(false)
-        }
-      }
-    }
-
-    run()
-
-    return () => {
-      isMounted = false
-    }
-  }, [isAuthenticated, isRestoring])
+    await queryClient.invalidateQueries({ queryKey: commerceKeys.wishlist })
+  }, [queryClient])
 
   const addToCart = useCallback(async (watch, quantity = 1) => {
     const watchId = getId(watch)
@@ -128,8 +105,7 @@ export const CommerceProvider = ({ children }) => {
     }
 
     setPending(watchId, true)
-    // Quantity updates are safe to show optimistically because we can restore the previous cart.
-    setCart((current) => {
+    queryClient.setQueryData(commerceKeys.cart, (current = emptyCart) => {
       const items = current.items.map((cartItem) => (getCartItemWatchId(cartItem) === watchId ? { ...cartItem, quantity: nextQuantity } : cartItem))
       const subtotal = items.reduce((total, cartItem) => {
         const itemWatch = cartItem.watch || cartItem.product || cartItem
@@ -144,14 +120,14 @@ export const CommerceProvider = ({ children }) => {
       await refreshCart()
       setError('')
     } catch (apiError) {
-      setCart(previousCart)
+      queryClient.setQueryData(commerceKeys.cart, previousCart)
       const message = getApiErrorMessage(apiError, 'Unable to update cart quantity.')
       setError(message)
       throw new Error(message, { cause: apiError })
     } finally {
       setPending(watchId, false)
     }
-  }, [cart, refreshCart])
+  }, [cart, queryClient, refreshCart])
 
   const removeFromCart = useCallback(async (item) => {
     const watchId = getCartItemWatchId(item)
@@ -192,7 +168,7 @@ export const CommerceProvider = ({ children }) => {
 
     const wasWishlisted = wishlist.some((item) => getWishlistWatchId(item) === watchId)
     setPending(watchId, true)
-    setWishlist((current) => (wasWishlisted ? current.filter((item) => getWishlistWatchId(item) !== watchId) : [...current, watch]))
+    queryClient.setQueryData(commerceKeys.wishlist, (current = []) => (wasWishlisted ? current.filter((item) => getWishlistWatchId(item) !== watchId) : [...current, watch]))
 
     try {
       if (wasWishlisted) {
@@ -210,7 +186,7 @@ export const CommerceProvider = ({ children }) => {
     } finally {
       setPending(watchId, false)
     }
-  }, [loadCommerce, refreshWishlist, wishlist])
+  }, [loadCommerce, queryClient, refreshWishlist, wishlist])
 
   const value = useMemo(
     () => ({

@@ -54,6 +54,9 @@ const buildListFilter = async (query, options = {}) => {
       { description: search },
       { shortDescription: search },
       { sku: search },
+      { gender: search },
+      { strapSize: search },
+      { dialSize: search },
     ]
 
     if (matchingBrands.length > 0) {
@@ -99,6 +102,10 @@ const buildListFilter = async (query, options = {}) => {
 
   const stock = parseBoolean(query.stock)
   if (stock !== undefined) filter.inStock = stock
+
+  if (query.gender) {
+    filter.gender = String(query.gender).trim().toLowerCase()
+  }
 
   return filter
 }

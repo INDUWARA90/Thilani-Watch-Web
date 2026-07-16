@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { ArrowRight, CalendarDays, PackageCheck, ReceiptText, ShoppingBag } from 'lucide-react'
 import { Link } from 'react-router'
 import { LoadingState } from '@/shared/ui/LoadingState'
@@ -10,37 +10,12 @@ import { ordersApi } from '@/features/orders/api/ordersApi'
 export const MyOrdersPage = () => {
   usePageTitle('My Orders | Thilani Watch Web')
 
-  const [orders, setOrders] = useState([])
-  const [error, setError] = useState('')
-  const [isLoading, setIsLoading] = useState(true)
-
-  useEffect(() => {
-    let isMounted = true
-
-    const run = async () => {
-      try {
-        const payload = await ordersApi.getMyOrders()
-        if (isMounted) {
-          setOrders(normalizeOrders(payload))
-          setError('')
-        }
-      } catch (apiError) {
-        if (isMounted) {
-          setError(getApiErrorMessage(apiError, 'Unable to load your orders.'))
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoading(false)
-        }
-      }
-    }
-
-    run()
-
-    return () => {
-      isMounted = false
-    }
-  }, [])
+  const ordersQuery = useQuery({
+    queryFn: async () => normalizeOrders(await ordersApi.getMyOrders()),
+    queryKey: ['orders', 'mine'],
+  })
+  const orders = ordersQuery.data || []
+  const error = ordersQuery.error ? getApiErrorMessage(ordersQuery.error, 'Unable to load your orders.') : ''
 
   return (
     <main className="-mx-4 -mt-8 bg-white sm:-mx-6 lg:-mx-8">
@@ -63,7 +38,7 @@ export const MyOrdersPage = () => {
               <PackageCheck className="h-7 w-7" aria-hidden="true" />
             </div>
             <p className="font-['Be_Vietnam',system-ui,sans-serif] text-2xl font-bold leading-tight text-white">
-              {isLoading ? 'Checking orders' : `${orders.length} ${orders.length === 1 ? 'order' : 'orders'}`}
+              {ordersQuery.isLoading ? 'Checking orders' : `${orders.length} ${orders.length === 1 ? 'order' : 'orders'}`}
             </p>
             <p className="mt-3 font-[Assistant,system-ui,sans-serif] text-base leading-6 text-white">
               Your completed checkouts and order details stay ready here.
@@ -89,7 +64,7 @@ export const MyOrdersPage = () => {
             </div>
           )}
 
-          {isLoading ? (
+          {ordersQuery.isLoading ? (
             <LoadingState label="Loading your orders" variant="reviews" rows={4} />
           ) : orders.length === 0 ? (
             <section className="grid gap-8 bg-[#F8F9FA] p-8 sm:p-10 lg:grid-cols-[minmax(0,1fr)_260px] lg:items-center">

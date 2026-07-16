@@ -77,6 +77,11 @@ const watchSchema = new mongoose.Schema(
       default: '',
       trim: true,
     },
+    strapSize: {
+      type: String,
+      default: '',
+      trim: true,
+    },
     waterResistance: {
       type: String,
       default: '',
@@ -92,10 +97,22 @@ const watchSchema = new mongoose.Schema(
       default: '',
       trim: true,
     },
+    dialSize: {
+      type: String,
+      default: '',
+      trim: true,
+    },
     size: {
       type: String,
       default: '',
       trim: true,
+    },
+    gender: {
+      type: String,
+      enum: ['', 'ladies', 'gents', 'unisex'],
+      default: '',
+      trim: true,
+      lowercase: true,
     },
     sku: {
       type: String,

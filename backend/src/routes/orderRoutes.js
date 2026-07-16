@@ -5,7 +5,6 @@ const {
   getOrderById,
   cancelOrder,
   confirmPayment,
-  createOrderPaymentIntent,
   getAllOrders,
   updateOrderStatus,
   updateOrderShipping,
@@ -22,7 +21,6 @@ router.route('/').get(protect, adminOnly, getAllOrders).post(protect, createOrde
 router.get('/my-orders', protect, getMyOrders)
 router.get('/:id', protect, getOrderById)
 router.patch('/:id/cancel', protect, cancelOrder)
-router.post('/:id/payment-intent', protect, createOrderPaymentIntent)
 router.post('/:id/return', protect, requestReturn)
 router.patch('/:id/return', protect, adminOnly, processReturn)
 router.post('/:id/refund', protect, adminOnly, refundOrder)

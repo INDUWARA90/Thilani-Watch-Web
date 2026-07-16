@@ -1,4 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router'
+import { QueryClientProvider } from '@tanstack/react-query'
+import { queryClient } from '@/shared/api/queryClient'
 import { AdminCatalogPage } from '@/features/admin/pages/AdminCatalogPage'
 import { AdminCouponsPage } from '@/features/admin/pages/AdminCouponsPage'
 import { AdminCustomersPage } from '@/features/admin/pages/AdminCustomersPage'
@@ -59,13 +61,15 @@ const AppRoutes = () => (
 )
 
 const App = () => (
-  <AuthProvider>
-    <CommerceProvider>
-      <AppLayout>
-        <AppRoutes />
-      </AppLayout>
-    </CommerceProvider>
-  </AuthProvider>
+  <QueryClientProvider client={queryClient}>
+    <AuthProvider>
+      <CommerceProvider>
+        <AppLayout>
+          <AppRoutes />
+        </AppLayout>
+      </CommerceProvider>
+    </AuthProvider>
+  </QueryClientProvider>
 )
 
 export default App

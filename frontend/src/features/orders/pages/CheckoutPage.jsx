@@ -34,7 +34,6 @@ export const CheckoutPage = () => {
   const [shippingAddress, setShippingAddress] = useState(emptyAddress)
   const [billingAddress, setBillingAddress] = useState(emptyAddress)
   const [useShippingAsBilling, setUseShippingAsBilling] = useState(true)
-  const [paymentMethod, setPaymentMethod] = useState('cod')
   const [couponCode, setCouponCode] = useState('')
   const [couponResult, setCouponResult] = useState(null)
   const [notes, setNotes] = useState('')
@@ -68,17 +67,13 @@ export const CheckoutPage = () => {
         throw new Error('Your cart is empty.')
       }
 
-      if (!['cod', 'card', 'bank_transfer'].includes(paymentMethod)) {
-        throw new Error('Choose a valid payment method.')
-      }
-
       validateAddress(shippingAddress, 'Shipping address')
       if (!useShippingAsBilling) {
         validateAddress(billingAddress, 'Billing address')
       }
 
       const payload = {
-        paymentMethod,
+        paymentMethod: 'cod',
         shippingAddress: cleanAddress(shippingAddress),
       }
 
@@ -170,17 +165,8 @@ export const CheckoutPage = () => {
 
               <section className="border border-[#DEE2E6] bg-white p-5">
                 <h2 className="mb-4 text-xl font-bold text-[#121212]">Payment</h2>
-                <div className="grid gap-3 sm:grid-cols-3">
-                  {[
-                    ['cod', 'Cash on delivery'],
-                    ['card', 'Card'],
-                    ['bank_transfer', 'Bank transfer'],
-                  ].map(([value, label]) => (
-                    <label className="flex min-h-12 items-center gap-3 border border-[#DEE2E6] bg-[#F8F9FA] px-3 text-base font-normal text-[#121212]" key={value}>
-                      <input checked={paymentMethod === value} name="paymentMethod" type="radio" value={value} onChange={(event) => setPaymentMethod(event.target.value)} />
-                      {label}
-                    </label>
-                  ))}
+                <div className="border border-[#DEE2E6] bg-[#F8F9FA] px-4 py-3 text-base font-normal text-[#121212]">
+                  Cash on delivery
                 </div>
               </section>
 

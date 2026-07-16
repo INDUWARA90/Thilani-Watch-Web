@@ -6,7 +6,6 @@ const Coupon = require('../models/Coupon')
 const asyncHandler = require('../utils/asyncHandler')
 const ErrorResponse = require('../utils/ErrorResponse')
 const { getPaginationParams, formatPaginatedResponse } = require('../utils/queryHelpers')
-const { createPaymentIntent, createRefund } = require('../services/paymentGateway')
 const { sendOrderConfirmationEmail, sendShippingUpdateEmail } = require('../services/emailService')
 
 const ORDER_STATUSES = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled']
@@ -36,19 +35,13 @@ const markCouponUsed = (coupon, userId) => {
   coupon.usedCount += 1
 }
 
-const initializeOrderPayment = async (order, user) => {
-  const payment = await createPaymentIntent({
-    paymentMethod: order.paymentMethod,
+const initializeOrderPayment = async (order) => {
+  order.payment = {
+    provider: 'cod',
     amount: order.total,
-    currency: order.items[0]?.currency || 'LKR',
-    orderId: order._id,
-    customerEmail: user.email,
-  })
-
-  order.payment = payment
-  if (order.paymentMethod === 'cod' || order.paymentMethod === 'bank_transfer') {
-    order.paymentStatus = 'pending'
+    currency: 'LKR',
   }
+  order.paymentStatus = 'pending'
   await order.save()
   return order
 }
@@ -59,6 +52,12 @@ const initializeOrderPayment = async (order, user) => {
  */
 const createOrder = asyncHandler(async (req, res, next) => {
   const { shippingAddress, billingAddress, paymentMethod, notes } = req.body
+  const normalizedPaymentMethod = paymentMethod ? String(paymentMethod).trim().toLowerCase() : 'cod'
+
+  if (normalizedPaymentMethod !== 'cod') {
+    return next(new ErrorResponse('Only cash on delivery (cod) payment is available', 400))
+  }
+
   const session = await mongoose.startSession()
   let order
   let committed = false
@@ -131,7 +130,7 @@ const createOrder = asyncHandler(async (req, res, next) => {
             items: orderItems,
             shippingAddress,
             billingAddress: billingAddress || shippingAddress,
-            paymentMethod,
+            paymentMethod: normalizedPaymentMethod,
             discount,
             notes,
             couponCode: normalizedCouponCode || undefined,
@@ -179,7 +178,7 @@ const createOrder = asyncHandler(async (req, res, next) => {
     order.paymentStatus = 'failed'
     order.paymentFailedAt = new Date()
     order.payment = {
-      provider: paymentMethod === 'card' ? process.env.PAYMENT_PROVIDER || 'mock' : paymentMethod,
+      provider: 'cod',
       amount: order.total,
       currency: 'LKR',
       failureReason: error.message,
@@ -383,22 +382,6 @@ const confirmPayment = asyncHandler(async (req, res, next) => {
   res.json({ success: true, data: order })
 })
 
-const createOrderPaymentIntent = asyncHandler(async (req, res, next) => {
-  const order = await Order.findById(req.params.id).populate('user', 'name email')
-  if (!order) return next(new ErrorResponse('Order not found', 404))
-
-  if (order.user._id.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
-    return next(new ErrorResponse('Not authorized to pay this order', 403))
-  }
-
-  if (order.paymentMethod !== 'card') {
-    return next(new ErrorResponse('Payment intent is only available for card orders', 400))
-  }
-
-  await initializeOrderPayment(order, order.user)
-  res.json({ success: true, data: order.payment })
-})
-
 const processReturn = asyncHandler(async (req, res, next) => {
   const { status, notes } = req.body
   if (!RETURN_STATUSES.includes(status)) {
@@ -434,17 +417,15 @@ const refundOrder = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse('Refund amount must be greater than 0 and less than or equal to order total', 400))
   }
 
-  const refund = await createRefund({ order, amount: refundAmount, reason })
-
   order.refund = {
-    status: refund.status,
+    status: 'succeeded',
     amount: refundAmount,
     reason,
-    providerRefundId: refund.providerRefundId,
-    refundedAt: refund.status === 'succeeded' ? new Date() : undefined,
+    providerRefundId: `cod_refund_${order._id}_${Date.now()}`,
+    refundedAt: new Date(),
   }
 
-  if (refund.status === 'succeeded' && refundAmount >= order.total) {
+  if (refundAmount >= order.total) {
     order.paymentStatus = 'refunded'
     if (order.returnRequest?.status && order.returnRequest.status !== 'none') {
       order.returnRequest.status = 'refunded'
@@ -467,7 +448,6 @@ module.exports = {
   updateOrderShipping,
   updatePaymentStatus,
   confirmPayment,
-  createOrderPaymentIntent,
   processReturn,
   refundOrder,
   requestReturn,

@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { Filter, Search, SlidersHorizontal } from 'lucide-react'
 import { Link, useSearchParams } from 'react-router'
 import { LoadingState } from '@/shared/ui/LoadingState'
@@ -22,12 +23,6 @@ export const WatchListingPage = () => {
   usePageTitle('Shop Watches | Thilani Watch Web')
 
   const [searchParams, setSearchParams] = useSearchParams()
-  const [watches, setWatches] = useState([])
-  const [pagination, setPagination] = useState(normalizePagination({}))
-  const [categories, setCategories] = useState([])
-  const [brands, setBrands] = useState([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState('')
 
   const filters = useMemo(
     () => ({
@@ -45,59 +40,33 @@ export const WatchListingPage = () => {
     [searchParams],
   )
 
-  useEffect(() => {
-    let isMounted = true
-
-    const loadReferences = async () => {
-      try {
-        const [categoryData, brandData] = await Promise.all([storefrontApi.getCategories(), storefrontApi.getBrands()])
-        if (isMounted) {
-          setCategories(normalizeList(categoryData, ['categories']))
-          setBrands(normalizeList(brandData, ['brands']))
-        }
-      } catch {
-        if (isMounted) {
-          setCategories([])
-          setBrands([])
-        }
+  const referencesQuery = useQuery({
+    queryFn: async () => {
+      const [categoryData, brandData] = await Promise.all([storefrontApi.getCategories(), storefrontApi.getBrands()])
+      return {
+        brands: normalizeList(brandData, ['brands']),
+        categories: normalizeList(categoryData, ['categories']),
       }
-    }
+    },
+    queryKey: ['storefront', 'catalog-references'],
+  })
 
-    loadReferences()
-
-    return () => {
-      isMounted = false
-    }
-  }, [])
-
-  useEffect(() => {
-    let isMounted = true
-
-    const loadWatches = async () => {
-      setIsLoading(true)
-      try {
-        const payload = await storefrontApi.getWatches(filters)
-        if (isMounted) {
-          setWatches(normalizeList(payload, ['watches']))
-          setPagination(normalizePagination(payload))
-          setError('')
-        }
-      } catch (apiError) {
-        if (isMounted) {
-          setError(getApiErrorMessage(apiError, 'Unable to load watches.'))
-          setWatches([])
-        }
-      } finally {
-        if (isMounted) setIsLoading(false)
+  const watchesQuery = useQuery({
+    queryFn: async () => {
+      const payload = await storefrontApi.getWatches(filters)
+      return {
+        pagination: normalizePagination(payload),
+        watches: normalizeList(payload, ['watches']),
       }
-    }
+    },
+    queryKey: ['storefront', 'watches', filters],
+  })
 
-    loadWatches()
-
-    return () => {
-      isMounted = false
-    }
-  }, [filters])
+  const categories = referencesQuery.data?.categories || []
+  const brands = referencesQuery.data?.brands || []
+  const watches = watchesQuery.data?.watches || []
+  const pagination = watchesQuery.data?.pagination || normalizePagination({})
+  const error = watchesQuery.error ? getApiErrorMessage(watchesQuery.error, 'Unable to load watches.') : ''
 
   const updateFilter = (name, value) => {
     const next = new URLSearchParams(searchParams)
@@ -189,7 +158,7 @@ export const WatchListingPage = () => {
           </div>
 
           {error && <div className="mb-5 border border-[#DC3545] bg-red-50 px-4 py-3 font-normal text-[#DC3545]">{error}</div>}
-          {isLoading ? (
+          {watchesQuery.isLoading ? (
             <LoadingState label="Finding matching watches" variant="cards" rows={6} />
           ) : (
             <>
