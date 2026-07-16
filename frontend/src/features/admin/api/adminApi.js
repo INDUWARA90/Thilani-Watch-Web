@@ -16,12 +16,16 @@ const unwrapList = (response, keys) => {
   return []
 }
 
-const buildParams = (filters) =>
-  Object.fromEntries(Object.entries(filters).filter(([, value]) => value !== '' && value !== null))
+const buildParams = (filters = {}) =>
+  Object.fromEntries(Object.entries(filters).filter(([, value]) => value !== '' && value !== null && value !== undefined))
 
 export const adminApi = {
   async getWatches(filters) {
-    return unwrapApiData(await apiClient.get('/watches', { params: buildParams(filters) }))
+    return unwrapApiData(await apiClient.get('/watches/admin/all', { params: buildParams(filters) }))
+  },
+
+  async getLowStockWatches(threshold = 5) {
+    return unwrapList(await apiClient.get('/watches/admin/low-stock', { params: { threshold } }), ['watches', 'products'])
   },
 
   async createWatch(payload) {
@@ -45,7 +49,7 @@ export const adminApi = {
   },
 
   async getCategories() {
-    return unwrapList(await apiClient.get('/categories'), ['categories'])
+    return unwrapList(await apiClient.get('/categories/admin/all'), ['categories'])
   },
 
   async createCategory(payload) {
@@ -60,8 +64,12 @@ export const adminApi = {
     return unwrapApiData(await apiClient.delete(`/categories/${id}`))
   },
 
+  async restoreCategory(id) {
+    return unwrapApiData(await apiClient.patch(`/categories/${id}/restore`))
+  },
+
   async getBrands() {
-    return unwrapList(await apiClient.get('/brands'), ['brands'])
+    return unwrapList(await apiClient.get('/brands/admin/all'), ['brands'])
   },
 
   async createBrand(payload) {
@@ -76,8 +84,12 @@ export const adminApi = {
     return unwrapApiData(await apiClient.delete(`/brands/${id}`))
   },
 
-  async getOrders() {
-    return unwrapList(await apiClient.get('/orders'), ['orders'])
+  async restoreBrand(id) {
+    return unwrapApiData(await apiClient.patch(`/brands/${id}/restore`))
+  },
+
+  async getOrders(filters) {
+    return unwrapList(await apiClient.get('/orders', { params: buildParams(filters) }), ['orders'])
   },
 
   async getOrder(id) {
@@ -92,11 +104,67 @@ export const adminApi = {
     return unwrapApiData(await apiClient.patch(`/orders/${id}/payment-status`, { paymentStatus }))
   },
 
+  async confirmPayment(id, transactionId) {
+    return unwrapApiData(await apiClient.patch(`/orders/${id}/confirm-payment`, transactionId ? { transactionId } : {}))
+  },
+
+  async updateShipping(id, payload) {
+    return unwrapApiData(await apiClient.patch(`/orders/${id}/shipping`, payload))
+  },
+
+  async processReturn(id, payload) {
+    return unwrapApiData(await apiClient.patch(`/orders/${id}/return`, payload))
+  },
+
+  async refundOrder(id, payload) {
+    return unwrapApiData(await apiClient.post(`/orders/${id}/refund`, payload))
+  },
+
   async getReviews() {
-    return unwrapList(await apiClient.get('/reviews'), ['reviews'])
+    return unwrapList(await apiClient.get('/reviews/admin/all'), ['reviews'])
   },
 
   async toggleReviewApproval(id) {
     return unwrapApiData(await apiClient.patch(`/reviews/${id}/approve`))
+  },
+
+  async getDashboardSummary() {
+    return unwrapApiData(await apiClient.get('/admin/dashboard/summary'))
+  },
+
+  async getDashboardSales(days = 30) {
+    return unwrapApiData(await apiClient.get('/admin/dashboard/sales', { params: { days } }))
+  },
+
+  async getCustomers(filters) {
+    return unwrapList(await apiClient.get('/admin/customers', { params: buildParams(filters) }), ['customers', 'users'])
+  },
+
+  async getCustomer(id) {
+    return unwrapApiData(await apiClient.get(`/admin/customers/${id}`))
+  },
+
+  async getCustomerOrders(id) {
+    return unwrapList(await apiClient.get(`/admin/customers/${id}/orders`), ['orders'])
+  },
+
+  async updateCustomerStatus(id, isActive) {
+    return unwrapApiData(await apiClient.patch(`/admin/customers/${id}/status`, { isActive }))
+  },
+
+  async getCoupons(filters) {
+    return unwrapList(await apiClient.get('/coupons', { params: buildParams(filters) }), ['coupons'])
+  },
+
+  async createCoupon(payload) {
+    return unwrapApiData(await apiClient.post('/coupons', payload))
+  },
+
+  async updateCoupon(id, payload) {
+    return unwrapApiData(await apiClient.put(`/coupons/${id}`, payload))
+  },
+
+  async deleteCoupon(id) {
+    return unwrapApiData(await apiClient.delete(`/coupons/${id}`))
   },
 }

@@ -36,11 +36,14 @@ export const CheckoutPage = () => {
   const [useShippingAsBilling, setUseShippingAsBilling] = useState(true)
   const [paymentMethod, setPaymentMethod] = useState('cod')
   const [couponCode, setCouponCode] = useState('')
+  const [couponResult, setCouponResult] = useState(null)
   const [notes, setNotes] = useState('')
   const [error, setError] = useState('')
+  const [couponMessage, setCouponMessage] = useState('')
+  const [isValidatingCoupon, setIsValidatingCoupon] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const discount = Number(cart.discount || cart.discountAmount || 0)
+  const discount = Number(readCouponDiscount(couponResult) || cart.discount || cart.discountAmount || 0)
   const total = useMemo(() => Math.max(0, Number(cart.subtotal || 0) + SHIPPING_FEE - discount), [cart.subtotal, discount])
 
   const updateAddress = (setter, name, value) => {
@@ -93,6 +96,31 @@ export const CheckoutPage = () => {
       setError(submitError?.response ? getApiErrorMessage(submitError, 'Unable to place order.') : submitError.message)
     } finally {
       setIsSubmitting(false)
+    }
+  }
+
+  const handleValidateCoupon = async () => {
+    setError('')
+    setCouponMessage('')
+    setCouponResult(null)
+
+    if (!couponCode.trim()) {
+      setCouponMessage('Enter a coupon code first.')
+      return
+    }
+
+    setIsValidatingCoupon(true)
+    try {
+      const payload = await ordersApi.validateCoupon({
+        code: couponCode.trim(),
+        cartTotal: Number(cart.subtotal || 0),
+      })
+      setCouponResult(payload)
+      setCouponMessage('Coupon applied.')
+    } catch (apiError) {
+      setCouponMessage(getApiErrorMessage(apiError, 'Coupon is not valid for this cart.'))
+    } finally {
+      setIsValidatingCoupon(false)
     }
   }
 
@@ -157,10 +185,24 @@ export const CheckoutPage = () => {
               </section>
 
               <section className="grid gap-4 border border-[#DEE2E6] bg-white p-5 sm:grid-cols-2">
-                <label className="grid gap-2 text-base font-normal text-[#121212]">
-                  Coupon code
-                  <input className={inputClass} value={couponCode} onChange={(event) => setCouponCode(event.target.value)} />
-                </label>
+                <div className="grid gap-2 text-base font-normal text-[#121212]">
+                  <label className="grid gap-2">
+                    Coupon code
+                    <input
+                      className={inputClass}
+                      value={couponCode}
+                      onChange={(event) => {
+                        setCouponCode(event.target.value)
+                        setCouponResult(null)
+                        setCouponMessage('')
+                      }}
+                    />
+                  </label>
+                  <button className="inline-flex min-h-11 w-fit cursor-pointer items-center justify-center gap-2 rounded-[14px] bg-[#121212] px-5 text-sm font-normal text-white hover:bg-[#272222] disabled:cursor-not-allowed disabled:opacity-65" disabled={isValidatingCoupon} type="button" onClick={handleValidateCoupon}>
+                    {isValidatingCoupon && <ButtonSpinner />} {isValidatingCoupon ? 'Checking' : 'Validate coupon'}
+                  </button>
+                  {couponMessage && <p className="m-0 text-sm font-bold text-[#F49006]">{couponMessage}</p>}
+                </div>
                 <label className="grid gap-2 text-base font-normal text-[#121212]">
                   Notes
                   <input className={inputClass} value={notes} onChange={(event) => setNotes(event.target.value)} />
@@ -211,3 +253,12 @@ const SummaryRow = ({ isStrong = false, label, value }) => (
 
 const cleanAddress = (address) =>
   Object.fromEntries(Object.entries(address).map(([key, value]) => [key, typeof value === 'string' ? value.trim() : value]))
+
+const readCouponDiscount = (payload) =>
+  payload?.discountAmount ??
+  payload?.discount ??
+  payload?.coupon?.discountAmount ??
+  payload?.coupon?.discount ??
+  payload?.data?.discountAmount ??
+  payload?.data?.discount ??
+  0

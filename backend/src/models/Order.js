@@ -21,6 +21,73 @@ const addressSchema = new mongoose.Schema({
   phone: { type: String, required: true },
 })
 
+const paymentSchema = new mongoose.Schema(
+  {
+    provider: {
+      type: String,
+      enum: ['cod', 'bank_transfer', 'stripe', 'mock'],
+    },
+    providerPaymentId: String,
+    clientSecret: String,
+    transactionId: String,
+    amount: Number,
+    currency: {
+      type: String,
+      default: 'LKR',
+      uppercase: true,
+      trim: true,
+    },
+    failureReason: String,
+  },
+  { _id: false },
+)
+
+const returnRequestSchema = new mongoose.Schema(
+  {
+    status: {
+      type: String,
+      enum: ['none', 'requested', 'approved', 'rejected', 'received', 'refunded'],
+      default: 'none',
+    },
+    reason: {
+      type: String,
+      trim: true,
+    },
+    notes: {
+      type: String,
+      trim: true,
+    },
+    requestedAt: Date,
+    processedAt: Date,
+    processedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
+  },
+  { _id: false },
+)
+
+const refundSchema = new mongoose.Schema(
+  {
+    status: {
+      type: String,
+      enum: ['none', 'pending', 'succeeded', 'failed'],
+      default: 'none',
+    },
+    amount: {
+      type: Number,
+      default: 0,
+    },
+    reason: {
+      type: String,
+      trim: true,
+    },
+    providerRefundId: String,
+    refundedAt: Date,
+  },
+  { _id: false },
+)
+
 const orderSchema = new mongoose.Schema(
   {
     user: {
@@ -42,6 +109,10 @@ const orderSchema = new mongoose.Schema(
       required: true,
       enum: ['pending', 'paid', 'failed', 'refunded'],
       default: 'pending',
+    },
+    payment: {
+      type: paymentSchema,
+      default: undefined,
     },
     orderStatus: {
       type: String,
@@ -73,6 +144,21 @@ const orderSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    couponCode: {
+      type: String,
+      uppercase: true,
+      trim: true,
+    },
+    returnRequest: {
+      type: returnRequestSchema,
+      default: () => ({ status: 'none' }),
+    },
+    refund: {
+      type: refundSchema,
+      default: () => ({ status: 'none', amount: 0 }),
+    },
+    paidAt: Date,
+    paymentFailedAt: Date,
     shippedAt: Date,
     deliveredAt: Date,
     cancelledAt: Date,
@@ -89,6 +175,7 @@ const orderSchema = new mongoose.Schema(
 orderSchema.index({ user: 1, createdAt: -1 })
 orderSchema.index({ orderStatus: 1 })
 orderSchema.index({ paymentStatus: 1 })
+orderSchema.index({ 'returnRequest.status': 1 })
 orderSchema.index({ createdAt: -1 })
 
 // Recalculate total before saving if not provided

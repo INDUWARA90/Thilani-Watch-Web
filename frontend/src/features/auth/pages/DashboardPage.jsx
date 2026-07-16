@@ -34,6 +34,7 @@ const customerItems = [
   {
     title: 'Profile',
     description: 'Manage your contact details and saved addresses.',
+    to: '/profile',
   },
 ]
 

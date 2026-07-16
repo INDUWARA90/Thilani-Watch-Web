@@ -16,6 +16,7 @@ const normalizeCouponPayload = (body) => {
   if (body.startsAt !== undefined) payload.startsAt = body.startsAt
   if (body.expiresAt !== undefined) payload.expiresAt = body.expiresAt
   if (body.usageLimit !== undefined && body.usageLimit !== '') payload.usageLimit = Number(body.usageLimit)
+  if (body.perUserLimit !== undefined && body.perUserLimit !== '') payload.perUserLimit = Number(body.perUserLimit)
   if (body.isActive !== undefined) payload.isActive = body.isActive === true || body.isActive === 'true'
 
   return payload
@@ -89,7 +90,7 @@ const validateCoupon = asyncHandler(async (req, res, next) => {
     isActive: true,
     startsAt: { $lte: new Date() },
     expiresAt: { $gte: new Date() },
-  })
+  }).select('+usedBy')
 
   if (!coupon) {
     return next(new ErrorResponse('Invalid or expired coupon code', 404))
@@ -97,6 +98,11 @@ const validateCoupon = asyncHandler(async (req, res, next) => {
 
   if (coupon.usageLimit && coupon.usedCount >= coupon.usageLimit) {
     return next(new ErrorResponse('Coupon usage limit reached', 400))
+  }
+
+  const usage = coupon.usedBy.find((entry) => entry.user.toString() === req.user._id.toString())
+  if (usage && usage.count >= coupon.perUserLimit) {
+    return next(new ErrorResponse('You have already used this coupon', 400))
   }
 
   if (normalizedCartTotal < coupon.minimumOrderAmount) {
@@ -109,6 +115,8 @@ const validateCoupon = asyncHandler(async (req, res, next) => {
       code: coupon.code,
       discountType: coupon.discountType,
       discountValue: coupon.discountValue,
+      perUserLimit: coupon.perUserLimit,
+      remainingUsesForUser: coupon.perUserLimit - (usage?.count || 0),
     },
   })
 })

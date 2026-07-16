@@ -41,6 +41,33 @@ const couponSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    perUserLimit: {
+      type: Number,
+      default: 1,
+      min: 1,
+    },
+    usedBy: {
+      type: [
+        {
+          user: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            required: true,
+          },
+          count: {
+            type: Number,
+            default: 1,
+            min: 1,
+          },
+          lastUsedAt: {
+            type: Date,
+            default: Date.now,
+          },
+        },
+      ],
+      default: [],
+      select: false,
+    },
     isActive: {
       type: Boolean,
       default: true,
@@ -51,5 +78,6 @@ const couponSchema = new mongoose.Schema(
 
 couponSchema.index({ code: 1, isActive: 1 })
 couponSchema.index({ startsAt: 1, expiresAt: 1 })
+couponSchema.index({ 'usedBy.user': 1 })
 
 module.exports = mongoose.model('Coupon', couponSchema)

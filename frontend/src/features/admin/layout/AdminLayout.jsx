@@ -1,5 +1,5 @@
 import { Link, NavLink, Navigate, Outlet, useLocation } from 'react-router'
-import { BarChart3, Boxes, ClipboardList, LayoutDashboard, MessageSquareText, Tags } from 'lucide-react'
+import { BarChart3, Boxes, ClipboardList, LayoutDashboard, MessageSquareText, Tags, TicketPercent, Users } from 'lucide-react'
 import { LoadingState } from '@/shared/ui/LoadingState'
 import { useAuth } from '@/features/auth/hooks/useAuth'
 
@@ -9,6 +9,8 @@ const adminLinks = [
   { to: '/admin/catalog', label: 'Categories & Brands', icon: Tags },
   { to: '/admin/orders', label: 'Orders', icon: ClipboardList },
   { to: '/admin/reviews', label: 'Reviews', icon: MessageSquareText },
+  { to: '/admin/coupons', label: 'Coupons', icon: TicketPercent },
+  { to: '/admin/customers', label: 'Customers', icon: Users },
 ]
 
 export const RequireAdmin = () => {

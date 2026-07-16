@@ -35,4 +35,24 @@ export const authApi = {
   async changePassword(payload) {
     return unwrapApiData(await apiClient.put('/auth/change-password', payload))
   },
+
+  async getAddresses() {
+    return unwrapApiData(await apiClient.get('/auth/addresses'))
+  },
+
+  async createAddress(payload) {
+    return unwrapApiData(await apiClient.post('/auth/addresses', payload))
+  },
+
+  async updateAddress(addressId, payload) {
+    return unwrapApiData(await apiClient.put(`/auth/addresses/${addressId}`, payload))
+  },
+
+  async deleteAddress(addressId) {
+    return unwrapApiData(await apiClient.delete(`/auth/addresses/${addressId}`))
+  },
+
+  async setDefaultAddress(addressId) {
+    return unwrapApiData(await apiClient.patch(`/auth/addresses/${addressId}/default`))
+  },
 }

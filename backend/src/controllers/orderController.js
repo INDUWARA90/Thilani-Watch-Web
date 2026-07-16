@@ -1,3 +1,4 @@
+const mongoose = require('mongoose')
 const Order = require('../models/Order')
 const Watch = require('../models/Watch')
 const Cart = require('../models/Cart')
@@ -5,9 +6,52 @@ const Coupon = require('../models/Coupon')
 const asyncHandler = require('../utils/asyncHandler')
 const ErrorResponse = require('../utils/ErrorResponse')
 const { getPaginationParams, formatPaginatedResponse } = require('../utils/queryHelpers')
+const { createPaymentIntent, createRefund } = require('../services/paymentGateway')
+const { sendOrderConfirmationEmail, sendShippingUpdateEmail } = require('../services/emailService')
 
 const ORDER_STATUSES = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled']
 const PAYMENT_STATUSES = ['pending', 'paid', 'failed', 'refunded']
+const RETURN_STATUSES = ['approved', 'rejected', 'received', 'refunded']
+
+const getCouponDiscount = (coupon, subtotal) => {
+  let discount = 0
+  if (coupon.discountType === 'percentage') {
+    discount = (subtotal * coupon.discountValue) / 100
+    if (coupon.maxDiscountAmount) discount = Math.min(discount, coupon.maxDiscountAmount)
+  } else {
+    discount = coupon.discountValue
+  }
+
+  return Math.min(discount, subtotal)
+}
+
+const markCouponUsed = (coupon, userId) => {
+  const usage = coupon.usedBy.find((entry) => entry.user.toString() === userId.toString())
+  if (usage) {
+    usage.count += 1
+    usage.lastUsedAt = new Date()
+  } else {
+    coupon.usedBy.push({ user: userId, count: 1, lastUsedAt: new Date() })
+  }
+  coupon.usedCount += 1
+}
+
+const initializeOrderPayment = async (order, user) => {
+  const payment = await createPaymentIntent({
+    paymentMethod: order.paymentMethod,
+    amount: order.total,
+    currency: order.items[0]?.currency || 'LKR',
+    orderId: order._id,
+    customerEmail: user.email,
+  })
+
+  order.payment = payment
+  if (order.paymentMethod === 'cod' || order.paymentMethod === 'bank_transfer') {
+    order.paymentStatus = 'pending'
+  }
+  await order.save()
+  return order
+}
 
 /**
  * Create a new order from current cart or direct items.
@@ -15,93 +59,136 @@ const PAYMENT_STATUSES = ['pending', 'paid', 'failed', 'refunded']
  */
 const createOrder = asyncHandler(async (req, res, next) => {
   const { shippingAddress, billingAddress, paymentMethod, notes } = req.body
+  const session = await mongoose.startSession()
+  let order
+  let committed = false
 
-  // 1. Fetch user's cart
-  const cart = await Cart.findOne({ user: req.user._id }).populate('items.watch')
-  if (!cart || cart.items.length === 0) {
-    return next(new ErrorResponse('Cart is empty', 400))
-  }
+  try {
+    await session.withTransaction(async () => {
+      const cart = await Cart.findOne({ user: req.user._id }).session(session).populate('items.watch')
+      if (!cart || cart.items.length === 0) {
+        throw new ErrorResponse('Cart is empty', 400)
+      }
 
-  // 2. Validate stock for all items
-  for (const item of cart.items) {
-    const watch = item.watch
-    if (!watch || !watch.isPublished || watch.deletedAt) {
-      return next(new ErrorResponse(`Watch ${watch?.name || 'Unknown'} is no longer available.`, 400))
-    }
-    if (item.quantity > watch.stockQuantity) {
-      return next(
-        new ErrorResponse(`Insufficient stock for ${watch.name}. Only ${watch.stockQuantity} left.`, 400)
+      for (const item of cart.items) {
+        const watch = item.watch
+        if (!watch || !watch.isPublished || watch.deletedAt) {
+          throw new ErrorResponse(`Watch ${watch?.name || 'Unknown'} is no longer available.`, 400)
+        }
+        if (item.quantity > watch.stockQuantity) {
+          throw new ErrorResponse(`Insufficient stock for ${watch.name}. Only ${watch.stockQuantity} left.`, 400)
+        }
+      }
+
+      const orderItems = cart.items.map((item) => ({
+        watch: item.watch._id,
+        name: item.watch.name,
+        sku: item.watch.sku,
+        quantity: item.quantity,
+        price: item.watch.price,
+      }))
+
+      const subtotal = cart.items.reduce((acc, item) => acc + item.quantity * item.watch.price, 0)
+      const normalizedCouponCode = req.body.couponCode ? String(req.body.couponCode).trim().toUpperCase() : ''
+      let discount = 0
+
+      if (normalizedCouponCode) {
+        const coupon = await Coupon.findOne({
+          code: normalizedCouponCode,
+          isActive: true,
+          startsAt: { $lte: new Date() },
+          expiresAt: { $gte: new Date() },
+        })
+          .select('+usedBy')
+          .session(session)
+
+        if (!coupon) {
+          throw new ErrorResponse('Invalid or expired coupon code', 400)
+        }
+
+        if (coupon.usageLimit && coupon.usedCount >= coupon.usageLimit) {
+          throw new ErrorResponse('Coupon usage limit reached', 400)
+        }
+
+        const usage = coupon.usedBy.find((entry) => entry.user.toString() === req.user._id.toString())
+        if (usage && usage.count >= coupon.perUserLimit) {
+          throw new ErrorResponse('You have already used this coupon', 400)
+        }
+
+        if (subtotal < coupon.minimumOrderAmount) {
+          throw new ErrorResponse(`Minimum order amount of ${coupon.minimumOrderAmount} not met`, 400)
+        }
+
+        discount = getCouponDiscount(coupon, subtotal)
+        markCouponUsed(coupon, req.user._id)
+        await coupon.save({ session })
+      }
+
+      const createdOrders = await Order.create(
+        [
+          {
+            user: req.user._id,
+            items: orderItems,
+            shippingAddress,
+            billingAddress: billingAddress || shippingAddress,
+            paymentMethod,
+            discount,
+            notes,
+            couponCode: normalizedCouponCode || undefined,
+            shippingFee: 500,
+          },
+        ],
+        { session },
       )
-    }
-  }
+      order = createdOrders[0]
 
-  // 3. Prepare order items snapshot
-  const orderItems = cart.items.map((item) => ({
-    watch: item.watch._id,
-    name: item.watch.name,
-    sku: item.watch.sku,
-    quantity: item.quantity,
-    price: item.watch.price, // Use current price from DB, not from cart request
-  }))
+      for (const item of cart.items) {
+        const stockUpdate = await Watch.updateOne(
+          {
+            _id: item.watch._id,
+            isPublished: true,
+            deletedAt: null,
+            stockQuantity: { $gte: item.quantity },
+          },
+          {
+            $inc: { stockQuantity: -item.quantity, salesCount: item.quantity },
+            $set: { inStock: item.watch.stockQuantity - item.quantity > 0 },
+          },
+          { session },
+        )
 
-  // 4. Calculate Discount from Coupon
-  const { couponCode } = req.body
-  let discount = 0
-  if (couponCode) {
-    const coupon = await Coupon.findOne({
-      code: String(couponCode).trim().toUpperCase(),
-      isActive: true,
-      startsAt: { $lte: new Date() },
-      expiresAt: { $gte: new Date() },
+        if (stockUpdate.modifiedCount !== 1) {
+          throw new ErrorResponse(`Insufficient stock for ${item.watch.name}.`, 400)
+        }
+      }
+
+      await Cart.deleteOne({ user: req.user._id }, { session })
     })
-
-    if (!coupon) {
-      return next(new ErrorResponse('Invalid or expired coupon code', 400))
-    }
-
-    if (coupon.usageLimit && coupon.usedCount >= coupon.usageLimit) {
-      return next(new ErrorResponse('Coupon usage limit reached', 400))
-    }
-
-    const subtotal = cart.items.reduce((acc, item) => acc + item.quantity * item.watch.price, 0)
-    if (subtotal < coupon.minimumOrderAmount) {
-      return next(new ErrorResponse(`Minimum order amount of ${coupon.minimumOrderAmount} not met`, 400))
-    }
-
-    if (coupon.discountType === 'percentage') {
-      discount = (subtotal * coupon.discountValue) / 100
-      if (coupon.maxDiscountAmount) discount = Math.min(discount, coupon.maxDiscountAmount)
-    } else {
-      discount = coupon.discountValue
-    }
-    discount = Math.min(discount, subtotal)
-    coupon.usedCount += 1
-    await coupon.save()
+    committed = true
+  } finally {
+    await session.endSession()
   }
 
-  // 5. Create Order
-  const order = await Order.create({
-    user: req.user._id,
-    items: orderItems,
-    shippingAddress,
-    billingAddress: billingAddress || shippingAddress,
-    paymentMethod,
-    discount,
-    notes,
-    shippingFee: 500, // Example static fee, logic can be added here
-  })
+  if (!committed || !order) {
+    return next(new ErrorResponse('Unable to create order', 500))
+  }
 
-  // 6. Reduce stock for each watch
-  const stockUpdates = cart.items.map((item) =>
-    Watch.findByIdAndUpdate(item.watch._id, {
-      $inc: { stockQuantity: -item.quantity, salesCount: item.quantity },
-    }),
-  )
-  await Promise.all(stockUpdates)
+  try {
+    order = await initializeOrderPayment(order, req.user)
+  } catch (error) {
+    order.paymentStatus = 'failed'
+    order.paymentFailedAt = new Date()
+    order.payment = {
+      provider: paymentMethod === 'card' ? process.env.PAYMENT_PROVIDER || 'mock' : paymentMethod,
+      amount: order.total,
+      currency: 'LKR',
+      failureReason: error.message,
+    }
+    await order.save()
+    throw error
+  }
 
-  // 7. Clear user's cart
-  await Cart.findOneAndDelete({ user: req.user._id })
-
+  await sendOrderConfirmationEmail(req.user, order)
   res.status(201).json({ success: true, data: order })
 })
 
@@ -160,6 +247,29 @@ const cancelOrder = asyncHandler(async (req, res, next) => {
   res.json({ success: true, data: order, message: 'Order cancelled and stock restored' })
 })
 
+const requestReturn = asyncHandler(async (req, res, next) => {
+  const { reason, notes } = req.body
+  const order = await Order.findOne({ _id: req.params.id, user: req.user._id })
+
+  if (!order) return next(new ErrorResponse('Order not found', 404))
+  if (order.orderStatus !== 'delivered') {
+    return next(new ErrorResponse('Returns can only be requested for delivered orders', 400))
+  }
+  if (order.returnRequest?.status && order.returnRequest.status !== 'none') {
+    return next(new ErrorResponse('Return has already been requested for this order', 400))
+  }
+
+  order.returnRequest = {
+    status: 'requested',
+    reason,
+    notes,
+    requestedAt: new Date(),
+  }
+  await order.save()
+
+  res.json({ success: true, data: order, message: 'Return requested' })
+})
+
 /**
  * Admin: Get all orders.
  */
@@ -198,9 +308,15 @@ const updateOrderStatus = asyncHandler(async (req, res, next) => {
   if (orderStatus === 'delivered') update.deliveredAt = new Date()
   if (orderStatus === 'cancelled') update.cancelledAt = new Date()
 
-  const order = await Order.findByIdAndUpdate(req.params.id, update, { new: true, runValidators: true })
+  const order = await Order.findByIdAndUpdate(req.params.id, update, { new: true, runValidators: true }).populate(
+    'user',
+    'name email',
+  )
 
   if (!order) return next(new ErrorResponse('Order not found', 404))
+  if (['shipped', 'delivered'].includes(orderStatus)) {
+    await sendShippingUpdateEmail(order.user, order)
+  }
   res.json({ success: true, data: order })
 })
 
@@ -226,9 +342,10 @@ const updateOrderShipping = asyncHandler(async (req, res, next) => {
       ...(nextStatus === 'delivered' ? { deliveredAt: new Date() } : {}),
     },
     { new: true, runValidators: true }
-  )
+  ).populate('user', 'name email')
 
   if (!order) return next(new ErrorResponse('Order not found', 404))
+  await sendShippingUpdateEmail(order.user, order)
   res.json({ success: true, data: order })
 })
 
@@ -242,7 +359,11 @@ const updatePaymentStatus = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse('Invalid payment status', 400))
   }
 
-  const order = await Order.findByIdAndUpdate(req.params.id, { paymentStatus }, { new: true, runValidators: true })
+  const update = { paymentStatus }
+  if (paymentStatus === 'paid') update.paidAt = new Date()
+  if (paymentStatus === 'failed') update.paymentFailedAt = new Date()
+
+  const order = await Order.findByIdAndUpdate(req.params.id, update, { new: true, runValidators: true })
 
   if (!order) return next(new ErrorResponse('Order not found', 404))
   res.json({ success: true, data: order })
@@ -256,6 +377,82 @@ const confirmPayment = asyncHandler(async (req, res, next) => {
   if (!order) return next(new ErrorResponse('Order not found', 404))
 
   order.paymentStatus = 'paid'
+  order.paidAt = new Date()
+  if (req.body?.transactionId) order.payment = { ...(order.payment || {}), transactionId: req.body.transactionId }
+  await order.save()
+  res.json({ success: true, data: order })
+})
+
+const createOrderPaymentIntent = asyncHandler(async (req, res, next) => {
+  const order = await Order.findById(req.params.id).populate('user', 'name email')
+  if (!order) return next(new ErrorResponse('Order not found', 404))
+
+  if (order.user._id.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
+    return next(new ErrorResponse('Not authorized to pay this order', 403))
+  }
+
+  if (order.paymentMethod !== 'card') {
+    return next(new ErrorResponse('Payment intent is only available for card orders', 400))
+  }
+
+  await initializeOrderPayment(order, order.user)
+  res.json({ success: true, data: order.payment })
+})
+
+const processReturn = asyncHandler(async (req, res, next) => {
+  const { status, notes } = req.body
+  if (!RETURN_STATUSES.includes(status)) {
+    return next(new ErrorResponse('Invalid return status', 400))
+  }
+
+  const order = await Order.findById(req.params.id)
+  if (!order) return next(new ErrorResponse('Order not found', 404))
+  if (!order.returnRequest || order.returnRequest.status === 'none') {
+    return next(new ErrorResponse('Return has not been requested for this order', 400))
+  }
+
+  order.returnRequest.status = status
+  order.returnRequest.notes = notes || order.returnRequest.notes
+  order.returnRequest.processedAt = new Date()
+  order.returnRequest.processedBy = req.user._id
+  await order.save()
+
+  res.json({ success: true, data: order })
+})
+
+const refundOrder = asyncHandler(async (req, res, next) => {
+  const { amount, reason } = req.body
+  const order = await Order.findById(req.params.id)
+
+  if (!order) return next(new ErrorResponse('Order not found', 404))
+  if (order.paymentStatus !== 'paid') {
+    return next(new ErrorResponse('Only paid orders can be refunded', 400))
+  }
+
+  const refundAmount = amount !== undefined ? Number(amount) : order.total
+  if (!refundAmount || refundAmount <= 0 || refundAmount > order.total) {
+    return next(new ErrorResponse('Refund amount must be greater than 0 and less than or equal to order total', 400))
+  }
+
+  const refund = await createRefund({ order, amount: refundAmount, reason })
+
+  order.refund = {
+    status: refund.status,
+    amount: refundAmount,
+    reason,
+    providerRefundId: refund.providerRefundId,
+    refundedAt: refund.status === 'succeeded' ? new Date() : undefined,
+  }
+
+  if (refund.status === 'succeeded' && refundAmount >= order.total) {
+    order.paymentStatus = 'refunded'
+    if (order.returnRequest?.status && order.returnRequest.status !== 'none') {
+      order.returnRequest.status = 'refunded'
+      order.returnRequest.processedAt = new Date()
+      order.returnRequest.processedBy = req.user._id
+    }
+  }
+
   await order.save()
   res.json({ success: true, data: order })
 })
@@ -270,4 +467,8 @@ module.exports = {
   updateOrderShipping,
   updatePaymentStatus,
   confirmPayment,
+  createOrderPaymentIntent,
+  processReturn,
+  refundOrder,
+  requestReturn,
 }

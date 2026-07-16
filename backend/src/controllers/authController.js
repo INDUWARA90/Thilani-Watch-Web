@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken')
 const User = require('../models/User')
 const asyncHandler = require('../utils/asyncHandler')
 const ErrorResponse = require('../utils/ErrorResponse')
+const { sendPasswordChangedEmail, sendWelcomeEmail } = require('../services/emailService')
 
 const generateToken = (user) =>
   jwt.sign(
@@ -60,6 +61,7 @@ const register = asyncHandler(async (req, res, next) => {
     addresses,
   })
 
+  await sendWelcomeEmail(user)
   sendAuthResponse(res, 201, user)
 })
 
@@ -111,6 +113,111 @@ const updateProfile = asyncHandler(async (req, res, next) => {
   res.json({ success: true, data: user })
 })
 
+const normalizeAddress = (body) => {
+  const address = {
+    label: body.label,
+    fullName: body.fullName,
+    phone: body.phone,
+    addressLine1: body.addressLine1,
+    addressLine2: body.addressLine2,
+    city: body.city,
+    district: body.district,
+    postalCode: body.postalCode,
+    country: body.country,
+  }
+
+  if (body.isDefault !== undefined) {
+    address.isDefault = body.isDefault === true || body.isDefault === 'true'
+  }
+
+  return address
+}
+
+const getAddresses = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id)
+  res.json({ success: true, data: user.addresses })
+})
+
+const addAddress = asyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.user._id)
+  const address = normalizeAddress(req.body)
+
+  if (!address.fullName || !address.phone || !address.addressLine1 || !address.city || !address.postalCode) {
+    return next(new ErrorResponse('Full name, phone, address line 1, city, and postal code are required', 400))
+  }
+
+  if (address.isDefault || user.addresses.length === 0) {
+    user.addresses.forEach((savedAddress) => {
+      savedAddress.isDefault = false
+    })
+    address.isDefault = true
+  }
+  if (address.isDefault === undefined) address.isDefault = user.addresses.length === 0
+
+  user.addresses.push(address)
+  await user.save()
+
+  res.status(201).json({ success: true, data: user.addresses[user.addresses.length - 1] })
+})
+
+const updateAddress = asyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.user._id)
+  const address = user.addresses.id(req.params.addressId)
+
+  if (!address) {
+    return next(new ErrorResponse('Address not found', 404))
+  }
+
+  const updates = normalizeAddress(req.body)
+  Object.entries(updates).forEach(([key, value]) => {
+    if (value !== undefined) address[key] = value
+  })
+
+  if (address.isDefault) {
+    user.addresses.forEach((savedAddress) => {
+      if (savedAddress._id.toString() !== address._id.toString()) savedAddress.isDefault = false
+    })
+  }
+
+  await user.save()
+  res.json({ success: true, data: address })
+})
+
+const deleteAddress = asyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.user._id)
+  const address = user.addresses.id(req.params.addressId)
+
+  if (!address) {
+    return next(new ErrorResponse('Address not found', 404))
+  }
+
+  const wasDefault = address.isDefault
+  address.deleteOne()
+
+  if (wasDefault && user.addresses.length > 0) {
+    user.addresses[0].isDefault = true
+  }
+
+  await user.save()
+  res.json({ success: true, data: user.addresses, message: 'Address deleted' })
+})
+
+const setDefaultAddress = asyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.user._id)
+  const address = user.addresses.id(req.params.addressId)
+
+  if (!address) {
+    return next(new ErrorResponse('Address not found', 404))
+  }
+
+  user.addresses.forEach((savedAddress) => {
+    savedAddress.isDefault = savedAddress._id.toString() === address._id.toString()
+  })
+
+  await user.save()
+  res.json({ success: true, data: address })
+})
+
 const changePassword = asyncHandler(async (req, res, next) => {
   const { currentPassword, newPassword } = req.body
 
@@ -127,14 +234,20 @@ const changePassword = asyncHandler(async (req, res, next) => {
   user.password = newPassword
   await user.save()
 
+  await sendPasswordChangedEmail(user)
   res.json({ success: true, message: 'Password changed successfully' })
 })
 
 module.exports = {
+  addAddress,
   changePassword,
+  deleteAddress,
   getMe,
+  getAddresses,
   login,
   logout,
   register,
+  setDefaultAddress,
+  updateAddress,
   updateProfile,
 }

@@ -26,6 +26,8 @@ export const OrderDetailPage = () => {
   const [order, setOrder] = useState(null)
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
+  const [paymentIntent, setPaymentIntent] = useState(null)
+  const [returnForm, setReturnForm] = useState({ notes: '', reason: '' })
   const [isLoading, setIsLoading] = useState(true)
 
   const loadOrder = async () => {
@@ -80,6 +82,35 @@ export const OrderDetailPage = () => {
     }
   }
 
+  const handleRefreshPaymentIntent = async () => {
+    setError('')
+    setMessage('')
+    try {
+      const payload = await ordersApi.refreshPaymentIntent(getOrderId(order))
+      setPaymentIntent(payload?.payment || payload)
+      setMessage('Payment intent refreshed.')
+    } catch (apiError) {
+      setError(getApiErrorMessage(apiError, 'Unable to refresh payment intent.'))
+    }
+  }
+
+  const handleReturnRequest = async (event) => {
+    event.preventDefault()
+    setError('')
+    setMessage('')
+    try {
+      await ordersApi.requestReturn(getOrderId(order), {
+        notes: returnForm.notes.trim(),
+        reason: returnForm.reason.trim(),
+      })
+      setReturnForm({ notes: '', reason: '' })
+      setMessage('Return request submitted.')
+      await loadOrder()
+    } catch (apiError) {
+      setError(getApiErrorMessage(apiError, 'Unable to request return.'))
+    }
+  }
+
   if (isLoading) {
     return <LoadingState label="Loading order details" variant="form" />
   }
@@ -109,11 +140,38 @@ export const OrderDetailPage = () => {
                   Cancel order
                 </button>
               )}
+              {order.paymentMethod === 'card' && getPaymentStatus(order) !== 'paid' && (
+                <button className="mt-4 ml-3 inline-flex min-h-11 cursor-pointer items-center justify-center rounded-[14px] border border-[#DEE2E6] bg-[rgba(18,18,18,0.04)] px-4 text-sm font-normal text-[#121212] hover:bg-[rgba(18,18,18,0.08)]" type="button" onClick={handleRefreshPaymentIntent}>
+                  Refresh payment intent
+                </button>
+              )}
+              {paymentIntent?.clientSecret && (
+                <div className="mt-4 rounded-[14px] border border-[#DEE2E6] bg-[#F8F9FA] p-4 text-sm text-[#212529]">
+                  <p className="m-0 font-bold text-[#121212]">Payment client secret</p>
+                  <p className="mt-2 break-all">{paymentIntent.clientSecret}</p>
+                </div>
+              )}
             </div>
 
             <OrderItemsTable order={order} />
             <AddressCard address={order.shippingAddress} title="Shipping Address" />
             {order.billingAddress && <AddressCard address={order.billingAddress} title="Billing Address" />}
+            {canRequestReturn(order) && (
+              <form className="rounded-[20px] border border-[#DEE2E6] bg-white p-5" onSubmit={handleReturnRequest}>
+                <h2 className="mb-4 text-xl font-bold text-[#121212]">Request a return</h2>
+                <label className="mb-3 grid gap-2 text-base font-normal text-[#121212]">
+                  Reason
+                  <input className={inputClass} required value={returnForm.reason} onChange={(event) => setReturnForm((current) => ({ ...current, reason: event.target.value }))} />
+                </label>
+                <label className="mb-3 grid gap-2 text-base font-normal text-[#121212]">
+                  Notes
+                  <textarea className={`${inputClass} min-h-24 py-3`} value={returnForm.notes} onChange={(event) => setReturnForm((current) => ({ ...current, notes: event.target.value }))} />
+                </label>
+                <button className="inline-flex min-h-11 cursor-pointer items-center justify-center rounded-[14px] bg-[#121212] px-5 text-sm font-normal text-white hover:bg-[#272222]" type="submit">
+                  Submit return request
+                </button>
+              </form>
+            )}
           </div>
 
           <aside className="h-fit rounded-[20px] border border-[#DEE2E6] bg-white p-5 shadow-[13px_14px_12.6px_0_rgba(0,0,0,0.05)]">
@@ -174,6 +232,10 @@ const AddressCard = ({ address, title }) => {
 const StatusPill = ({ label }) => (
   <span className="inline-flex w-fit rounded-full bg-green-100 px-2.5 py-1 text-xs font-extrabold text-green-800">{label}</span>
 )
+
+const inputClass = 'min-h-[45px] min-w-0 border border-[#DEE2E6] bg-white px-[15px] text-[#121212] outline-none focus:border-[#0D6EFD] focus:ring-2 focus:ring-[#0D6EFD]/25'
+
+const canRequestReturn = (order) => getOrderStatus(order) === 'delivered' && !order.returnRequest && !order.returnStatus
 
 const SummaryRow = ({ isStrong = false, label, value }) => (
   <div className="mb-3 flex items-center justify-between gap-3">

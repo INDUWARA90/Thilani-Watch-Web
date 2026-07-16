@@ -1,60 +1,57 @@
 const bcrypt = require('bcrypt')
 const mongoose = require('mongoose')
 
-const addressSchema = new mongoose.Schema(
-  {
-    label: {
-      type: String,
-      default: '',
-      trim: true,
-    },
-    fullName: {
-      type: String,
-      default: '',
-      trim: true,
-    },
-    phone: {
-      type: String,
-      default: '',
-      trim: true,
-    },
-    addressLine1: {
-      type: String,
-      default: '',
-      trim: true,
-    },
-    addressLine2: {
-      type: String,
-      default: '',
-      trim: true,
-    },
-    city: {
-      type: String,
-      default: '',
-      trim: true,
-    },
-    district: {
-      type: String,
-      default: '',
-      trim: true,
-    },
-    postalCode: {
-      type: String,
-      default: '',
-      trim: true,
-    },
-    country: {
-      type: String,
-      default: 'Sri Lanka',
-      trim: true,
-    },
-    isDefault: {
-      type: Boolean,
-      default: false,
-    },
+const addressSchema = new mongoose.Schema({
+  label: {
+    type: String,
+    default: '',
+    trim: true,
   },
-  { _id: false },
-)
+  fullName: {
+    type: String,
+    default: '',
+    trim: true,
+  },
+  phone: {
+    type: String,
+    default: '',
+    trim: true,
+  },
+  addressLine1: {
+    type: String,
+    default: '',
+    trim: true,
+  },
+  addressLine2: {
+    type: String,
+    default: '',
+    trim: true,
+  },
+  city: {
+    type: String,
+    default: '',
+    trim: true,
+  },
+  district: {
+    type: String,
+    default: '',
+    trim: true,
+  },
+  postalCode: {
+    type: String,
+    default: '',
+    trim: true,
+  },
+  country: {
+    type: String,
+    default: 'Sri Lanka',
+    trim: true,
+  },
+  isDefault: {
+    type: Boolean,
+    default: false,
+  },
+})
 
 const userSchema = new mongoose.Schema(
   {
