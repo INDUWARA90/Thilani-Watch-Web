@@ -5,10 +5,12 @@ import { useAuth } from '@/features/auth/hooks/useAuth'
 import { useCommerce } from '@/features/commerce/hooks/useCommerce'
 
 export const Header = () => {
-  const { isAuthenticated } = useAuth()
+  const { isAdmin, isAuthenticated, user } = useAuth()
   const { cart, wishlist } = useCommerce()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const cartCount = cart?.items?.reduce((total, item) => total + Number(item.quantity || 1), 0) || 0
+  const cartCount = getCartCount(cart)
+  const accountLabel = isAdmin ? 'Admin' : 'Account'
+  const accountInitial = (user?.name || user?.email || 'User').trim().charAt(0).toUpperCase()
 
   return (
     <header className="sticky top-0 z-40 border-b border-[#DEE2E6] bg-white">
@@ -27,7 +29,6 @@ export const Header = () => {
           <LuxuryNavLink to="/" end>Store</LuxuryNavLink>
           <LuxuryNavLink to="/watches">Watches</LuxuryNavLink>
           {isAuthenticated && <LuxuryNavLink to="/orders">Orders</LuxuryNavLink>}
-          {isAuthenticated && <LuxuryNavLink to="/dashboard">Dashboard</LuxuryNavLink>}
         </nav>
 
         <div className="ml-auto flex items-center gap-2 lg:ml-0">
@@ -39,9 +40,7 @@ export const Header = () => {
               <IconLink to="/cart" label="Cart" count={cartCount}>
                 <ShoppingBag className="h-5 w-5" />
               </IconLink>
-              <IconLink to="/dashboard" label="Profile">
-                <User className="h-5 w-5" />
-              </IconLink>
+              <AccountLink initial={accountInitial} label={accountLabel} />
             </>
           ) : (
             <Link className="hidden min-h-11 items-center rounded-[14px] bg-[#121212] px-8 text-sm font-normal text-white no-underline transition hover:bg-[#272222] active:scale-[0.98] sm:inline-flex" to="/login">
@@ -121,4 +120,36 @@ const IconLink = ({ children, count, label, to }) => (
     {children}
     {count ? <span className="absolute -right-1 -top-1 min-w-5 rounded-full bg-[#F49006] px-1.5 text-center text-[11px] font-normal text-white">{count}</span> : null}
   </Link>
+)
+
+const getCartCount = (cart) => {
+  let count = 0
+
+  for (const item of cart?.items || []) {
+    count += Number(item.quantity || 1)
+  }
+
+  return count
+}
+
+const AccountLink = ({ initial, label }) => (
+  <NavLink
+    to="/dashboard"
+    aria-label="Dashboard"
+    className={({ isActive }) =>
+      [
+        'hidden h-11 items-center gap-2 rounded-[14px] border px-2.5 pr-4 text-sm font-semibold no-underline transition sm:inline-flex',
+        isActive
+          ? 'border-[#F49006] bg-[rgba(244,144,6,0.1)] text-[#F49006]'
+          : 'border-[#DEE2E6] bg-white text-[#121212] hover:border-[#F49006] hover:bg-[rgba(244,144,6,0.08)] hover:text-[#F49006]',
+      ]
+        .filter(Boolean)
+        .join(' ')
+    }
+  >
+    <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#121212] text-xs font-bold uppercase text-white">
+      {initial || <User className="h-4 w-4" />}
+    </span>
+    <span className="leading-none">{label}</span>
+  </NavLink>
 )

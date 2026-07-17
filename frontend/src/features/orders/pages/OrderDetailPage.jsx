@@ -1,8 +1,6 @@
-import { useState } from 'react'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link, useParams } from 'react-router'
+import { ArrowLeft, CalendarDays, ClipboardList, CreditCard, MapPin, RefreshCcw, ShieldAlert, XCircle } from 'lucide-react'
 import { LoadingState } from '@/shared/ui/LoadingState'
-import { getApiErrorMessage } from '@/shared/api/apiClient'
 import { usePageTitle } from '@/shared/hooks/usePageTitle'
 import {
   canCancelOrder,
@@ -15,121 +13,159 @@ import {
   getOrderSubtotal,
   getOrderTotal,
   getPaymentStatus,
-  normalizeOrder,
   SHIPPING_FEE,
 } from '@/features/orders/lib/orderUtils'
-import { ordersApi } from '@/features/orders/api/ordersApi'
+import { useOrderDetail } from '@/features/orders/hooks/useOrderDetail'
 
 export const OrderDetailPage = () => {
   const { id } = useParams()
   usePageTitle('Order Details | Thilani Watch Web')
 
-  const [error, setError] = useState('')
-  const [message, setMessage] = useState('')
-  const [returnForm, setReturnForm] = useState({ notes: '', reason: '' })
-  const queryClient = useQueryClient()
+  const { cancelOrder, error, isLoading, message, order, requestReturn, returnForm, updateReturnField } = useOrderDetail(id)
 
-  const orderQuery = useQuery({
-    queryFn: async () => normalizeOrder(await ordersApi.getOrder(id)),
-    queryKey: ['orders', 'detail', id],
-  })
-  const order = orderQuery.data
-
-  const handleCancel = async () => {
-    setError('')
-    setMessage('')
-    try {
-      await ordersApi.cancelOrder(getOrderId(order))
-      setMessage('Order cancelled.')
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: ['orders', 'detail', id] }),
-        queryClient.invalidateQueries({ queryKey: ['orders', 'mine'] }),
-      ])
-    } catch (apiError) {
-      setError(getApiErrorMessage(apiError, 'Unable to cancel order.'))
-    }
+  if (isLoading) {
+    return (
+      <div className="mx-auto max-w-[1200px] p-6">
+        <LoadingState label="Loading order details" variant="form" />
+      </div>
+    )
   }
 
-  const handleReturnRequest = async (event) => {
-    event.preventDefault()
-    setError('')
-    setMessage('')
-    try {
-      await ordersApi.requestReturn(getOrderId(order), {
-        notes: returnForm.notes.trim(),
-        reason: returnForm.reason.trim(),
-      })
-      setReturnForm({ notes: '', reason: '' })
-      setMessage('Return request submitted.')
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: ['orders', 'detail', id] }),
-        queryClient.invalidateQueries({ queryKey: ['orders', 'mine'] }),
-      ])
-    } catch (apiError) {
-      setError(getApiErrorMessage(apiError, 'Unable to request return.'))
-    }
-  }
-
-  if (orderQuery.isLoading) {
-    return <LoadingState label="Loading order details" variant="form" />
-  }
+  const orderStatus = order ? getOrderStatus(order) : ''
+  const paymentStatus = order ? getPaymentStatus(order) : ''
 
   return (
-    <main>
-      <Link className="mb-5 inline-flex min-h-11 items-center rounded-[14px] border border-[#DEE2E6] bg-[rgba(18,18,18,0.04)] px-8 text-sm font-normal text-[#121212] no-underline hover:bg-[rgba(18,18,18,0.08)]" to="/orders">
+    <main className="mx-auto max-w-[1200px] px-4 py-8 bg-white min-h-screen sm:px-6 lg:px-8">
+      {/* Back Button Link */}
+      <Link 
+        className="mb-6 inline-flex h-10 items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 text-xs font-semibold text-slate-700 no-underline shadow-sm transition-all duration-200 hover:bg-slate-50 hover:text-slate-900" 
+        to="/orders"
+      >
+        <ArrowLeft className="h-4 w-4" />
         Back to orders
       </Link>
 
-      {(error || orderQuery.error) && <div className="mb-5 border border-[#DC3545] bg-red-50 px-4 py-3 font-normal text-[#DC3545]">{error || getApiErrorMessage(orderQuery.error, 'Unable to load order.')}</div>}
-      {message && <div className="mb-5 border border-[#198754] bg-green-50 px-4 py-3 font-normal text-[#198754]">{message}</div>}
+      {/* Modern Alert Notifications */}
+      {error && (
+        <div className="mb-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-medium text-red-600 flex items-center gap-2.5 shadow-sm animate-fade-in">
+          <ShieldAlert className="h-5 w-5 shrink-0 text-red-500" />
+          {error}
+        </div>
+      )}
+      
+      {message && (
+        <div className="mb-6 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm font-medium text-emerald-700 flex items-center gap-2.5 shadow-sm animate-fade-in">
+          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-white text-xs font-bold">✓</span>
+          {message}
+        </div>
+      )}
 
       {order && (
-        <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
-          <div className="grid gap-5">
-            <div className="rounded-[20px] border border-[#DEE2E6] bg-white p-5 shadow-[13px_14px_12.6px_0_rgba(0,0,0,0.05)]">
-              <p className="mb-2 text-sm font-normal text-[#F49006]">Order detail</p>
-              <h1 className="mb-3 text-3xl font-bold leading-tight text-[#121212]">{order.orderNumber || getOrderId(order)}</h1>
-              <div className="flex flex-wrap gap-2">
-                <StatusPill label={getOrderStatus(order)} />
-                <StatusPill label={`Payment: ${getPaymentStatus(order)}`} />
+        <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
+          <div className="grid gap-6">
+            {/* Essential Header Banner Card */}
+            <div className="rounded-2xl border border-slate-100 bg-white p-6 shadow-[0_4px_25px_rgba(0,0,0,0.02)] relative overflow-hidden">
+              <div className="relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                  <p className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-slate-400">Order Ref</p>
+                  <h1 className="text-2xl font-black tracking-tight text-slate-800 sm:text-3xl">
+                    {order.orderNumber || getOrderId(order)}
+                  </h1>
+                  <p className="mt-2 flex items-center gap-2 text-xs font-medium text-slate-500">
+                    <CalendarDays className="h-4 w-4 text-slate-400" />
+                    Placed on {formatDate(order.createdAt)}
+                  </p>
+                </div>
+                
+                <div className="flex flex-wrap items-center gap-2 sm:self-start">
+                  <StatusPill label={orderStatus} tone={getStatusTone(orderStatus)} />
+                  <StatusPill label={`Payment: ${paymentStatus}`} tone={getStatusTone(paymentStatus)} />
+                </div>
               </div>
-              <p className="mt-3 text-[#212529]">Created {formatDate(order.createdAt)}</p>
+
+              {/* Action Drawer Footer within Header */}
               {canCancelOrder(order) && (
-                <button className="mt-4 inline-flex min-h-11 cursor-pointer items-center justify-center rounded-[14px] border border-[#DC3545] bg-red-50 px-4 text-sm font-normal text-[#DC3545] hover:bg-red-100" type="button" onClick={handleCancel}>
-                  Cancel order
-                </button>
+                <div className="mt-6 border-t border-slate-100 pt-4 flex justify-end">
+                  <button 
+                    className="inline-flex h-9 items-center gap-2 rounded-xl border border-red-200 bg-red-50/50 px-4 text-xs font-semibold text-red-600 transition-all duration-200 hover:bg-red-50 hover:text-red-700" 
+                    type="button" 
+                    onClick={cancelOrder}
+                  >
+                    <XCircle className="h-4 w-4" />
+                    Cancel order
+                  </button>
+                </div>
               )}
             </div>
 
+            {/* Custom Interactive Section Cards */}
             <OrderItemsTable order={order} />
-            <AddressCard address={order.shippingAddress} title="Shipping Address" />
-            {order.billingAddress && <AddressCard address={order.billingAddress} title="Billing Address" />}
+            
+            <div className="grid gap-6 sm:grid-cols-2">
+              <AddressCard address={order.shippingAddress} title="Shipping Address" />
+              {order.billingAddress && <AddressCard address={order.billingAddress} title="Billing Address" />}
+            </div>
+
+            {/* Return Request Workflow Area */}
             {canRequestReturn(order) && (
-              <form className="rounded-[20px] border border-[#DEE2E6] bg-white p-5" onSubmit={handleReturnRequest}>
-                <h2 className="mb-4 text-xl font-bold text-[#121212]">Request a return</h2>
-                <label className="mb-3 grid gap-2 text-base font-normal text-[#121212]">
-                  Reason
-                  <input className={inputClass} required value={returnForm.reason} onChange={(event) => setReturnForm((current) => ({ ...current, reason: event.target.value }))} />
-                </label>
-                <label className="mb-3 grid gap-2 text-base font-normal text-[#121212]">
-                  Notes
-                  <textarea className={`${inputClass} min-h-24 py-3`} value={returnForm.notes} onChange={(event) => setReturnForm((current) => ({ ...current, notes: event.target.value }))} />
-                </label>
-                <button className="inline-flex min-h-11 cursor-pointer items-center justify-center rounded-[14px] bg-[#121212] px-5 text-sm font-normal text-white hover:bg-[#272222]" type="submit">
-                  Submit return request
-                </button>
+              <form className="rounded-2xl border border-slate-100 bg-white p-6 shadow-[0_4px_20px_rgba(0,0,0,0.02)]" onSubmit={requestReturn}>
+                <div className="mb-4 flex items-center gap-2.5">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-orange-50 text-orange-500">
+                    <RefreshCcw className="h-4 w-4" />
+                  </span>
+                  <h2 className="text-lg font-bold text-slate-800 tracking-tight">Request a return</h2>
+                </div>
+                
+                <div className="grid gap-4">
+                  <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
+                    Reason for return
+                    <input 
+                      className={inputClass} 
+                      placeholder="e.g., Sizing issue, incorrect model variant" 
+                      required 
+                      value={returnForm.reason} 
+                      onChange={(event) => updateReturnField('reason', event.target.value)} 
+                    />
+                  </label>
+                  
+                  <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
+                    Additional details
+                    <textarea 
+                      className={`${inputClass} min-h-[90px] py-2.5 resize-none`} 
+                      placeholder="Provide additional details regarding the watch's current condition..."
+                      value={returnForm.notes} 
+                      onChange={(event) => updateReturnField('notes', event.target.value)} 
+                    />
+                  </label>
+                  
+                  <button className="mt-2 inline-flex h-11 w-full items-center justify-center rounded-xl bg-slate-900 px-5 text-sm font-semibold text-white transition-all duration-200 hover:bg-slate-800 sm:w-fit" type="submit">
+                    Submit return request
+                  </button>
+                </div>
               </form>
             )}
           </div>
 
-          <aside className="h-fit rounded-[20px] border border-[#DEE2E6] bg-white p-5 shadow-[13px_14px_12.6px_0_rgba(0,0,0,0.05)]">
-            <h2 className="mb-4 text-xl font-bold text-[#121212]">Summary</h2>
-            <SummaryRow label="Subtotal" value={formatOrderMoney(getOrderSubtotal(order), order.currency)} />
-            <SummaryRow label="Shipping" value={formatOrderMoney(order.shippingFee ?? SHIPPING_FEE, order.currency)} />
-            <SummaryRow label="Discount" value={`-${formatOrderMoney(order.discountAmount || order.discount || 0, order.currency)}`} />
-            <div className="my-4 border-t border-[#DEE2E6]" />
+          {/* Checkout Right Invoice Sidebar */}
+          <aside className="sticky top-6 h-fit rounded-2xl border border-slate-100 bg-white p-6 shadow-[0_10px_30px_rgba(0,0,0,0.03)]">
+            <h2 className="mb-4 text-lg font-bold text-slate-800 tracking-tight flex items-center gap-2">
+              <ClipboardList className="h-4 w-4 text-slate-400" />
+              Summary
+            </h2>
+            
+            <div className="space-y-3.5">
+              <SummaryRow label="Subtotal" value={formatOrderMoney(getOrderSubtotal(order), order.currency)} />
+              <SummaryRow label="Shipping" value={formatOrderMoney(order.shippingFee ?? SHIPPING_FEE, order.currency)} />
+              <SummaryRow label="Discount" value={`-${formatOrderMoney(order.discountAmount || order.discount || 0, order.currency)}`} isDiscount />
+            </div>
+
+            <div className="my-4 border-t border-slate-100" />
             <SummaryRow isStrong label="Total" value={formatOrderMoney(getOrderTotal(order), order.currency)} />
-            <p className="mt-4 text-sm text-[#6C757D]">Payment method: {order.paymentMethod || 'Not set'}</p>
+            
+            <div className="mt-5 flex items-center gap-2 rounded-xl bg-slate-50 px-4 py-3 text-xs font-semibold text-slate-600">
+              <CreditCard className="h-4 w-4 text-slate-400" />
+              <span>Payment method: <span className="text-slate-800 capitalize">{order.paymentMethod || 'Not set'}</span></span>
+            </div>
           </aside>
         </section>
       )}
@@ -138,23 +174,23 @@ export const OrderDetailPage = () => {
 }
 
 const OrderItemsTable = ({ order }) => (
-  <section className="rounded-[20px] border border-[#DEE2E6] bg-white p-5 shadow-[13px_14px_12.6px_0_rgba(0,0,0,0.05)]">
-    <h2 className="mb-4 text-xl font-bold text-[#121212]">Items</h2>
-    <div className="w-full overflow-x-auto">
-      <table className="w-full min-w-[640px] border-collapse">
+  <section className="rounded-2xl border border-slate-100 bg-white p-6 shadow-[0_4px_20px_rgba(0,0,0,0.02)]">
+    <h2 className="mb-4 text-lg font-bold text-slate-800 tracking-tight">Items Ordered</h2>
+    <div className="w-full overflow-x-auto rounded-xl border border-slate-100">
+      <table className="w-full min-w-[600px] border-collapse">
         <thead>
-          <tr>
-            <th className="border-b border-[#DEE2E6] p-3 text-left align-top text-sm font-normal text-[#6C757D]">Item</th>
-            <th className="border-b border-[#DEE2E6] p-3 text-left align-top text-sm font-normal text-[#6C757D]">Qty</th>
-            <th className="border-b border-[#DEE2E6] p-3 text-left align-top text-sm font-normal text-[#6C757D]">Price</th>
+          <tr className="bg-slate-50/70">
+            <th className="border-b border-slate-100 p-3.5 text-left text-xs font-bold uppercase tracking-wider text-slate-400">Item Name</th>
+            <th className="border-b border-slate-100 p-3.5 text-center text-xs font-bold uppercase tracking-wider text-slate-400 w-24">Qty</th>
+            <th className="border-b border-slate-100 p-3.5 text-right text-xs font-bold uppercase tracking-wider text-slate-400 w-36">Unit Price</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="divide-y divide-slate-50">
           {(order.items || []).map((item, index) => (
-            <tr key={`${getOrderItemName(item)}-${index}`}>
-              <td className="border-b border-[#DEE2E6] p-3 text-left align-top">{getOrderItemName(item)}</td>
-              <td className="border-b border-[#DEE2E6] p-3 text-left align-top">{item.quantity}</td>
-              <td className="border-b border-[#DEE2E6] p-3 text-left align-top">{formatOrderMoney(getOrderItemPrice(item), order.currency)}</td>
+            <tr key={`${getOrderItemName(item)}-${index}`} className="hover:bg-slate-50/30 transition-colors">
+              <td className="p-3.5 text-sm font-semibold text-slate-700 align-middle">{getOrderItemName(item)}</td>
+              <td className="p-3.5 text-sm font-medium text-slate-600 text-center align-middle">{item.quantity}</td>
+              <td className="p-3.5 text-sm font-bold text-slate-800 text-right align-middle">{formatOrderMoney(getOrderItemPrice(item), order.currency)}</td>
             </tr>
           ))}
         </tbody>
@@ -167,27 +203,61 @@ const AddressCard = ({ address, title }) => {
   if (!address) return null
 
   return (
-    <section className="rounded-[20px] border border-[#DEE2E6] bg-white p-5">
-      <h2 className="mb-3 text-xl font-bold text-[#121212]">{title}</h2>
-      <p className="text-[#212529]">{address.street}</p>
-      <p className="text-[#212529]">{[address.city, address.state, address.zip].filter(Boolean).join(', ')}</p>
-      <p className="text-[#212529]">{address.country}</p>
-      <p className="text-[#212529]">{address.phone}</p>
+    <section className="rounded-2xl border border-slate-100 bg-white p-6 shadow-[0_4px_20px_rgba(0,0,0,0.02)] flex flex-col gap-2.5">
+      <h2 className="text-base font-bold text-slate-800 tracking-tight flex items-center gap-2">
+        <MapPin className="h-4 w-4 text-slate-400" />
+        {title}
+      </h2>
+      <div className="text-sm font-medium leading-relaxed text-slate-600">
+        <p className="font-semibold text-slate-800">{address.street}</p>
+        <p>{[address.city, address.state, address.zip].filter(Boolean).join(', ')}</p>
+        <p className="tracking-wide uppercase text-xs font-bold text-slate-400 mt-0.5">{address.country}</p>
+        {address.phone && (
+          <p className="mt-2 text-xs border-t border-slate-50 pt-2 text-slate-400">
+            Phone: <span className="text-slate-600 font-semibold">{address.phone}</span>
+          </p>
+        )}
+      </div>
     </section>
   )
 }
 
-const StatusPill = ({ label }) => (
-  <span className="inline-flex w-fit rounded-full bg-green-100 px-2.5 py-1 text-xs font-extrabold text-green-800">{label}</span>
+const getStatusTone = (value) => {
+  const normalized = String(value || '').toLowerCase()
+  if (['paid', 'delivered', 'completed', 'success'].includes(normalized)) return 'success'
+  if (['cancelled', 'canceled', 'failed', 'rejected', 'refunded'].includes(normalized)) return 'danger'
+  if (['pending', 'confirmed', 'processing', 'shipped'].includes(normalized)) return 'warning'
+  return 'neutral'
+}
+
+const toneClasses = {
+  danger: 'border-red-100 bg-red-50 text-red-700',
+  neutral: 'border-slate-100 bg-slate-50 text-slate-600',
+  success: 'border-emerald-100 bg-emerald-50 text-emerald-700',
+  warning: 'border-amber-200/60 bg-amber-50 text-amber-800',
+}
+
+const StatusPill = ({ label, tone = 'success' }) => (
+  <span className={`inline-flex items-center rounded-lg border px-2.5 py-1 text-xs font-semibold capitalize tracking-wide ${toneClasses[tone] || toneClasses.neutral}`}>
+    {label}
+  </span>
 )
 
-const inputClass = 'min-h-[45px] min-w-0 border border-[#DEE2E6] bg-white px-[15px] text-[#121212] outline-none focus:border-[#0D6EFD] focus:ring-2 focus:ring-[#0D6EFD]/25'
+const inputClass = 'min-h-[44px] min-w-0 w-full rounded-xl border border-slate-200 bg-slate-50/30 px-4 py-2.5 text-sm text-slate-800 outline-none transition-all placeholder:text-slate-400 focus:border-orange-400 focus:bg-white focus:ring-4 focus:ring-orange-400/10'
 
 const canRequestReturn = (order) => getOrderStatus(order) === 'delivered' && !order.returnRequest && !order.returnStatus
 
-const SummaryRow = ({ isStrong = false, label, value }) => (
-  <div className="mb-3 flex items-center justify-between gap-3">
-    <span className={`text-[#6C757D] ${isStrong ? 'text-lg font-bold' : 'font-normal'}`}>{label}</span>
-    <strong className={isStrong ? 'text-xl text-[#121212]' : 'text-[#121212]'}>{value}</strong>
+const SummaryRow = ({ isStrong = false, label, value, isDiscount = false }) => (
+  <div className="flex items-center justify-between gap-3">
+    <span className={`${isStrong ? 'text-base font-bold text-slate-800' : 'text-sm font-medium text-slate-500'}`}>{label}</span>
+    <strong className={`${
+      isStrong 
+        ? 'text-xl text-[#EB960E] font-black' 
+        : isDiscount 
+          ? 'text-sm text-emerald-600 font-semibold' 
+          : 'text-sm text-slate-800 font-semibold'
+    }`}>
+      {value}
+    </strong>
   </div>
 )

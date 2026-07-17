@@ -1,12 +1,9 @@
-import { useMemo, useState } from 'react'
-import { Link, useNavigate } from 'react-router'
+import { Link } from 'react-router'
 import { ButtonSpinner, LoadingState } from '@/shared/ui/LoadingState'
-import { getApiErrorMessage } from '@/shared/api/apiClient'
 import { usePageTitle } from '@/shared/hooks/usePageTitle'
-import { useCommerce } from '@/features/commerce/hooks/useCommerce'
 import { formatMoney } from '@/features/storefront/lib/storefrontUtils'
-import { normalizeOrder, SHIPPING_FEE } from '@/features/orders/lib/orderUtils'
-import { ordersApi } from '@/features/orders/api/ordersApi'
+import { SHIPPING_FEE } from '@/features/orders/lib/orderUtils'
+import { useCheckoutPage } from '@/features/orders/hooks/useCheckoutPage'
 
 const addressFields = [
   ['street', 'Street'],
@@ -17,194 +14,131 @@ const addressFields = [
   ['phone', 'Phone'],
 ]
 
-const emptyAddress = {
-  city: '',
-  country: 'Sri Lanka',
-  phone: '',
-  state: '',
-  street: '',
-  zip: '',
-}
-
 export const CheckoutPage = () => {
   usePageTitle('Checkout | Thilani Watch Web')
 
-  const { cart, isLoading, loadCommerce } = useCommerce()
-  const navigate = useNavigate()
-  const [shippingAddress, setShippingAddress] = useState(emptyAddress)
-  const [billingAddress, setBillingAddress] = useState(emptyAddress)
-  const [useShippingAsBilling, setUseShippingAsBilling] = useState(true)
-  const [couponCode, setCouponCode] = useState('')
-  const [couponResult, setCouponResult] = useState(null)
-  const [notes, setNotes] = useState('')
-  const [error, setError] = useState('')
-  const [couponMessage, setCouponMessage] = useState('')
-  const [isValidatingCoupon, setIsValidatingCoupon] = useState(false)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-
-  const discount = Number(readCouponDiscount(couponResult) || cart.discount || cart.discountAmount || 0)
-  const total = useMemo(() => Math.max(0, Number(cart.subtotal || 0) + SHIPPING_FEE - discount), [cart.subtotal, discount])
-
-  const updateAddress = (setter, name, value) => {
-    setter((current) => ({ ...current, [name]: value }))
-  }
-
-  const validateAddress = (address, label) => {
-    const required = ['street', 'city', 'zip', 'country', 'phone']
-    const missing = required.filter((field) => !address[field]?.trim())
-    if (missing.length > 0) {
-      throw new Error(`${label} is missing: ${missing.join(', ')}.`)
-    }
-  }
-
-  const handleSubmit = async (event) => {
-    event.preventDefault()
-    setError('')
-    setIsSubmitting(true)
-
-    try {
-      if (cart.items.length === 0) {
-        throw new Error('Your cart is empty.')
-      }
-
-      validateAddress(shippingAddress, 'Shipping address')
-      if (!useShippingAsBilling) {
-        validateAddress(billingAddress, 'Billing address')
-      }
-
-      const payload = {
-        paymentMethod: 'cod',
-        shippingAddress: cleanAddress(shippingAddress),
-      }
-
-      if (!useShippingAsBilling) {
-        payload.billingAddress = cleanAddress(billingAddress)
-      }
-
-      if (couponCode.trim()) payload.couponCode = couponCode.trim()
-      if (notes.trim()) payload.notes = notes.trim()
-
-      const order = normalizeOrder(await ordersApi.createOrder(payload))
-      await loadCommerce()
-      navigate(`/orders/confirmation/${order?._id || order?.id || order?.orderNumber}`, { replace: true, state: { order } })
-    } catch (submitError) {
-      setError(submitError?.response ? getApiErrorMessage(submitError, 'Unable to place order.') : submitError.message)
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
-
-  const handleValidateCoupon = async () => {
-    setError('')
-    setCouponMessage('')
-    setCouponResult(null)
-
-    if (!couponCode.trim()) {
-      setCouponMessage('Enter a coupon code first.')
-      return
-    }
-
-    setIsValidatingCoupon(true)
-    try {
-      const payload = await ordersApi.validateCoupon({
-        code: couponCode.trim(),
-        cartTotal: Number(cart.subtotal || 0),
-      })
-      setCouponResult(payload)
-      setCouponMessage('Coupon applied.')
-    } catch (apiError) {
-      setCouponMessage(getApiErrorMessage(apiError, 'Coupon is not valid for this cart.'))
-    } finally {
-      setIsValidatingCoupon(false)
-    }
-  }
+  const checkout = useCheckoutPage()
 
   return (
-    <main className="-mx-4 -mt-8 bg-white sm:-mx-6 lg:-mx-8">
-      <section className="relative overflow-hidden bg-[linear-gradient(135deg,#F49006_0%,#EB960E_100%)] px-4 pb-28 pt-16 text-white sm:px-6 sm:pt-20 lg:px-10">
-        <div className="mx-auto flex max-w-[1200px] flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="mb-4 inline-flex min-h-11 items-center rounded-[14px] border border-white bg-white/20 px-5 text-sm font-normal text-white">Checkout</p>
-            <h1 className="text-[44px] font-extrabold leading-[1.1] text-white sm:text-[56px] lg:text-[65px] lg:leading-[71px]">Place Your Order</h1>
+    <main className="-mx-4 -mt-22 bg-white sm:-mx-6 lg:-mx-8">
+      {/* Main Container */}
+      <section className="relative z-10 mx-auto max-w-[1200px] px-4 pb-24 pt-12 sm:px-6 sm:pt-16 lg:px-10 lg:pt-20">
+        {checkout.error && (
+          <div className="mb-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-medium text-red-600 flex items-center gap-2 shadow-sm animate-fade-in">
+            <svg className="h-5 w-5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+            </svg>
+            {checkout.error}
           </div>
-          <Link className="inline-flex min-h-11 w-fit items-center justify-center rounded-[14px] bg-[#121212] px-8 text-sm font-normal text-white no-underline transition hover:bg-[#272222]" to="/cart">
-            Back to cart
-          </Link>
-        </div>
-        <svg className="absolute bottom-[-1px] left-0 h-20 w-full text-white" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
-          <path fill="currentColor" d="M0 70L60 62.7C120 55 240 41 360 49.3C480 58 600 88 720 92.7C840 98 960 77 1080 63.3C1200 50 1320 44 1380 41.3L1440 39V120H0V70Z" />
-        </svg>
-      </section>
+        )}
 
-      <section className="mx-auto max-w-[1200px] px-4 py-12 sm:px-6 lg:px-10">
-        {error && <div className="mb-5 border border-[#DC3545] bg-red-50 px-4 py-3 font-normal text-[#DC3545]">{error}</div>}
-
-        {isLoading ? (
-          <LoadingState label="Preparing checkout" variant="form" />
-        ) : cart.items.length === 0 ? (
-          <section className="border border-[#DEE2E6] bg-[#F8F9FA] p-6">
-            <h2 className="mb-2 text-2xl font-bold text-[#121212]">Your cart is empty</h2>
-            <p className="mb-5 text-[#212529]">Add watches before checkout.</p>
-            <Link className="inline-flex min-h-11 w-fit items-center justify-center rounded-[14px] bg-[#121212] px-8 text-sm font-normal text-white no-underline hover:bg-[#272222]" to="/watches">
+        {checkout.isLoading ? (
+          <div className="rounded-2xl border border-slate-100 bg-white p-12 shadow-sm">
+            <LoadingState label="Preparing checkout" variant="form" />
+          </div>
+        ) : checkout.cart.items.length === 0 ? (
+          <section className="rounded-2xl border border-slate-150 bg-white p-8 text-center max-w-xl mx-auto shadow-md">
+            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-orange-50 text-orange-500">
+              <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+              </svg>
+            </div>
+            <h2 className="mb-2 text-xl font-bold text-slate-800">Your cart is empty</h2>
+            <p className="mb-6 text-slate-500">Add some high-quality watches to your cart before proceeding to checkout.</p>
+            <Link className="inline-flex h-11 items-center justify-center rounded-xl bg-gradient-to-r from-[#F49006] to-[#EB960E] px-8 text-sm font-semibold text-white no-underline shadow-md shadow-orange-500/20 transition-all duration-200 hover:opacity-95 hover:scale-[1.02] active:scale-[0.98]" to="/watches">
               Browse watches
             </Link>
           </section>
         ) : (
-          <form className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]" onSubmit={handleSubmit}>
-            <div className="grid gap-5">
-              <AddressForm address={shippingAddress} legend="Shipping Address" setAddress={setShippingAddress} updateAddress={updateAddress} />
+          <form className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_360px]" onSubmit={checkout.handleSubmit}>
+            <div className="grid gap-6">
+              {/* Shipping Address */}
+              <AddressForm address={checkout.shippingAddress} legend="Shipping Address" setAddress={checkout.setShippingAddress} updateAddress={checkout.updateAddress} />
 
-              <section className="border border-[#DEE2E6] bg-white p-5">
-                <label className="flex min-h-11 items-center gap-3 text-base font-normal text-[#121212]">
-                  <input checked={useShippingAsBilling} type="checkbox" onChange={(event) => setUseShippingAsBilling(event.target.checked)} />
+              {/* Billing Toggle Address Container */}
+              <section className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm transition-all hover:shadow-md/50">
+                <label className="flex cursor-pointer items-center gap-3 text-sm font-semibold text-slate-700">
+                  <input 
+                    checked={checkout.useShippingAsBilling} 
+                    type="checkbox" 
+                    className="h-5 w-5 rounded border-slate-300 text-orange-500 focus:ring-orange-500 focus:ring-offset-2" 
+                    onChange={(event) => checkout.setUseShippingAsBilling(event.target.checked)} 
+                  />
                   Use shipping address as billing address
                 </label>
               </section>
 
-              {!useShippingAsBilling && <AddressForm address={billingAddress} legend="Billing Address" setAddress={setBillingAddress} updateAddress={updateAddress} />}
+              {/* Billing Address */}
+              {!checkout.useShippingAsBilling && <AddressForm address={checkout.billingAddress} legend="Billing Address" setAddress={checkout.setBillingAddress} updateAddress={checkout.updateAddress} />}
 
-              <section className="border border-[#DEE2E6] bg-white p-5">
-                <h2 className="mb-4 text-xl font-bold text-[#121212]">Payment</h2>
-                <div className="border border-[#DEE2E6] bg-[#F8F9FA] px-4 py-3 text-base font-normal text-[#121212]">
-                  Cash on delivery
+              {/* Payment Method Details */}
+              <section className="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm">
+                <h2 className="mb-4 text-lg font-bold text-slate-800">Payment</h2>
+                <div className="flex items-center gap-3 rounded-xl border border-slate-100 bg-slate-50 px-4 py-3.5 text-sm font-semibold text-slate-700">
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-green-100 text-green-600">
+                    ✓
+                  </span>
+                  Cash on delivery (COD)
                 </div>
               </section>
 
-              <section className="grid gap-4 border border-[#DEE2E6] bg-white p-5 sm:grid-cols-2">
-                <div className="grid gap-2 text-base font-normal text-[#121212]">
-                  <label className="grid gap-2">
+              {/* Coupon Code & Notes Section */}
+              <section className="grid gap-6 rounded-2xl border border-slate-100 bg-white p-6 shadow-sm sm:grid-cols-2">
+                <div className="flex flex-col justify-between gap-3 text-sm font-normal text-slate-700">
+                  <label className="grid gap-2 font-semibold">
                     Coupon code
                     <input
                       className={inputClass}
-                      value={couponCode}
-                      onChange={(event) => {
-                        setCouponCode(event.target.value)
-                        setCouponResult(null)
-                        setCouponMessage('')
-                      }}
+                      value={checkout.couponCode}
+                      placeholder="e.g., WELCOME10"
+                      onChange={(event) => checkout.updateCouponCode(event.target.value)}
                     />
                   </label>
-                  <button className="inline-flex min-h-11 w-fit cursor-pointer items-center justify-center gap-2 rounded-[14px] bg-[#121212] px-5 text-sm font-normal text-white hover:bg-[#272222] disabled:cursor-not-allowed disabled:opacity-65" disabled={isValidatingCoupon} type="button" onClick={handleValidateCoupon}>
-                    {isValidatingCoupon && <ButtonSpinner />} {isValidatingCoupon ? 'Checking' : 'Validate coupon'}
+                  <button 
+                    className="inline-flex h-11 cursor-pointer items-center justify-center gap-2 rounded-xl bg-slate-900 px-5 text-sm font-semibold text-white transition-all duration-200 hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60" 
+                    disabled={checkout.isValidatingCoupon} 
+                    type="button" 
+                    onClick={checkout.handleValidateCoupon}
+                  >
+                    {checkout.isValidatingCoupon && <ButtonSpinner />} {checkout.isValidatingCoupon ? 'Checking' : 'Validate coupon'}
                   </button>
-                  {couponMessage && <p className="m-0 text-sm font-bold text-[#F49006]">{couponMessage}</p>}
+                  {checkout.couponMessage && (
+                    <p className="m-0 text-xs font-semibold text-orange-600 bg-orange-50 px-3 py-1.5 rounded-lg w-fit">
+                      {checkout.couponMessage}
+                    </p>
+                  )}
                 </div>
-                <label className="grid gap-2 text-base font-normal text-[#121212]">
-                  Notes
-                  <input className={inputClass} value={notes} onChange={(event) => setNotes(event.target.value)} />
+                <label className="grid gap-2 text-sm font-semibold text-slate-700">
+                  Order Notes
+                  <textarea 
+                    className={`${inputClass} resize-none h-[115px]`} 
+                    value={checkout.notes} 
+                    placeholder="Notes about your order, e.g. special delivery instructions."
+                    onChange={(event) => checkout.setNotes(event.target.value)} 
+                  />
                 </label>
               </section>
             </div>
 
-            <aside className="h-fit border border-[#DEE2E6] bg-white p-5 shadow-[13px_14px_12.6px_0_rgba(0,0,0,0.05)]">
-              <h2 className="mb-4 text-xl font-bold text-[#121212]">Order Summary</h2>
-              <SummaryRow label="Subtotal" value={formatMoney(cart.subtotal, cart.currency || 'LKR')} />
-              <SummaryRow label="Shipping" value={formatMoney(SHIPPING_FEE, cart.currency || 'LKR')} />
-              <SummaryRow label="Discount" value={`-${formatMoney(discount, cart.currency || 'LKR')}`} />
-              <div className="my-4 border-t border-[#DEE2E6]" />
-              <SummaryRow isStrong label="Total" value={formatMoney(total, cart.currency || 'LKR')} />
-              <button className="mt-5 inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-[14px] bg-[#121212] px-8 text-sm font-normal text-white hover:bg-[#272222] disabled:cursor-not-allowed disabled:opacity-65" disabled={isSubmitting} type="submit">
-                {isSubmitting && <ButtonSpinner />} {isSubmitting ? 'Placing order' : 'Place order'}
+            {/* Sidebar Summary Section */}
+            <aside className="sticky top-6 h-fit rounded-2xl border border-slate-100 bg-white p-6 shadow-[0_10px_30px_rgba(0,0,0,0.04)]">
+              <h2 className="mb-5 text-lg font-bold text-slate-800 tracking-tight">Order Summary</h2>
+              
+              <div className="space-y-4">
+                <SummaryRow label="Subtotal" value={formatMoney(checkout.cart.subtotal, checkout.cart.currency || 'LKR')} />
+                <SummaryRow label="Shipping" value={formatMoney(SHIPPING_FEE, checkout.cart.currency || 'LKR')} />
+                <SummaryRow label="Discount" value={`-${formatMoney(checkout.discount, checkout.cart.currency || 'LKR')}`} isDiscount />
+              </div>
+
+              <div className="my-5 border-t border-slate-100" />
+              <SummaryRow isStrong label="Total" value={formatMoney(checkout.total, checkout.cart.currency || 'LKR')} />
+
+              <button 
+                className="mt-6 inline-flex h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#F49006] to-[#EB960E] px-8 text-sm font-semibold text-white shadow-lg shadow-orange-500/10 transition-all duration-200 hover:opacity-95 hover:scale-[1.01] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60" 
+                disabled={checkout.isSubmitting} 
+                type="submit"
+              >
+                {checkout.isSubmitting && <ButtonSpinner />} {checkout.isSubmitting ? 'Placing order' : 'Place order'}
               </button>
             </aside>
           </form>
@@ -214,37 +148,39 @@ export const CheckoutPage = () => {
   )
 }
 
-const inputClass = 'min-h-[45px] min-w-0 border border-[#DEE2E6] bg-white px-[15px] text-[#121212] outline-none focus:border-[#0D6EFD] focus:ring-2 focus:ring-[#0D6EFD]/25'
+const inputClass = 'min-h-[45px] min-w-0 w-full rounded-xl border border-slate-200 bg-slate-50/30 px-4 py-2.5 text-sm text-slate-800 outline-none transition-all placeholder:text-slate-400 focus:border-orange-400 focus:bg-white focus:ring-4 focus:ring-orange-400/10'
 
 const AddressForm = ({ address, legend, setAddress, updateAddress }) => (
-  <fieldset className="grid gap-4 border border-[#DEE2E6] bg-white p-5">
-    <legend className="px-1 text-xl font-bold text-[#121212]">{legend}</legend>
-    <div className="grid gap-4 sm:grid-cols-2">
+  <fieldset className="grid gap-5 rounded-2xl border border-slate-100 bg-white p-6 shadow-sm">
+    <legend className="px-2 text-lg font-bold text-slate-800">{legend}</legend>
+    <div className="grid gap-5 sm:grid-cols-2">
       {addressFields.map(([name, label]) => (
-        <label className="grid gap-2 text-base font-normal text-[#121212]" key={name}>
+        <label className="grid gap-1.5 text-sm font-semibold text-slate-700" key={name}>
           {label}
-          <input className={inputClass} required={name !== 'state'} value={address[name]} onChange={(event) => updateAddress(setAddress, name, event.target.value)} />
+          <input 
+            className={inputClass} 
+            required={name !== 'state'} 
+            value={address[name]} 
+            onChange={(event) => updateAddress(setAddress, name, event.target.value)} 
+          />
         </label>
       ))}
     </div>
   </fieldset>
 )
 
-const SummaryRow = ({ isStrong = false, label, value }) => (
-  <div className="mb-3 flex items-center justify-between gap-3">
-    <span className={`text-[#6C757D] ${isStrong ? 'text-lg font-bold' : 'font-normal'}`}>{label}</span>
-    <strong className={isStrong ? 'text-xl text-[#121212]' : 'text-[#121212]'}>{value}</strong>
+const SummaryRow = ({ isStrong = false, label, value, isDiscount = false }) => (
+  <div className="flex items-center justify-between gap-3">
+    <span className={`${isStrong ? 'text-base font-bold text-slate-800' : 'text-sm font-medium text-slate-500'}`}>{label}</span>
+    <strong className={`${
+      isStrong 
+        ? 'text-xl text-[#EB960E]' 
+        : isDiscount 
+          ? 'text-sm text-emerald-600 font-semibold' 
+          : 'text-sm text-slate-800 font-semibold'
+    }`}>
+      {value}
+    </strong>
   </div>
 )
 
-const cleanAddress = (address) =>
-  Object.fromEntries(Object.entries(address).map(([key, value]) => [key, typeof value === 'string' ? value.trim() : value]))
-
-const readCouponDiscount = (payload) =>
-  payload?.discountAmount ??
-  payload?.discount ??
-  payload?.coupon?.discountAmount ??
-  payload?.coupon?.discount ??
-  payload?.data?.discountAmount ??
-  payload?.data?.discount ??
-  0

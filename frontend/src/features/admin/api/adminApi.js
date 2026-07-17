@@ -16,8 +16,19 @@ const unwrapList = (response, keys) => {
   return []
 }
 
-const buildParams = (filters = {}) =>
-  Object.fromEntries(Object.entries(filters).filter(([, value]) => value !== '' && value !== null && value !== undefined))
+const buildParams = (filters = {}) => {
+  const params = {}
+
+  // Do not send empty filters to the backend.
+  for (const key in filters) {
+    const value = filters[key]
+    if (value !== '' && value !== null && value !== undefined) {
+      params[key] = value
+    }
+  }
+
+  return params
+}
 
 export const adminApi = {
   async getWatches(filters) {

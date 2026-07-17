@@ -1,13 +1,10 @@
-import { useMemo } from 'react'
-import { useQuery } from '@tanstack/react-query'
 import { Filter, Search, SlidersHorizontal } from 'lucide-react'
-import { Link, useSearchParams } from 'react-router'
+import { Link } from 'react-router'
 import { LoadingState } from '@/shared/ui/LoadingState'
-import { getApiErrorMessage } from '@/shared/api/apiClient'
 import { usePageTitle } from '@/shared/hooks/usePageTitle'
 import { WatchCard } from '@/features/storefront/components/WatchCard'
-import { storefrontApi } from '@/features/storefront/api/storefrontApi'
-import { getCatalogValue, getId, getTitle, normalizeList, normalizePagination } from '@/features/storefront/lib/storefrontUtils'
+import { useWatchListing } from '@/features/storefront/hooks/useWatchListing'
+import { getCatalogValue, getId, getTitle } from '@/features/storefront/lib/storefrontUtils'
 
 const sortOptions = [
   { label: 'Newest', value: 'newest' },
@@ -17,78 +14,29 @@ const sortOptions = [
   { label: 'Popularity', value: 'popularity' },
 ]
 
-const fieldClass = 'min-h-[45px] min-w-0 border border-[#DEE2E6] bg-white px-[15px] py-3 text-base font-normal text-[#121212] outline-none transition focus:border-[#0D6EFD] focus:ring-2 focus:ring-[#0D6EFD]/25'
+const fieldClass = 'h-11 min-w-0 w-full rounded-xl border border-slate-200 bg-white px-3.5 text-base font-normal text-[#121212] outline-none transition focus:border-[#0D6EFD] focus:ring-2 focus:ring-[#0D6EFD]/25 placeholder:text-slate-400'
 
 export const WatchListingPage = () => {
   usePageTitle('Shop Watches | Thilani Watch Web')
 
-  const [searchParams, setSearchParams] = useSearchParams()
-
-  const filters = useMemo(
-    () => ({
-      brand: searchParams.get('brand') || '',
-      category: searchParams.get('category') || '',
-      featured: searchParams.get('featured') || '',
-      limit: searchParams.get('limit') || '12',
-      maxPrice: searchParams.get('maxPrice') || '',
-      minPrice: searchParams.get('minPrice') || '',
-      page: searchParams.get('page') || '1',
-      search: searchParams.get('search') || '',
-      sort: searchParams.get('sort') || 'newest',
-      stock: searchParams.get('stock') || '',
-    }),
-    [searchParams],
-  )
-
-  const referencesQuery = useQuery({
-    queryFn: async () => {
-      const [categoryData, brandData] = await Promise.all([storefrontApi.getCategories(), storefrontApi.getBrands()])
-      return {
-        brands: normalizeList(brandData, ['brands']),
-        categories: normalizeList(categoryData, ['categories']),
-      }
-    },
-    queryKey: ['storefront', 'catalog-references'],
-  })
-
-  const watchesQuery = useQuery({
-    queryFn: async () => {
-      const payload = await storefrontApi.getWatches(filters)
-      return {
-        pagination: normalizePagination(payload),
-        watches: normalizeList(payload, ['watches']),
-      }
-    },
-    queryKey: ['storefront', 'watches', filters],
-  })
-
-  const categories = referencesQuery.data?.categories || []
-  const brands = referencesQuery.data?.brands || []
-  const watches = watchesQuery.data?.watches || []
-  const pagination = watchesQuery.data?.pagination || normalizePagination({})
-  const error = watchesQuery.error ? getApiErrorMessage(watchesQuery.error, 'Unable to load watches.') : ''
-
-  const updateFilter = (name, value) => {
-    const next = new URLSearchParams(searchParams)
-    if (value) {
-      next.set(name, value)
-    } else {
-      next.delete(name)
-    }
-    if (name !== 'page') next.set('page', '1')
-    setSearchParams(next)
-  }
+  const { brands, categories, error, filters, isLoading, pagination, updateFilter, watches } = useWatchListing()
 
   return (
-    <main className="-mx-4 -mt-8 bg-white sm:-mx-6 lg:-mx-8">
-      <section className="relative overflow-hidden bg-[linear-gradient(135deg,#F49006_0%,#EB960E_100%)] px-4 pb-28 pt-16 text-white sm:px-6 sm:pt-20 lg:px-10">
-        <div className="mx-auto flex max-w-[1200px] flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="mb-4 inline-flex min-h-11 items-center rounded-[14px] border border-white bg-white/20 px-5 text-sm font-normal text-white">Storefront</p>
-            <h1 className="text-[44px] font-extrabold leading-[1.1] text-white sm:text-[56px] lg:text-[65px] lg:leading-[71px]">Watches</h1>
-            <p className="mt-4 max-w-2xl text-base leading-7 text-white sm:text-lg lg:text-[22px] lg:leading-[31px]">Filter curated watches by house, collection, price, stock, and popularity.</p>
+    <main className="-mx-4 -mt-8 bg-white sm:-mx-6 lg:-mx-8 min-h-screen pb-16">
+      <section className="relative overflow-hidden bg-[linear-gradient(135deg,#F49006_0%,#EB960E_100%)] px-4 pb-32 pt-16 text-white sm:px-6 sm:pt-20 lg:px-10">
+        <div className="mx-auto flex max-w-[1200px] flex-col gap-6 sm:flex-row sm:items-end sm:justify-between relative z-10">
+          <div className="max-w-2xl">
+            <p className="mb-3 inline-flex min-h-9 items-center rounded-full border border-white/30 bg-white/10 px-4 text-xs font-medium tracking-wide uppercase text-white backdrop-blur-sm">
+              Storefront
+            </p>
+            <h1 className="text-[44px] font-black leading-[1.1] text-white sm:text-[56px] lg:text-[65px] lg:leading-[71px] tracking-tight">
+              Watches
+            </h1>
+            <p className="mt-3 text-sm font-normal text-white/80 sm:text-base lg:text-lg leading-relaxed">
+              Discover our masterfully engineered collection. Filter curated watches by house, collection, price, availability, and popularity.
+            </p>
           </div>
-          <Link className="inline-flex min-h-11 w-fit items-center justify-center rounded-[14px] bg-[#121212] px-8 text-sm font-normal text-white no-underline transition hover:bg-[#272222]" to="/">
+          <Link className="inline-flex min-h-11 w-fit items-center justify-center rounded-[14px] bg-[#121212] px-8 text-sm font-medium text-white no-underline transition shadow-sm hover:bg-[#272222] active:scale-98 shrink-0 sm:mb-2" to="/">
             Back home
           </Link>
         </div>
@@ -97,42 +45,50 @@ export const WatchListingPage = () => {
         </svg>
       </section>
 
-      <section className="mx-auto grid max-w-[1200px] gap-5 px-4 py-12 sm:px-6 lg:grid-cols-[280px_minmax(0,1fr)] lg:px-10">
-        <aside className="h-fit border border-[#DEE2E6] bg-white p-5 shadow-[13px_14px_12.6px_0_rgba(0,0,0,0.05)] lg:sticky lg:top-28">
-          <div className="mb-4 flex items-center gap-2">
+      <section className="mx-auto grid max-w-[1200px] gap-8 px-4 py-12 sm:px-6 lg:grid-cols-[290px_minmax(0,1fr)] lg:px-10">
+        <aside className="h-fit rounded-2xl border border-slate-100 bg-white p-5 shadow-[0_10px_30px_-5px_rgba(0,0,0,0.05)] lg:sticky lg:top-28 flex flex-col gap-5">
+          <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
             <Filter className="h-5 w-5 text-[#F49006]" />
             <h2 className="text-lg font-bold text-[#121212]">Filters</h2>
           </div>
-          <div className="grid gap-3">
-            <label className="grid gap-2 text-base font-normal text-[#121212]">
+          <div className="flex flex-col gap-4">
+            <label className="grid gap-1.5 text-sm font-medium text-slate-700">
               Search
-              <span className="flex items-center border border-[#DEE2E6] bg-white px-[15px] focus-within:border-[#0D6EFD] focus-within:ring-2 focus-within:ring-[#0D6EFD]/25">
-                <Search className="h-4 w-4 text-[#6C757D]" />
-                <input className="min-h-[45px] min-w-0 flex-1 bg-transparent px-2 text-base font-normal text-[#121212] outline-none" placeholder="Search watches" value={filters.search} onChange={(event) => updateFilter('search', event.target.value)} />
+              <span className="flex items-center h-11 rounded-xl border border-slate-200 bg-white px-3.5 transition focus-within:border-[#0D6EFD] focus-within:ring-2 focus-within:ring-[#0D6EFD]/25">
+                <Search className="h-4 w-4 text-slate-400 shrink-0" />
+                <input className="min-w-0 flex-1 bg-transparent px-2.5 text-base font-normal text-[#121212] outline-none placeholder:text-slate-400" placeholder="Search watches..." value={filters.search} onChange={(event) => updateFilter('search', event.target.value)} />
               </span>
             </label>
+            
             <FilterSelect label="Category" value={filters.category} onChange={(value) => updateFilter('category', value)}>
               <option value="">Any category</option>
               {categories.map((category) => (
                 <option key={getId(category)} value={getCatalogValue(category)}>{getTitle(category)}</option>
               ))}
             </FilterSelect>
+            
             <FilterSelect label="Brand" value={filters.brand} onChange={(value) => updateFilter('brand', value)}>
               <option value="">Any brand</option>
               {brands.map((brand) => (
                 <option key={getId(brand)} value={getCatalogValue(brand)}>{getTitle(brand)}</option>
               ))}
             </FilterSelect>
-            <div className="grid grid-cols-2 gap-3">
-              <input className={fieldClass} min="0" placeholder="Min price" type="number" value={filters.minPrice} onChange={(event) => updateFilter('minPrice', event.target.value)} />
-              <input className={fieldClass} min="0" placeholder="Max price" type="number" value={filters.maxPrice} onChange={(event) => updateFilter('maxPrice', event.target.value)} />
+            
+            <div className="grid gap-1.5">
+              <span className="text-sm font-medium text-slate-700">Price Range</span>
+              <div className="grid grid-cols-2 gap-3">
+                <input className={fieldClass} min="0" placeholder="Min price" type="number" value={filters.minPrice} onChange={(event) => updateFilter('minPrice', event.target.value)} />
+                <input className={fieldClass} min="0" placeholder="Max price" type="number" value={filters.maxPrice} onChange={(event) => updateFilter('maxPrice', event.target.value)} />
+              </div>
             </div>
+            
             <FilterSelect label="Stock" value={filters.stock} onChange={(value) => updateFilter('stock', value)}>
               <option value="">Any stock</option>
               <option value="true">In stock</option>
               <option value="false">Out of stock</option>
             </FilterSelect>
-            <FilterSelect label="Featured" value={filters.featured} onChange={(value) => updateFilter('featured', value)}>
+            
+            <FilterSelect label="Featured Status" value={filters.featured} onChange={(value) => updateFilter('featured', value)}>
               <option value="">Any featured</option>
               <option value="true">Featured only</option>
               <option value="false">Not featured</option>
@@ -141,33 +97,41 @@ export const WatchListingPage = () => {
         </aside>
 
         <section className="min-w-0">
-          <div className="mb-5 flex flex-col gap-3 border border-[#DEE2E6] bg-white p-4 shadow-[13px_14px_12.6px_0_rgba(0,0,0,0.05)] sm:flex-row sm:items-center sm:justify-between">
+          <div className="mb-6 flex flex-col gap-4 rounded-2xl border border-slate-100 bg-white p-5 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-sm font-normal text-[#6C757D]">{pagination.total || watches.length} watches found</p>
-              <h2 className="text-xl font-bold text-[#121212]">Collection Results</h2>
+              <p className="text-xs font-semibold tracking-wide uppercase text-slate-400">{pagination.total || watches.length} watches found</p>
+              <h2 className="text-xl font-bold text-[#121212] mt-0.5">Collection Results</h2>
             </div>
-            <label className="flex items-center gap-2 text-sm font-normal text-[#121212]">
-              <SlidersHorizontal className="h-4 w-4" />
-              Sort
-              <select className={fieldClass} value={filters.sort} onChange={(event) => updateFilter('sort', event.target.value)}>
-                {sortOptions.map((option) => (
-                  <option key={option.value} value={option.value}>{option.label}</option>
-                ))}
-              </select>
+            <label className="flex items-center gap-3 text-sm font-medium text-slate-600 shrink-0">
+              <span className="flex items-center gap-1.5 whitespace-nowrap"><SlidersHorizontal className="h-4 w-4 text-slate-400" /> Sort by</span>
+              <div className="w-48">
+                <select className={`${fieldClass} !h-10`} value={filters.sort} onChange={(event) => updateFilter('sort', event.target.value)}>
+                  {sortOptions.map((option) => (
+                    <option key={option.value} value={option.value}>{option.label}</option>
+                  ))}
+                </select>
+              </div>
             </label>
           </div>
 
-          {error && <div className="mb-5 border border-[#DC3545] bg-red-50 px-4 py-3 font-normal text-[#DC3545]">{error}</div>}
-          {watchesQuery.isLoading ? (
+          {error && <div className="mb-6 rounded-[14px] border border-red-200 bg-red-50 px-4 py-3.5 font-medium text-red-600 shadow-sm">{error}</div>}
+          
+          {isLoading ? (
             <LoadingState label="Finding matching watches" variant="cards" rows={6} />
           ) : (
             <>
-              <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+              <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
                 {watches.map((watch) => (
                   <WatchCard key={getId(watch)} watch={watch} />
                 ))}
               </div>
-              {watches.length === 0 && <div className="border border-dashed border-[#DEE2E6] bg-[#F8F9FA] px-4 py-10 text-center font-normal text-[#6C757D]">No watches match these filters.</div>}
+              
+              {watches.length === 0 && (
+                <div className="rounded-2xl border-2 border-dashed border-slate-200 bg-white px-4 py-16 text-center text-slate-500 font-medium shadow-sm">
+                  No watches match these filter metrics. Try adjusting your fields.
+                </div>
+              )}
+              
               <Pagination pagination={pagination} updateFilter={updateFilter} />
             </>
           )}
@@ -178,7 +142,7 @@ export const WatchListingPage = () => {
 }
 
 const FilterSelect = ({ children, label, onChange, value }) => (
-  <label className="grid gap-2 text-base font-normal text-[#121212]">
+  <label className="grid gap-1.5 text-sm font-medium text-slate-700">
     {label}
     <select className={fieldClass} value={value} onChange={(event) => onChange(event.target.value)}>
       {children}
@@ -187,15 +151,15 @@ const FilterSelect = ({ children, label, onChange, value }) => (
 )
 
 const Pagination = ({ pagination, updateFilter }) => (
-  <div className="mt-6 flex flex-col gap-3 border border-[#DEE2E6] bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
-    <p className="font-normal text-[#212529]">
-      Page {pagination.page} of {pagination.pages} - {pagination.total} watches
+  <div className="mt-8 flex flex-col gap-4 rounded-2xl border border-slate-100 bg-white p-4 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] sm:flex-row sm:items-center sm:justify-between">
+    <p className="text-sm font-medium text-slate-500 pl-2">
+      Page <span className="text-[#121212] font-semibold">{pagination.page}</span> of <span className="text-[#121212] font-semibold">{pagination.pages}</span> — <span className="text-slate-600">{pagination.total} timepieces</span>
     </p>
-    <div className="flex gap-2">
-      <button className="inline-flex min-h-11 cursor-pointer items-center justify-center rounded-[14px] border border-[#DEE2E6] bg-[rgba(18,18,18,0.04)] px-8 text-sm font-normal text-[#121212] transition hover:bg-[rgba(18,18,18,0.08)] disabled:cursor-not-allowed disabled:opacity-50" disabled={!pagination.hasPrevPage} type="button" onClick={() => updateFilter('page', String(Math.max(1, pagination.page - 1)))}>
+    <div className="flex gap-3">
+      <button className="inline-flex min-h-11 cursor-pointer items-center justify-center rounded-[14px] border border-slate-200 bg-slate-50 px-6 text-sm font-medium text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50 active:scale-98" disabled={!pagination.hasPrevPage} type="button" onClick={() => updateFilter('page', String(Math.max(1, pagination.page - 1)))}>
         Previous
       </button>
-      <button className="inline-flex min-h-11 cursor-pointer items-center justify-center rounded-[14px] bg-[#121212] px-8 text-sm font-normal text-white transition hover:bg-[#272222] disabled:cursor-not-allowed disabled:opacity-50" disabled={!pagination.hasNextPage} type="button" onClick={() => updateFilter('page', String(pagination.page + 1))}>
+      <button className="inline-flex min-h-11 cursor-pointer items-center justify-center rounded-[14px] bg-[#121212] px-6 text-sm font-medium text-white transition hover:bg-[#272222] disabled:cursor-not-allowed disabled:opacity-50 active:scale-98" disabled={!pagination.hasNextPage} type="button" onClick={() => updateFilter('page', String(pagination.page + 1))}>
         Next
       </button>
     </div>

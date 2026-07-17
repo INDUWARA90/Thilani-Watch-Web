@@ -1,98 +1,21 @@
-import { useEffect, useState } from 'react'
 import { ButtonSpinner, LoadingState } from '@/shared/ui/LoadingState'
-import { getApiErrorMessage } from '@/shared/api/apiClient'
-import { adminApi } from '../api/adminApi'
-import { formatDate, formatMoney, getId, getTitle, normalizeList } from '../lib/adminUtils'
+import { useAdminCustomers } from '../hooks/useAdminCustomers'
+import { formatDate, formatMoney, getId, getTitle } from '../lib/adminUtils'
 
 export const AdminCustomersPage = () => {
-  const [customers, setCustomers] = useState([])
-  const [customerOrders, setCustomerOrders] = useState([])
-  const [selectedCustomer, setSelectedCustomer] = useState(null)
-  const [search, setSearch] = useState('')
-  const [error, setError] = useState('')
-  const [isLoading, setIsLoading] = useState(true)
-  const [pendingId, setPendingId] = useState('')
-
-  const loadCustomers = async (filters = {}) => {
-    setError('')
-    setIsLoading(true)
-    try {
-      const payload = await adminApi.getCustomers(filters)
-      setCustomers(normalizeList(payload, ['customers', 'users']))
-    } catch (apiError) {
-      setError(getApiErrorMessage(apiError, 'Unable to load customers.'))
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    let isMounted = true
-
-    const run = async () => {
-      try {
-        const payload = await adminApi.getCustomers()
-        if (isMounted) {
-          setCustomers(normalizeList(payload, ['customers', 'users']))
-          setError('')
-        }
-      } catch (apiError) {
-        if (isMounted) {
-          setError(getApiErrorMessage(apiError, 'Unable to load customers.'))
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoading(false)
-        }
-      }
-    }
-
-    run()
-
-    return () => {
-      isMounted = false
-    }
-  }, [])
-
-  const handleSearch = (event) => {
-    event.preventDefault()
-    loadCustomers({ search })
-  }
-
-  const openCustomer = async (customer) => {
-    const customerId = getId(customer)
-    setPendingId(customerId)
-    setError('')
-    try {
-      const [detail, orders] = await Promise.all([
-        adminApi.getCustomer(customerId),
-        adminApi.getCustomerOrders(customerId),
-      ])
-      setSelectedCustomer(detail?.customer || detail?.user || detail || customer)
-      setCustomerOrders(normalizeList(orders, ['orders']))
-    } catch (apiError) {
-      setError(getApiErrorMessage(apiError, 'Unable to load customer details.'))
-    } finally {
-      setPendingId('')
-    }
-  }
-
-  const toggleCustomerStatus = async (customer) => {
-    const customerId = getId(customer)
-    setPendingId(customerId)
-    setError('')
-    try {
-      await adminApi.updateCustomerStatus(customerId, customer.isActive === false)
-      await loadCustomers({ search })
-      if (selectedCustomer && getId(selectedCustomer) === customerId) {
-        await openCustomer({ ...customer, isActive: customer.isActive === false })
-      }
-    } catch (apiError) {
-      setError(getApiErrorMessage(apiError, 'Unable to update customer status.'))
-    } finally {
-      setPendingId('')
-    }
-  }
+  const {
+    customerOrders,
+    customers,
+    error,
+    handleSearch,
+    isLoading,
+    openCustomer,
+    pendingId,
+    search,
+    selectedCustomer,
+    setSearch,
+    toggleCustomerStatus,
+  } = useAdminCustomers()
 
   return (
     <div className="mx-auto max-w-[1600px] p-4 sm:p-6 lg:p-8">

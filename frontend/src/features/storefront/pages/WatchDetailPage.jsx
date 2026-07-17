@@ -1,15 +1,11 @@
-import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowLeft, Heart, ShoppingBag, Star } from 'lucide-react'
-import { Link, useNavigate, useParams } from 'react-router'
+import { Link, useParams } from 'react-router'
 import { ButtonSpinner, LoadingState } from '@/shared/ui/LoadingState'
-import { getApiErrorMessage } from '@/shared/api/apiClient'
 import { usePageTitle } from '@/shared/hooks/usePageTitle'
-import { useAuth } from '@/features/auth/hooks/useAuth'
-import { useCommerce } from '@/features/commerce/hooks/useCommerce'
 import { ReviewSection } from '@/features/reviews/components/ReviewSection'
-import { storefrontApi } from '@/features/storefront/api/storefrontApi'
-import { formatMoney, getId, getTitle, getWatchImage, normalizeWatchPayload } from '@/features/storefront/lib/storefrontUtils'
+import { useWatchDetail } from '@/features/storefront/hooks/useWatchDetail'
+import { formatMoney, getTitle } from '@/features/storefront/lib/storefrontUtils'
 
 const detailFields = [
   ['Collection', 'collection'],
@@ -28,58 +24,10 @@ const detailFields = [
 
 export const WatchDetailPage = () => {
   const { slug } = useParams()
-  const { isAuthenticated } = useAuth()
-  const { addToCart, isPending, isWishlisted, toggleWishlist } = useCommerce()
-  const navigate = useNavigate()
-  const [watch, setWatch] = useState(null)
-  const [selectedImage, setSelectedImage] = useState('')
-  const [quantity, setQuantity] = useState(1)
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState('')
-  const [actionMessage, setActionMessage] = useState('')
-  const [actionError, setActionError] = useState('')
+  const detail = useWatchDetail(slug)
+  const { error, isLoading, watch } = detail
 
   usePageTitle(watch?.name ? `${watch.name} | Thilani Watch Web` : 'Watch Details | Thilani Watch Web')
-
-  useEffect(() => {
-    let isMounted = true
-
-    const loadWatch = async () => {
-      setIsLoading(true)
-      try {
-        const payload = await storefrontApi.getWatchBySlug(slug)
-        const nextWatch = normalizeWatchPayload(payload)
-        if (isMounted) {
-          setWatch(nextWatch)
-          setSelectedImage(getWatchImage(nextWatch))
-          setError('')
-        }
-      } catch (apiError) {
-        try {
-          const fallbackPayload = await storefrontApi.getWatchById(slug)
-          const nextWatch = normalizeWatchPayload(fallbackPayload)
-          if (isMounted) {
-            setWatch(nextWatch)
-            setSelectedImage(getWatchImage(nextWatch))
-            setError('')
-          }
-        } catch {
-          if (isMounted) {
-            setError(getApiErrorMessage(apiError, 'Unable to load this watch.'))
-            setWatch(null)
-          }
-        }
-      } finally {
-        if (isMounted) setIsLoading(false)
-      }
-    }
-
-    loadWatch()
-
-    return () => {
-      isMounted = false
-    }
-  }, [slug])
 
   if (isLoading) {
     return <LoadingState label="Preparing watch details" variant="detail" />
@@ -97,59 +45,8 @@ export const WatchDetailPage = () => {
   }
 
   const images = normalizeImages(watch)
-  const watchId = getId(watch)
   const stockQuantity = Number(watch.stockQuantity || 0)
   const isAvailable = watch.inStock || stockQuantity > 0
-  const isBusy = isPending(watchId)
-
-  const requireLogin = () => {
-    navigate('/login', { state: { from: { pathname: `/watches/${slug}` } } })
-  }
-
-  const handleAddToCart = async () => {
-    if (!isAuthenticated) {
-      requireLogin()
-      return
-    }
-
-    setActionError('')
-    setActionMessage('')
-    try {
-      await addToCart(watch, quantity)
-      setActionMessage('Added to cart.')
-    } catch (addError) {
-      setActionError(addError.message)
-    }
-  }
-
-  const handleWishlist = async () => {
-    if (!isAuthenticated) {
-      requireLogin()
-      return
-    }
-
-    const wasWishlisted = isWishlisted(watchId)
-    setActionError('')
-    setActionMessage('')
-    try {
-      await toggleWishlist(watch)
-      setActionMessage(wasWishlisted ? 'Removed from wishlist.' : 'Saved to wishlist.')
-    } catch (wishlistError) {
-      setActionError(wishlistError.message)
-    }
-  }
-
-  const refreshWatchSummary = async () => {
-    try {
-      const payload = await storefrontApi.getWatchBySlug(slug)
-      const nextWatch = normalizeWatchPayload(payload)
-      setWatch(nextWatch)
-    } catch {
-      const fallbackPayload = await storefrontApi.getWatchById(slug)
-      const nextWatch = normalizeWatchPayload(fallbackPayload)
-      setWatch(nextWatch)
-    }
-  }
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
@@ -173,7 +70,7 @@ export const WatchDetailPage = () => {
           <div className="overflow-hidden rounded-[20px] border border-[#DEE2E6] bg-[#F8F9FA] shadow-[13px_14px_12.6px_0_rgba(0,0,0,0.05)]">
             <img 
               className="aspect-square w-full object-cover transition-transform duration-700 hover:scale-102" 
-              src={selectedImage || '/favicon.svg'} 
+              src={detail.selectedImage || '/favicon.svg'} 
               alt={watch.name} 
             />
           </div>
@@ -182,13 +79,13 @@ export const WatchDetailPage = () => {
               {images.map((image) => (
                 <button 
                   className={`relative h-16 w-16 cursor-pointer overflow-hidden rounded-[14px] border bg-white p-0 transition-all duration-200 ${
-                    selectedImage === image 
+                    detail.selectedImage === image 
                       ? 'scale-95 border-[#F49006] ring-2 ring-[#F49006]/20' 
                       : 'border-[#DEE2E6] hover:border-[#A7A7A7]'
                   }`} 
                   key={image} 
                   type="button" 
-                  onClick={() => setSelectedImage(image)}
+                  onClick={() => detail.setSelectedImage(image)}
                 >
                   <img className="h-full w-full object-cover" src={image} alt={watch.name} />
                 </button>
@@ -232,11 +129,11 @@ export const WatchDetailPage = () => {
           {/* Actions Workspace Panel */}
           <div className="mb-8 rounded-[20px] border border-[#DEE2E6] bg-[#F8F9FA] p-5">
             {/* Action Messaging */}
-            {(actionMessage || actionError) && (
+            {(detail.actionMessage || detail.actionError) && (
               <div className={`mb-4 border p-3 text-sm font-normal ${
-                actionError ? 'border-[#DC3545] bg-red-50 text-[#DC3545]' : 'border-[#198754] bg-green-50 text-[#198754]'
+                detail.actionError ? 'border-[#DC3545] bg-red-50 text-[#DC3545]' : 'border-[#198754] bg-green-50 text-[#198754]'
               }`}>
-                {actionError || actionMessage}
+                {detail.actionError || detail.actionMessage}
               </div>
             )}
             
@@ -248,28 +145,28 @@ export const WatchDetailPage = () => {
                   max={stockQuantity || undefined}
                   min="1"
                   type="number"
-                  value={quantity}
-                  onChange={(event) => setQuantity(Math.max(1, Number(event.target.value || 1)))}
+                  value={detail.quantity}
+                  onChange={(event) => detail.setQuantity(Math.max(1, Number(event.target.value || 1)))}
                 />
               </label>
 
               <button 
                 className="inline-flex h-11 flex-1 cursor-pointer items-center justify-center gap-2 rounded-[14px] bg-[#121212] px-8 text-sm font-normal text-white transition hover:bg-[#272222] disabled:opacity-40" 
-                disabled={!isAvailable || isBusy} 
+                disabled={!isAvailable || detail.isBusy} 
                 type="button" 
-                onClick={handleAddToCart}
+                onClick={detail.handleAddToCart}
               >
-                {isBusy ? <ButtonSpinner /> : <ShoppingBag className="h-4 w-4" />} 
-                {isBusy ? 'Adding to Cart...' : 'Add to Cart'}
+                {detail.isBusy ? <ButtonSpinner /> : <ShoppingBag className="h-4 w-4" />} 
+                {detail.isBusy ? 'Adding to Cart...' : 'Add to Cart'}
               </button>
 
               <button 
                 className="inline-flex h-11 w-11 cursor-pointer items-center justify-center rounded-[14px] border border-[#DEE2E6] bg-white text-[#121212] transition hover:bg-[rgba(244,144,6,0.1)] hover:text-[#F49006] disabled:opacity-40" 
-                disabled={isBusy} 
+                disabled={detail.isBusy} 
                 type="button" 
-                onClick={handleWishlist}
+                onClick={detail.handleWishlist}
               >
-                <Heart className={`h-4 w-4 transition-all ${isWishlisted(watchId) ? 'scale-105 fill-[#F49006] text-[#F49006]' : ''}`} />
+                <Heart className={`h-4 w-4 transition-all ${detail.isWishlisted(detail.watchId) ? 'scale-105 fill-[#F49006] text-[#F49006]' : ''}`} />
               </button>
             </div>
           </div>
@@ -293,19 +190,25 @@ export const WatchDetailPage = () => {
 
       {/* Review Integration Section */}
       <div className="mt-16 border-t border-[#DEE2E6] pt-12">
-        <ReviewSection onReviewsChanged={refreshWatchSummary} watchId={watchId} />
+        <ReviewSection onReviewsChanged={detail.refreshWatchSummary} watchId={detail.watchId} />
       </div>
     </main>
   )
 }
 
 const normalizeImages = (watch) => {
-  const images = [watch.thumbnail, ...(watch.images || [])]
-    .map((image) => {
-      if (typeof image === 'string') return image
-      return image?.url || image?.secureUrl || image?.src || ''
-    })
-    .filter(Boolean)
+  const images = []
+  const rawImages = [watch.thumbnail, ...(watch.images || [])]
 
-  return [...new Set(images)]
+  for (const image of rawImages) {
+    const imageUrl = readImageUrl(image)
+    if (imageUrl && !images.includes(imageUrl)) images.push(imageUrl)
+  }
+
+  return images
+}
+
+const readImageUrl = (image) => {
+  if (typeof image === 'string') return image
+  return image?.url || image?.secureUrl || image?.src || ''
 }

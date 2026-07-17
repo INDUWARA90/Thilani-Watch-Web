@@ -362,5 +362,13 @@ const normalizeAddresses = (payload) => {
 
 const getAddressId = (address) => address?._id || address?.id || address?.addressId || ''
 
-const trimAddress = (address) =>
-  Object.fromEntries(Object.entries(address).map(([key, value]) => [key, typeof value === 'string' ? value.trim() : value]))
+const trimAddress = (address) => {
+  const clean = {}
+
+  for (const key in address) {
+    const value = address[key]
+    clean[key] = typeof value === 'string' ? value.trim() : value
+  }
+
+  return clean
+}

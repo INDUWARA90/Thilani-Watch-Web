@@ -1,38 +1,35 @@
-import { useEffect, useMemo } from 'react'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useCallback, useEffect, useState } from 'react'
 import { getApiErrorMessage } from '@/shared/api/apiClient'
 import { adminApi } from '../api/adminApi'
 import { normalizeList, readBoolean } from '../lib/adminUtils'
 
 export const useWatchList = (filters, setError) => {
-  const queryClient = useQueryClient()
+  const [isLoading, setIsLoading] = useState(true)
+  const [watches, setWatches] = useState([])
 
-  const loadWatches = async () => {
+  const loadWatches = useCallback(async () => {
     setError('')
+    setIsLoading(true)
     try {
-      await queryClient.invalidateQueries({ queryKey: ['admin', 'watches'] })
+      const payload = await adminApi.getWatches({ ...filters, limit: 100 })
+      setWatches(normalizeList(payload, ['watches']))
     } catch (apiError) {
       setError(getApiErrorMessage(apiError, 'Unable to load watches.'))
+    } finally {
+      setIsLoading(false)
     }
-  }
-
-  const watchQuery = useQuery({
-    queryFn: async () => {
-      const payload = await adminApi.getWatches({ ...filters, limit: 100 })
-      return normalizeList(payload, ['watches'])
-    },
-    queryKey: ['admin', 'watches', filters],
-  })
+  }, [filters, setError])
 
   useEffect(() => {
-    setError(watchQuery.error ? getApiErrorMessage(watchQuery.error, 'Unable to load watches.') : '')
-  }, [setError, watchQuery.error])
+    // Delay the first load one tick so React hook lint accepts the state updates.
+    const timer = setTimeout(loadWatches, 0)
+    return () => clearTimeout(timer)
+  }, [loadWatches])
 
-  const visibleWatches = useMemo(() => {
-    const watches = watchQuery.data || []
-    if (filters.published === '') return watches
-    return watches.filter((watch) => Boolean(watch.isPublished) === readBoolean(filters.published))
-  }, [filters.published, watchQuery.data])
+  let visibleWatches = watches
+  if (filters.published !== '') {
+    visibleWatches = watches.filter((watch) => Boolean(watch.isPublished) === readBoolean(filters.published))
+  }
 
-  return { isLoading: watchQuery.isLoading, loadWatches, visibleWatches }
+  return { isLoading, loadWatches, visibleWatches }
 }

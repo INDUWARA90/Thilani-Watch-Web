@@ -1,61 +1,69 @@
-import { useQuery } from '@tanstack/react-query'
-import { LoadingState } from '@/shared/ui/LoadingState'
-import { getApiErrorMessage } from '@/shared/api/apiClient'
 import { usePageTitle } from '@/shared/hooks/usePageTitle'
-import { BrandBar } from '@/features/storefront/components/BrandBar'
-import { DummyContent } from '@/features/storefront/components/DummyContent'
-import { FeatureGrid } from '@/features/storefront/components/FeatureGrid'
-import { HomeSlider } from '@/features/storefront/components/HomeSlider'
-import { WatchSection } from '@/features/storefront/components/WatchSection'
-import { storefrontApi } from '@/features/storefront/api/storefrontApi'
-import { normalizeList } from '@/features/storefront/lib/storefrontUtils'
+import { HomeCatalogGrid } from '@/features/storefront/components/HomeCatalogGrid'
+import { HomeCtaSection } from '@/features/storefront/components/HomeCtaSection'
+import { HomeGuideSection } from '@/features/storefront/components/HomeGuideSection'
+import { HomeHero } from '@/features/storefront/components/HomeHero'
+import { HomeTrustStrip } from '@/features/storefront/components/HomeTrustStrip'
+import { HomeWatchSection } from '@/features/storefront/components/HomeWatchSection'
+import { useStorefrontHome } from '@/features/storefront/hooks/useStorefrontHome'
+import { fallbackBrands, fallbackCategories } from '@/features/storefront/lib/homeContent'
 
 export const HomePage = () => {
   usePageTitle('Thilani Watch Web | Luxury Watches')
-
-  const homeQuery = useQuery({
-    queryFn: async () => {
-      const [featured, newArrivals, bestSellers, categories, brands] = await Promise.all([
-        storefrontApi.getFeaturedWatches(),
-        storefrontApi.getNewArrivals(),
-        storefrontApi.getBestSellers(),
-        storefrontApi.getCategories(),
-        storefrontApi.getBrands(),
-      ])
-
-      return {
-        bestSellers: normalizeList(bestSellers, ['watches', 'bestSellers']),
-        brands: normalizeList(brands, ['brands']),
-        categories: normalizeList(categories, ['categories']),
-        featured: normalizeList(featured, ['watches', 'featured']),
-        newArrivals: normalizeList(newArrivals, ['watches', 'newArrivals']),
-      }
-    },
-    queryKey: ['storefront', 'home'],
-  })
-
-  const state = homeQuery.data || { bestSellers: [], brands: [], categories: [], featured: [], newArrivals: [] }
-  const error = homeQuery.error ? getApiErrorMessage(homeQuery.error, 'Unable to load storefront.') : ''
-
-  if (homeQuery.isLoading) {
-    return <LoadingState label="Curating the storefront" variant="detail" />
-  }
+  const { error, home, isLoading } = useStorefrontHome()
 
   return (
-    <main>
-      {error && <div className="mb-5 border border-[#DC3545] bg-red-50 px-4 py-3 font-normal text-[#DC3545]">{error}</div>}
+    <main className="-mx-4 -mt-8 min-h-screen bg-white sm:-mx-6 lg:-mx-8">
+      <HomeHero />
+      <HomeTrustStrip />
 
-      <HomeSlider />
-      <BrandBar brands={state.brands} />
-      <DummyContent
-        actionLabel="Explore collection"
-        copy="Discover a clean mix of dress watches, everyday pieces, and statement designs selected for customers who want a simple premium shopping experience."
-        eyebrow="Time with character"
-        title="A refined watch store made for modern buyers."
-        to="/watches"
+      {error && (
+        <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-10">
+          <div className="rounded-[14px] border border-red-200 bg-red-50 px-4 py-3.5 text-sm font-semibold text-red-600">
+            {error}
+          </div>
+        </div>
+      )}
+
+      <HomeWatchSection
+        eyebrow="Featured"
+        isLoading={isLoading}
+        text="Lead customers into the strongest products first with a focused row of premium picks."
+        title="Featured watches"
+        watches={home.featured}
       />
-      <WatchSection title="New Arrivals" watches={state.newArrivals.slice(0, 4)} />
-      <FeatureGrid />
+      <HomeCatalogGrid
+        eyebrow="Categories"
+        fallbackItems={fallbackCategories}
+        filterKey="category"
+        items={home.categories}
+        text="Help shoppers start from their preferred use case instead of scanning every watch at once."
+        title="Shop by category"
+      />
+      <HomeWatchSection
+        eyebrow="Fresh arrivals"
+        isLoading={isLoading}
+        text="Keep the storefront feeling alive with the newest pieces added to the catalog."
+        title="New arrivals"
+        watches={home.newArrivals}
+      />
+      <HomeCatalogGrid
+        eyebrow="Brands"
+        fallbackItems={fallbackBrands}
+        filterKey="brand"
+        items={home.brands}
+        text="Give brand-focused customers a fast route into the collection they already trust."
+        title="Shop by brand"
+      />
+      <HomeWatchSection
+        eyebrow="Popular"
+        isLoading={isLoading}
+        text="Show the watches customers are most likely to compare, save, and buy."
+        title="Best sellers"
+        watches={home.bestSellers}
+      />
+      <HomeGuideSection />
+      <HomeCtaSection />
     </main>
   )
 }

@@ -1,71 +1,9 @@
-import { useEffect, useState } from 'react'
 import { LoadingState } from '@/shared/ui/LoadingState'
-import { getApiErrorMessage } from '@/shared/api/apiClient'
-import { adminApi } from '../api/adminApi'
-import { formatDate, getId, getTitle, normalizeList } from '../lib/adminUtils'
+import { useAdminReviews } from '../hooks/useAdminReviews'
+import { formatDate, getId, getTitle } from '../lib/adminUtils'
 
 export const AdminReviewsPage = () => {
-  const [reviews, setReviews] = useState([])
-  const [error, setError] = useState('')
-  const [message, setMessage] = useState('')
-  const [isLoading, setIsLoading] = useState(true)
-  const [isUpdatingId, setIsUpdatingId] = useState(null)
-
-  const loadReviews = async () => {
-    setError('')
-    try {
-      const payload = await adminApi.getReviews()
-      setReviews(normalizeList(payload, ['reviews']))
-    } catch (apiError) {
-      setError(getApiErrorMessage(apiError, 'Unable to load reviews.'))
-    }
-  }
-
-  useEffect(() => {
-    let isMounted = true
-
-    const run = async () => {
-      setIsLoading(true)
-      try {
-        const payload = await adminApi.getReviews()
-        if (isMounted) {
-          setReviews(normalizeList(payload, ['reviews']))
-          setError('')
-        }
-      } catch (apiError) {
-        if (isMounted) {
-          setError(getApiErrorMessage(apiError, 'Unable to load reviews.'))
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoading(false)
-        }
-      }
-    }
-
-    run()
-
-    return () => {
-      isMounted = false
-    }
-  }, [])
-
-  const toggleApproval = async (review) => {
-    const reviewId = getId(review)
-    setMessage('')
-    setError('')
-    setIsUpdatingId(reviewId)
-    
-    try {
-      await adminApi.toggleReviewApproval(reviewId)
-      setMessage(`Review status changed successfully.`)
-      await loadReviews()
-    } catch (apiError) {
-      setError(getApiErrorMessage(apiError, 'Unable to update review approval.'))
-    } finally {
-      setIsUpdatingId(null)
-    }
-  }
+  const { error, isLoading, isUpdatingId, message, reviews, toggleApproval } = useAdminReviews()
 
   return (
     <div className="w-full flex flex-col text-sm">

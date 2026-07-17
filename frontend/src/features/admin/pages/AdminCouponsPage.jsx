@@ -1,129 +1,23 @@
-import { useEffect, useState } from 'react'
 import { ButtonSpinner, LoadingState } from '@/shared/ui/LoadingState'
-import { getApiErrorMessage } from '@/shared/api/apiClient'
-import { adminApi } from '../api/adminApi'
-import { formatDate, formatMoney, getId, normalizeList } from '../lib/adminUtils'
-
-const emptyCoupon = {
-  code: '',
-  discountType: 'percentage',
-  discountValue: '',
-  expiresAt: '',
-  isActive: true,
-  maxDiscountAmount: '',
-  minimumOrderAmount: '',
-  perUserLimit: '1',
-  startsAt: '',
-  usageLimit: '',
-}
+import { useAdminCoupons } from '../hooks/useAdminCoupons'
+import { formatDate, formatMoney, getId } from '../lib/adminUtils'
 
 export const AdminCouponsPage = () => {
-  const [coupons, setCoupons] = useState([])
-  const [form, setForm] = useState(emptyCoupon)
-  const [editingId, setEditingId] = useState('')
-  const [error, setError] = useState('')
-  const [isLoading, setIsLoading] = useState(true)
-  const [isSaving, setIsSaving] = useState(false)
-  
-  // Controls the display state of the coupon editor workstation
-  const [isFormOpen, setIsFormOpen] = useState(false)
-
-  const loadCoupons = async () => {
-    setError('')
-    try {
-      const payload = await adminApi.getCoupons()
-      setCoupons(normalizeList(payload, ['coupons']))
-    } catch (apiError) {
-      setError(getApiErrorMessage(apiError, 'Unable to load coupons.'))
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    let isMounted = true
-
-    const run = async () => {
-      try {
-        const payload = await adminApi.getCoupons()
-        if (isMounted) {
-          setCoupons(normalizeList(payload, ['coupons']))
-          setError('')
-        }
-      } catch (apiError) {
-        if (isMounted) {
-          setError(getApiErrorMessage(apiError, 'Unable to load coupons.'))
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoading(false)
-        }
-      }
-    }
-
-    run()
-
-    return () => {
-      isMounted = false
-    }
-  }, [])
-
-  const updateField = (field, value) => {
-    setForm((current) => ({ ...current, [field]: value }))
-  }
-
-  const handleSubmit = async (event) => {
-    event.preventDefault()
-    setError('')
-    setIsSaving(true)
-    try {
-      const payload = toCouponPayload(form)
-      if (editingId) {
-        await adminApi.updateCoupon(editingId, payload)
-      } else {
-        await adminApi.createCoupon(payload)
-      }
-      closeFormWorkspace()
-      await loadCoupons()
-    } catch (apiError) {
-      setError(getApiErrorMessage(apiError, 'Unable to save coupon.'))
-    } finally {
-      setIsSaving(false)
-    }
-  }
-
-  const editCoupon = (coupon) => {
-    setEditingId(getId(coupon))
-    setForm({
-      code: coupon.code || '',
-      discountType: coupon.discountType || 'percentage',
-      discountValue: coupon.discountValue ?? '',
-      expiresAt: toDateInputValue(coupon.expiresAt),
-      isActive: coupon.isActive !== false,
-      maxDiscountAmount: coupon.maxDiscountAmount ?? '',
-      minimumOrderAmount: coupon.minimumOrderAmount ?? '',
-      perUserLimit: coupon.perUserLimit ?? '1',
-      startsAt: toDateInputValue(coupon.startsAt),
-      usageLimit: coupon.usageLimit ?? '',
-    })
-    setIsFormOpen(true)
-  }
-
-  const closeFormWorkspace = () => {
-    setEditingId('')
-    setForm(emptyCoupon)
-    setIsFormOpen(false)
-  }
-
-  const deactivateCoupon = async (coupon) => {
-    setError('')
-    try {
-      await adminApi.deleteCoupon(getId(coupon))
-      await loadCoupons()
-    } catch (apiError) {
-      setError(getApiErrorMessage(apiError, 'Unable to deactivate coupon.'))
-    }
-  }
+  const {
+    closeFormWorkspace,
+    coupons,
+    deactivateCoupon,
+    editCoupon,
+    editingId,
+    error,
+    form,
+    handleSubmit,
+    isFormOpen,
+    isLoading,
+    isSaving,
+    openForm,
+    updateField,
+  } = useAdminCoupons()
 
   return (
     <div className="w-full flex flex-col text-sm max-w-7xl mx-auto px-4 sm:px-6 py-6">
@@ -136,7 +30,7 @@ export const AdminCouponsPage = () => {
         </div>
         <button
           type="button"
-          onClick={() => setIsFormOpen(true)}
+          onClick={openForm}
           className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-teal-600 px-5 text-xs font-bold text-white shadow-md shadow-teal-600/10 transition-all hover:bg-teal-700 hover:shadow-lg hover:shadow-teal-600/20 active:scale-[0.98] cursor-pointer"
         >
           <svg className="h-4 w-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -229,7 +123,7 @@ export const AdminCouponsPage = () => {
                         <p className="text-xs text-slate-400 mt-1 mb-4">There are no discount coupon configurations configured yet. Get started by creating your first promotional code.</p>
                         <button
                           type="button"
-                          onClick={() => setIsFormOpen(true)}
+                          onClick={openForm}
                           className="inline-flex h-8 items-center justify-center rounded-lg border border-slate-200 bg-white px-3 text-xs font-semibold text-slate-700 hover:bg-slate-50 cursor-pointer shadow-sm"
                         >
                           Add New Coupon
@@ -338,28 +232,3 @@ const emeraldBtnClass = `${baseBtnClass} border border-teal-600 bg-teal-600 text
 
 const smallButtonClass = 'inline-flex h-8 items-center justify-center rounded-lg border border-slate-200 bg-white px-3 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors cursor-pointer shadow-sm'
 const smallDeactivateClass = 'inline-flex h-8 items-center justify-center rounded-lg border border-rose-100 bg-rose-50 px-3 text-xs font-bold text-rose-700 hover:bg-rose-100 hover:border-rose-200 transition-colors cursor-pointer'
-
-const toCouponPayload = (form) => {
-  const payload = {
-    code: form.code.trim(),
-    discountType: form.discountType,
-    discountValue: Number(form.discountValue),
-    expiresAt: new Date(form.expiresAt).toISOString(),
-    isActive: form.isActive,
-  }
-
-  if (form.startsAt) payload.startsAt = new Date(form.startsAt).toISOString()
-  if (form.minimumOrderAmount !== '') payload.minimumOrderAmount = Number(form.minimumOrderAmount)
-  if (form.maxDiscountAmount !== '') payload.maxDiscountAmount = Number(form.maxDiscountAmount)
-  if (form.usageLimit !== '') payload.usageLimit = Number(form.usageLimit)
-  if (form.perUserLimit !== '') payload.perUserLimit = Number(form.perUserLimit)
-
-  return payload
-}
-
-const toDateInputValue = (value) => {
-  if (!value) return ''
-  const date = new Date(value)
-  if (Number.isNaN(date.getTime())) return ''
-  return date.toISOString().slice(0, 10)
-}

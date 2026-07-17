@@ -1,44 +1,12 @@
-import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router'
 import { LoadingState } from '@/shared/ui/LoadingState'
-import { getApiErrorMessage } from '@/shared/api/apiClient'
-import { adminApi } from '../api/adminApi'
-import { getId, normalizeList } from '../lib/adminUtils'
+import { getId } from '../lib/adminUtils'
+import { useAdminOrderDetail, useAdminOrders } from '../hooks/useAdminOrders'
 import { OrderDetailSections } from '../orders/OrderDetailSections'
 import { OrdersTable } from '../orders/OrdersTable'
 
 export const AdminOrdersPage = () => {
-  const [orders, setOrders] = useState([])
-  const [error, setError] = useState('')
-  const [isLoading, setIsLoading] = useState(true)
-
-  useEffect(() => {
-    let isMounted = true
-
-    const run = async () => {
-      try {
-        const payload = await adminApi.getOrders()
-        if (isMounted) {
-          setOrders(normalizeList(payload, ['orders']))
-          setError('')
-        }
-      } catch (apiError) {
-        if (isMounted) {
-          setError(getApiErrorMessage(apiError, 'Unable to load orders.'))
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoading(false)
-        }
-      }
-    }
-
-    run()
-
-    return () => {
-      isMounted = false
-    }
-  }, [])
+  const { error, isLoading, orders } = useAdminOrders()
 
   return (
     <div className="flex flex-col gap-6 max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
@@ -75,49 +43,7 @@ export const AdminOrdersPage = () => {
 
 export const AdminOrderDetailPage = () => {
   const { id } = useParams()
-  const [order, setOrder] = useState(null)
-  const [error, setError] = useState('')
-  const [isLoading, setIsLoading] = useState(true)
-
-  const loadOrder = async () => {
-    setError('')
-    setIsLoading(true)
-    try {
-      setOrder(await adminApi.getOrder(id))
-    } catch (apiError) {
-      setError(getApiErrorMessage(apiError, 'Unable to load order.'))
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    let isMounted = true
-
-    const run = async () => {
-      try {
-        const payload = await adminApi.getOrder(id)
-        if (isMounted) {
-          setOrder(payload)
-          setError('')
-        }
-      } catch (apiError) {
-        if (isMounted) {
-          setError(getApiErrorMessage(apiError, 'Unable to load order.'))
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoading(false)
-        }
-      }
-    }
-
-    run()
-
-    return () => {
-      isMounted = false
-    }
-  }, [id])
+  const { error, isLoading, loadOrder, order } = useAdminOrderDetail(id)
 
   if (isLoading) {
     return (

@@ -1,29 +1,31 @@
-import { useEffect } from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { useEffect, useState } from 'react'
 import { getApiErrorMessage } from '@/shared/api/apiClient'
 import { adminApi } from '../api/adminApi'
 import { normalizeList } from '../lib/adminUtils'
 
 export const useProductReferences = (setError) => {
-  const referencesQuery = useQuery({
-    queryFn: async () => {
-      const [brandData, categoryData] = await Promise.all([adminApi.getBrands(), adminApi.getCategories()])
-      return {
-        brands: normalizeList(brandData, ['brands']),
-        categories: normalizeList(categoryData, ['categories']),
-      }
-    },
-    queryKey: ['admin', 'product-references'],
-  })
+  const [brands, setBrands] = useState([])
+  const [categories, setCategories] = useState([])
 
   useEffect(() => {
-    if (referencesQuery.error) {
-      setError(getApiErrorMessage(referencesQuery.error, 'Unable to load catalog data.'))
-    }
-  }, [referencesQuery.error, setError])
+    let isActive = true
 
-  return {
-    brands: referencesQuery.data?.brands || [],
-    categories: referencesQuery.data?.categories || [],
-  }
+    const loadReferences = async () => {
+      try {
+        const [brandData, categoryData] = await Promise.all([adminApi.getBrands(), adminApi.getCategories()])
+        if (!isActive) return
+        setBrands(normalizeList(brandData, ['brands']))
+        setCategories(normalizeList(categoryData, ['categories']))
+      } catch (apiError) {
+        if (isActive) setError(getApiErrorMessage(apiError, 'Unable to load catalog data.'))
+      }
+    }
+
+    loadReferences()
+    return () => {
+      isActive = false
+    }
+  }, [setError])
+
+  return { brands, categories }
 }

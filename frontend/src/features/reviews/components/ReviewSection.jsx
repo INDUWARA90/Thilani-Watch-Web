@@ -1,140 +1,15 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useState } from 'react'
 import { Link, useLocation } from 'react-router'
 import { Star, MessageSquare, Trash2, Edit2, X } from 'lucide-react'
 import { ButtonSpinner, LoadingState } from '@/shared/ui/LoadingState'
-import { getApiErrorMessage } from '@/shared/api/apiClient'
 import { useAuth } from '@/features/auth/hooks/useAuth'
-import { getId } from '@/features/storefront/lib/storefrontUtils'
-import { reviewsApi } from '@/features/reviews/api/reviewsApi'
-import { formatReviewDate, getReviewId, getReviewUserId, getReviewUserName, normalizeReviews } from '@/features/reviews/lib/reviewUtils'
-
-const emptyForm = { comment: '', rating: 5, title: '' }
+import { useWatchReviews } from '@/features/reviews/hooks/useWatchReviews'
+import { formatReviewDate, getReviewId, getReviewUserId, getReviewUserName } from '@/features/reviews/lib/reviewUtils'
 
 export const ReviewSection = ({ onReviewsChanged, watchId }) => {
   const { isAuthenticated, user } = useAuth()
   const location = useLocation()
-  const [reviews, setReviews] = useState([])
-  const [form, setForm] = useState(emptyForm)
-  const [editingReviewId, setEditingReviewId] = useState('')
-  const [error, setError] = useState('')
-  const [message, setMessage] = useState('')
-  const [isLoading, setIsLoading] = useState(true)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-
-  const userId = getId(user)
-  const myReview = useMemo(
-    () => reviews.find((review) => userId && getReviewUserId(review) === userId),
-    [reviews, userId],
-  )
-
-  const loadReviews = async () => {
-    if (!watchId) return
-
-    setIsLoading(true)
-    try {
-      const payload = await reviewsApi.getWatchReviews(watchId)
-      setReviews(normalizeReviews(payload))
-      setError('')
-    } catch (apiError) {
-      setError(getApiErrorMessage(apiError, 'Unable to load reviews.'))
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    let isMounted = true
-
-    const run = async () => {
-      if (!watchId) return
-
-      try {
-        const payload = await reviewsApi.getWatchReviews(watchId)
-        if (isMounted) {
-          setReviews(normalizeReviews(payload))
-          setError('')
-        }
-      } catch (apiError) {
-        if (isMounted) {
-          setError(getApiErrorMessage(apiError, 'Unable to load reviews.'))
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoading(false)
-        }
-      }
-    }
-
-    run()
-
-    return () => {
-      isMounted = false
-    }
-  }, [watchId])
-
-  const startEdit = (review) => {
-    setEditingReviewId(getReviewId(review))
-    setForm({
-      comment: review.comment || '',
-      rating: Number(review.rating || 5),
-      title: review.title || '',
-    })
-    setError('')
-    setMessage('')
-  }
-
-  const resetForm = () => {
-    setEditingReviewId('')
-    setForm(emptyForm)
-  }
-
-  const handleSubmit = async (event) => {
-    event.preventDefault()
-    setError('')
-    setMessage('')
-    setIsSubmitting(true)
-
-    const payload = {
-      comment: form.comment.trim(),
-      rating: form.rating,
-    }
-
-    if (form.title.trim()) {
-      payload.title = form.title.trim()
-    }
-
-    try {
-      if (editingReviewId) {
-        await reviewsApi.updateReview(editingReviewId, payload)
-        setMessage('Review updated successfully.')
-      } else {
-        await reviewsApi.createReview(watchId, payload)
-        setMessage('Review submitted successfully.')
-      }
-      resetForm()
-      await loadReviews()
-      await onReviewsChanged?.()
-    } catch (apiError) {
-      setError(getApiErrorMessage(apiError, 'Unable to save review. You may already have a review for this watch.'))
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
-
-  const handleDelete = async (review) => {
-    if (!window.confirm('Are you sure you want to delete this review?')) return
-    setError('')
-    setMessage('')
-    try {
-      await reviewsApi.deleteReview(getReviewId(review))
-      setMessage('Review deleted.')
-      resetForm()
-      await loadReviews()
-      await onReviewsChanged?.()
-    } catch (apiError) {
-      setError(getApiErrorMessage(apiError, 'Unable to delete review.'))
-    }
-  }
+  const reviewState = useWatchReviews({ onReviewsChanged, user, watchId })
 
   return (
     <section className="mt-12">
@@ -145,26 +20,26 @@ export const ReviewSection = ({ onReviewsChanged, watchId }) => {
           <h2 className="mt-1 text-2xl font-bold tracking-tight text-slate-900">Customer Feedback</h2>
         </div>
         <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-          {reviews.length} Approved {reviews.length === 1 ? 'Review' : 'Reviews'}
+          {reviewState.reviews.length} Approved {reviewState.reviews.length === 1 ? 'Review' : 'Reviews'}
         </span>
       </div>
 
       {/* Messaging Layout */}
-      {error && <div className="mb-6 rounded-xl border border-red-100 bg-red-50/50 p-4 text-xs font-medium text-red-800 backdrop-blur-sm">{error}</div>}
-      {message && <div className="mb-6 rounded-xl border border-emerald-100 bg-emerald-50/50 p-4 text-xs font-medium text-emerald-800 backdrop-blur-sm">{message}</div>}
+      {reviewState.error && <div className="mb-6 rounded-xl border border-red-100 bg-red-50/50 p-4 text-xs font-medium text-red-800 backdrop-blur-sm">{reviewState.error}</div>}
+      {reviewState.message && <div className="mb-6 rounded-xl border border-emerald-100 bg-emerald-50/50 p-4 text-xs font-medium text-emerald-800 backdrop-blur-sm">{reviewState.message}</div>}
 
       <div className="grid gap-10 lg:grid-cols-[1fr_380px]">
         {/* Reviews List Ledger */}
         <div className="flex flex-col gap-5">
-          {isLoading ? (
+          {reviewState.isLoading ? (
             <LoadingState label="Fetching community logs" variant="reviews" rows={3} />
-          ) : reviews.length > 0 ? (
-            reviews.map((review) => (
+          ) : reviewState.reviews.length > 0 ? (
+            reviewState.reviews.map((review) => (
               <ReviewCard
-                canManage={userId && getReviewUserId(review) === userId}
+                canManage={reviewState.userId && getReviewUserId(review) === reviewState.userId}
                 key={getReviewId(review)}
-                onDelete={handleDelete}
-                onEdit={startEdit}
+                onDelete={reviewState.deleteReview}
+                onEdit={reviewState.startEdit}
                 review={review}
               />
             ))
@@ -180,7 +55,7 @@ export const ReviewSection = ({ onReviewsChanged, watchId }) => {
         <div className="lg:sticky lg:top-28 lg:self-start">
           <div className="rounded-2xl border border-slate-100 bg-slate-50/50 p-6 backdrop-blur-sm">
             {isAuthenticated ? (
-              myReview && !editingReviewId ? (
+              reviewState.myReview && !reviewState.editingReviewId ? (
                 <div className="text-center py-4">
                   <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-amber-500/10 text-amber-700 mb-3">
                     <Star className="h-5 w-5 fill-amber-500" />
@@ -192,19 +67,19 @@ export const ReviewSection = ({ onReviewsChanged, watchId }) => {
                   <button 
                     className="inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-xl bg-slate-950 px-5 text-xs font-bold text-white transition hover:bg-amber-600" 
                     type="button" 
-                    onClick={() => startEdit(myReview)}
+                    onClick={() => reviewState.startEdit(reviewState.myReview)}
                   >
                     <Edit2 className="h-3.5 w-3.5" /> Modify Active Review
                   </button>
                 </div>
               ) : (
                 <ReviewForm
-                  form={form}
-                  isEditing={Boolean(editingReviewId)}
-                  isSubmitting={isSubmitting}
-                  onCancel={resetForm}
-                  onChange={setForm}
-                  onSubmit={handleSubmit}
+                  form={reviewState.form}
+                  isEditing={Boolean(reviewState.editingReviewId)}
+                  isSubmitting={reviewState.isSubmitting}
+                  onCancel={reviewState.resetForm}
+                  onChange={reviewState.setForm}
+                  onSubmit={reviewState.saveReview}
                 />
               )
             ) : (

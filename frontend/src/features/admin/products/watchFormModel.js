@@ -62,12 +62,15 @@ export const splitImageUrls = (images) =>
     .filter(Boolean)
 
 export const mergeImageUrls = (currentImages, nextImages) => {
-  const urls = [
-    ...splitImageUrls(currentImages),
-    ...nextImages.map(getImageUrl).map((item) => item.trim()).filter(Boolean),
-  ]
+  const urls = splitImageUrls(currentImages)
 
-  return [...new Set(urls)].join('\n')
+  // Keep the same image URL only once.
+  for (const image of nextImages) {
+    const url = getImageUrl(image).trim()
+    if (url && !urls.includes(url)) urls.push(url)
+  }
+
+  return urls.join('\n')
 }
 
 export const watchFromApi = (watch) => ({

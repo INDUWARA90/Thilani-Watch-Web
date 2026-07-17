@@ -1,9 +1,18 @@
 import { apiClient, unwrapApiData } from '@/shared/api/apiClient'
 
-const buildParams = (params) =>
-  Object.fromEntries(
-    Object.entries(params).filter(([, value]) => value !== '' && value !== null && value !== undefined),
-  )
+const buildParams = (params = {}) => {
+  const cleanParams = {}
+
+  // Keep URLs clean by removing blank filter fields.
+  for (const key in params) {
+    const value = params[key]
+    if (value !== '' && value !== null && value !== undefined) {
+      cleanParams[key] = value
+    }
+  }
+
+  return cleanParams
+}
 
 export const storefrontApi = {
   async getFeaturedWatches() {

@@ -37,7 +37,11 @@ export const cloudinaryApi = {
 
   async uploadWatchImages(files) {
     const selectedFiles = Array.from(files).slice(0, 5)
-    const images = await Promise.all(selectedFiles.map(uploadOneImage))
+    const images = []
+
+    for (const file of selectedFiles) {
+      images.push(await uploadOneImage(file))
+    }
 
     return { images }
   },
