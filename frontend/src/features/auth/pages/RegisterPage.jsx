@@ -8,43 +8,29 @@ import { useAuth } from '@/features/auth/hooks/useAuth'
 export const RegisterPage = () => {
   const { register } = useAuth()
   const navigate = useNavigate()
-  const [form, setForm] = useState({ name: '', email: '', password: '', phone: '' })
   const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
-
-  const handleChange = (event) => {
-    setForm({ ...form, [event.target.name]: event.target.value })
-  }
 
   const handleSubmit = async (event) => {
     event.preventDefault()
     setError('')
     setIsSubmitting(true)
 
-    const payload = {
-      name: form.name.trim(),
-      email: form.email.trim(),
-      password: form.password,
-    }
-
-    if (form.phone.trim()) {
-      payload.phone = form.phone.trim()
-    }
-
     try {
-      if (!payload.name || !payload.email || !payload.password) {
-        throw new Error('Name, email, and password are required.')
-      }
-
-      if (payload.password.length < 6) {
-        throw new Error('Password must be at least 6 characters.')
+      const formData = new FormData(event.currentTarget)
+      const phone = formData.get('phone').trim()
+      const payload = {
+        name: formData.get('name').trim(),
+        email: formData.get('email').trim(),
+        password: formData.get('password'),
+        ...(phone && { phone }),
       }
 
       await register(payload)
       navigate('/dashboard', { replace: true })
     } catch (apiError) {
-      setError(apiError?.response ? getApiErrorMessage(apiError, 'Registration failed. Please check your details.') : apiError.message)
+      setError(getApiErrorMessage(apiError, 'Registration failed. Please check your details.'))
     } finally {
       setIsSubmitting(false)
     }
@@ -62,18 +48,18 @@ export const RegisterPage = () => {
         <div className="grid gap-4 md:grid-cols-2">
           <label className="grid gap-2 text-base font-normal text-white">
             Name
-            <input className={authInputClass} name="name" value={form.name} onChange={handleChange} required />
+            <input className={authInputClass} name="name" required />
           </label>
 
           <label className="grid gap-2 text-base font-normal text-white">
             Email
-            <input className={authInputClass} name="email" type="email" value={form.email} onChange={handleChange} required />
+            <input className={authInputClass} name="email" type="email" required />
           </label>
 
           <label className="grid gap-2 text-base font-normal text-white">
             Password
             <span className="flex items-center border border-white bg-white px-[15px] focus-within:border-[#0D6EFD] focus-within:ring-2 focus-within:ring-[#0D6EFD]/25">
-              <input className="min-h-[45px] min-w-0 flex-1 text-[#121212] outline-none" name="password" type={showPassword ? 'text' : 'password'} value={form.password} minLength={6} onChange={handleChange} required />
+              <input className="min-h-[45px] min-w-0 flex-1 text-[#121212] outline-none" name="password" type={showPassword ? 'text' : 'password'} minLength={6} required />
               <button className="cursor-pointer text-[#6C757D] hover:text-[#F49006]" type="button" aria-label="Toggle password visibility" onClick={() => setShowPassword((current) => !current)}>
                 <Eye className="h-4 w-4" />
               </button>
@@ -82,7 +68,7 @@ export const RegisterPage = () => {
 
           <label className="grid gap-2 text-base font-normal text-white">
             Phone
-            <input className={authInputClass} name="phone" type="tel" value={form.phone} onChange={handleChange} />
+            <input className={authInputClass} name="phone" type="tel" />
           </label>
         </div>
 

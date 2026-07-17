@@ -44,6 +44,7 @@ const AppRoutes = () => (
       <Route path="/orders/:id" element={<OrderDetailPage />} />
       <Route path="/profile" element={<ProfilePage />} />
     </Route>
+    
     <Route element={<RequireAdmin />}>
       <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<AdminOverviewPage />} />

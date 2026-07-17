@@ -1,122 +1,132 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import { apiClient, getApiErrorMessage, setAuthToken } from '@/shared/api/apiClient'
-import { authApi } from '@/features/auth/api/authApi'
-import { AuthContext } from './authContextValue'
-import { clearStoredAuth, loadStoredAuth, saveStoredAuth } from '@/features/auth/lib/authStorage'
+import { useCallback, useEffect, useMemo, useState } from "react";
+
+import { authApi } from "@/features/auth/api/authApi";
+import { setAuthToken } from "@/shared/api/apiClient";
+import { AuthContext } from "./authContextValue";
+
+import {
+  clearStoredAuth,
+  loadStoredAuth,
+  saveStoredAuth,
+} from "@/features/auth/lib/authStorage";
 
 export const AuthProvider = ({ children }) => {
-  const [initialAuth] = useState(() => loadStoredAuth())
-  const [token, setToken] = useState(initialAuth.token)
-  const [user, setUser] = useState(initialAuth.user)
-  const [isRestoring, setIsRestoring] = useState(true)
+  const [initialToken] = useState(() => loadStoredAuth().token);
+  const [token, setToken] = useState(initialToken);
+  const [user, setUser] = useState(null);
+  const [isRestoring, setIsRestoring] = useState(true);
 
-  const applyAuth = useCallback((nextAuth) => {
-    setToken(nextAuth.token)
-    setUser(nextAuth.user)
-    setAuthToken(nextAuth.token)
-    saveStoredAuth(nextAuth)
-  }, [])
+  const saveAuth = useCallback((auth) => {
+    setToken(auth.token);
+    setUser(auth.user);
+    setAuthToken(auth.token);
+    saveStoredAuth(auth);
+  }, []);
 
   const clearAuth = useCallback(() => {
-    setToken('')
-    setUser(null)
-    setAuthToken('')
-    clearStoredAuth()
-  }, [])
+    setToken("");
+    setUser(null);
+    setAuthToken("");
+    clearStoredAuth();
+  }, []);
 
   useEffect(() => {
-    let isMounted = true
-    const storedToken = initialAuth.token
+    let isMounted = true;
 
-    setAuthToken(storedToken)
+    const restoreAuth = async () => {
+      if (!initialToken) {
+        setIsRestoring(false);
+        return;
+      }
 
-    const restoreUser = async () => {
+      setAuthToken(initialToken);
+
       try {
-        const currentUser = await authApi.getCurrentUser()
+        const currentUser = await authApi.getCurrentUser();
 
         if (isMounted) {
-          const nextAuth = { token: storedToken, user: currentUser }
-          setToken(nextAuth.token)
-          setUser(nextAuth.user)
-          saveStoredAuth(nextAuth)
+          setUser(currentUser);
+          saveStoredAuth({ token: initialToken });
         }
-      } catch (error) {
-        if (isMounted && error?.response?.status === 401) {
-          clearAuth()
+      } catch {
+        if (isMounted) {
+          clearAuth();
         }
       } finally {
         if (isMounted) {
-          setIsRestoring(false)
+          setIsRestoring(false);
         }
       }
-    }
+    };
 
-    restoreUser()
-
-    return () => {
-      isMounted = false
-    }
-  }, [clearAuth, initialAuth.token])
-
-  useEffect(() => {
-    const interceptorId = apiClient.interceptors.response.use(
-      (response) => response,
-      (error) => {
-        if (error?.response?.status === 401) {
-          clearAuth()
-        }
-
-        return Promise.reject(error)
-      },
-    )
+    restoreAuth();
 
     return () => {
-      apiClient.interceptors.response.eject(interceptorId)
+      isMounted = false;
+    };
+  }, [clearAuth, initialToken]);
+
+  const register = useCallback(async (payload) => {
+    const auth = await authApi.register(payload);
+    saveAuth(auth);
+    return auth;
+  }, [saveAuth]);
+
+  const login = useCallback(async (payload) => {
+    const auth = await authApi.login(payload);
+    saveAuth(auth);
+    return auth;
+  }, [saveAuth]);
+
+  const logout = useCallback(async () => {
+    try {
+      await authApi.logout();
+    } finally {
+      clearAuth();
     }
-  }, [clearAuth])
+  }, [clearAuth]);
+
+  const updateProfile = useCallback(async (payload) => {
+    const updatedUser = await authApi.updateProfile(payload);
+
+    setUser(updatedUser);
+    return updatedUser;
+  }, []);
+
+  const changePassword = useCallback(async (payload) => {
+    return authApi.changePassword(payload);
+  }, []);
 
   const value = useMemo(
     () => ({
       token,
       user,
-      isAuthenticated: Boolean(user),
-      isAdmin: user?.role === 'admin',
+      isAuthenticated: Boolean(token && user),
+      isAdmin: user?.role === "admin",
       isRestoring,
-      async register(payload) {
-        const auth = await authApi.register(payload)
-        applyAuth(auth)
-        return auth
-      },
-      async login(payload) {
-        const auth = await authApi.login(payload)
-        applyAuth(auth)
-        return auth
-      },
-      async logout() {
-        try {
-          await authApi.logout()
-        } catch (error) {
-          if (error?.response?.status && error.response.status !== 401) {
-            throw new Error(getApiErrorMessage(error, 'Logout failed.'), { cause: error })
-          }
-        } finally {
-          clearAuth()
-        }
-      },
-      async updateProfile(payload) {
-        const nextUser = await authApi.updateProfile(payload)
-        const nextAuth = { token, user: nextUser }
-        setUser(nextUser)
-        saveStoredAuth(nextAuth)
-        return nextUser
-      },
-      async changePassword(payload) {
-        return authApi.changePassword(payload)
-      },
+      register,
+      login,
+      logout,
+      updateProfile,
+      changePassword,
       clearAuth,
     }),
-    [applyAuth, clearAuth, isRestoring, token, user],
-  )
+    [
+      changePassword,
+      clearAuth,
+      isRestoring,
+      login,
+      logout,
+      register,
+      token,
+      updateProfile,
+      user,
+    ],
+  );
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
-}
+  return (
+    <AuthContext.Provider value={value}>
+      {children}
+    </AuthContext.Provider>
+  );
+};

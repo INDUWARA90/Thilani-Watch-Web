@@ -9,16 +9,11 @@ export const LoginPage = () => {
   const { login } = useAuth()
   const location = useLocation()
   const navigate = useNavigate()
-  const [form, setForm] = useState({ email: '', password: '' })
   const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
 
   const redirectTo = location.state?.from?.pathname || '/dashboard'
-
-  const handleChange = (event) => {
-    setForm({ ...form, [event.target.name]: event.target.value })
-  }
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -26,17 +21,16 @@ export const LoginPage = () => {
     setIsSubmitting(true)
 
     try {
-      if (!form.email.trim() || !form.password) {
-        throw new Error('Email and password are required.')
-      }
+      const formData = new FormData(event.currentTarget)
 
       await login({
-        email: form.email.trim(),
-        password: form.password,
+        email: formData.get('email').trim(),
+        password: formData.get('password'),
       })
+
       navigate(redirectTo, { replace: true })
     } catch (apiError) {
-      setError(apiError?.response ? getApiErrorMessage(apiError, 'Login failed. Check your email and password.') : apiError.message)
+      setError(getApiErrorMessage(apiError, 'Login failed. Check your email and password.'))
     } finally {
       setIsSubmitting(false)
     }
@@ -63,7 +57,7 @@ export const LoginPage = () => {
           Email
           <span className="flex items-center border border-white bg-white px-[15px] focus-within:border-[#0D6EFD] focus-within:ring-2 focus-within:ring-[#0D6EFD]/25">
             <Mail className="h-4 w-4 text-[#6C757D]" />
-            <input className="min-h-[45px] min-w-0 flex-1 px-3 text-[#121212] outline-none" name="email" type="email" value={form.email} onChange={handleChange} required />
+            <input className="min-h-[45px] min-w-0 flex-1 px-3 text-[#121212] outline-none" name="email" type="email" required />
           </span>
         </label>
 
@@ -71,7 +65,7 @@ export const LoginPage = () => {
           Password
           <span className="flex items-center border border-white bg-white px-[15px] focus-within:border-[#0D6EFD] focus-within:ring-2 focus-within:ring-[#0D6EFD]/25">
             <LockKeyhole className="h-4 w-4 text-[#6C757D]" />
-            <input className="min-h-[45px] min-w-0 flex-1 px-3 text-[#121212] outline-none" name="password" type={showPassword ? 'text' : 'password'} value={form.password} onChange={handleChange} required />
+            <input className="min-h-[45px] min-w-0 flex-1 px-3 text-[#121212] outline-none" name="password" type={showPassword ? 'text' : 'password'} required />
             <button className="cursor-pointer text-[#6C757D] hover:text-[#F49006]" type="button" aria-label="Toggle password visibility" onClick={() => setShowPassword((current) => !current)}>
               <Eye className="h-4 w-4" />
             </button>

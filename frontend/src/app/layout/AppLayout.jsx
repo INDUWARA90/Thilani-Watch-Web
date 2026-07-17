@@ -7,6 +7,7 @@ const authRoutes = ['/login', '/register']
 export const AppLayout = ({ children }) => {
   const { pathname } = useLocation()
   const isAuthPage = authRoutes.includes(pathname)
+  const isAdminPage = pathname.startsWith('/admin')
 
   if (isAuthPage) {
     return (
@@ -16,13 +17,17 @@ export const AppLayout = ({ children }) => {
     )
   }
 
+  if (isAdminPage) {
+    return <div className="min-h-screen bg-[#F8FAFC] text-[#121212]">{children}</div>
+  }
+
   return (
     <div className="min-h-screen bg-white text-[#121212]">
       <Header />
       <div className="mx-auto min-h-screen w-full max-w-[1280px] px-4 py-8 sm:px-6 lg:px-8">
         <div className="pb-14">{children}</div>
-        <Footer />
       </div>
+      <Footer />
     </div>
   )
 }

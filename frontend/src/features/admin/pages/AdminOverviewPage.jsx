@@ -1,45 +1,63 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
+import { 
+  Package, 
+  FolderTree, 
+  ShoppingBag, 
+  MessageSquare, 
+  Ticket, 
+  Users, 
+  ArrowUpRight, 
+  AlertTriangle,
+  Layers,
+  DollarSign
+} from 'lucide-react'
 import { getApiErrorMessage } from '@/shared/api/apiClient'
 import { LoadingState } from '@/shared/ui/LoadingState'
 import { adminApi } from '../api/adminApi'
-import { formatMoney, getTitle } from '../lib/adminUtils'
+import { formatMoney } from '../lib/adminUtils'
 
 const overviewCards = [
   {
     title: 'Product Management',
     text: 'Create watches, edit product data, upload images, update stock, publish, and delete.',
     to: '/admin/products',
+    icon: Package,
   },
   {
     title: 'Categories & Brands',
     text: 'Maintain catalog entry points with active state, sort order, image URLs, and slugs.',
     to: '/admin/catalog',
+    icon: FolderTree,
   },
   {
     title: 'Orders',
     text: 'Review customer orders, open order details, and update order or payment status.',
     to: '/admin/orders',
+    icon: ShoppingBag,
   },
   {
     title: 'Reviews',
     text: 'Moderate visible reviews using the approval toggle endpoint.',
     to: '/admin/reviews',
+    icon: MessageSquare,
   },
   {
     title: 'Coupons',
     text: 'Create promotions, deactivate coupons, and keep discount rules current.',
     to: '/admin/coupons',
+    icon: Ticket,
   },
   {
     title: 'Customers',
     text: 'Search customers, review account status, and inspect their order history.',
     to: '/admin/customers',
+    icon: Users,
   },
 ]
 
 export const AdminOverviewPage = () => {
-  const [dashboard, setDashboard] = useState({ lowStock: [], sales: null, summary: null })
+  const [summary, setSummary] = useState(null)
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(true)
 
@@ -48,13 +66,9 @@ export const AdminOverviewPage = () => {
 
     const run = async () => {
       try {
-        const [summary, sales, lowStock] = await Promise.all([
-          adminApi.getDashboardSummary(),
-          adminApi.getDashboardSales(30),
-          adminApi.getLowStockWatches(5),
-        ])
+        const summaryPayload = await adminApi.getDashboardSummary()
         if (isMounted) {
-          setDashboard({ lowStock, sales, summary })
+          setSummary(summaryPayload || {})
           setError('')
         }
       } catch (apiError) {
@@ -63,7 +77,7 @@ export const AdminOverviewPage = () => {
         }
       } finally {
         if (isMounted) {
-          setIsLoading(false)
+          isMounted && setIsLoading(false)
         }
       }
     }
@@ -75,97 +89,97 @@ export const AdminOverviewPage = () => {
     }
   }, [])
 
-  const summary = dashboard.summary || {}
-  const salesRows = normalizeSalesRows(dashboard.sales)
+  const metrics = summary || {}
 
   return (
-    <div className="grid gap-5 rounded-lg border border-slate-200 bg-white p-6 shadow-[0_18px_60px_rgba(28,41,56,0.06)] sm:p-7">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+    <div className="mx-auto max-w-7xl space-y-8">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="mb-3 text-sm font-extrabold uppercase tracking-normal text-teal-700">Dashboard</p>
-          <h2 className="m-0 text-3xl font-bold leading-tight text-slate-950">Admin operations</h2>
+          <div className="inline-flex items-center gap-1.5 rounded-md bg-teal-50 px-2 py-0.5 text-xs font-semibold text-teal-700 ring-1 ring-inset ring-teal-700/10">
+            Control Center
+          </div>
+          <h2 className="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Admin Operations</h2>
+          <p className="text-sm text-slate-500">Real-time overview of your luxury marketplace operations.</p>
         </div>
       </div>
 
-      {error && <div className="rounded-lg border border-red-200 bg-red-50 px-3.5 py-3 font-bold text-red-800">{error}</div>}
-
-      {isLoading ? (
-        <LoadingState label="Loading dashboard metrics" variant="table" rows={4} />
-      ) : (
-        <>
-          <div className="grid gap-3 md:grid-cols-4">
-            <MetricCard label="Revenue" value={formatMoney(summary.totalRevenue ?? summary.revenue)} />
-            <MetricCard label="Orders" value={summary.totalOrders ?? summary.ordersCount ?? countStatusBreakdown(summary.orderStatusBreakdown)} />
-            <MetricCard label="Products" value={summary.totalProducts ?? summary.productsCount ?? 0} />
-            <MetricCard label="Customers" value={summary.totalCustomers ?? summary.customersCount ?? 0} />
-          </div>
-
-          <div className="grid gap-4 lg:grid-cols-2">
-            <section className="rounded-lg border border-slate-200 bg-slate-50 p-5">
-              <h3 className="mb-3 text-xl font-bold text-slate-950">Recent sales</h3>
-              <div className="grid gap-2">
-                {salesRows.slice(0, 5).map((row) => (
-                  <div className="flex items-center justify-between gap-3 border-b border-slate-200 py-2 text-sm" key={row.date}>
-                    <span className="font-bold text-slate-700">{row.date}</span>
-                    <span className="text-slate-600">{row.orderCount ?? row.orders ?? 0} orders</span>
-                    <strong className="text-slate-950">{formatMoney(row.revenue ?? row.totalRevenue)}</strong>
-                  </div>
-                ))}
-                {salesRows.length === 0 && <p className="m-0 text-slate-600">No paid-order sales data yet.</p>}
-              </div>
-            </section>
-
-            <section className="rounded-lg border border-amber-200 bg-amber-50 p-5">
-              <h3 className="mb-3 text-xl font-bold text-slate-950">Low stock</h3>
-              <div className="grid gap-2">
-                {dashboard.lowStock.slice(0, 5).map((watch) => (
-                  <div className="flex items-center justify-between gap-3 border-b border-amber-200 py-2 text-sm" key={watch._id || watch.id || watch.sku}>
-                    <span className="font-bold text-slate-800">{getTitle(watch)}</span>
-                    <strong className="text-amber-900">{watch.stockQuantity ?? watch.stock ?? 0} left</strong>
-                  </div>
-                ))}
-                {dashboard.lowStock.length === 0 && <p className="m-0 text-slate-600">No low-stock watches found.</p>}
-              </div>
-            </section>
-          </div>
-        </>
+      {error && (
+        <div className="flex items-center gap-2 rounded-xl border border-red-100 bg-red-50/50 p-4 text-sm font-medium text-red-800">
+          <AlertTriangle className="h-4 w-4 shrink-0 text-red-600" />
+          <span>{error}</span>
+        </div>
       )}
 
-      <div className="grid gap-4 md:grid-cols-2">
-        {overviewCards.map((card) => (
-          <Link className="block rounded-lg border border-slate-200 bg-slate-50 p-5 text-slate-950 no-underline hover:border-teal-200 hover:bg-teal-50" key={card.title} to={card.to}>
-            <h3 className="mb-3 text-xl font-bold text-slate-950">{card.title}</h3>
-            <p className="m-0 text-slate-600">{card.text}</p>
-          </Link>
-        ))}
+      {isLoading ? (
+        <LoadingState label="Loading dashboard summary" variant="cards" rows={3} />
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <MetricCard 
+            label="Total Revenue" 
+            value={formatMoney(metrics.totalRevenue ?? metrics.revenue)} 
+            icon={DollarSign}
+          />
+          <MetricCard 
+            label="Orders" 
+            value={metrics.totalOrders ?? metrics.ordersCount ?? 0} 
+            icon={ShoppingBag}
+          />
+          <MetricCard 
+            label="Products" 
+            value={metrics.totalProducts ?? metrics.productsCount ?? 0} 
+            icon={Layers}
+          />
+          <MetricCard 
+            label="Customers" 
+            value={metrics.totalCustomers ?? metrics.customersCount ?? 0} 
+            icon={Users}
+          />
+        </div>
+      )}
+
+      <div>
+        <h4 className="mb-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Management Modules</h4>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {overviewCards.map((card) => {
+            const CardIcon = card.icon
+            return (
+              <Link 
+                className="group relative flex flex-col justify-between rounded-2xl border border-slate-200/60 bg-white p-5 text-slate-900 shadow-sm no-underline transition-all duration-200 hover:-translate-y-0.5 hover:border-teal-500/30 hover:shadow-md" 
+                key={card.title} 
+                to={card.to}
+              >
+                <div>
+                  <div className="mb-4 flex h-9 w-9 items-center justify-center rounded-xl border border-slate-100 bg-slate-50 text-slate-600 transition-colors group-hover:bg-teal-50 group-hover:text-teal-600">
+                    <CardIcon className="h-4 w-4" />
+                  </div>
+                  <h3 className="mb-1 text-base font-bold text-slate-900 transition-colors group-hover:text-teal-700">{card.title}</h3>
+                  <p className="text-xs leading-relaxed text-slate-500">{card.text}</p>
+                </div>
+                <div className="mt-4 flex items-center gap-1 text-xs font-semibold text-teal-600 opacity-0 transition-all duration-200 group-hover:opacity-100">
+                  <span>Manage</span>
+                  <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </div>
+              </Link>
+            )
+          })}
+        </div>
       </div>
     </div>
   )
 }
 
-const MetricCard = ({ label, value }) => (
-  <section className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-    <p className="mb-2 text-xs font-extrabold uppercase text-slate-500">{label}</p>
-    <strong className="text-2xl text-slate-950">{value}</strong>
+const MetricCard = ({ label, value, icon: Icon }) => (
+  <section className="relative overflow-hidden rounded-2xl border border-slate-200/60 bg-white p-5 shadow-sm transition-all hover:shadow-md">
+    <div className="flex items-center justify-between">
+      <p className="text-xs font-medium uppercase tracking-wider text-slate-400">{label}</p>
+      {Icon && (
+        <div className="rounded-lg bg-slate-50 p-2 text-slate-400 border border-slate-100">
+          <Icon className="h-4 w-4" />
+        </div>
+      )}
+    </div>
+    <div className="mt-2 flex items-baseline gap-2">
+      <strong className="text-2xl font-bold tracking-tight text-slate-900">{value}</strong>
+    </div>
   </section>
 )
-
-const normalizeSalesRows = (payload) => {
-  if (Array.isArray(payload)) return payload
-  if (Array.isArray(payload?.sales)) return payload.sales
-  if (Array.isArray(payload?.dailySales)) return payload.dailySales
-  if (Array.isArray(payload?.data)) return payload.data
-  return []
-}
-
-const countStatusBreakdown = (breakdown) => {
-  if (Array.isArray(breakdown)) {
-    return breakdown.reduce((total, item) => total + Number(item.count || item.total || 0), 0)
-  }
-
-  if (breakdown && typeof breakdown === 'object') {
-    return Object.values(breakdown).reduce((total, value) => total + Number(value || 0), 0)
-  }
-
-  return 0
-}

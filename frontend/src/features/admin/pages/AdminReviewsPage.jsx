@@ -9,17 +9,15 @@ export const AdminReviewsPage = () => {
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
   const [isLoading, setIsLoading] = useState(true)
+  const [isUpdatingId, setIsUpdatingId] = useState(null)
 
   const loadReviews = async () => {
     setError('')
-    setIsLoading(true)
     try {
       const payload = await adminApi.getReviews()
       setReviews(normalizeList(payload, ['reviews']))
     } catch (apiError) {
       setError(getApiErrorMessage(apiError, 'Unable to load reviews.'))
-    } finally {
-      setIsLoading(false)
     }
   }
 
@@ -27,6 +25,7 @@ export const AdminReviewsPage = () => {
     let isMounted = true
 
     const run = async () => {
+      setIsLoading(true)
       try {
         const payload = await adminApi.getReviews()
         if (isMounted) {
@@ -52,54 +51,125 @@ export const AdminReviewsPage = () => {
   }, [])
 
   const toggleApproval = async (review) => {
+    const reviewId = getId(review)
     setMessage('')
+    setError('')
+    setIsUpdatingId(reviewId)
+    
     try {
-      await adminApi.toggleReviewApproval(getId(review))
-      setMessage('Review approval updated.')
+      await adminApi.toggleReviewApproval(reviewId)
+      setMessage(`Review status changed successfully.`)
       await loadReviews()
     } catch (apiError) {
       setError(getApiErrorMessage(apiError, 'Unable to update review approval.'))
+    } finally {
+      setIsUpdatingId(null)
     }
   }
 
   return (
-    <div className="grid gap-5 rounded-lg border border-slate-200 bg-white p-6 shadow-[0_18px_60px_rgba(28,41,56,0.06)] sm:p-7">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          <p className="mb-3 text-sm font-extrabold uppercase tracking-normal text-teal-700">Reviews</p>
-          <h2 className="m-0 text-3xl font-bold leading-tight text-slate-950">Review moderation</h2>
-        </div>
+    <div className="w-full flex flex-col text-sm">
+      {/* Header Area */}
+      <div className="mb-6">
+        <p className="mb-1 text-xs font-bold uppercase tracking-wider text-teal-600">Moderation Desk</p>
+        <h2 className="m-0 text-2xl font-bold tracking-tight text-slate-900">Customer Reviews</h2>
       </div>
 
-      {error && <div className="rounded-lg border border-red-200 bg-red-50 px-3.5 py-3 font-bold text-red-800">{error}</div>}
-      {message && <div className="rounded-lg border border-green-200 bg-green-50 px-3.5 py-3 font-bold text-green-800">{message}</div>}
+      {/* Notifications */}
+      {error && (
+        <div className="mb-4 rounded-xl border border-rose-200 bg-rose-50/70 p-3.5 text-xs font-semibold text-rose-800 shadow-sm">
+          {error}
+        </div>
+      )}
+      {message && (
+        <div className="mb-4 rounded-xl border border-emerald-200 bg-emerald-50/70 p-3.5 text-xs font-semibold text-emerald-800 shadow-sm">
+          {message}
+        </div>
+      )}
 
+      {/* Data Section */}
       {isLoading ? (
         <LoadingState label="Loading review moderation" variant="reviews" rows={4} />
       ) : (
-        <div className="grid gap-3">
-          {reviews.map((review) => (
-            <article className="flex flex-col justify-between gap-4 rounded-lg border border-slate-200 bg-slate-50 p-4 sm:flex-row" key={getId(review)}>
-              <div>
-                <strong>{review.title || `${review.rating || 0}/5 review`}</strong>
-                <p className="my-2 text-slate-700">{review.comment}</p>
-                <span className="text-sm text-slate-500">
-                  {getTitle(review.user, 'Customer')} - {formatDate(review.createdAt)}
-                </span>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                <span className={`inline-flex w-fit rounded-full px-2.5 py-1 text-xs font-extrabold ${review.isApproved !== false ? 'bg-green-100 text-green-800' : 'bg-slate-200 text-slate-600'}`}>
-                  {review.isApproved !== false ? 'Approved' : 'Hidden'}
-                </span>
-                <button className="inline-flex min-h-8 w-fit cursor-pointer items-center justify-center rounded-lg border border-slate-300 bg-white px-3 text-sm font-extrabold text-slate-950 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-65" type="button" onClick={() => toggleApproval(review)}>
-                  Toggle approval
-                </button>
-              </div>
-            </article>
-          ))}
-          {reviews.length === 0 && <div className="rounded-lg border border-emerald-100 bg-emerald-50 px-3.5 py-3 font-bold text-emerald-950">No reviews found.</div>}
+        <div className="flex flex-col gap-3.5">
+          {reviews.map((review) => {
+            const reviewId = getId(review)
+            const isApproved = review.isApproved !== false
+            const isPendingThisAction = isUpdatingId === reviewId
+            const reviewedWatch = getReviewWatch(review)
+
+            return (
+              <article 
+                className={`flex flex-col sm:flex-row justify-between gap-4 p-4 rounded-xl border bg-white transition-all ${
+                  isApproved ? 'border-slate-200/80' : 'border-amber-200 bg-amber-50/20'
+                } ${isPendingThisAction ? 'opacity-60 pointer-events-none' : ''}`} 
+                key={reviewId}
+              >
+                <div className="flex flex-col gap-1.5 max-w-3xl">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="font-bold text-slate-900">
+                      {review.title || `Untitled Review`}
+                    </span>
+                    <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-slate-100 text-xs font-semibold text-slate-700">
+                      ★ {review.rating || 0}/5
+                    </span>
+                  </div>
+                  
+                  <p className="text-slate-600 text-[13px] leading-relaxed m-0">
+                    {review.comment || <em className="text-slate-400">No comment text provided.</em>}
+                  </p>
+                  <div className="mt-1.5 inline-flex w-fit items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs font-semibold text-slate-600">
+                    <span className="text-slate-400">Watch:</span>
+                    <span className="text-slate-800">{reviewedWatch}</span>
+                  </div>
+                  
+                  <span className="text-xs text-slate-400 mt-0.5">
+                    By <span className="font-medium text-slate-500">{getTitle(review.user, 'Customer')}</span> • {formatDate(review.createdAt)}
+                  </span>
+                </div>
+
+                {/* Control Column */}
+                <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-3 border-t sm:border-t-0 pt-3 sm:pt-0 border-slate-100">
+                  <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-bold tracking-wide ${
+                    isApproved 
+                      ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/60' 
+                      : 'bg-amber-100 text-amber-800 border border-amber-200'
+                  }`}>
+                    {isApproved ? 'Visible' : 'Hidden'}
+                  </span>
+                  
+                  <button 
+                    className={`inline-flex h-8 items-center justify-center rounded-lg border px-3 text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap ${
+                      isApproved
+                        ? 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:text-slate-950'
+                        : 'border-amber-200 bg-amber-50 text-amber-900 hover:bg-amber-100/70'
+                    }`} 
+                    type="button" 
+                    onClick={() => toggleApproval(review)}
+                  >
+                    {isApproved ? 'Hide Review' : 'Approve & Show'}
+                  </button>
+                </div>
+              </article>
+            )
+          })}
+
+          {reviews.length === 0 && (
+            <div className="rounded-xl border border-slate-200 border-dashed p-8 text-center text-slate-400 font-medium">
+              No product reviews require current moderation.
+            </div>
+          )}
         </div>
       )}
     </div>
   )
+}
+
+const getReviewWatch = (review) => {
+  const watch = review.watch || review.product || review.watchId || review.productId
+
+  if (!watch) return 'Watch not attached'
+  if (typeof watch === 'string') return watch
+
+  return getTitle(watch, 'Untitled watch')
 }

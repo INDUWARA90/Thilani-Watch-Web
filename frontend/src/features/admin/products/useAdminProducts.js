@@ -50,8 +50,10 @@ export const useAdminProducts = () => {
       }
       resetForm()
       await loadWatches()
+      return true
     } catch (apiError) {
       setError(getApiErrorMessage(apiError, 'Unable to save watch.'))
+      return false
     } finally {
       setIsSaving(false)
     }
@@ -61,7 +63,6 @@ export const useAdminProducts = () => {
     setEditingWatch(watch)
     setUploadedImages([])
     setForm(watchFromApi(watch))
-    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   const uploadImages = async (files) => {

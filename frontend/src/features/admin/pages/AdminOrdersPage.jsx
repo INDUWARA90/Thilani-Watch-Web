@@ -41,16 +41,34 @@ export const AdminOrdersPage = () => {
   }, [])
 
   return (
-    <div className="grid gap-5 rounded-lg border border-slate-200 bg-white p-6 shadow-[0_18px_60px_rgba(28,41,56,0.06)] sm:p-7">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+    <div className="flex flex-col gap-6 max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+      {/* Page Header */}
+      <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="mb-3 text-sm font-extrabold uppercase tracking-normal text-teal-700">Orders</p>
-          <h2 className="m-0 text-3xl font-bold leading-tight text-slate-950">Customer orders</h2>
+          <span className="text-xs font-semibold tracking-wider uppercase text-slate-400">
+            Overview
+          </span>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+            Customer Orders
+          </h1>
         </div>
       </div>
 
-      {error && <div className="rounded-lg border border-red-200 bg-red-50 px-3.5 py-3 font-bold text-red-800">{error}</div>}
-      {isLoading ? <LoadingState label="Loading customer orders" variant="table" rows={6} /> : <OrdersTable orders={orders} />}
+      {/* Error Callout */}
+      {error && (
+        <div className="rounded-xl border border-rose-200 bg-rose-50/70 p-4 text-sm font-medium text-rose-800 shadow-sm">
+          {error}
+        </div>
+      )}
+
+      {/* Content Area */}
+      {isLoading ? (
+        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+          <LoadingState label="Loading customer orders..." variant="table" rows={6} />
+        </div>
+      ) : (
+        <OrdersTable orders={orders} />
+      )}
     </div>
   )
 }
@@ -101,22 +119,46 @@ export const AdminOrderDetailPage = () => {
     }
   }, [id])
 
-  if (isLoading) return <LoadingState label="Loading order details" variant="form" />
+  if (isLoading) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+        <LoadingState label="Loading order profile..." variant="form" />
+      </div>
+    )
+  }
 
   return (
-    <div className="grid gap-5 rounded-lg border border-slate-200 bg-white p-6 shadow-[0_18px_60px_rgba(28,41,56,0.06)] sm:p-7">
-      <Link className="font-bold text-teal-700 no-underline hover:underline" to="/admin/orders">
-        Back to orders
-      </Link>
-      {error && <div className="rounded-lg border border-red-200 bg-red-50 px-3.5 py-3 font-bold text-red-800">{error}</div>}
+    <div className="flex flex-col gap-6 max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+      {/* Navigation Breadcrumb / Flow Control */}
+      <div>
+        <Link 
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 transition-colors hover:text-teal-600 group" 
+          to="/admin/orders"
+        >
+          <span className="transform transition-transform group-hover:-translate-x-0.5">←</span> 
+          Back to Orders
+        </Link>
+      </div>
+
+      {/* Error Callout */}
+      {error && (
+        <div className="rounded-xl border border-rose-200 bg-rose-50/70 p-4 text-sm font-medium text-rose-800 shadow-sm">
+          {error}
+        </div>
+      )}
+
+      {/* Order Context & Header */}
       {order && (
         <>
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-            <div>
-              <p className="mb-3 text-sm font-extrabold uppercase tracking-normal text-teal-700">Order detail</p>
-              <h2 className="m-0 text-3xl font-bold leading-tight text-slate-950">{order.orderNumber || getId(order)}</h2>
-            </div>
+          <div className="flex flex-col gap-1">
+            <span className="text-xs font-semibold tracking-wider uppercase text-slate-400">
+              Order Profile
+            </span>
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl font-mono">
+              #{order.orderNumber || getId(order).slice(-8).toUpperCase()}
+            </h1>
           </div>
+
           <OrderDetailSections order={order} onUpdated={loadOrder} />
         </>
       )}
