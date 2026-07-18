@@ -58,27 +58,39 @@ export const Header = () => {
         </div>
       </div>
 
+      {/* Background Overlay to close drawer when clicking outside */}
       {isMenuOpen && (
-        <div className="border-t border-[#DEE2E6] bg-white px-4 py-4 lg:hidden">
-          <nav className="grid gap-2" aria-label="Mobile navigation">
-            <MobileNavLink to="/" end onClick={() => setIsMenuOpen(false)}>Store</MobileNavLink>
-            <MobileNavLink to="/watches" onClick={() => setIsMenuOpen(false)}>Watches</MobileNavLink>
-            {isAuthenticated ? (
-              <>
-                <MobileNavLink to="/cart" onClick={() => setIsMenuOpen(false)}>Cart</MobileNavLink>
-                <MobileNavLink to="/wishlist" onClick={() => setIsMenuOpen(false)}>Wishlist</MobileNavLink>
-                <MobileNavLink to="/orders" onClick={() => setIsMenuOpen(false)}>Orders</MobileNavLink>
-                <MobileNavLink to="/dashboard" onClick={() => setIsMenuOpen(false)}>Dashboard</MobileNavLink>
-              </>
-            ) : (
-              <>
-                <MobileNavLink to="/login" onClick={() => setIsMenuOpen(false)}>Login</MobileNavLink>
-                <MobileNavLink to="/register" onClick={() => setIsMenuOpen(false)}>Register</MobileNavLink>
-              </>
-            )}
-          </nav>
-        </div>
+        <div 
+          className="fixed inset-0 z-20 bg-black/20 lg:hidden" 
+          onClick={() => setIsMenuOpen(false)} 
+        />
       )}
+
+      {/* Right side drawer container */}
+      <div 
+        className={[
+          'fixed top-[85px] right-0 z-30 h-[calc(100vh-85px)] w-[280px] border-l border-[#DEE2E6] bg-white px-4 py-6 shadow-xl transition-transform duration-300 lg:hidden',
+          isMenuOpen ? 'translate-x-0' : 'translate-x-full'
+        ].join(' ')}
+      >
+        <nav className="grid gap-2" aria-label="Mobile navigation">
+          <MobileNavLink to="/" end onClick={() => setIsMenuOpen(false)}>Store</MobileNavLink>
+          <MobileNavLink to="/watches" onClick={() => setIsMenuOpen(false)}>Watches</MobileNavLink>
+          {isAuthenticated ? (
+            <>
+              <MobileNavLink to="/cart" onClick={() => setIsMenuOpen(false)}>Cart</MobileNavLink>
+              <MobileNavLink to="/wishlist" onClick={() => setIsMenuOpen(false)}>Wishlist</MobileNavLink>
+              <MobileNavLink to="/orders" onClick={() => setIsMenuOpen(false)}>Orders</MobileNavLink>
+              <MobileNavLink to="/dashboard" onClick={() => setIsMenuOpen(false)}>Dashboard</MobileNavLink>
+            </>
+          ) : (
+            <>
+              <MobileNavLink to="/login" onClick={() => setIsMenuOpen(false)}>Login</MobileNavLink>
+              <MobileNavLink to="/register" onClick={() => setIsMenuOpen(false)}>Register</MobileNavLink>
+            </>
+          )}
+        </nav>
+      </div>
     </header>
   )
 }
@@ -103,7 +115,7 @@ const MobileNavLink = ({ children, ...props }) => (
   <NavLink
     className={({ isActive }) =>
       [
-        'min-h-12 px-5 py-4 text-base font-normal text-[#121212] no-underline hover:bg-[rgba(244,144,6,0.1)] hover:text-[#F49006]',
+        'min-h-12 rounded-[10px] px-5 py-4 text-base font-normal text-[#121212] no-underline hover:bg-[rgba(244,144,6,0.1)] hover:text-[#F49006]',
         isActive && 'bg-[rgba(244,144,6,0.1)] text-[#F49006]',
       ]
         .filter(Boolean)
