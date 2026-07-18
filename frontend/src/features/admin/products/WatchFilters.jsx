@@ -14,6 +14,7 @@ export const WatchFilters = ({ brands, categories, filters, setFilters }) => {
       stock: '',
       brand: '',
       category: '',
+      gender: '',
       featured: '',
       published: '',
     })
@@ -94,6 +95,20 @@ export const WatchFilters = ({ brands, categories, filters, setFilters }) => {
                 {getTitle(category)}
               </option>
             ))}
+          </select>
+        </div>
+
+        {/* Gender Select */}
+        <div className="relative">
+          <select
+            className="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50/40 px-3.5 py-2.5 text-sm text-slate-900 outline-none transition-all focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/10"
+            value={filters.gender}
+            onChange={(event) => updateFilter('gender', event.target.value)}
+          >
+            <option value="">Any gender</option>
+            <option value="ladies">Ladies</option>
+            <option value="gents">Gents</option>
+            <option value="unisex">Unisex</option>
           </select>
         </div>
 

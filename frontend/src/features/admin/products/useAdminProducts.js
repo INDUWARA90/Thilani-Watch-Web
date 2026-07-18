@@ -12,6 +12,7 @@ const initialFilters = {
   stock: '',
   brand: '',
   category: '',
+  gender: '',
   featured: '',
   published: '',
 }

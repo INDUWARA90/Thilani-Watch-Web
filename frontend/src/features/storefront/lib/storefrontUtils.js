@@ -1,15 +1,30 @@
 export const getId = (value) => value?._id || value?.id || value || ''
 
+const objectIdPattern = /^[a-f\d]{24}$/i
+
+const isObjectId = (value) => typeof value === 'string' && objectIdPattern.test(value.trim())
+
+const humanizeSlug = (value) => {
+  if (!value || isObjectId(value)) return ''
+
+  return String(value)
+    .replace(/[-_]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/\b\w/g, (letter) => letter.toUpperCase())
+}
+
 export const getTitle = (value, fallback = 'Not set') => {
   if (!value) return fallback
-  if (typeof value === 'string') return value
-  return value.name || value.title || value.slug || value._id || fallback
+  if (typeof value === 'string') return humanizeSlug(value) || fallback
+
+  return value.name || value.title || humanizeSlug(value.slug) || fallback
 }
 
 export const getCatalogValue = (value) => {
   if (!value) return ''
   if (typeof value === 'string') return value
-  return value._id || value.id || value.slug || value.name || ''
+  return value.slug || value.name || value._id || value.id || ''
 }
 
 export const getCatalogImage = (value) => {

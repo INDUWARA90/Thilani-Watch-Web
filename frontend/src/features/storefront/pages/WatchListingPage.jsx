@@ -73,6 +73,13 @@ export const WatchListingPage = () => {
                 <option key={getId(brand)} value={getCatalogValue(brand)}>{getTitle(brand)}</option>
               ))}
             </FilterSelect>
+
+            <FilterSelect label="Gender" value={filters.gender} onChange={(value) => updateFilter('gender', value)}>
+              <option value="">Any gender</option>
+              <option value="ladies">Ladies</option>
+              <option value="gents">Gents</option>
+              <option value="unisex">Unisex</option>
+            </FilterSelect>
             
             <div className="grid gap-1.5">
               <span className="text-sm font-medium text-slate-700">Price Range</span>

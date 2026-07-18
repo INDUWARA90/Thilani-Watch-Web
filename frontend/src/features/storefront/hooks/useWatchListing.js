@@ -18,6 +18,7 @@ export const useWatchListing = () => {
       brand: searchParams.get('brand') || '',
       category: searchParams.get('category') || '',
       featured: searchParams.get('featured') || '',
+      gender: searchParams.get('gender') || '',
       limit: searchParams.get('limit') || '12',
       maxPrice: searchParams.get('maxPrice') || '',
       minPrice: searchParams.get('minPrice') || '',
