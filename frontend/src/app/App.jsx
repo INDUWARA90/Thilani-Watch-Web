@@ -21,6 +21,10 @@ import { MyOrdersPage } from '@/features/orders/pages/MyOrdersPage'
 import { OrderConfirmationPage } from '@/features/orders/pages/OrderConfirmationPage'
 import { OrderDetailPage } from '@/features/orders/pages/OrderDetailPage'
 import { AppLayout } from '@/app/layout/AppLayout'
+import { AboutPage } from '@/features/public/pages/AboutPage'
+import { ContactPage } from '@/features/public/pages/ContactPage'
+import { FaqPage } from '@/features/public/pages/FaqPage'
+import { PolicyPage } from '@/features/public/pages/PolicyPage'
 import { HomePage } from '@/features/storefront/pages/HomePage'
 import { WatchDetailPage } from '@/features/storefront/pages/WatchDetailPage'
 import { WatchListingPage } from '@/features/storefront/pages/WatchListingPage'
@@ -28,6 +32,10 @@ import { WatchListingPage } from '@/features/storefront/pages/WatchListingPage'
 const AppRoutes = () => (
   <Routes>
     <Route path="/" element={<HomePage />} />
+    <Route path="/about" element={<AboutPage />} />
+    <Route path="/contact" element={<ContactPage />} />
+    <Route path="/policy" element={<PolicyPage />} />
+    <Route path="/faq" element={<FaqPage />} />
     <Route path="/watches" element={<WatchListingPage />} />
     <Route path="/watches/:slug" element={<WatchDetailPage />} />
     <Route path="/login" element={<LoginPage />} />

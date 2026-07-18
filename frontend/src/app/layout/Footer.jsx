@@ -59,6 +59,10 @@ export const Footer = () => (
         <span className="text-sm font-normal text-white/70">Explore</span>
         <nav className="mt-4 grid gap-3">
           <FooterLink to="/watches">All Watches</FooterLink>
+          <FooterLink to="/about">About Us</FooterLink>
+          <FooterLink to="/contact">Contact Us</FooterLink>
+          <FooterLink to="/faq">FAQ</FooterLink>
+          <FooterLink to="/policy">Policy</FooterLink>
           <FooterLink to="/cart">Shopping Cart</FooterLink>
           <FooterLink to="/wishlist">Wishlist</FooterLink>
         </nav>

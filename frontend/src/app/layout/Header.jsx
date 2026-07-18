@@ -30,6 +30,8 @@ export const Header = () => {
         <nav className="ml-auto hidden items-center gap-1 lg:flex" aria-label="Primary navigation">
           <LuxuryNavLink to="/" end>Store</LuxuryNavLink>
           <LuxuryNavLink to="/watches">Watches</LuxuryNavLink>
+          <LuxuryNavLink to="/about">About</LuxuryNavLink>
+          <LuxuryNavLink to="/contact">Contact</LuxuryNavLink>
           {isAuthenticated && <LuxuryNavLink to="/orders">Orders</LuxuryNavLink>}
         </nav>
 
@@ -78,6 +80,10 @@ export const Header = () => {
         <nav className="grid gap-2" aria-label="Mobile navigation">
           <MobileNavLink to="/" end onClick={() => setIsMenuOpen(false)}>Store</MobileNavLink>
           <MobileNavLink to="/watches" onClick={() => setIsMenuOpen(false)}>Watches</MobileNavLink>
+          <MobileNavLink to="/about" onClick={() => setIsMenuOpen(false)}>About</MobileNavLink>
+          <MobileNavLink to="/contact" onClick={() => setIsMenuOpen(false)}>Contact</MobileNavLink>
+          <MobileNavLink to="/faq" onClick={() => setIsMenuOpen(false)}>FAQ</MobileNavLink>
+          <MobileNavLink to="/policy" onClick={() => setIsMenuOpen(false)}>Policy</MobileNavLink>
           {isAuthenticated ? (
             <>
               <MobileNavLink to="/cart" onClick={() => setIsMenuOpen(false)}>Cart</MobileNavLink>
