@@ -16,9 +16,11 @@ export const Header = () => {
     <header className="sticky top-0 z-40 border-b border-[#DEE2E6] bg-white">
       <div className="mx-auto flex w-full max-w-[1200px] items-center gap-4 px-4 py-5 sm:px-6 lg:px-10">
         <Link className="group flex items-center gap-3 no-underline" to="/" onClick={() => setIsMenuOpen(false)}>
-          <span className="grid h-11 w-11 place-items-center rounded-full bg-[#F49006] text-lg font-extrabold text-white">
-            TW
-          </span>
+          <img
+            alt="Thilani Watch Center logo"
+            className="h-12 w-12 rounded-full bg-[#121212] object-cover ring-1 ring-[#DEE2E6]"
+            src="/logo.jpeg"
+          />
           <span>
             <span className="block text-base font-extrabold text-[#121212]">Thilani</span>
             <span className="block text-sm font-normal text-[#6C757D] group-hover:text-[#F49006]">Watch Web</span>

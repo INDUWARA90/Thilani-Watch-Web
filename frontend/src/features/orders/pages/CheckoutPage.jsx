@@ -15,6 +15,19 @@ const addressFields = [
   ['phone', 'Phone'],
 ]
 
+const bankAccounts = [
+  {
+    accountName: 'J M P Nuwani',
+    accountNumber: '321200190069692',
+    bank: "People's Bank Panadura",
+  },
+  {
+    accountName: 'J M P N Jayaweera',
+    accountNumber: '0090429978',
+    bank: 'BOC Panadura',
+  },
+]
+
 export const CheckoutPage = () => {
   usePageTitle('Checkout | Thilani Watch Web')
 
@@ -86,6 +99,12 @@ export const CheckoutPage = () => {
                         Upload a clear image of your payment slip. Cash on delivery is no longer available.
                       </p>
                     </div>
+                  </div>
+
+                  <div className="mb-4 grid gap-3 sm:grid-cols-2">
+                    {bankAccounts.map((account) => (
+                      <BankAccountCard account={account} key={`${account.bank}-${account.accountNumber}`} />
+                    ))}
                   </div>
 
                   {checkout.paymentSlipPreview ? (
@@ -172,6 +191,14 @@ const AddressForm = ({ address, legend, setAddress, updateAddress }) => (
       ))}
     </div>
   </fieldset>
+)
+
+const BankAccountCard = ({ account }) => (
+  <article className="rounded-xl border border-orange-100 bg-white p-4 shadow-sm">
+    <p className="text-xs font-bold uppercase tracking-wide text-orange-500">{account.bank}</p>
+    <p className="mt-3 font-mono text-lg font-black tracking-wide text-slate-900">{account.accountNumber}</p>
+    <p className="mt-2 text-sm font-semibold text-slate-700">{account.accountName}</p>
+  </article>
 )
 
 const SummaryRow = ({ isStrong = false, label, value, isDiscount = false }) => (

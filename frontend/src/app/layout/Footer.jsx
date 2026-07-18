@@ -42,7 +42,14 @@ export const Footer = () => (
   <footer className="mt-20 bg-[#121212] px-4 py-12 text-white sm:px-6 lg:px-10">
     <div className="mx-auto grid max-w-[1200px] gap-10 md:grid-cols-[1.4fr_0.9fr_1.2fr_0.9fr]">
       <div>
-        <span className="text-xl font-extrabold text-white">Thilani Watch Web</span>
+        <div className="flex items-center gap-3">
+          <img
+            alt="Thilani Watch Center logo"
+            className="h-14 w-14 rounded-full bg-black object-cover ring-1 ring-white/15"
+            src="/logo.jpeg"
+          />
+          <span className="text-xl font-extrabold text-white">Thilani Watch Web</span>
+        </div>
         <p className="mt-4 max-w-sm text-sm leading-6 text-white/75">
           A bright, modern storefront for premium watches, secure shopping, and clear order tracking from discovery to delivery.
         </p>
