@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Plus, X, AlertCircle, CheckCircle2 } from 'lucide-react'
 import { getApiErrorMessage } from '@/shared/api/apiClient'
-import { cloudinaryApi } from '../api/cloudinaryApi'
+import { cloudinaryApi } from '@/shared/api/cloudinaryApi'
 import { getId, normalizeList } from '../lib/adminUtils'
 import { CatalogForm } from './CatalogForm'
 import { CatalogTable } from './CatalogTable'

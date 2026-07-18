@@ -47,8 +47,8 @@ export const OrderConfirmationPage = () => {
               />
               <InfoTile
                 icon={PackageCheck}
-                title="Cash on delivery"
-                text="Your payment can be completed when the order is delivered."
+                title="Payment slip attached"
+                text="Your bank transfer slip has been attached for admin review."
               />
             </div>
 
@@ -78,7 +78,7 @@ export const OrderConfirmationPage = () => {
           <div className="mt-5 grid gap-4">
             <NextStep step="1" title="Order review" text="We check your order and stock details." />
             <NextStep step="2" title="Preparing package" text="Your watch is packed for delivery." />
-            <NextStep step="3" title="Delivery" text="You pay by cash when it arrives." />
+            <NextStep step="3" title="Delivery" text="After payment review, your watch will be sent for delivery." />
           </div>
           <Link
             className="mt-6 inline-flex min-h-11 w-full items-center justify-center rounded-xl bg-[#F49006] px-5 text-sm font-semibold text-white no-underline transition hover:bg-[#EB960E] active:scale-[0.98]"

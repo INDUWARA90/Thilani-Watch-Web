@@ -8,7 +8,7 @@ export const heroStats = [
 
 export const trustItems = [
   { icon: ShieldCheck, label: 'Authentic pieces', text: 'Verified watches from trusted sources.' },
-  { icon: Truck, label: 'Islandwide delivery', text: 'Secure delivery across Sri Lanka.' },
+  { icon: Truck, label: 'Islandwide delivery', text: 'Secure delivery across Sri Lanka within 1-3 days.' },
   { icon: BadgeCheck, label: 'Quality checked', text: 'Inspected before every dispatch.' },
   { icon: Headphones, label: 'Buyer support', text: 'Help before and after purchase.' },
 ]

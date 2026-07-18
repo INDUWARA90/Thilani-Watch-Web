@@ -9,6 +9,8 @@ import {
   getOrderId,
   getOrderItemName,
   getOrderItemPrice,
+  getPaymentMethodLabel,
+  getPaymentSlip,
   getOrderStatus,
   getOrderSubtotal,
   getOrderTotal,
@@ -33,6 +35,7 @@ export const OrderDetailPage = () => {
 
   const orderStatus = order ? getOrderStatus(order) : ''
   const paymentStatus = order ? getPaymentStatus(order) : ''
+  const paymentSlip = order ? getPaymentSlip(order) : null
 
   return (
     <main className="mx-auto max-w-[1200px] px-4 py-8 bg-white min-h-screen sm:px-6 lg:px-8">
@@ -164,8 +167,15 @@ export const OrderDetailPage = () => {
             
             <div className="mt-5 flex items-center gap-2 rounded-xl bg-slate-50 px-4 py-3 text-xs font-semibold text-slate-600">
               <CreditCard className="h-4 w-4 text-slate-400" />
-              <span>Payment method: <span className="text-slate-800 capitalize">{order.paymentMethod || 'Not set'}</span></span>
+              <span>Payment method: <span className="text-slate-800 capitalize">{getPaymentMethodLabel(order.paymentMethod)}</span></span>
             </div>
+
+            {paymentSlip && (
+              <a className="mt-3 block overflow-hidden rounded-xl border border-slate-100 bg-slate-50 p-3 text-xs font-semibold text-slate-600 no-underline transition hover:border-orange-200 hover:bg-orange-50/40" href={paymentSlip.url} rel="noreferrer" target="_blank">
+                <span className="mb-2 block text-slate-800">Attached payment slip</span>
+                <img alt="Attached payment slip" className="h-32 w-full rounded-lg border border-slate-100 bg-white object-cover" src={paymentSlip.url} />
+              </a>
+            )}
           </aside>
         </section>
       )}

@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react'
 import { getApiErrorMessage } from '@/shared/api/apiClient'
 import { adminApi } from '../api/adminApi'
-import { cloudinaryApi } from '../api/cloudinaryApi'
+import { cloudinaryApi } from '@/shared/api/cloudinaryApi'
 import { getId, normalizeList } from '../lib/adminUtils'
 import { buildWatchPayload, emptyWatchForm, getImageUrl, mergeImageUrls, splitImageUrls, watchFromApi } from './watchFormModel'
 import { useProductReferences } from './useProductReferences'

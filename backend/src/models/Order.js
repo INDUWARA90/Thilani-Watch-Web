@@ -25,7 +25,7 @@ const paymentSchema = new mongoose.Schema(
   {
     provider: {
       type: String,
-      enum: ['cod'],
+      enum: ['bank_transfer'],
     },
     transactionId: String,
     amount: Number,
@@ -36,6 +36,22 @@ const paymentSchema = new mongoose.Schema(
       trim: true,
     },
     failureReason: String,
+  },
+  { _id: false },
+)
+
+const paymentSlipSchema = new mongoose.Schema(
+  {
+    url: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    publicId: {
+      type: String,
+      required: true,
+      trim: true,
+    },
   },
   { _id: false },
 )
@@ -99,8 +115,8 @@ const orderSchema = new mongoose.Schema(
     paymentMethod: {
       type: String,
       required: true,
-      enum: ['cod'],
-      default: 'cod',
+      enum: ['bank_transfer'],
+      default: 'bank_transfer',
     },
     paymentStatus: {
       type: String,
@@ -110,6 +126,10 @@ const orderSchema = new mongoose.Schema(
     },
     payment: {
       type: paymentSchema,
+      default: undefined,
+    },
+    paymentSlip: {
+      type: paymentSlipSchema,
       default: undefined,
     },
     orderStatus: {

@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
+import { cloudinaryApi } from '@/shared/api/cloudinaryApi'
 import { getApiErrorMessage } from '@/shared/api/apiClient'
 import { useCommerce } from '@/features/commerce/hooks/useCommerce'
 import { normalizeOrder, SHIPPING_FEE } from '@/features/orders/lib/orderUtils'
@@ -14,6 +15,8 @@ const emptyAddress = {
   zip: '',
 }
 
+const MAX_PAYMENT_SLIP_SIZE = 5 * 1024 * 1024
+
 export const useCheckoutPage = () => {
   const { cart, isLoading, loadCommerce } = useCommerce()
   const navigate = useNavigate()
@@ -25,6 +28,8 @@ export const useCheckoutPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isValidatingCoupon, setIsValidatingCoupon] = useState(false)
   const [notes, setNotes] = useState('')
+  const [paymentSlipFile, setPaymentSlipFile] = useState(null)
+  const [paymentSlipPreview, setPaymentSlipPreview] = useState('')
   const [shippingAddress, setShippingAddress] = useState(emptyAddress)
   const [useShippingAsBilling, setUseShippingAsBilling] = useState(true)
 
@@ -40,6 +45,54 @@ export const useCheckoutPage = () => {
     setCouponResult(null)
     setCouponMessage('')
   }
+
+  const updatePaymentSlipFile = (file) => {
+    setError('')
+
+    if (!file) {
+      setPaymentSlipFile(null)
+      setPaymentSlipPreview('')
+      return
+    }
+
+    if (!file.type.startsWith('image/')) {
+      setPaymentSlipFile(null)
+      setPaymentSlipPreview('')
+      setError('Payment slip must be an image file.')
+      return
+    }
+
+    if (file.size > MAX_PAYMENT_SLIP_SIZE) {
+      setPaymentSlipFile(null)
+      setPaymentSlipPreview('')
+      setError('Payment slip image must be 5MB or smaller.')
+      return
+    }
+
+    setPaymentSlipFile(file)
+    setPaymentSlipPreview('')
+  }
+
+  const removePaymentSlipFile = () => {
+    setPaymentSlipFile(null)
+    setPaymentSlipPreview('')
+  }
+
+  useEffect(() => {
+    if (!paymentSlipFile) return undefined
+
+    let isActive = true
+    const reader = new FileReader()
+
+    reader.onload = () => {
+      if (isActive) setPaymentSlipPreview(String(reader.result || ''))
+    }
+    reader.readAsDataURL(paymentSlipFile)
+
+    return () => {
+      isActive = false
+    }
+  }, [paymentSlipFile])
 
   const handleValidateCoupon = async () => {
     setError('')
@@ -77,9 +130,13 @@ export const useCheckoutPage = () => {
         cart,
         couponCode,
         notes,
+        paymentSlipFile,
         shippingAddress,
         useShippingAsBilling,
       })
+      const paymentSlip = await cloudinaryApi.uploadPaymentSlip(paymentSlipFile)
+      payload.paymentSlip = paymentSlip
+
       const order = normalizeOrder(await ordersApi.createOrder(payload))
       await loadCommerce()
       navigate(`/orders/confirmation/${order?._id || order?.id || order?.orderNumber}`, { replace: true, state: { order } })
@@ -103,6 +160,9 @@ export const useCheckoutPage = () => {
     isSubmitting,
     isValidatingCoupon,
     notes,
+    paymentSlipFile,
+    paymentSlipPreview,
+    removePaymentSlipFile,
     setBillingAddress,
     setNotes,
     setShippingAddress,
@@ -111,19 +171,21 @@ export const useCheckoutPage = () => {
     total,
     updateAddress,
     updateCouponCode,
+    updatePaymentSlipFile,
     useShippingAsBilling,
   }
 }
 
-const buildOrderPayload = ({ billingAddress, cart, couponCode, notes, shippingAddress, useShippingAsBilling }) => {
+const buildOrderPayload = ({ billingAddress, cart, couponCode, notes, paymentSlipFile, shippingAddress, useShippingAsBilling }) => {
   if (cart.items.length === 0) throw new Error('Your cart is empty.')
+  if (!paymentSlipFile) throw new Error('Please attach your payment slip before placing the order.')
 
   // Keep validation close to payload creation so checkout rules are easy to find.
   validateAddress(shippingAddress, 'Shipping address')
   if (!useShippingAsBilling) validateAddress(billingAddress, 'Billing address')
 
   const payload = {
-    paymentMethod: 'cod',
+    paymentMethod: 'bank_transfer',
     shippingAddress: cleanAddress(shippingAddress),
   }
 

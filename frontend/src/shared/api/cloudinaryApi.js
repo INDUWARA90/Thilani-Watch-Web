@@ -1,18 +1,19 @@
 const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
 const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
+const CLOUDINARY_PAYMENT_SLIP_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_PAYMENT_SLIP_UPLOAD_PRESET
 
-const requireCloudinaryConfig = () => {
-  if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET) {
-    throw new Error('Cloudinary frontend config is missing. Set VITE_CLOUDINARY_CLOUD_NAME and VITE_CLOUDINARY_UPLOAD_PRESET in frontend .env.')
+const requireCloudinaryConfig = (uploadPreset, presetEnvName) => {
+  if (!CLOUDINARY_CLOUD_NAME || !uploadPreset) {
+    throw new Error(`Cloudinary frontend config is missing. Set VITE_CLOUDINARY_CLOUD_NAME and ${presetEnvName} in frontend .env.`)
   }
 }
 
-const uploadOneImage = async (file) => {
-  requireCloudinaryConfig()
+const uploadOneImage = async (file, uploadPreset, presetEnvName) => {
+  requireCloudinaryConfig(uploadPreset, presetEnvName)
 
   const formData = new FormData()
   formData.append('file', file)
-  formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET)
+  formData.append('upload_preset', uploadPreset)
 
   const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
     method: 'POST',
@@ -32,7 +33,11 @@ const uploadOneImage = async (file) => {
 
 export const cloudinaryApi = {
   async uploadImage(file) {
-    return uploadOneImage(file)
+    return uploadOneImage(file, CLOUDINARY_UPLOAD_PRESET, 'VITE_CLOUDINARY_UPLOAD_PRESET')
+  },
+
+  async uploadPaymentSlip(file) {
+    return uploadOneImage(file, CLOUDINARY_PAYMENT_SLIP_UPLOAD_PRESET, 'VITE_CLOUDINARY_PAYMENT_SLIP_UPLOAD_PRESET')
   },
 
   async uploadWatchImages(files) {
@@ -40,7 +45,7 @@ export const cloudinaryApi = {
     const images = []
 
     for (const file of selectedFiles) {
-      images.push(await uploadOneImage(file))
+      images.push(await cloudinaryApi.uploadImage(file))
     }
 
     return { images }

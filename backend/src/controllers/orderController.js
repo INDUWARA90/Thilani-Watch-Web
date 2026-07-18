@@ -35,9 +35,20 @@ const markCouponUsed = (coupon, userId) => {
   coupon.usedCount += 1
 }
 
+const getPaymentSlipPayload = (paymentSlip) => {
+  if (!paymentSlip || typeof paymentSlip !== 'object') return null
+
+  const url = paymentSlip.url ? String(paymentSlip.url).trim() : ''
+  const publicId = paymentSlip.publicId ? String(paymentSlip.publicId).trim() : ''
+
+  if (!url || !publicId) return null
+
+  return { url, publicId }
+}
+
 const initializeOrderPayment = async (order) => {
   order.payment = {
-    provider: 'cod',
+    provider: 'bank_transfer',
     amount: order.total,
     currency: 'LKR',
   }
@@ -51,11 +62,16 @@ const initializeOrderPayment = async (order) => {
  * Validates stock and reduces inventory on success.
  */
 const createOrder = asyncHandler(async (req, res, next) => {
-  const { shippingAddress, billingAddress, paymentMethod, notes } = req.body
-  const normalizedPaymentMethod = paymentMethod ? String(paymentMethod).trim().toLowerCase() : 'cod'
+  const { shippingAddress, billingAddress, paymentMethod, paymentSlip, notes } = req.body
+  const normalizedPaymentMethod = paymentMethod ? String(paymentMethod).trim().toLowerCase() : 'bank_transfer'
 
-  if (normalizedPaymentMethod !== 'cod') {
-    return next(new ErrorResponse('Only cash on delivery (cod) payment is available', 400))
+  if (normalizedPaymentMethod !== 'bank_transfer') {
+    return next(new ErrorResponse('Only bank transfer payment is available', 400))
+  }
+
+  const normalizedPaymentSlip = getPaymentSlipPayload(paymentSlip)
+  if (!normalizedPaymentSlip) {
+    return next(new ErrorResponse('Payment slip url and publicId are required', 400))
   }
 
   const session = await mongoose.startSession()
@@ -131,6 +147,7 @@ const createOrder = asyncHandler(async (req, res, next) => {
             shippingAddress,
             billingAddress: billingAddress || shippingAddress,
             paymentMethod: normalizedPaymentMethod,
+            paymentSlip: normalizedPaymentSlip,
             discount,
             notes,
             couponCode: normalizedCouponCode || undefined,
@@ -178,7 +195,7 @@ const createOrder = asyncHandler(async (req, res, next) => {
     order.paymentStatus = 'failed'
     order.paymentFailedAt = new Date()
     order.payment = {
-      provider: 'cod',
+      provider: 'bank_transfer',
       amount: order.total,
       currency: 'LKR',
       failureReason: error.message,
@@ -421,7 +438,7 @@ const refundOrder = asyncHandler(async (req, res, next) => {
     status: 'succeeded',
     amount: refundAmount,
     reason,
-    providerRefundId: `cod_refund_${order._id}_${Date.now()}`,
+    providerRefundId: `bank_transfer_refund_${order._id}_${Date.now()}`,
     refundedAt: new Date(),
   }
 
