@@ -1,16 +1,23 @@
 import { usePageTitle } from '@/shared/hooks/usePageTitle'
-import { AboutIntro } from '@/features/public/components/AboutIntro'
-import { AboutValueGrid } from '@/features/public/components/AboutValueGrid'
-import { StaticPageShell } from '@/features/public/components/StaticPageShell'
-import { aboutValues } from '@/features/public/lib/staticPageContent'
+import { AboutBrandSection } from '@/features/public/components/AboutBrandSection'
+import { AboutHighlights } from '@/features/public/components/AboutHighlights'
+import { PublicPageShell } from '@/features/public/components/PublicPageShell'
+import { TrustStatStrip } from '@/features/public/components/TrustStatStrip'
+import { aboutHighlights, aboutSteps, trustStats } from '@/features/public/lib/staticPageContent'
 
-export const AboutPage = () => {
+export default function AboutPage() {
   usePageTitle('About Us | Thilani Watch Web')
 
   return (
-    <StaticPageShell eyebrow="About us" title="Thilani Watch Center">
-      <AboutIntro />
-      <AboutValueGrid items={aboutValues} />
-    </StaticPageShell>
+    <PublicPageShell
+      eyebrow="About us"
+      title="A trusted local watch experience from Moratuwa"
+      text="Thilani Watch Center brings premium watches, clear checkout, bank-transfer proof, and order tracking together for Sri Lankan customers."
+    >
+      <TrustStatStrip stats={trustStats} />
+      <AboutBrandSection />
+      <AboutHighlights items={aboutHighlights} steps={aboutSteps} />
+    </PublicPageShell>
   )
 }
+
