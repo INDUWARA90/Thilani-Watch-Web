@@ -11,7 +11,7 @@ export const AppLayout = ({ children }) => {
 
   if (isAuthPage) {
     return (
-      <div className="grid min-h-screen bg-[linear-gradient(135deg,#F49006_0%,#EB960E_100%)] px-4 py-8 text-[#121212] sm:px-6 lg:px-8">
+      <div className="grid min-h-screen px-4 py-8 text-[#121212] sm:px-6 lg:px-8">
         <div className="m-auto w-full">{children}</div>
       </div>
     )
