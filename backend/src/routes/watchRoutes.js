@@ -15,21 +15,22 @@ const {
   updateWatchStock,
 } = require('../controllers/watchController')
 const { adminOnly, protect } = require('../middleware/authMiddleware')
+const { publicCache } = require('../middleware/cacheMiddleware')
 
 const router = express.Router()
 
 
-router.route('/').get(getWatches).post(protect, adminOnly, createWatch)
+router.route('/').get(publicCache(), getWatches).post(protect, adminOnly, createWatch)
 
 router.get('/admin/all', protect, adminOnly, getAdminWatches)
 router.get('/admin/low-stock', protect, adminOnly, getLowStockWatches)
-router.get('/featured', getFeaturedWatches)
-router.get('/new-arrivals', getNewArrivals)
-router.get('/best-sellers', getBestSellers)
-router.get('/slug/:slug', getWatchBySlug)
+router.get('/featured', publicCache(), getFeaturedWatches)
+router.get('/new-arrivals', publicCache(), getNewArrivals)
+router.get('/best-sellers', publicCache(), getBestSellers)
+router.get('/slug/:slug', publicCache(), getWatchBySlug)
 
 router.patch('/:id/stock', protect, adminOnly, updateWatchStock)
 router.patch('/:id/publish', protect, adminOnly, updateWatchPublish)
-router.route('/:id').get(getWatch).put(protect, adminOnly, updateWatch).delete(protect, adminOnly, deleteWatch)
+router.route('/:id').get(publicCache(), getWatch).put(protect, adminOnly, updateWatch).delete(protect, adminOnly, deleteWatch)
 
 module.exports = router

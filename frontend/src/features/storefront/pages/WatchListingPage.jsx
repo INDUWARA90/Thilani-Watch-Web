@@ -19,7 +19,7 @@ const fieldClass = 'h-11 min-w-0 w-full rounded-xl border border-slate-200 bg-wh
 export const WatchListingPage = () => {
   usePageTitle('Shop Watches | Thilani Watch Web')
 
-  const { brands, categories, error, filters, isLoading, pagination, updateFilter, watches } = useWatchListing()
+  const { brands, categories, error, filters, isLoading, pagination, searchValue, setSearchValue, updateFilter, watches } = useWatchListing()
 
   return (
     <main className="-mx-4 -mt-8 bg-white sm:-mx-6 lg:-mx-8 min-h-screen pb-16">
@@ -56,7 +56,7 @@ export const WatchListingPage = () => {
               Search
               <span className="flex items-center h-11 rounded-xl border border-slate-200 bg-white px-3.5 transition focus-within:border-[#0D6EFD] focus-within:ring-2 focus-within:ring-[#0D6EFD]/25">
                 <Search className="h-4 w-4 text-slate-400 shrink-0" />
-                <input className="min-w-0 flex-1 bg-transparent px-2.5 text-base font-normal text-[#121212] outline-none placeholder:text-slate-400" placeholder="Search watches..." value={filters.search} onChange={(event) => updateFilter('search', event.target.value)} />
+                <input className="min-w-0 flex-1 bg-transparent px-2.5 text-base font-normal text-[#121212] outline-none placeholder:text-slate-400" placeholder="Search watches..." value={searchValue} onChange={(event) => setSearchValue(event.target.value)} />
               </span>
             </label>
             

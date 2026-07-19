@@ -10,7 +10,7 @@ import { fallbackBrands, fallbackCategories } from '@/features/storefront/lib/ho
 
 export const HomePage = () => {
   usePageTitle('Thilani Watch Web | Luxury Watches')
-  const { error, home, isLoading } = useStorefrontHome()
+  const { error, home, loading } = useStorefrontHome()
 
   return (
     <main className="-mx-4 -mt-8 min-h-screen bg-white sm:-mx-6 lg:-mx-8">
@@ -27,7 +27,7 @@ export const HomePage = () => {
 
       <HomeWatchSection
         eyebrow="Featured"
-        isLoading={isLoading}
+        isLoading={loading.featured}
         text="Lead customers into the strongest products first with a focused row of premium picks."
         title="Featured watches"
         watches={home.featured}
@@ -36,13 +36,14 @@ export const HomePage = () => {
         eyebrow="Categories"
         fallbackItems={fallbackCategories}
         filterKey="category"
+        isLoading={loading.categories}
         items={home.categories}
         text="Help shoppers start from their preferred use case instead of scanning every watch at once."
         title="Shop by category"
       />
       <HomeWatchSection
         eyebrow="Fresh arrivals"
-        isLoading={isLoading}
+        isLoading={loading.newArrivals}
         text="Keep the storefront feeling alive with the newest pieces added to the catalog."
         title="New arrivals"
         watches={home.newArrivals}
@@ -51,13 +52,14 @@ export const HomePage = () => {
         eyebrow="Brands"
         fallbackItems={fallbackBrands}
         filterKey="brand"
+        isLoading={loading.brands}
         items={home.brands}
         text="Give brand-focused customers a fast route into the collection they already trust."
         title="Shop by brand"
       />
       <HomeWatchSection
         eyebrow="Popular"
-        isLoading={isLoading}
+        isLoading={loading.bestSellers}
         text="Show the watches customers are most likely to compare, save, and buy."
         title="Best sellers"
         watches={home.bestSellers}

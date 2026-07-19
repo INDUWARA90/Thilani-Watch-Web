@@ -9,9 +9,10 @@ const {
   restoreBrand,
 } = require('../controllers/brandController')
 const { protect, adminOnly } = require('../middleware/authMiddleware')
+const { publicCache } = require('../middleware/cacheMiddleware')
 
 router.route('/')
-  .get(getBrands)
+  .get(publicCache(), getBrands)
   .post(protect, adminOnly, createBrand)
 
 router.get('/admin/all', protect, adminOnly, getAdminBrands)

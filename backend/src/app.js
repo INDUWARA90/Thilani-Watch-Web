@@ -23,7 +23,9 @@ app.use(
 // Security & Logging Middleware
 app.use(helmet()) // Set security HTTP headers
 app.use(hpp()) // Prevent HTTP Parameter Pollution
-app.use(morgan('dev')) // Log requests to console
+if (process.env.NODE_ENV !== 'production') {
+  app.use(morgan('dev')) // Log requests to console
+}
 
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,

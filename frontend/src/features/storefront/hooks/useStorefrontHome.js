@@ -11,46 +11,71 @@ const emptyHome = {
   newArrivals: [],
 }
 
+const initialLoading = {
+  bestSellers: true,
+  brands: true,
+  categories: true,
+  featured: true,
+  newArrivals: true,
+}
+
 export const useStorefrontHome = () => {
   const [error, setError] = useState('')
   const [home, setHome] = useState(emptyHome)
-  const [isLoading, setIsLoading] = useState(true)
+  const [loading, setLoading] = useState(initialLoading)
 
   useEffect(() => {
     let isActive = true
 
-    const loadHome = async () => {
-      setIsLoading(true)
-      setError('')
+    const loadSection = async ({ fallbackMessage, key, normalizeKeys, request }) => {
       try {
-        const [featured, newArrivals, bestSellers, categories, brands] = await Promise.all([
-          storefrontApi.getFeaturedWatches(),
-          storefrontApi.getNewArrivals(),
-          storefrontApi.getBestSellers(),
-          storefrontApi.getCategories(),
-          storefrontApi.getBrands(),
-        ])
-
+        const payload = await request()
         if (!isActive) return
-        setHome({
-          bestSellers: normalizeList(bestSellers, ['watches', 'bestSellers']),
-          brands: normalizeList(brands, ['brands']),
-          categories: normalizeList(categories, ['categories']),
-          featured: normalizeList(featured, ['watches', 'featured']),
-          newArrivals: normalizeList(newArrivals, ['watches', 'newArrivals']),
-        })
+        setHome((current) => ({ ...current, [key]: normalizeList(payload, normalizeKeys) }))
       } catch (apiError) {
-        if (isActive) setError(getApiErrorMessage(apiError, 'Unable to load storefront.'))
+        if (isActive) setError(getApiErrorMessage(apiError, fallbackMessage))
       } finally {
-        if (isActive) setIsLoading(false)
+        if (isActive) setLoading((current) => ({ ...current, [key]: false }))
       }
     }
 
-    loadHome()
+    loadSection({
+      fallbackMessage: 'Unable to load featured watches.',
+      key: 'featured',
+      normalizeKeys: ['watches', 'featured'],
+      request: storefrontApi.getFeaturedWatches,
+    })
+    loadSection({
+      fallbackMessage: 'Unable to load new arrivals.',
+      key: 'newArrivals',
+      normalizeKeys: ['watches', 'newArrivals'],
+      request: storefrontApi.getNewArrivals,
+    })
+    loadSection({
+      fallbackMessage: 'Unable to load best sellers.',
+      key: 'bestSellers',
+      normalizeKeys: ['watches', 'bestSellers'],
+      request: storefrontApi.getBestSellers,
+    })
+    loadSection({
+      fallbackMessage: 'Unable to load categories.',
+      key: 'categories',
+      normalizeKeys: ['categories'],
+      request: storefrontApi.getCategories,
+    })
+    loadSection({
+      fallbackMessage: 'Unable to load brands.',
+      key: 'brands',
+      normalizeKeys: ['brands'],
+      request: storefrontApi.getBrands,
+    })
+
     return () => {
       isActive = false
     }
   }, [])
 
-  return { error, home, isLoading }
+  const isLoading = Object.values(loading).some(Boolean)
+
+  return { error, home, isLoading, loading }
 }

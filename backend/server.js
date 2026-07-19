@@ -9,7 +9,6 @@ const app = require('./src/app')
 
 const port = process.env.PORT || 5000
 
-// Connect to MongoDB 
 const startServer = async () => {
   try {
     await connectDB()
@@ -22,4 +21,19 @@ const startServer = async () => {
   }
 }
 
-startServer()
+if (require.main === module) {
+  startServer()
+}
+
+module.exports = async (req, res) => {
+  try {
+    await connectDB()
+    return app(req, res)
+  } catch (error) {
+    console.error(`Database connection failed: ${error.message}`)
+    return res.status(500).json({
+      success: false,
+      message: 'Database connection failed',
+    })
+  }
+}

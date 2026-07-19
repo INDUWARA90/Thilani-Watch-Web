@@ -2,7 +2,7 @@ import { ArrowRight } from 'lucide-react'
 import { Link } from 'react-router'
 import { getCatalogImage, getCatalogValue, getTitle } from '@/features/storefront/lib/storefrontUtils'
 
-export const HomeCatalogGrid = ({ eyebrow, fallbackItems, filterKey, items, title, text }) => {
+export const HomeCatalogGrid = ({ eyebrow, fallbackItems, filterKey, isLoading = false, items, title, text }) => {
   const visibleItems = items.length > 0 ? items : fallbackItems
 
   return (
@@ -13,8 +13,11 @@ export const HomeCatalogGrid = ({ eyebrow, fallbackItems, filterKey, items, titl
         <p className="mt-3 text-sm leading-7 text-[#6C757D] sm:text-base">{text}</p>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {visibleItems.slice(0, 4).map((item) => {
+      {isLoading ? (
+        <CatalogSkeleton />
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {visibleItems.slice(0, 4).map((item) => {
           const itemTitle = getTitle(item, item.name)
           const itemValue = getCatalogValue(item) || itemTitle
           const image = getCatalogImage(item)
@@ -43,8 +46,28 @@ export const HomeCatalogGrid = ({ eyebrow, fallbackItems, filterKey, items, titl
               </div>
             </Link>
           )
-        })}
-      </div>
+          })}
+        </div>
+      )}
     </section>
   )
 }
+
+const CatalogSkeleton = () => (
+  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    {Array.from({ length: 4 }).map((_, index) => (
+      <div
+        className="min-h-[190px] rounded-[18px] border border-[#DEE2E6] bg-white p-5 shadow-[13px_14px_12.6px_0_rgba(0,0,0,0.04)]"
+        key={index}
+      >
+        <div className="mb-4 h-16 w-16 animate-pulse rounded-[14px] bg-slate-100" />
+        <div className="h-5 w-3/4 animate-pulse rounded bg-slate-100" />
+        <div className="mt-4 grid gap-2">
+          <div className="h-3 w-full animate-pulse rounded bg-slate-100" />
+          <div className="h-3 w-2/3 animate-pulse rounded bg-slate-100" />
+        </div>
+        <div className="mt-8 h-4 w-20 animate-pulse rounded bg-orange-100" />
+      </div>
+    ))}
+  </div>
+)

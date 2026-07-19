@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router'
 import { getApiErrorMessage } from '@/shared/api/apiClient'
 import { storefrontApi } from '@/features/storefront/api/storefrontApi'
@@ -11,6 +11,7 @@ export const useWatchListing = () => {
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const [pagination, setPagination] = useState(normalizePagination({}))
+  const [searchValue, setSearchValue] = useState(searchParams.get('search') || '')
   const [watches, setWatches] = useState([])
 
   const filters = useMemo(
@@ -29,6 +30,17 @@ export const useWatchListing = () => {
     }),
     [searchParams],
   )
+
+  const updateFilter = useCallback((name, value) => {
+    const next = new URLSearchParams(searchParams)
+    if (value) {
+      next.set(name, value)
+    } else {
+      next.delete(name)
+    }
+    if (name !== 'page') next.set('page', '1')
+    setSearchParams(next)
+  }, [searchParams, setSearchParams])
 
   useEffect(() => {
     let isActive = true
@@ -49,6 +61,16 @@ export const useWatchListing = () => {
       isActive = false
     }
   }, [])
+
+  useEffect(() => {
+    if (searchValue === filters.search) return undefined
+
+    const timer = setTimeout(() => {
+      updateFilter('search', searchValue)
+    }, 450)
+
+    return () => clearTimeout(timer)
+  }, [filters.search, searchValue, updateFilter])
 
   useEffect(() => {
     let isActive = true
@@ -74,17 +96,6 @@ export const useWatchListing = () => {
     }
   }, [filters])
 
-  const updateFilter = (name, value) => {
-    const next = new URLSearchParams(searchParams)
-    if (value) {
-      next.set(name, value)
-    } else {
-      next.delete(name)
-    }
-    if (name !== 'page') next.set('page', '1')
-    setSearchParams(next)
-  }
-
   return {
     brands,
     categories,
@@ -92,6 +103,8 @@ export const useWatchListing = () => {
     filters,
     isLoading,
     pagination,
+    searchValue,
+    setSearchValue,
     updateFilter,
     watches,
   }

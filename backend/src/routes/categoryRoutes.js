@@ -9,9 +9,10 @@ const {
   restoreCategory,
 } = require('../controllers/categoryController')
 const { protect, adminOnly } = require('../middleware/authMiddleware')
+const { publicCache } = require('../middleware/cacheMiddleware')
 
 router.route('/')
-  .get(getCategories)
+  .get(publicCache(), getCategories)
   .post(protect, adminOnly, createCategory)
 
 router.get('/admin/all', protect, adminOnly, getAdminCategories)

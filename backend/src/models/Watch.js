@@ -166,6 +166,10 @@ const watchSchema = new mongoose.Schema(
 )
 
 watchSchema.index({ isPublished: 1, deletedAt: 1, createdAt: -1 })
+watchSchema.index({ isPublished: 1, deletedAt: 1, isFeatured: 1, createdAt: -1 })
+watchSchema.index({ isPublished: 1, deletedAt: 1, salesCount: -1, createdAt: -1 })
+watchSchema.index({ isPublished: 1, deletedAt: 1, price: 1 })
+watchSchema.index({ isPublished: 1, deletedAt: 1, ratingAverage: -1 })
 watchSchema.index({ category: 1, brand: 1, price: 1 })
 
 watchSchema.pre('validate', function setDerivedWatchFields() {

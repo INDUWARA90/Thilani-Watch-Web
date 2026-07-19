@@ -4,6 +4,7 @@ const Brand = require('../models/Brand')
 const Category = require('../models/Category')
 const asyncHandler = require('../utils/asyncHandler')
 const ErrorResponse = require('../utils/ErrorResponse')
+const { clearPublicCache } = require('../middleware/cacheMiddleware')
 const {
   escapeRegex,
   parseBoolean,
@@ -13,6 +14,24 @@ const {
 
 const DEFAULT_LIMIT = 12
 const MAX_LIMIT = 100
+const WATCH_LIST_FIELDS = [
+  'name',
+  'slug',
+  'brand',
+  'category',
+  'shortDescription',
+  'price',
+  'currency',
+  'thumbnail',
+  'images',
+  'stockQuantity',
+  'inStock',
+  'isFeatured',
+  'ratingAverage',
+  'ratingCount',
+  'salesCount',
+  'createdAt',
+].join(' ')
 
 const publishedFilter = () => ({
   isPublished: true,
@@ -33,7 +52,7 @@ const findCatalogIds = async (Model, value) => {
   const exact = new RegExp(`^${escapeRegex(rawValue)}$`, 'i')
   const docs = await Model.find({
     $or: [{ slug: exact }, { name: exact }],
-  }).select('_id')
+  }).select('_id').lean()
 
   return docs.map((doc) => doc._id)
 }
@@ -45,8 +64,8 @@ const buildListFilter = async (query, options = {}) => {
   if (query.search) {
     const search = new RegExp(escapeRegex(String(query.search).trim()), 'i')
     const [matchingBrands, matchingCategories] = await Promise.all([
-      Brand.find({ $or: [{ name: search }, { slug: search }] }).select('_id'),
-      Category.find({ $or: [{ name: search }, { slug: search }] }).select('_id'),
+      Brand.find({ $or: [{ name: search }, { slug: search }] }).select('_id').lean(),
+      Category.find({ $or: [{ name: search }, { slug: search }] }).select('_id').lean(),
     ])
 
     filter.$or = [
@@ -116,9 +135,13 @@ const getWatches = asyncHandler(async (req, res, next) => {
 
   const [watches, total] = await Promise.all([
     Watch.find(filter)
+      .select(WATCH_LIST_FIELDS)
+      .populate('brand', 'name slug')
+      .populate('category', 'name slug')
       .sort(listSort(req.query.sort))
       .skip(skip)
-      .limit(limit),
+      .limit(limit)
+      .lean(),
     Watch.countDocuments(filter),
   ])
 
@@ -138,7 +161,8 @@ const getAdminWatches = asyncHandler(async (req, res, next) => {
       .populate('category', 'name slug')
       .sort(listSort(req.query.sort))
       .skip(skip)
-      .limit(limit),
+      .limit(limit)
+      .lean(),
     Watch.countDocuments(filter),
   ])
 
@@ -150,6 +174,9 @@ const getWatch = asyncHandler(async (req, res, next) => {
     _id: req.params.id,
     ...publishedFilter(),
   })
+    .populate('brand', 'name slug')
+    .populate('category', 'name slug')
+    .lean()
 
   if (!watch) {
     return next(new ErrorResponse('Watch not found', 404))
@@ -163,6 +190,9 @@ const getWatchBySlug = asyncHandler(async (req, res, next) => {
     slug: req.params.slug,
     ...publishedFilter(),
   })
+    .populate('brand', 'name slug')
+    .populate('category', 'name slug')
+    .lean()
 
   if (!watch) {
     return next(new ErrorResponse('Watch not found', 404))
@@ -177,8 +207,12 @@ const getFeaturedWatches = asyncHandler(async (req, res, next) => {
     ...publishedFilter(),
     isFeatured: true,
   })
+    .select(WATCH_LIST_FIELDS)
+    .populate('brand', 'name slug')
+    .populate('category', 'name slug')
     .sort({ createdAt: -1 })
     .limit(limit)
+    .lean()
 
   res.json({ success: true, data: watches })
 })
@@ -186,8 +220,12 @@ const getFeaturedWatches = asyncHandler(async (req, res, next) => {
 const getNewArrivals = asyncHandler(async (req, res, next) => {
   const { limit } = getPaginationParams(req.query, DEFAULT_LIMIT, MAX_LIMIT)
   const watches = await Watch.find(publishedFilter())
+    .select(WATCH_LIST_FIELDS)
+    .populate('brand', 'name slug')
+    .populate('category', 'name slug')
     .sort({ createdAt: -1 })
     .limit(limit)
+    .lean()
 
   res.json({ success: true, data: watches })
 })
@@ -195,14 +233,19 @@ const getNewArrivals = asyncHandler(async (req, res, next) => {
 const getBestSellers = asyncHandler(async (req, res, next) => {
   const { limit } = getPaginationParams(req.query, DEFAULT_LIMIT, MAX_LIMIT)
   const watches = await Watch.find(publishedFilter())
+    .select(WATCH_LIST_FIELDS)
+    .populate('brand', 'name slug')
+    .populate('category', 'name slug')
     .sort({ salesCount: -1, createdAt: -1 })
     .limit(limit)
+    .lean()
 
   res.json({ success: true, data: watches })
 })
 
 const createWatch = asyncHandler(async (req, res, next) => {
   const watch = await Watch.create(req.body)
+  clearPublicCache()
   res.status(201).json({ success: true, data: watch })
 })
 
@@ -216,6 +259,7 @@ const updateWatch = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse('Watch not found', 404))
   }
 
+  clearPublicCache()
   res.json({ success: true, data: watch })
 })
 
@@ -246,6 +290,7 @@ const updateWatchStock = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse('Watch not found', 404))
   }
 
+  clearPublicCache()
   res.json({ success: true, data: watch })
 })
 
@@ -254,7 +299,7 @@ const updateWatchStock = asyncHandler(async (req, res, next) => {
  */
 const getLowStockWatches = asyncHandler(async (req, res, next) => {
   const threshold = Number.parseInt(req.query.threshold, 10) || 5
-  const watches = await Watch.find({ stockQuantity: { $lte: threshold }, deletedAt: null })
+  const watches = await Watch.find({ stockQuantity: { $lte: threshold }, deletedAt: null }).lean()
   res.json({ success: true, data: watches })
 })
 
@@ -278,6 +323,7 @@ const updateWatchPublish = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse('Watch not found', 404))
   }
 
+  clearPublicCache()
   res.json({ success: true, data: watch })
 })
 
@@ -295,6 +341,7 @@ const deleteWatch = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse('Watch not found', 404))
   }
 
+  clearPublicCache()
   res.json({ success: true, message: 'Watch deleted' })
 })
 
