@@ -69,8 +69,8 @@ export const AdminLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   return (
-    <section className="grid min-h-screen bg-slate-50/50 lg:grid-cols-[280px_minmax(0,1fr)]">
-      <aside className="hidden border-r border-slate-900 bg-slate-950 p-6 text-white shadow-2xl shadow-slate-950/40 lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col lg:justify-between">
+    <section className="grid min-h-screen items-stretch bg-slate-50/50 lg:grid-cols-[280px_minmax(0,1fr)]">
+      <aside className="hidden min-h-screen border-r border-slate-900 bg-slate-950 p-6 text-white shadow-2xl shadow-slate-950/40 lg:flex lg:flex-col lg:justify-between">
         <AdminSidebarContent />
       </aside>
 

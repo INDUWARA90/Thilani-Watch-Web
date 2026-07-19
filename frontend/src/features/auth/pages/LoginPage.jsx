@@ -102,6 +102,12 @@ export const LoginPage = () => {
           </span>
         </label>
 
+        <div className="-mt-2 flex justify-end">
+          <Link className="text-sm font-semibold text-[#121212] no-underline transition-colors duration-200 hover:text-[#6C757D]" to="/forgot-password">
+            Forgot password?
+          </Link>
+        </div>
+
         <button
           className="mt-1 inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-[14px] bg-[#121212] px-8 text-sm font-semibold text-white transition-colors duration-200 hover:bg-[#272222] disabled:cursor-not-allowed disabled:opacity-60 sm:w-fit"
           type="submit"

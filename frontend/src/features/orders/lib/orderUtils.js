@@ -79,7 +79,7 @@ export const isPaymentSlipImage = (paymentSlip) => {
   return /\.(avif|gif|jpe?g|png|webp)(\?|#|$)/i.test(paymentSlip.url)
 }
 
-export const canCancelOrder = (order) => ['pending', 'confirmed'].includes(getOrderStatus(order).toLowerCase())
+export const canCancelOrder = (order) => getOrderStatus(order).toLowerCase() === 'pending'
 
 export const formatDate = (value) => {
   if (!value) return 'Not set'

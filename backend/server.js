@@ -1,8 +1,9 @@
 const dotenv = require('dotenv')
+const path = require('path')
 const connectDB = require('./src/config/db')
 const { validateEnv } = require('./src/config/env')
 
-dotenv.config()
+dotenv.config({ path: path.join(__dirname, '.env') })
 validateEnv()
 
 const app = require('./src/app')

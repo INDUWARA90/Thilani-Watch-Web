@@ -1,5 +1,5 @@
 import { formatDate, formatMoney, getTitle } from '../lib/adminUtils'
-import { FileText } from 'lucide-react'
+import { FileText, RefreshCcw, Truck } from 'lucide-react'
 import { getPaymentMethodLabel, getPaymentSlip, isPaymentSlipImage } from '@/features/orders/lib/orderUtils'
 import { OrderStatusControls } from './OrderStatusControls'
 
@@ -50,6 +50,9 @@ export const OrderDetailSections = ({ order, onUpdated }) => {
           </a>
         )}
 
+        <ShippingLogistics order={order} />
+        <ReturnsRefunds order={order} />
+
         <div className="mt-auto border-t border-slate-100 pt-4">
           <OrderStatusControls order={order} onUpdated={onUpdated} />
         </div>
@@ -99,3 +102,77 @@ export const OrderDetailSections = ({ order, onUpdated }) => {
     </div>
   )
 }
+
+const hasShippingLogistics = (order) =>
+  Boolean(order?.trackingNumber || order?.courierName || order?.estimatedDeliveryDate || order?.shippedAt || order?.deliveredAt)
+
+const hasReturnsRefunds = (order) => {
+  const returnRequest = order?.returnRequest
+  const refund = order?.refund
+
+  return Boolean(
+    (returnRequest?.status && returnRequest.status !== 'none') ||
+      returnRequest?.reason ||
+      returnRequest?.notes ||
+      returnRequest?.requestedAt ||
+      returnRequest?.processedAt ||
+      (refund?.status && refund.status !== 'none') ||
+      refund?.amount ||
+      refund?.reason ||
+      refund?.refundedAt,
+  )
+}
+
+const ShippingLogistics = ({ order }) => {
+  if (!hasShippingLogistics(order)) return null
+
+  return (
+    <section className="rounded-xl border border-slate-100 bg-slate-50 p-4">
+      <h4 className="mb-3 flex items-center gap-2 text-sm font-bold text-slate-900">
+        <Truck className="h-4 w-4 text-teal-600" />
+        Shipping Logistics
+      </h4>
+      <div className="grid gap-2 text-xs">
+        {order.trackingNumber && <InfoRow label="Tracking" value={order.trackingNumber} />}
+        {order.courierName && <InfoRow label="Courier" value={order.courierName} />}
+        {order.estimatedDeliveryDate && <InfoRow label="Estimated delivery" value={formatDate(order.estimatedDeliveryDate)} />}
+        {order.shippedAt && <InfoRow label="Shipped" value={formatDate(order.shippedAt)} />}
+        {order.deliveredAt && <InfoRow label="Delivered" value={formatDate(order.deliveredAt)} />}
+      </div>
+    </section>
+  )
+}
+
+const ReturnsRefunds = ({ order }) => {
+  if (!hasReturnsRefunds(order)) return null
+
+  const returnRequest = order.returnRequest || {}
+  const refund = order.refund || {}
+
+  return (
+    <section className="rounded-xl border border-slate-100 bg-slate-50 p-4">
+      <h4 className="mb-3 flex items-center gap-2 text-sm font-bold text-slate-900">
+        <RefreshCcw className="h-4 w-4 text-teal-600" />
+        Returns & Refunds
+      </h4>
+      <div className="grid gap-2 text-xs">
+        {returnRequest.status && returnRequest.status !== 'none' && <InfoRow label="Return status" value={returnRequest.status} />}
+        {returnRequest.reason && <InfoRow label="Reason" value={returnRequest.reason} />}
+        {returnRequest.notes && <InfoRow label="Notes" value={returnRequest.notes} />}
+        {returnRequest.requestedAt && <InfoRow label="Requested" value={formatDate(returnRequest.requestedAt)} />}
+        {returnRequest.processedAt && <InfoRow label="Processed" value={formatDate(returnRequest.processedAt)} />}
+        {refund.status && refund.status !== 'none' && <InfoRow label="Refund status" value={refund.status} />}
+        {refund.amount > 0 && <InfoRow label="Refund amount" value={formatMoney(refund.amount, order.currency)} />}
+        {refund.reason && <InfoRow label="Refund reason" value={refund.reason} />}
+        {refund.refundedAt && <InfoRow label="Refunded" value={formatDate(refund.refundedAt)} />}
+      </div>
+    </section>
+  )
+}
+
+const InfoRow = ({ label, value }) => (
+  <div className="flex items-start justify-between gap-3">
+    <span className="shrink-0 font-semibold text-slate-500">{label}</span>
+    <span className="min-w-0 text-right font-bold capitalize text-slate-800">{value}</span>
+  </div>
+)

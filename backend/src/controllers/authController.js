@@ -1,7 +1,12 @@
+const crypto = require('crypto')
 const jwt = require('jsonwebtoken')
 const User = require('../models/User')
 const asyncHandler = require('../utils/asyncHandler')
 const ErrorResponse = require('../utils/ErrorResponse')
+const { sendOtpEmail } = require('../services/emailService')
+
+const OTP_EXPIRES_MINUTES = 10
+const RESET_SESSION_EXPIRES_MINUTES = 10
 
 const generateToken = (user) =>
   jwt.sign(
@@ -39,6 +44,18 @@ const sendAuthResponse = (res, statusCode, user) => {
   })
 }
 
+const hashToken = (token) => crypto.createHash('sha256').update(token).digest('hex')
+
+const tokensMatch = (storedToken, submittedToken) => {
+  if (!storedToken || !submittedToken || storedToken.length !== submittedToken.length) return false
+
+  return crypto.timingSafeEqual(Buffer.from(storedToken, 'hex'), Buffer.from(submittedToken, 'hex'))
+}
+
+const normalizeEmail = (email) => String(email || '').trim().toLowerCase()
+
+const genericForgotPasswordMessage = 'If an account with that email exists, an OTP has been sent.'
+
 const register = asyncHandler(async (req, res, next) => {
   const { name, email, password, phone, addresses } = req.body
 
@@ -61,6 +78,98 @@ const register = asyncHandler(async (req, res, next) => {
   })
 
   sendAuthResponse(res, 201, user)
+})
+
+const forgotPassword = asyncHandler(async (req, res) => {
+  const email = normalizeEmail(req.body.email)
+
+  if (email) {
+    const user = await User.findOne({ email }).select(
+      '+resetOtp +resetOtpExpires +resetSessionToken +resetSessionExpires',
+    )
+
+    if (user) {
+      const otp = crypto.randomInt(100000, 1000000).toString()
+
+      user.resetOtp = hashToken(otp)
+      user.resetOtpExpires = new Date(Date.now() + OTP_EXPIRES_MINUTES * 60 * 1000)
+      user.resetSessionToken = undefined
+      user.resetSessionExpires = undefined
+      await user.save({ validateBeforeSave: false })
+
+      try {
+        await sendOtpEmail(user.email, otp)
+      } catch (error) {
+        console.error(`Failed to send password reset OTP for user ${user._id}: ${error.message}`)
+      }
+    }
+  }
+
+  res.json({ success: true, message: genericForgotPasswordMessage })
+})
+
+const verifyOtp = asyncHandler(async (req, res, next) => {
+  const email = normalizeEmail(req.body.email)
+  const otp = String(req.body.otp || '').trim()
+
+  if (!email || !/^\d{6}$/.test(otp)) {
+    return next(new ErrorResponse('Invalid or expired OTP', 400))
+  }
+
+  const user = await User.findOne({
+    email,
+    resetOtpExpires: { $gt: Date.now() },
+  }).select('+resetOtp +resetOtpExpires +resetSessionToken +resetSessionExpires')
+
+  if (!user || !tokensMatch(user.resetOtp, hashToken(otp))) {
+    return next(new ErrorResponse('Invalid or expired OTP', 400))
+  }
+
+  const resetSessionToken = crypto.randomBytes(32).toString('hex')
+
+  user.resetOtp = undefined
+  user.resetOtpExpires = undefined
+  user.resetSessionToken = hashToken(resetSessionToken)
+  user.resetSessionExpires = new Date(Date.now() + RESET_SESSION_EXPIRES_MINUTES * 60 * 1000)
+  await user.save({ validateBeforeSave: false })
+
+  res.json({
+    success: true,
+    data: {
+      resetSessionToken,
+    },
+    message: 'OTP verified successfully',
+  })
+})
+
+const resetPassword = asyncHandler(async (req, res, next) => {
+  const email = normalizeEmail(req.body.email)
+  const resetSessionToken = String(req.body.resetSessionToken || '').trim()
+  const { newPassword } = req.body
+
+  if (!email || !resetSessionToken) {
+    return next(new ErrorResponse('Invalid or expired password reset session', 400))
+  }
+
+  if (!newPassword || String(newPassword).length < 8) {
+    return next(new ErrorResponse('New password must be at least 8 characters', 400))
+  }
+
+  const user = await User.findOne({
+    email,
+    resetSessionExpires: { $gt: Date.now() },
+  }).select('+password +resetSessionToken +resetSessionExpires')
+
+  if (!user || !tokensMatch(user.resetSessionToken, hashToken(resetSessionToken))) {
+    return next(new ErrorResponse('Invalid or expired password reset session', 400))
+  }
+
+  user.password = newPassword
+  user.resetSessionToken = undefined
+  user.resetSessionExpires = undefined
+  await user.save()
+
+  res.json({ success: true, message: 'Password reset successfully' })
 })
 
 const login = asyncHandler(async (req, res, next) => {
@@ -239,12 +348,15 @@ module.exports = {
   addAddress,
   changePassword,
   deleteAddress,
+  forgotPassword,
   getMe,
   getAddresses,
   login,
   logout,
   register,
+  resetPassword,
   setDefaultAddress,
   updateAddress,
   updateProfile,
+  verifyOtp,
 }

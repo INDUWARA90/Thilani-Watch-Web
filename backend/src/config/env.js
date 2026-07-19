@@ -3,6 +3,8 @@ const REQUIRED_ENV_VARS = [
   'MONGO_URI',
   'CLIENT_URL',
   'JWT_SECRET',
+  'RESEND_API_KEY',
+  'SHOP_OWNER_EMAIL',
 ]
 const VALID_NODE_ENVS = new Set(['development', 'production', 'test'])
 

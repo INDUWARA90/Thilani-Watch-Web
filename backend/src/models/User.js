@@ -73,6 +73,22 @@ const userSchema = new mongoose.Schema(
       minlength: 6,
       select: false,
     },
+    resetOtp: {
+      type: String,
+      select: false,
+    },
+    resetOtpExpires: {
+      type: Date,
+      select: false,
+    },
+    resetSessionToken: {
+      type: String,
+      select: false,
+    },
+    resetSessionExpires: {
+      type: Date,
+      select: false,
+    },
     phone: {
       type: String,
       default: '',
@@ -97,6 +113,10 @@ const userSchema = new mongoose.Schema(
     toJSON: {
       transform(doc, ret) {
         delete ret.password
+        delete ret.resetOtp
+        delete ret.resetOtpExpires
+        delete ret.resetSessionToken
+        delete ret.resetSessionExpires
         return ret
       },
     },

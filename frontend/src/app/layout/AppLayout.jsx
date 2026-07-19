@@ -2,7 +2,7 @@ import { useLocation } from 'react-router'
 import { Footer } from './Footer'
 import { Header } from './Header'
 
-const authRoutes = ['/login', '/register']
+const authRoutes = ['/login', '/register', '/forgot-password']
 
 export const AppLayout = ({ children }) => {
   const { pathname } = useLocation()

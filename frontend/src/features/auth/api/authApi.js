@@ -18,6 +18,20 @@ export const authApi = {
     return normalizeAuthPayload(await apiClient.post('/auth/login', payload))
   },
 
+  async forgotPassword(payload) {
+    const response = await apiClient.post('/auth/forgot-password', payload)
+    return response.data?.message ?? 'If an account with that email exists, an OTP has been sent.'
+  },
+
+  async verifyOtp(payload) {
+    return unwrapApiData(await apiClient.post('/auth/verify-otp', payload))
+  },
+
+  async resetPassword(payload) {
+    const response = await apiClient.post('/auth/reset-password', payload)
+    return response.data?.message ?? 'Password reset successfully'
+  },
+
   async logout() {
     return apiClient.post('/auth/logout')
   },

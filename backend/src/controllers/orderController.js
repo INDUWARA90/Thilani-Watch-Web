@@ -6,6 +6,7 @@ const Coupon = require('../models/Coupon')
 const asyncHandler = require('../utils/asyncHandler')
 const ErrorResponse = require('../utils/ErrorResponse')
 const { getPaginationParams, formatPaginatedResponse } = require('../utils/queryHelpers')
+const { sendOrderNotification } = require('../services/emailService')
 
 const ORDER_STATUSES = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled']
 const PAYMENT_STATUSES = ['pending', 'paid', 'failed', 'refunded']
@@ -54,6 +55,31 @@ const initializeOrderPayment = async (order) => {
   order.paymentStatus = 'pending'
   await order.save()
   return order
+}
+
+const getOrderNotificationPayload = (order, user) => ({
+  _id: order._id,
+  customerName: user.name,
+  customerEmail: user.email,
+  customerPhone: user.phone || order.shippingAddress?.phone || '',
+  items: order.items.map((item) => ({
+    name: item.name,
+    quantity: item.quantity,
+    price: item.price,
+  })),
+  totalPrice: order.total,
+})
+
+const notifyShopOwnerOfOrder = (order, user) => {
+  const notificationOrder = getOrderNotificationPayload(order, user)
+
+  sendOrderNotification(notificationOrder)
+    .then((result) => {
+      console.log(`Order notification sent for order ${order._id}: ${result?.id || 'no resend id returned'}`)
+    })
+    .catch((error) => {
+      console.error(`Failed to send order notification for order ${order._id}: ${error.message}`)
+    })
 }
 
 /**
@@ -203,6 +229,8 @@ const createOrder = asyncHandler(async (req, res, next) => {
     throw error
   }
 
+  notifyShopOwnerOfOrder(order, req.user)
+
   res.status(201).json({ success: true, data: order })
 })
 
@@ -233,7 +261,7 @@ const getOrderById = asyncHandler(async (req, res, next) => {
 })
 
 /**
- * Customer cancels an order before it's shipped.
+ * Customer cancels an order before the shop confirms it.
  */
 const cancelOrder = asyncHandler(async (req, res, next) => {
   const order = await Order.findOne({ _id: req.params.id, user: req.user._id })
@@ -242,7 +270,7 @@ const cancelOrder = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse('Order not found', 404))
   }
 
-  if (!['pending', 'confirmed'].includes(order.orderStatus)) {
+  if (order.orderStatus !== 'pending') {
     return next(new ErrorResponse(`Cannot cancel order in ${order.orderStatus} status.`, 400))
   }
 

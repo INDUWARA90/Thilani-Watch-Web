@@ -20,6 +20,7 @@ const PolicyPage = lazyPage(() => import('@/features/public/pages/PolicyPage'))
 
 const LoginPage = lazyPage(() => import('@/features/auth/pages/LoginPage'), 'LoginPage')
 const RegisterPage = lazyPage(() => import('@/features/auth/pages/RegisterPage'), 'RegisterPage')
+const ForgotPasswordPage = lazyPage(() => import('@/features/auth/pages/ForgotPasswordPage'), 'ForgotPasswordPage')
 const DashboardPage = lazyPage(() => import('@/features/auth/pages/DashboardPage'), 'DashboardPage')
 const ProfilePage = lazyPage(() => import('@/features/auth/pages/ProfilePage'), 'ProfilePage')
 
@@ -53,6 +54,7 @@ const AppRoutes = () => (
       <Route path="/watches/:slug" element={<WatchDetailPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route element={<RequireAuth />}>
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/cart" element={<CartPage />} />
