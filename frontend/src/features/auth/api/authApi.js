@@ -32,10 +32,6 @@ export const authApi = {
     return data?.user ?? data ?? null
   },
 
-  async changePassword(payload) {
-    return unwrapApiData(await apiClient.put('/auth/change-password', payload))
-  },
-
   async getAddresses() {
     return unwrapApiData(await apiClient.get('/auth/addresses'))
   },

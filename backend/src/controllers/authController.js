@@ -2,7 +2,6 @@ const jwt = require('jsonwebtoken')
 const User = require('../models/User')
 const asyncHandler = require('../utils/asyncHandler')
 const ErrorResponse = require('../utils/ErrorResponse')
-const { sendPasswordChangedEmail, sendWelcomeEmail } = require('../services/emailService')
 
 const generateToken = (user) =>
   jwt.sign(
@@ -61,7 +60,6 @@ const register = asyncHandler(async (req, res, next) => {
     addresses,
   })
 
-  await sendWelcomeEmail(user)
   sendAuthResponse(res, 201, user)
 })
 
@@ -234,7 +232,6 @@ const changePassword = asyncHandler(async (req, res, next) => {
   user.password = newPassword
   await user.save()
 
-  await sendPasswordChangedEmail(user)
   res.json({ success: true, message: 'Password changed successfully' })
 })
 

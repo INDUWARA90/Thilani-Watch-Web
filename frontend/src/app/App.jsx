@@ -37,6 +37,7 @@ const AdminCatalogPage = lazyPage(() => import('@/features/admin/pages/AdminCata
 const AdminOrdersPage = lazyPage(() => import('@/features/admin/pages/AdminOrdersPage'), 'AdminOrdersPage')
 const AdminOrderDetailPage = lazyPage(() => import('@/features/admin/pages/AdminOrdersPage'), 'AdminOrderDetailPage')
 const AdminReviewsPage = lazyPage(() => import('@/features/admin/pages/AdminReviewsPage'), 'AdminReviewsPage')
+const AdminMessagesPage = lazyPage(() => import('@/features/admin/pages/AdminMessagesPage'), 'AdminMessagesPage')
 const AdminCouponsPage = lazyPage(() => import('@/features/admin/pages/AdminCouponsPage'), 'AdminCouponsPage')
 const AdminCustomersPage = lazyPage(() => import('@/features/admin/pages/AdminCustomersPage'), 'AdminCustomersPage')
 
@@ -70,6 +71,7 @@ const AppRoutes = () => (
           <Route path="catalog" element={<AdminCatalogPage />} />
           <Route path="orders" element={<AdminOrdersPage />} />
           <Route path="orders/:id" element={<AdminOrderDetailPage />} />
+          <Route path="messages" element={<AdminMessagesPage />} />
           <Route path="reviews" element={<AdminReviewsPage />} />
           <Route path="coupons" element={<AdminCouponsPage />} />
           <Route path="customers" element={<AdminCustomersPage />} />

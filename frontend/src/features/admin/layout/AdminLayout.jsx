@@ -9,6 +9,7 @@ const adminLinks = [
   { to: '/admin/products', label: 'Products', icon: Boxes },
   { to: '/admin/catalog', label: 'Categories & Brands', icon: Tags },
   { to: '/admin/orders', label: 'Orders', icon: ClipboardList },
+  { to: '/admin/messages', label: 'Messages', icon: MessageSquareText },
   { to: '/admin/reviews', label: 'Reviews', icon: MessageSquareText },
   { to: '/admin/coupons', label: 'Coupons', icon: TicketPercent },
   { to: '/admin/customers', label: 'Customers', icon: Users },

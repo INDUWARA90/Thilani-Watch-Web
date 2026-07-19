@@ -6,7 +6,6 @@ const Coupon = require('../models/Coupon')
 const asyncHandler = require('../utils/asyncHandler')
 const ErrorResponse = require('../utils/ErrorResponse')
 const { getPaginationParams, formatPaginatedResponse } = require('../utils/queryHelpers')
-const { sendOrderConfirmationEmail, sendShippingUpdateEmail } = require('../services/emailService')
 
 const ORDER_STATUSES = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled']
 const PAYMENT_STATUSES = ['pending', 'paid', 'failed', 'refunded']
@@ -204,7 +203,6 @@ const createOrder = asyncHandler(async (req, res, next) => {
     throw error
   }
 
-  await sendOrderConfirmationEmail(req.user, order)
   res.status(201).json({ success: true, data: order })
 })
 
@@ -330,9 +328,6 @@ const updateOrderStatus = asyncHandler(async (req, res, next) => {
   )
 
   if (!order) return next(new ErrorResponse('Order not found', 404))
-  if (['shipped', 'delivered'].includes(orderStatus)) {
-    await sendShippingUpdateEmail(order.user, order)
-  }
   res.json({ success: true, data: order })
 })
 
@@ -361,7 +356,6 @@ const updateOrderShipping = asyncHandler(async (req, res, next) => {
   ).populate('user', 'name email')
 
   if (!order) return next(new ErrorResponse('Order not found', 404))
-  await sendShippingUpdateEmail(order.user, order)
   res.json({ success: true, data: order })
 })
 

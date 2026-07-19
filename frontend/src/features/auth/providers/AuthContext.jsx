@@ -93,10 +93,6 @@ export const AuthProvider = ({ children }) => {
     return updatedUser;
   }, []);
 
-  const changePassword = useCallback(async (payload) => {
-    return authApi.changePassword(payload);
-  }, []);
-
   const value = useMemo(
     () => ({
       token,
@@ -108,11 +104,9 @@ export const AuthProvider = ({ children }) => {
       login,
       logout,
       updateProfile,
-      changePassword,
       clearAuth,
     }),
     [
-      changePassword,
       clearAuth,
       isRestoring,
       login,

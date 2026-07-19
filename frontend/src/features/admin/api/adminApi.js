@@ -139,6 +139,22 @@ export const adminApi = {
     return unwrapApiData(await apiClient.patch(`/reviews/${id}/approve`))
   },
 
+  async getContactMessages(filters) {
+    return unwrapList(await apiClient.get('/contact', { params: buildParams(filters) }), ['messages', 'contacts', 'contactMessages'])
+  },
+
+  async getContactMessage(id) {
+    return unwrapApiData(await apiClient.get(`/contact/${id}`))
+  },
+
+  async updateContactReadStatus(id, isRead) {
+    return unwrapApiData(await apiClient.patch(`/contact/${id}`, { isRead }))
+  },
+
+  async deleteContactMessage(id) {
+    return unwrapApiData(await apiClient.delete(`/contact/${id}`))
+  },
+
   async getDashboardSummary() {
     return unwrapApiData(await apiClient.get('/admin/dashboard/summary'))
   },

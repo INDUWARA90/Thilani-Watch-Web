@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { CheckCircle2, AlertCircle, MapPin, Key, User, Plus, X } from 'lucide-react'
+import { CheckCircle2, AlertCircle, MapPin, User, Plus, X } from 'lucide-react'
 import { ButtonSpinner, LoadingState } from '@/shared/ui/LoadingState'
 import { getApiErrorMessage } from '@/shared/api/apiClient'
 import { useAuth } from '@/features/auth/hooks/useAuth'
@@ -19,9 +19,8 @@ const emptyAddress = {
 }
 
 export const ProfilePage = () => {
-  const { changePassword, updateProfile, user } = useAuth()
+  const { updateProfile, user } = useAuth()
   const [profile, setProfile] = useState({ name: user?.name || '', phone: user?.phone || '' })
-  const [passwords, setPasswords] = useState({ currentPassword: '', newPassword: '' })
   const [addresses, setAddresses] = useState([])
   const [addressForm, setAddressForm] = useState(emptyAddress)
   const [editingAddressId, setEditingAddressId] = useState('')
@@ -76,22 +75,6 @@ export const ProfilePage = () => {
       setMessage('Profile updated successfully.')
     } catch (apiError) {
       setError(getApiErrorMessage(apiError, 'Unable to update profile.'))
-    } finally {
-      setIsSaving(false)
-    }
-  }
-
-  const savePassword = async (event) => {
-    event.preventDefault()
-    setError('')
-    setMessage('')
-    setIsSaving(true)
-    try {
-      await changePassword(passwords)
-      setPasswords({ currentPassword: '', newPassword: '' })
-      setMessage('Password changed successfully.')
-    } catch (apiError) {
-      setError(getApiErrorMessage(apiError, 'Unable to change password.'))
     } finally {
       setIsSaving(false)
     }
@@ -175,42 +158,22 @@ export const ProfilePage = () => {
         </div>
       )}
 
-      {/* Core Credentials Forms */}
-      <div className="grid gap-8 lg:grid-cols-2">
-        {/* Profile Card */}
-        <form className="flex flex-col justify-between rounded-2xl border border-slate-200/70 bg-white p-6 shadow-sm transition-all hover:shadow-md" onSubmit={saveProfile}>
-          <div className="grid gap-5">
-            <div className="flex items-center gap-2.5 pb-2 border-b border-slate-50">
-              <div className="rounded-lg bg-amber-50 p-2 text-[#F49006]">
-                <User className="h-5 w-5" />
-              </div>
-              <h2 className="text-lg font-bold text-slate-900">Personal Details</h2>
+      {/* Profile Card */}
+      <form className="flex flex-col justify-between rounded-2xl border border-slate-200/70 bg-white p-6 shadow-sm transition-all hover:shadow-md" onSubmit={saveProfile}>
+        <div className="grid gap-5">
+          <div className="flex items-center gap-2.5 pb-2 border-b border-slate-50">
+            <div className="rounded-lg bg-amber-50 p-2 text-[#F49006]">
+              <User className="h-5 w-5" />
             </div>
-            <Field label="Full Name" required value={profile.name} onChange={(value) => setProfile((current) => ({ ...current, name: value }))} />
-            <Field label="Phone Number" type="tel" value={profile.phone} onChange={(value) => setProfile((current) => ({ ...current, phone: value }))} />
+            <h2 className="text-lg font-bold text-slate-900">Personal Details</h2>
           </div>
-          <button className={primaryButtonClass} disabled={isSaving} type="submit">
-            {isSaving && <ButtonSpinner />} Save Profile Changes
-          </button>
-        </form>
-
-        {/* Password Card */}
-        <form className="flex flex-col justify-between rounded-2xl border border-slate-200/70 bg-white p-6 shadow-sm transition-all hover:shadow-md" onSubmit={savePassword}>
-          <div className="grid gap-5">
-            <div className="flex items-center gap-2.5 pb-2 border-b border-slate-50">
-              <div className="rounded-lg bg-slate-50 p-2 text-slate-700">
-                <Key className="h-5 w-5" />
-              </div>
-              <h2 className="text-lg font-bold text-slate-900">Security Credentials</h2>
-            </div>
-            <Field label="Current Password" required type="password" value={passwords.currentPassword} onChange={(value) => setPasswords((current) => ({ ...current, currentPassword: value }))} />
-            <Field label="New Password" required type="password" value={passwords.newPassword} onChange={(value) => setPasswords((current) => ({ ...current, newPassword: value }))} />
-          </div>
-          <button className={primaryButtonClass} disabled={isSaving} type="submit">
-            {isSaving && <ButtonSpinner />} Update Password
-          </button>
-        </form>
-      </div>
+          <Field label="Full Name" required value={profile.name} onChange={(value) => setProfile((current) => ({ ...current, name: value }))} />
+          <Field label="Phone Number" type="tel" value={profile.phone} onChange={(value) => setProfile((current) => ({ ...current, phone: value }))} />
+        </div>
+        <button className={primaryButtonClass} disabled={isSaving} type="submit">
+          {isSaving && <ButtonSpinner />} Save Profile Changes
+        </button>
+      </form>
 
       {/* Address Book Section */}
       <section className="grid gap-6 rounded-2xl border border-slate-200/70 bg-white p-6 shadow-sm">
