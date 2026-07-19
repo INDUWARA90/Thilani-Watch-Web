@@ -8,6 +8,19 @@ const escapeHtml = (value) =>
 
 const formatCurrency = (amount) => `LKR ${Number(amount || 0).toFixed(2)}`
 
+const formatDate = (date) => {
+  if (!date) return ''
+
+  const normalizedDate = new Date(date)
+  if (Number.isNaN(normalizedDate.getTime())) return ''
+
+  return normalizedDate.toLocaleDateString('en-LK', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  })
+}
+
 const sendResendEmail = async ({ to, subject, html, text }) => {
   if (!process.env.RESEND_API_KEY) {
     throw new Error('RESEND_API_KEY is required to send emails')
@@ -63,16 +76,21 @@ const sendOrderNotification = async (order) => {
   const textItems = items
     .map((item) => `- ${item.name} x ${item.quantity}: ${formatCurrency(item.price)}`)
     .join('\n')
+  const displayOrderNo = order.orderNo || order._id
+  const wantedDate = formatDate(order.wantedDate)
+  const wantedDateHtml = wantedDate ? `<p><strong>Wanted Date:</strong> ${escapeHtml(wantedDate)}</p>` : ''
+  const wantedDateText = wantedDate ? [`Wanted Date: ${wantedDate}`] : []
 
   return sendResendEmail({
     to: process.env.SHOP_OWNER_EMAIL,
-    subject: `New order received: ${order._id}`,
+    subject: `New order received: ${displayOrderNo}`,
     html: `
       <h1>New Order Received</h1>
-      <p><strong>Order ID:</strong> ${escapeHtml(order._id)}</p>
+      <p><strong>Order No:</strong> ${escapeHtml(displayOrderNo)}</p>
       <p><strong>Customer:</strong> ${escapeHtml(order.customerName)}</p>
       <p><strong>Email:</strong> ${escapeHtml(order.customerEmail)}</p>
       <p><strong>Phone:</strong> ${escapeHtml(order.customerPhone)}</p>
+      ${wantedDateHtml}
       <table cellpadding="8" cellspacing="0" border="1">
         <thead>
           <tr>
@@ -87,10 +105,11 @@ const sendOrderNotification = async (order) => {
     `,
     text: [
       'New Order Received',
-      `Order ID: ${order._id}`,
+      `Order No: ${displayOrderNo}`,
       `Customer: ${order.customerName}`,
       `Email: ${order.customerEmail}`,
       `Phone: ${order.customerPhone}`,
+      ...wantedDateText,
       'Items:',
       textItems,
       `Total: ${formatCurrency(order.totalPrice)}`,

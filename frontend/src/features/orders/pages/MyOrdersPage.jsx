@@ -2,7 +2,7 @@ import { ArrowRight, CalendarDays, PackageCheck, ReceiptText, ShoppingBag } from
 import { Link } from 'react-router'
 import { LoadingState } from '@/shared/ui/LoadingState'
 import { usePageTitle } from '@/shared/hooks/usePageTitle'
-import { canCancelOrder, formatDate, formatOrderMoney, getOrderId, getOrderStatus, getOrderTotal, getPaymentStatus } from '@/features/orders/lib/orderUtils'
+import { canCancelOrder, formatDate, formatOrderMoney, getOrderId, getOrderNumber, getOrderStatus, getOrderTotal, getPaymentStatus } from '@/features/orders/lib/orderUtils'
 import { useOrdersList } from '@/features/orders/hooks/useOrdersList'
 
 export const MyOrdersPage = () => {
@@ -106,7 +106,7 @@ export const MyOrdersPage = () => {
                       <div>
                         <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Order number</p>
                         <h2 className="text-xl font-bold tracking-tight text-slate-800">
-                          {order.orderNumber || getOrderId(order)}
+                          {getOrderNumber(order) || getOrderId(order)}
                         </h2>
                       </div>
                     </div>
@@ -121,6 +121,12 @@ export const MyOrdersPage = () => {
                       <CalendarDays className="h-4 w-4 text-slate-400" aria-hidden="true" />
                       Created {formatDate(order.createdAt)}
                     </p>
+                    {order.wantedDate && (
+                      <p className="flex items-center gap-2 text-xs font-medium text-slate-500">
+                        <CalendarDays className="h-4 w-4 text-slate-400" aria-hidden="true" />
+                        Wanted {formatDate(order.wantedDate)}
+                      </p>
+                    )}
                   </div>
 
                   <div className="flex flex-col justify-between gap-4 lg:items-end lg:text-right">

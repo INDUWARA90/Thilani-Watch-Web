@@ -9,6 +9,7 @@ import {
   getOrderId,
   getOrderItemName,
   getOrderItemPrice,
+  getOrderNumber,
   getPaymentMethodLabel,
   getPaymentSlip,
   getOrderStatus,
@@ -73,12 +74,18 @@ export const OrderDetailPage = () => {
                 <div>
                   <p className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-slate-400">Order Ref</p>
                   <h1 className="text-2xl font-black tracking-tight text-slate-800 sm:text-3xl">
-                    {order.orderNumber || getOrderId(order)}
+                    {getOrderNumber(order) || getOrderId(order)}
                   </h1>
                   <p className="mt-2 flex items-center gap-2 text-xs font-medium text-slate-500">
                     <CalendarDays className="h-4 w-4 text-slate-400" />
                     Placed on {formatDate(order.createdAt)}
                   </p>
+                  {order.wantedDate && (
+                    <p className="mt-2 flex items-center gap-2 text-xs font-medium text-slate-500">
+                      <CalendarDays className="h-4 w-4 text-slate-400" />
+                      Wanted date {formatDate(order.wantedDate)}
+                    </p>
+                  )}
                 </div>
                 
                 <div className="flex flex-wrap items-center gap-2 sm:self-start">

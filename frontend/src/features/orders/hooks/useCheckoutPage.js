@@ -33,6 +33,7 @@ export const useCheckoutPage = () => {
   const [isPaymentSlipPopupOpen, setIsPaymentSlipPopupOpen] = useState(false)
   const [shippingAddress, setShippingAddress] = useState(emptyAddress)
   const [useShippingAsBilling, setUseShippingAsBilling] = useState(true)
+  const [wantedDate, setWantedDate] = useState('')
 
   const discount = Number(readCouponDiscount(couponResult) || cart.discount || cart.discountAmount || 0)
   const shippingFee = getShippingFeeByProvince(shippingAddress.state)
@@ -137,6 +138,7 @@ export const useCheckoutPage = () => {
         shippingFee,
         shippingAddress,
         useShippingAsBilling,
+        wantedDate,
       })
       const paymentSlip = await cloudinaryApi.uploadPaymentSlip(paymentSlipFile)
       payload.paymentSlip = paymentSlip
@@ -180,10 +182,12 @@ export const useCheckoutPage = () => {
     updateCouponCode,
     updatePaymentSlipFile,
     useShippingAsBilling,
+    wantedDate,
+    setWantedDate,
   }
 }
 
-const buildOrderPayload = ({ billingAddress, cart, couponCode, notes, paymentSlipFile, shippingAddress, shippingFee, useShippingAsBilling }) => {
+const buildOrderPayload = ({ billingAddress, cart, couponCode, notes, paymentSlipFile, shippingAddress, shippingFee, useShippingAsBilling, wantedDate }) => {
   if (cart.items.length === 0) throw new Error('Your cart is empty.')
   if (!paymentSlipFile) throw new Error('Please attach your payment slip before placing the order.')
 
@@ -200,6 +204,7 @@ const buildOrderPayload = ({ billingAddress, cart, couponCode, notes, paymentSli
   if (!useShippingAsBilling) payload.billingAddress = cleanAddress(billingAddress)
   if (couponCode.trim()) payload.couponCode = couponCode.trim()
   if (notes.trim()) payload.notes = notes.trim()
+  if (wantedDate) payload.wantedDate = wantedDate
 
   return payload
 }

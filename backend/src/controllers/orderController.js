@@ -46,6 +46,18 @@ const getPaymentSlipPayload = (paymentSlip) => {
   return { url, publicId }
 }
 
+const getWantedDatePayload = (body) => {
+  const value = body.wantedDate || body.requestedDate || body.requiredDate
+  if (!value) return undefined
+
+  const wantedDate = new Date(value)
+  if (Number.isNaN(wantedDate.getTime())) {
+    throw new ErrorResponse('Wanted date must be a valid date', 400)
+  }
+
+  return wantedDate
+}
+
 const initializeOrderPayment = async (order) => {
   order.payment = {
     provider: 'bank_transfer',
@@ -59,6 +71,7 @@ const initializeOrderPayment = async (order) => {
 
 const getOrderNotificationPayload = (order, user) => ({
   _id: order._id,
+  orderNo: order.orderNo,
   customerName: user.name,
   customerEmail: user.email,
   customerPhone: user.phone || order.shippingAddress?.phone || '',
@@ -68,6 +81,7 @@ const getOrderNotificationPayload = (order, user) => ({
     price: item.price,
   })),
   totalPrice: order.total,
+  wantedDate: order.wantedDate,
 })
 
 const notifyShopOwnerOfOrder = (order, user) => {
@@ -89,6 +103,7 @@ const notifyShopOwnerOfOrder = (order, user) => {
 const createOrder = asyncHandler(async (req, res, next) => {
   const { shippingAddress, billingAddress, paymentMethod, paymentSlip, notes } = req.body
   const normalizedPaymentMethod = paymentMethod ? String(paymentMethod).trim().toLowerCase() : 'bank_transfer'
+  const wantedDate = getWantedDatePayload(req.body)
 
   if (normalizedPaymentMethod !== 'bank_transfer') {
     return next(new ErrorResponse('Only bank transfer payment is available', 400))
@@ -175,6 +190,7 @@ const createOrder = asyncHandler(async (req, res, next) => {
             paymentSlip: normalizedPaymentSlip,
             discount,
             notes,
+            wantedDate,
             couponCode: normalizedCouponCode || undefined,
             shippingFee: 500,
           },

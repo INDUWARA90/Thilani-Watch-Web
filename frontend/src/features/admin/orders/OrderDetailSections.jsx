@@ -1,6 +1,6 @@
 import { formatDate, formatMoney, getTitle } from '../lib/adminUtils'
 import { FileText, RefreshCcw, Truck } from 'lucide-react'
-import { getPaymentMethodLabel, getPaymentSlip, isPaymentSlipImage } from '@/features/orders/lib/orderUtils'
+import { getOrderNumber, getPaymentMethodLabel, getPaymentSlip, isPaymentSlipImage } from '@/features/orders/lib/orderUtils'
 import { OrderStatusControls } from './OrderStatusControls'
 
 export const OrderDetailSections = ({ order, onUpdated }) => {
@@ -16,10 +16,22 @@ export const OrderDetailSections = ({ order, onUpdated }) => {
         </div>
 
         <div className="grid gap-3 text-sm border-t border-slate-100 pt-4">
+          {(getOrderNumber(order) || order._id) && (
+            <div className="flex justify-between items-center py-1">
+              <span className="text-slate-500 font-medium">Order No</span>
+              <span className="font-semibold text-slate-800">{getOrderNumber(order) || order._id}</span>
+            </div>
+          )}
           <div className="flex justify-between items-center py-1">
             <span className="text-slate-500 font-medium">Customer</span>
             <span className="font-semibold text-slate-800">{getTitle(order.user, 'Customer')}</span>
           </div>
+          {order.wantedDate && (
+            <div className="flex justify-between items-center py-1">
+              <span className="text-slate-500 font-medium">Wanted Date</span>
+              <span className="text-slate-700">{formatDate(order.wantedDate)}</span>
+            </div>
+          )}
           <div className="flex justify-between items-center py-1">
             <span className="text-slate-500 font-medium">Created</span>
             <span className="text-slate-700">{formatDate(order.createdAt)}</span>

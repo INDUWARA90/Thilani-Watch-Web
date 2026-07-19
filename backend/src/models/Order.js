@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const Counter = require('./Counter')
 
 const orderItemSchema = new mongoose.Schema({
   watch: {
@@ -104,6 +105,12 @@ const refundSchema = new mongoose.Schema(
 
 const orderSchema = new mongoose.Schema(
   {
+    orderNo: {
+      type: String,
+      unique: true,
+      sparse: true,
+      trim: true,
+    },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
@@ -162,6 +169,7 @@ const orderSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    wantedDate: Date,
     couponCode: {
       type: String,
       uppercase: true,
@@ -198,6 +206,15 @@ orderSchema.index({ createdAt: -1 })
 
 // Recalculate total before saving if not provided
 orderSchema.pre('validate', async function () {
+  if (this.isNew && !this.orderNo) {
+    const counter = await Counter.findOneAndUpdate(
+      { name: 'order' },
+      { $inc: { value: 1 } },
+      { new: true, upsert: true, session: this.$session() },
+    )
+    this.orderNo = `TWC${counter.value}`
+  }
+
   if (this.isModified('items') || this.isModified('shippingFee') || this.isModified('discount')) {
     this.subtotal = this.items.reduce((acc, item) => acc + item.quantity * item.price, 0)
     this.total = this.subtotal + this.shippingFee - this.discount

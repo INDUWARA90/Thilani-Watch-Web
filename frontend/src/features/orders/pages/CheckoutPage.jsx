@@ -1,5 +1,5 @@
 import { Link } from 'react-router'
-import { AlertCircle, FileText, ImagePlus, Trash2, Upload } from 'lucide-react'
+import { AlertCircle, CalendarDays, FileText, ImagePlus, Trash2, Upload } from 'lucide-react'
 import { ButtonSpinner, LoadingState } from '@/shared/ui/LoadingState'
 import { usePageTitle } from '@/shared/hooks/usePageTitle'
 import { formatMoney } from '@/features/storefront/lib/storefrontUtils'
@@ -105,6 +105,23 @@ export const CheckoutPage = () => {
               </section>
 
               {!checkout.useShippingAsBilling && <AddressForm address={checkout.billingAddress} legend="Billing Address" setAddress={checkout.setBillingAddress} updateAddress={checkout.updateAddress} />}
+
+              <section className="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm">
+                <label className="grid gap-2 text-sm font-semibold text-slate-700">
+                  <span className="flex items-center gap-2">
+                    <CalendarDays className="h-4 w-4 text-orange-500" />
+                    Wanted date
+                    <span className="text-xs font-medium text-slate-400">Optional</span>
+                  </span>
+                  <input
+                    className={inputClass}
+                    min={new Date().toISOString().slice(0, 10)}
+                    type="date"
+                    value={checkout.wantedDate}
+                    onChange={(event) => checkout.setWantedDate(event.target.value)}
+                  />
+                </label>
+              </section>
 
               <section className="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm">
                 <h2 className="mb-4 text-lg font-bold text-slate-800">Payment</h2>

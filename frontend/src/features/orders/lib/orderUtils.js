@@ -27,6 +27,8 @@ export const normalizeOrders = (payload) => normalizeList(payload, ['orders'])
 
 export const getOrderId = (order) => getId(order)
 
+export const getOrderNumber = (order) => order?.orderNo || order?.orderNumber || ''
+
 export const getOrderTotal = (order) => order?.total ?? 0
 
 export const getOrderSubtotal = (order) => order?.subtotal ?? 0

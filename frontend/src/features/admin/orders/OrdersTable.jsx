@@ -1,5 +1,6 @@
 import { Link } from 'react-router'
 import { formatDate, formatMoney, getId, getTitle } from '../lib/adminUtils'
+import { getOrderNumber } from '@/features/orders/lib/orderUtils'
 
 // Helper to resolve badge styles based on order/payment status string values
 const getStatusStyles = (status) => {
@@ -18,7 +19,7 @@ const getStatusStyles = (status) => {
 
 export const OrdersTable = ({ orders }) => (
   <div className="w-full overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
-    <table className="w-full min-w-[840px] border-collapse text-sm text-slate-600">
+    <table className="w-full min-w-[940px] border-collapse text-sm text-slate-600">
       <thead>
         <tr className="bg-slate-50/75 border-b border-slate-200">
           <th className="p-4 text-left font-semibold text-slate-700 w-[120px]">Order</th>
@@ -26,6 +27,7 @@ export const OrdersTable = ({ orders }) => (
           <th className="p-4 text-right font-semibold text-slate-700">Total</th>
           <th className="p-4 text-left font-semibold text-slate-700">Status</th>
           <th className="p-4 text-left font-semibold text-slate-700">Payment</th>
+          <th className="p-4 text-left font-semibold text-slate-700">Wanted Date</th>
           <th className="p-4 text-left font-semibold text-slate-700">Created</th>
           <th className="p-4 w-[80px]"></th>
         </tr>
@@ -40,7 +42,7 @@ export const OrdersTable = ({ orders }) => (
             >
               {/* Order Number / ID */}
               <td className="p-4 text-left align-middle font-mono text-xs font-semibold text-slate-900">
-                #{order.orderNumber || orderId.slice(-6)}
+                {getOrderNumber(order) || `#${orderId.slice(-6)}`}
               </td>
 
               {/* Customer */}
@@ -67,6 +69,11 @@ export const OrdersTable = ({ orders }) => (
                 </span>
               </td>
 
+              {/* Wanted Date */}
+              <td className="p-4 text-left align-middle text-slate-500 text-xs">
+                {formatDate(order.wantedDate)}
+              </td>
+
               {/* Created Date */}
               <td className="p-4 text-left align-middle text-slate-500 text-xs">
                 {formatDate(order.createdAt)}
@@ -88,7 +95,7 @@ export const OrdersTable = ({ orders }) => (
         {/* Empty State Block */}
         {orders.length === 0 && (
           <tr>
-            <td className="p-12 text-center text-slate-400 font-medium" colSpan="7">
+            <td className="p-12 text-center text-slate-400 font-medium" colSpan="8">
               <div className="flex flex-col items-center justify-center gap-1">
                 <span className="text-base text-slate-500">No records found</span>
                 <span className="text-xs text-slate-400 font-normal">There are no active orders available in this scope.</span>

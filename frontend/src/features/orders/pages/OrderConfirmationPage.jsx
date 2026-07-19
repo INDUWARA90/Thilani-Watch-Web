@@ -1,7 +1,7 @@
 import { ArrowRight, CheckCircle2, PackageCheck, ReceiptText, ShoppingBag } from 'lucide-react'
 import { Link, useLocation, useParams } from 'react-router'
 import { usePageTitle } from '@/shared/hooks/usePageTitle'
-import { formatOrderMoney, getOrderId, getOrderStatus, getOrderTotal, normalizeOrder } from '@/features/orders/lib/orderUtils'
+import { formatOrderMoney, getOrderId, getOrderNumber, getOrderStatus, getOrderTotal, normalizeOrder } from '@/features/orders/lib/orderUtils'
 
 export const OrderConfirmationPage = () => {
   usePageTitle('Order Confirmation | Thilani Watch Web')
@@ -11,7 +11,7 @@ export const OrderConfirmationPage = () => {
   const order = normalizeOrder(location.state?.order || {})
   const orderId = getOrderId(order) || id
   const orderStatus = getOrderStatus(order)
-  const orderNumber = order.orderNumber || orderId
+  const orderNumber = getOrderNumber(order) || orderId
 
   return (
     <main className="-mx-4 -mt-22 min-h-[calc(100vh-120px)] bg-white px-4 py-12 sm:-mx-6 sm:px-6 sm:py-16 lg:-mx-8 lg:px-10 lg:py-20">
