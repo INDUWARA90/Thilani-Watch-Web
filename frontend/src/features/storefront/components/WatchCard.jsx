@@ -69,7 +69,7 @@ export const WatchCard = ({ watch }) => {
     >
       {/* Image Container */}
       <div className="relative aspect-[1/1] overflow-hidden rounded-[20px] bg-[#F8F9FA]">
-        <Link className="block h-full w-full" to={detailPath}>
+        <Link className="absolute inset-0 block h-full w-full" to={detailPath} aria-label={`View ${watch.name || 'watch'} details`}>
           <img
             alt={watch.name || 'Watch'}
             className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
@@ -101,8 +101,8 @@ export const WatchCard = ({ watch }) => {
         </button>
 
         {/* Desktop Quick-Action Hover Overlay */}
-        <div className="absolute inset-0 hidden items-end justify-center bg-gradient-to-t from-slate-950/40 via-transparent to-transparent p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100 md:flex">
-          <div className="flex w-full gap-2 transform translate-y-2 transition-transform duration-300 group-hover:translate-y-0">
+        <div className="pointer-events-none absolute inset-0 hidden items-end justify-center bg-gradient-to-t from-slate-950/40 via-transparent to-transparent p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100 md:flex">
+          <div className="pointer-events-auto flex w-full gap-2 transform translate-y-2 transition-transform duration-300 group-hover:translate-y-0">
             <button 
               className="inline-flex h-11 flex-1 cursor-pointer items-center justify-center gap-2 rounded-[14px] bg-[#121212] text-sm font-normal text-white transition hover:bg-[#272222] disabled:opacity-50" 
               disabled={!isAvailable || isBusy} 
@@ -133,7 +133,7 @@ export const WatchCard = ({ watch }) => {
           </span>
         </div>
 
-        <h3 className="mb-1 line-clamp-1 text-xl font-bold text-[#121212]">
+        <h3 className="mb-1 text-xl font-bold leading-snug text-[#121212]">
           <Link className="text-[#121212] no-underline transition-colors hover:text-[#F49006]" to={detailPath}>
             {watch.name || 'Untitled watch'}
           </Link>

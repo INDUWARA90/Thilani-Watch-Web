@@ -37,18 +37,18 @@ export const LoginPage = () => {
   }
 
   return (
-    <section className="mx-auto w-full max-w-[520px] rounded-[24px] border border-[#E5E7EB] bg-white p-6 text-[#121212] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.15)] sm:p-9">
+    <section className="mx-auto w-full max-w-[520px] min-w-0 rounded-[24px] border border-[#E5E7EB] bg-white p-5 text-[#121212] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.15)] sm:p-9">
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm font-medium tracking-wide text-[#6C757D]">Welcome back</p>
         <Link
-          className="inline-flex min-h-11 w-fit items-center justify-center rounded-[14px] border border-[#121212]/15 bg-white px-8 text-sm font-medium text-[#121212] no-underline transition-colors duration-200 hover:bg-[#121212] hover:text-white"
+          className="inline-flex min-h-11 w-fit max-w-full items-center justify-center rounded-[14px] border border-[#121212]/15 bg-white px-5 text-sm font-medium text-[#121212] no-underline transition-colors duration-200 hover:bg-[#121212] hover:text-white sm:px-8"
           to="/"
         >
           Visit Store
         </Link>
       </div>
 
-      <h1 className="mb-3 text-[40px] font-extrabold leading-[1.1] tracking-tight text-[#121212] sm:text-[44px]">
+      <h1 className="mb-3 text-4xl font-extrabold leading-[1.1] tracking-tight text-[#121212] sm:text-[44px]">
         Log in
       </h1>
       <p className="mb-8 text-base leading-7 text-[#6C757D]">

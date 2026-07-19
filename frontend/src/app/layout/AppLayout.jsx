@@ -11,8 +11,8 @@ export const AppLayout = ({ children }) => {
 
   if (isAuthPage) {
     return (
-      <div className="grid min-h-screen px-4 py-8 text-[#121212] sm:px-6 lg:px-8">
-        <div className="m-auto w-full">{children}</div>
+      <div className="grid min-h-screen w-full overflow-x-hidden px-4 py-8 text-[#121212] sm:px-6 lg:px-8">
+        <div className="m-auto w-full min-w-0">{children}</div>
       </div>
     )
   }
@@ -22,10 +22,10 @@ export const AppLayout = ({ children }) => {
   }
 
   return (
-    <div className="min-h-screen bg-white text-[#121212]">
+    <div className="min-h-screen overflow-x-hidden bg-white text-[#121212]">
       <Header />
-      <div className="mx-auto min-h-screen w-full max-w-[1280px] px-4 py-8 sm:px-6 lg:px-8">
-        <div className="pb-14">{children}</div>
+      <div className="mx-auto min-h-screen w-full max-w-[1280px] min-w-0 px-4 py-8 sm:px-6 lg:px-8">
+        <div className="min-w-0 pb-14">{children}</div>
       </div>
       <Footer />
     </div>

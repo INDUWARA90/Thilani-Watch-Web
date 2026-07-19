@@ -1,6 +1,25 @@
 import { formatMoney, getId, getTitle, normalizeList } from '@/features/storefront/lib/storefrontUtils'
 
-export const SHIPPING_FEE = 500
+export const SRI_LANKA_PROVINCES = [
+  'Western Province',
+  'Central Province',
+  'Southern Province',
+  'Northern Province',
+  'Eastern Province',
+  'North Western Province',
+  'North Central Province',
+  'Uva Province',
+  'Sabaragamuwa Province',
+]
+
+export const WESTERN_PROVINCE_SHIPPING_FEE = 400
+
+export const OUTSTATION_SHIPPING_FEE = 450
+
+export const SHIPPING_FEE = OUTSTATION_SHIPPING_FEE
+
+export const getShippingFeeByProvince = (province) =>
+  province === 'Western Province' ? WESTERN_PROVINCE_SHIPPING_FEE : OUTSTATION_SHIPPING_FEE
 
 export const normalizeOrder = (payload) => payload?.order ?? payload
 
@@ -31,19 +50,33 @@ export const getPaymentSlip = (order) => {
 
   if (directUrl) {
     return {
+      fileName: directSlip.fileName || directSlip.originalFilename || directSlip.original_filename || '',
+      format: directSlip.format || '',
       publicId: directSlip.publicId || directSlip.public_id || order?.paymentSlipPublicId || '',
+      resourceType: directSlip.resourceType || directSlip.resource_type || '',
       url: directUrl,
     }
   }
 
   if (fallbackUrl) {
     return {
+      fileName: '',
+      format: '',
       publicId: order?.paymentSlipPublicId || order?.paymentProofPublicId || '',
+      resourceType: '',
       url: fallbackUrl,
     }
   }
 
   return null
+}
+
+export const isPaymentSlipImage = (paymentSlip) => {
+  if (!paymentSlip?.url) return false
+  if (paymentSlip.resourceType === 'image') return true
+  if (paymentSlip.resourceType && paymentSlip.resourceType !== 'image') return false
+
+  return /\.(avif|gif|jpe?g|png|webp)(\?|#|$)/i.test(paymentSlip.url)
 }
 
 export const canCancelOrder = (order) => ['pending', 'confirmed'].includes(getOrderStatus(order).toLowerCase())

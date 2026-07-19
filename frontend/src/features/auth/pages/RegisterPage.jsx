@@ -37,9 +37,9 @@ export const RegisterPage = () => {
   }
 
   return (
-    <section className="mx-auto w-full max-w-[560px]  border border-[#E5E7EB] bg-white p-6 text-[#121212] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.15)] sm:p-9 rounded-[24px]">
+    <section className="mx-auto w-full max-w-[560px] min-w-0 rounded-[24px] border border-[#E5E7EB] bg-white p-5 text-[#121212] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.15)] sm:p-9">
       <p className="mb-3 text-sm font-medium tracking-wide text-[#6C757D]">Create account</p>
-      <h1 className="mb-3 text-[40px] font-extrabold leading-[1.1] tracking-tight text-[#121212] sm:text-[44px]">
+      <h1 className="mb-3 text-4xl font-extrabold leading-[1.1] tracking-tight text-[#121212] sm:text-[44px]">
         Register
       </h1>
       <p className="mb-8 text-base leading-7 text-[#6C757D]">

@@ -22,21 +22,21 @@ export const WatchListingPage = () => {
   const { brands, categories, error, filters, isLoading, pagination, searchValue, setSearchValue, updateFilter, watches } = useWatchListing()
 
   return (
-    <main className="-mx-4 -mt-8 bg-white sm:-mx-6 lg:-mx-8 min-h-screen pb-16">
+    <main className="-mx-4 -mt-8 min-h-screen overflow-x-hidden bg-white pb-16 sm:-mx-6 lg:-mx-8">
       <section className="relative overflow-hidden bg-[linear-gradient(135deg,#F49006_0%,#EB960E_100%)] px-4 pb-32 pt-16 text-white sm:px-6 sm:pt-20 lg:px-10">
-        <div className="mx-auto flex max-w-[1200px] flex-col gap-6 sm:flex-row sm:items-end sm:justify-between relative z-10">
-          <div className="max-w-2xl">
+        <div className="relative z-10 mx-auto flex max-w-[1200px] min-w-0 flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+          <div className="max-w-2xl min-w-0">
             <p className="mb-3 inline-flex min-h-9 items-center rounded-full border border-white/30 bg-white/10 px-4 text-xs font-medium tracking-wide uppercase text-white backdrop-blur-sm">
               Storefront
             </p>
-            <h1 className="text-[44px] font-black leading-[1.1] text-white sm:text-[56px] lg:text-[65px] lg:leading-[71px] tracking-tight">
+            <h1 className="break-words text-4xl font-black leading-[1.1] tracking-tight text-white sm:text-[56px] lg:text-[65px] lg:leading-[71px]">
               Watches
             </h1>
             <p className="mt-3 text-sm font-normal text-white/80 sm:text-base lg:text-lg leading-relaxed">
               Discover our masterfully engineered collection. Filter curated watches by house, collection, price, availability, and popularity.
             </p>
           </div>
-          <Link className="inline-flex min-h-11 w-fit items-center justify-center rounded-[14px] bg-[#121212] px-8 text-sm font-medium text-white no-underline transition shadow-sm hover:bg-[#272222] active:scale-98 shrink-0 sm:mb-2" to="/">
+          <Link className="inline-flex min-h-11 w-fit max-w-full shrink-0 items-center justify-center rounded-[14px] bg-[#121212] px-5 text-sm font-medium text-white no-underline shadow-sm transition hover:bg-[#272222] active:scale-98 sm:mb-2 sm:px-8" to="/">
             Back home
           </Link>
         </div>
@@ -45,7 +45,7 @@ export const WatchListingPage = () => {
         </svg>
       </section>
 
-      <section className="mx-auto grid max-w-[1200px] gap-8 px-4 py-12 sm:px-6 lg:grid-cols-[290px_minmax(0,1fr)] lg:px-10">
+      <section className="mx-auto grid max-w-[1200px] min-w-0 gap-8 px-4 py-12 sm:px-6 lg:grid-cols-[290px_minmax(0,1fr)] lg:px-10">
         <aside className="h-fit rounded-2xl border border-slate-100 bg-white p-5 shadow-[0_10px_30px_-5px_rgba(0,0,0,0.05)] lg:sticky lg:top-28 flex flex-col gap-5">
           <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
             <Filter className="h-5 w-5 text-[#F49006]" />
@@ -103,15 +103,15 @@ export const WatchListingPage = () => {
           </div>
         </aside>
 
-        <section className="min-w-0">
+        <section className="min-w-0 overflow-hidden">
           <div className="mb-6 flex flex-col gap-4 rounded-2xl border border-slate-100 bg-white p-5 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="text-xs font-semibold tracking-wide uppercase text-slate-400">{pagination.total || watches.length} watches found</p>
               <h2 className="text-xl font-bold text-[#121212] mt-0.5">Collection Results</h2>
             </div>
-            <label className="flex items-center gap-3 text-sm font-medium text-slate-600 shrink-0">
+            <label className="flex w-full min-w-0 flex-wrap items-center gap-3 text-sm font-medium text-slate-600 sm:w-auto sm:flex-nowrap">
               <span className="flex items-center gap-1.5 whitespace-nowrap"><SlidersHorizontal className="h-4 w-4 text-slate-400" /> Sort by</span>
-              <div className="w-48">
+              <div className="min-w-0 flex-1 sm:w-48 sm:flex-none">
                 <select className={`${fieldClass} !h-10`} value={filters.sort} onChange={(event) => updateFilter('sort', event.target.value)}>
                   {sortOptions.map((option) => (
                     <option key={option.value} value={option.value}>{option.label}</option>
@@ -159,14 +159,14 @@ const FilterSelect = ({ children, label, onChange, value }) => (
 
 const Pagination = ({ pagination, updateFilter }) => (
   <div className="mt-8 flex flex-col gap-4 rounded-2xl border border-slate-100 bg-white p-4 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] sm:flex-row sm:items-center sm:justify-between">
-    <p className="text-sm font-medium text-slate-500 pl-2">
+    <p className="min-w-0 break-words pl-2 text-sm font-medium text-slate-500">
       Page <span className="text-[#121212] font-semibold">{pagination.page}</span> of <span className="text-[#121212] font-semibold">{pagination.pages}</span> — <span className="text-slate-600">{pagination.total} timepieces</span>
     </p>
-    <div className="flex gap-3">
-      <button className="inline-flex min-h-11 cursor-pointer items-center justify-center rounded-[14px] border border-slate-200 bg-slate-50 px-6 text-sm font-medium text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50 active:scale-98" disabled={!pagination.hasPrevPage} type="button" onClick={() => updateFilter('page', String(Math.max(1, pagination.page - 1)))}>
+    <div className="grid grid-cols-2 gap-3 sm:flex">
+      <button className="inline-flex min-h-11 cursor-pointer items-center justify-center rounded-[14px] border border-slate-200 bg-slate-50 px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50 active:scale-98 sm:px-6" disabled={!pagination.hasPrevPage} type="button" onClick={() => updateFilter('page', String(Math.max(1, pagination.page - 1)))}>
         Previous
       </button>
-      <button className="inline-flex min-h-11 cursor-pointer items-center justify-center rounded-[14px] bg-[#121212] px-6 text-sm font-medium text-white transition hover:bg-[#272222] disabled:cursor-not-allowed disabled:opacity-50 active:scale-98" disabled={!pagination.hasNextPage} type="button" onClick={() => updateFilter('page', String(pagination.page + 1))}>
+      <button className="inline-flex min-h-11 cursor-pointer items-center justify-center rounded-[14px] bg-[#121212] px-4 text-sm font-medium text-white transition hover:bg-[#272222] disabled:cursor-not-allowed disabled:opacity-50 active:scale-98 sm:px-6" disabled={!pagination.hasNextPage} type="button" onClick={() => updateFilter('page', String(pagination.page + 1))}>
         Next
       </button>
     </div>

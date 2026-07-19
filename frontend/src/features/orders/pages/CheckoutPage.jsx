@@ -1,15 +1,15 @@
 import { Link } from 'react-router'
-import { ImagePlus, Trash2, Upload } from 'lucide-react'
+import { AlertCircle, FileText, ImagePlus, Trash2, Upload } from 'lucide-react'
 import { ButtonSpinner, LoadingState } from '@/shared/ui/LoadingState'
 import { usePageTitle } from '@/shared/hooks/usePageTitle'
 import { formatMoney } from '@/features/storefront/lib/storefrontUtils'
-import { SHIPPING_FEE } from '@/features/orders/lib/orderUtils'
+import { SRI_LANKA_PROVINCES } from '@/features/orders/lib/orderUtils'
 import { useCheckoutPage } from '@/features/orders/hooks/useCheckoutPage'
 
 const addressFields = [
   ['street', 'Street'],
   ['city', 'City'],
-  ['state', 'State'],
+  ['state', 'Province'],
   ['zip', 'ZIP / Postal code'],
   ['country', 'Country'],
   ['phone', 'Phone'],
@@ -40,6 +40,26 @@ export const CheckoutPage = () => {
 
   return (
     <main className="-mx-4 -mt-22 bg-white sm:-mx-6 lg:-mx-8">
+      {checkout.isPaymentSlipPopupOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 px-4">
+          <div className="w-full max-w-sm rounded-2xl border border-orange-100 bg-white p-6 text-center shadow-2xl">
+            <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-orange-50 text-orange-500">
+              <AlertCircle className="h-6 w-6" />
+            </span>
+            <h2 className="mt-4 text-lg font-bold text-slate-900">Bank slip required</h2>
+            <p className="mt-2 text-sm leading-6 text-slate-500">
+              Please upload your bank transfer payment slip before placing the order.
+            </p>
+            <button
+              className="mt-5 inline-flex h-11 w-full cursor-pointer items-center justify-center rounded-xl bg-[#F49006] px-5 text-sm font-semibold text-white transition hover:bg-[#EB960E]"
+              type="button"
+              onClick={() => checkout.setIsPaymentSlipPopupOpen(false)}
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
       <section className="relative z-10 mx-auto max-w-[1200px] px-4 pb-24 pt-12 sm:px-6 sm:pt-16 lg:px-10 lg:pt-20">
         {checkout.error && (
           <div className="mb-6 flex items-center gap-2 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-medium text-red-600 shadow-sm animate-fade-in">
@@ -96,7 +116,7 @@ export const CheckoutPage = () => {
                     <div>
                       <p className="text-sm font-bold text-slate-800">Bank transfer payment slip</p>
                       <p className="mt-1 text-xs font-medium leading-5 text-slate-500">
-                        Upload a clear image of your payment slip. Cash on delivery is no longer available.
+                        Upload your payment slip file. Cash on delivery is no longer available.
                       </p>
                     </div>
                   </div>
@@ -107,13 +127,19 @@ export const CheckoutPage = () => {
                     ))}
                   </div>
 
-                  {checkout.paymentSlipPreview ? (
+                  {checkout.paymentSlipFile ? (
                     <div className="grid gap-3 rounded-xl border border-slate-100 bg-white p-3 sm:grid-cols-[96px_minmax(0,1fr)]">
-                      <img alt="Payment slip preview" className="h-24 w-24 rounded-lg border border-slate-100 bg-slate-50 object-cover" src={checkout.paymentSlipPreview} />
+                      {checkout.paymentSlipPreview ? (
+                        <img alt="Payment slip preview" className="h-24 w-24 rounded-lg border border-slate-100 bg-slate-50 object-cover" src={checkout.paymentSlipPreview} />
+                      ) : (
+                        <span className="flex h-24 w-24 items-center justify-center rounded-lg border border-slate-100 bg-slate-50 text-orange-500">
+                          <FileText className="h-8 w-8" />
+                        </span>
+                      )}
                       <div className="flex min-w-0 flex-col justify-between gap-3">
                         <div>
                           <p className="truncate text-sm font-semibold text-slate-800">{checkout.paymentSlipFile?.name}</p>
-                          <p className="mt-1 text-xs text-slate-400">This image will be uploaded securely before the order is created.</p>
+                          <p className="mt-1 text-xs text-slate-400">This file will be uploaded securely before the order is created.</p>
                         </div>
                         <button className="inline-flex h-9 w-fit cursor-pointer items-center justify-center gap-2 rounded-lg border border-red-100 bg-red-50 px-3 text-xs font-semibold text-red-600 transition hover:bg-red-100" type="button" onClick={checkout.removePaymentSlipFile}>
                           <Trash2 className="h-3.5 w-3.5" />
@@ -125,8 +151,8 @@ export const CheckoutPage = () => {
                     <label className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-orange-200 bg-white px-4 py-6 text-center transition hover:border-orange-400 hover:bg-orange-50/40">
                       <ImagePlus className="mb-2 h-7 w-7 text-orange-500" />
                       <span className="text-sm font-bold text-slate-800">Attach payment slip</span>
-                      <span className="mt-1 text-xs font-medium text-slate-400">JPG, PNG, or WEBP up to 5MB</span>
-                      <input accept="image/*" className="hidden" required type="file" onChange={handlePaymentSlipChange} />
+                      <span className="mt-1 text-xs font-medium text-slate-400">Any file type up to 5MB</span>
+                      <input className="hidden" type="file" onChange={handlePaymentSlipChange} />
                     </label>
                   )}
                 </div>
@@ -159,7 +185,7 @@ export const CheckoutPage = () => {
 
               <div className="space-y-4">
                 <SummaryRow label="Subtotal" value={formatMoney(checkout.cart.subtotal, checkout.cart.currency || 'LKR')} />
-                <SummaryRow label="Shipping" value={formatMoney(SHIPPING_FEE, checkout.cart.currency || 'LKR')} />
+                <SummaryRow label="Shipping" value={formatMoney(checkout.shippingFee, checkout.cart.currency || 'LKR')} />
                 <SummaryRow isDiscount label="Discount" value={`-${formatMoney(checkout.discount, checkout.cart.currency || 'LKR')}`} />
               </div>
 
@@ -186,7 +212,16 @@ const AddressForm = ({ address, legend, setAddress, updateAddress }) => (
       {addressFields.map(([name, label]) => (
         <label className="grid gap-1.5 text-sm font-semibold text-slate-700" key={name}>
           {label}
-          <input className={inputClass} required={name !== 'state'} value={address[name]} onChange={(event) => updateAddress(setAddress, name, event.target.value)} />
+          {name === 'state' ? (
+            <select className={inputClass} required value={address[name]} onChange={(event) => updateAddress(setAddress, name, event.target.value)}>
+              <option value="" disabled>Select province</option>
+              {SRI_LANKA_PROVINCES.map((province) => (
+                <option key={province} value={province}>{province}</option>
+              ))}
+            </select>
+          ) : (
+            <input className={inputClass} required value={address[name]} onChange={(event) => updateAddress(setAddress, name, event.target.value)} />
+          )}
         </label>
       ))}
     </div>

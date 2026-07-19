@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router'
 import { cloudinaryApi } from '@/shared/api/cloudinaryApi'
 import { getApiErrorMessage } from '@/shared/api/apiClient'
 import { useCommerce } from '@/features/commerce/hooks/useCommerce'
-import { normalizeOrder, SHIPPING_FEE } from '@/features/orders/lib/orderUtils'
+import { getShippingFeeByProvince, normalizeOrder } from '@/features/orders/lib/orderUtils'
 import { ordersApi } from '@/features/orders/api/ordersApi'
 
 const emptyAddress = {
@@ -30,11 +30,13 @@ export const useCheckoutPage = () => {
   const [notes, setNotes] = useState('')
   const [paymentSlipFile, setPaymentSlipFile] = useState(null)
   const [paymentSlipPreview, setPaymentSlipPreview] = useState('')
+  const [isPaymentSlipPopupOpen, setIsPaymentSlipPopupOpen] = useState(false)
   const [shippingAddress, setShippingAddress] = useState(emptyAddress)
   const [useShippingAsBilling, setUseShippingAsBilling] = useState(true)
 
   const discount = Number(readCouponDiscount(couponResult) || cart.discount || cart.discountAmount || 0)
-  const total = Math.max(0, Number(cart.subtotal || 0) + SHIPPING_FEE - discount)
+  const shippingFee = getShippingFeeByProvince(shippingAddress.state)
+  const total = Math.max(0, Number(cart.subtotal || 0) + shippingFee - discount)
 
   const updateAddress = (setter, name, value) => {
     setter((current) => ({ ...current, [name]: value }))
@@ -55,22 +57,16 @@ export const useCheckoutPage = () => {
       return
     }
 
-    if (!file.type.startsWith('image/')) {
-      setPaymentSlipFile(null)
-      setPaymentSlipPreview('')
-      setError('Payment slip must be an image file.')
-      return
-    }
-
     if (file.size > MAX_PAYMENT_SLIP_SIZE) {
       setPaymentSlipFile(null)
       setPaymentSlipPreview('')
-      setError('Payment slip image must be 5MB or smaller.')
+      setError('Payment slip file must be 5MB or smaller.')
       return
     }
 
     setPaymentSlipFile(file)
     setPaymentSlipPreview('')
+    setIsPaymentSlipPopupOpen(false)
   }
 
   const removePaymentSlipFile = () => {
@@ -79,7 +75,7 @@ export const useCheckoutPage = () => {
   }
 
   useEffect(() => {
-    if (!paymentSlipFile) return undefined
+    if (!paymentSlipFile || !paymentSlipFile.type.startsWith('image/')) return undefined
 
     let isActive = true
     const reader = new FileReader()
@@ -122,6 +118,13 @@ export const useCheckoutPage = () => {
   const handleSubmit = async (event) => {
     event.preventDefault()
     setError('')
+
+    if (!paymentSlipFile) {
+      setIsPaymentSlipPopupOpen(true)
+      setError('Please attach your bank transfer payment slip before placing the order.')
+      return
+    }
+
     setIsSubmitting(true)
 
     try {
@@ -131,6 +134,7 @@ export const useCheckoutPage = () => {
         couponCode,
         notes,
         paymentSlipFile,
+        shippingFee,
         shippingAddress,
         useShippingAsBilling,
       })
@@ -157,17 +161,20 @@ export const useCheckoutPage = () => {
     handleSubmit,
     handleValidateCoupon,
     isLoading,
+    isPaymentSlipPopupOpen,
     isSubmitting,
     isValidatingCoupon,
     notes,
     paymentSlipFile,
     paymentSlipPreview,
     removePaymentSlipFile,
+    setIsPaymentSlipPopupOpen,
     setBillingAddress,
     setNotes,
     setShippingAddress,
     setUseShippingAsBilling,
     shippingAddress,
+    shippingFee,
     total,
     updateAddress,
     updateCouponCode,
@@ -176,7 +183,7 @@ export const useCheckoutPage = () => {
   }
 }
 
-const buildOrderPayload = ({ billingAddress, cart, couponCode, notes, paymentSlipFile, shippingAddress, useShippingAsBilling }) => {
+const buildOrderPayload = ({ billingAddress, cart, couponCode, notes, paymentSlipFile, shippingAddress, shippingFee, useShippingAsBilling }) => {
   if (cart.items.length === 0) throw new Error('Your cart is empty.')
   if (!paymentSlipFile) throw new Error('Please attach your payment slip before placing the order.')
 
@@ -186,6 +193,7 @@ const buildOrderPayload = ({ billingAddress, cart, couponCode, notes, paymentSli
 
   const payload = {
     paymentMethod: 'bank_transfer',
+    shippingFee,
     shippingAddress: cleanAddress(shippingAddress),
   }
 
@@ -197,7 +205,7 @@ const buildOrderPayload = ({ billingAddress, cart, couponCode, notes, paymentSli
 }
 
 const validateAddress = (address, label) => {
-  const missing = ['street', 'city', 'zip', 'country', 'phone'].filter((field) => !address[field]?.trim())
+  const missing = ['street', 'city', 'state', 'zip', 'country', 'phone'].filter((field) => !address[field]?.trim())
   if (missing.length > 0) throw new Error(`${label} is missing: ${missing.join(', ')}.`)
 }
 

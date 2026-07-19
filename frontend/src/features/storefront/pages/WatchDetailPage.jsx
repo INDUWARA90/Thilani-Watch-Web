@@ -49,23 +49,23 @@ export const WatchDetailPage = () => {
   const isAvailable = watch.inStock || stockQuantity > 0
 
   return (
-    <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <main className="mx-auto max-w-7xl min-w-0 overflow-x-hidden px-4 py-8 sm:px-6 lg:px-8">
       {/* Back Navigation Button */}
       <Link 
-        className="group mb-8 inline-flex min-h-11 items-center gap-2 rounded-[14px] border border-[#DEE2E6] bg-[rgba(18,18,18,0.04)] px-8 text-sm font-normal text-[#121212] no-underline transition hover:bg-[rgba(18,18,18,0.08)]" 
+        className="group mb-8 inline-flex min-h-11 max-w-full items-center gap-2 rounded-[14px] border border-[#DEE2E6] bg-[rgba(18,18,18,0.04)] px-5 text-sm font-normal text-[#121212] no-underline transition hover:bg-[rgba(18,18,18,0.08)] sm:px-8" 
         to="/watches"
       >
         <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
         Back to collection
       </Link>
 
-      <section className="grid gap-12 lg:grid-cols-2 lg:items-start">
+      <section className="grid min-w-0 gap-10 lg:grid-cols-2 lg:items-start lg:gap-12">
         {/* Media Column Gallery */}
         <motion.div 
           initial={{ opacity: 0, x: -15 }} 
           animate={{ opacity: 1, x: 0 }} 
           transition={{ duration: 0.5, ease: 'easeOut' }}
-          className="flex flex-col gap-4"
+          className="min-w-0 flex flex-col gap-4"
         >
           <div className="overflow-hidden rounded-[20px] border border-[#DEE2E6] bg-[#F8F9FA] shadow-[13px_14px_12.6px_0_rgba(0,0,0,0.05)]">
             <img 
@@ -95,12 +95,12 @@ export const WatchDetailPage = () => {
         </motion.div>
 
         {/* Product Meta Content Info Column */}
-        <div className="flex flex-col">
+        <div className="min-w-0 flex flex-col">
           <span className="mb-2 text-sm font-normal text-[#F49006]">
             {getTitle(watch.brand, 'Brand')} &middot; {getTitle(watch.category, 'Category')}
           </span>
           
-          <h1 className="mb-4 text-[44px] font-extrabold leading-tight text-[#121212]">
+          <h1 className="mb-4 break-words text-4xl font-extrabold leading-tight text-[#121212] sm:text-[44px]">
             {watch.name}
           </h1>
 
@@ -141,7 +141,7 @@ export const WatchDetailPage = () => {
               <label className="flex flex-col gap-1.5 text-base font-normal text-[#121212] sm:w-28">
                 Qty
                 <input
-                  className="h-11 border border-[#DEE2E6] bg-white text-center font-normal text-[#121212] outline-none transition focus:border-[#0D6EFD] focus:ring-2 focus:ring-[#0D6EFD]/25"
+                  className="h-11 min-w-0 border border-[#DEE2E6] bg-white text-center font-normal text-[#121212] outline-none transition focus:border-[#0D6EFD] focus:ring-2 focus:ring-[#0D6EFD]/25"
                   max={stockQuantity || undefined}
                   min="1"
                   type="number"
@@ -151,7 +151,7 @@ export const WatchDetailPage = () => {
               </label>
 
               <button 
-                className="inline-flex h-11 flex-1 cursor-pointer items-center justify-center gap-2 rounded-[14px] bg-[#121212] px-8 text-sm font-normal text-white transition hover:bg-[#272222] disabled:opacity-40" 
+                className="inline-flex h-11 min-w-0 flex-1 cursor-pointer items-center justify-center gap-2 rounded-[14px] bg-[#121212] px-5 text-sm font-normal text-white transition hover:bg-[#272222] disabled:opacity-40 sm:px-8" 
                 disabled={!isAvailable || detail.isBusy} 
                 type="button" 
                 onClick={detail.handleAddToCart}

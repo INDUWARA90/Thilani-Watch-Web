@@ -28,7 +28,7 @@ export const Header = () => {
         </Link>
 
         <nav className="ml-auto hidden items-center gap-1 lg:flex" aria-label="Primary navigation">
-          <LuxuryNavLink to="/" end>Store</LuxuryNavLink>
+          <LuxuryNavLink to="/" end>Home</LuxuryNavLink>
           <LuxuryNavLink to="/watches">Watches</LuxuryNavLink>
           <LuxuryNavLink to="/about">About</LuxuryNavLink>
           <LuxuryNavLink to="/contact">Contact</LuxuryNavLink>
@@ -78,7 +78,7 @@ export const Header = () => {
         ].join(' ')}
       >
         <nav className="grid gap-2" aria-label="Mobile navigation">
-          <MobileNavLink to="/" end onClick={() => setIsMenuOpen(false)}>Store</MobileNavLink>
+          <MobileNavLink to="/" end onClick={() => setIsMenuOpen(false)}>Home</MobileNavLink>
           <MobileNavLink to="/watches" onClick={() => setIsMenuOpen(false)}>Watches</MobileNavLink>
           <MobileNavLink to="/about" onClick={() => setIsMenuOpen(false)}>About</MobileNavLink>
           <MobileNavLink to="/contact" onClick={() => setIsMenuOpen(false)}>Contact</MobileNavLink>

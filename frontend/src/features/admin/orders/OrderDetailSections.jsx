@@ -1,5 +1,6 @@
 import { formatDate, formatMoney, getTitle } from '../lib/adminUtils'
-import { getPaymentMethodLabel, getPaymentSlip } from '@/features/orders/lib/orderUtils'
+import { FileText } from 'lucide-react'
+import { getPaymentMethodLabel, getPaymentSlip, isPaymentSlipImage } from '@/features/orders/lib/orderUtils'
 import { OrderStatusControls } from './OrderStatusControls'
 
 export const OrderDetailSections = ({ order, onUpdated }) => {
@@ -38,7 +39,14 @@ export const OrderDetailSections = ({ order, onUpdated }) => {
         {paymentSlip && (
           <a className="block rounded-xl border border-slate-100 bg-slate-50 p-3 text-xs font-semibold text-slate-600 no-underline transition hover:border-teal-200 hover:bg-teal-50/40" href={paymentSlip.url} rel="noreferrer" target="_blank">
             <span className="mb-2 block text-slate-800">Payment Slip</span>
-            <img alt="Customer payment slip" className="h-36 w-full rounded-lg border border-slate-100 bg-white object-cover" src={paymentSlip.url} />
+            {isPaymentSlipImage(paymentSlip) ? (
+              <img alt="Customer payment slip" className="h-36 w-full rounded-lg border border-slate-100 bg-white object-cover" src={paymentSlip.url} />
+            ) : (
+              <span className="flex min-h-24 items-center gap-3 rounded-lg border border-slate-100 bg-white p-4 text-slate-700">
+                <FileText className="h-6 w-6 text-teal-500" />
+                <span className="min-w-0 truncate">{paymentSlip.fileName || 'Open attached slip'}</span>
+              </span>
+            )}
           </a>
         )}
 

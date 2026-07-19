@@ -52,7 +52,7 @@ export const WatchTable = ({ deleteWatch, editWatch, isLoading, quickStock, togg
                         )}
                       </div>
                       <div className="min-w-0">
-                        <strong className="block truncate text-sm font-bold text-slate-900">
+                        <strong className="block max-w-[18rem] whitespace-normal break-words text-sm font-bold leading-snug text-slate-900">
                           {watch.name}
                         </strong>
                         <span className="font-mono text-xs text-slate-400">

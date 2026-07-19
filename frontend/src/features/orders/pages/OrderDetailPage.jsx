@@ -1,5 +1,5 @@
 import { Link, useParams } from 'react-router'
-import { ArrowLeft, CalendarDays, ClipboardList, CreditCard, MapPin, RefreshCcw, ShieldAlert, XCircle } from 'lucide-react'
+import { ArrowLeft, CalendarDays, ClipboardList, CreditCard, FileText, MapPin, RefreshCcw, ShieldAlert, XCircle } from 'lucide-react'
 import { LoadingState } from '@/shared/ui/LoadingState'
 import { usePageTitle } from '@/shared/hooks/usePageTitle'
 import {
@@ -16,6 +16,7 @@ import {
   getOrderTotal,
   getPaymentStatus,
   SHIPPING_FEE,
+  isPaymentSlipImage,
 } from '@/features/orders/lib/orderUtils'
 import { useOrderDetail } from '@/features/orders/hooks/useOrderDetail'
 
@@ -173,7 +174,14 @@ export const OrderDetailPage = () => {
             {paymentSlip && (
               <a className="mt-3 block overflow-hidden rounded-xl border border-slate-100 bg-slate-50 p-3 text-xs font-semibold text-slate-600 no-underline transition hover:border-orange-200 hover:bg-orange-50/40" href={paymentSlip.url} rel="noreferrer" target="_blank">
                 <span className="mb-2 block text-slate-800">Attached payment slip</span>
-                <img alt="Attached payment slip" className="h-32 w-full rounded-lg border border-slate-100 bg-white object-cover" src={paymentSlip.url} />
+                {isPaymentSlipImage(paymentSlip) ? (
+                  <img alt="Attached payment slip" className="h-32 w-full rounded-lg border border-slate-100 bg-white object-cover" src={paymentSlip.url} />
+                ) : (
+                  <span className="flex min-h-24 items-center gap-3 rounded-lg border border-slate-100 bg-white p-4 text-slate-700">
+                    <FileText className="h-6 w-6 text-orange-500" />
+                    <span className="min-w-0 truncate">{paymentSlip.fileName || 'Open attached slip'}</span>
+                  </span>
+                )}
               </a>
             )}
           </aside>

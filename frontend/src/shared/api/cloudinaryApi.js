@@ -8,36 +8,40 @@ const requireCloudinaryConfig = (uploadPreset, presetEnvName) => {
   }
 }
 
-const uploadOneImage = async (file, uploadPreset, presetEnvName) => {
+const uploadOneFile = async (file, uploadPreset, presetEnvName, resourceType = 'image') => {
   requireCloudinaryConfig(uploadPreset, presetEnvName)
 
   const formData = new FormData()
   formData.append('file', file)
   formData.append('upload_preset', uploadPreset)
 
-  const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
+  const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/${resourceType}/upload`, {
     method: 'POST',
     body: formData,
   })
   const payload = await response.json()
 
   if (!response.ok) {
-    throw new Error(payload?.error?.message || 'Cloudinary image upload failed.')
+    throw new Error(payload?.error?.message || 'Cloudinary file upload failed.')
   }
 
   return {
+    bytes: payload.bytes,
+    fileName: payload.original_filename,
+    format: payload.format,
     publicId: payload.public_id,
+    resourceType: payload.resource_type,
     url: payload.secure_url || payload.url,
   }
 }
 
 export const cloudinaryApi = {
   async uploadImage(file) {
-    return uploadOneImage(file, CLOUDINARY_UPLOAD_PRESET, 'VITE_CLOUDINARY_UPLOAD_PRESET')
+    return uploadOneFile(file, CLOUDINARY_UPLOAD_PRESET, 'VITE_CLOUDINARY_UPLOAD_PRESET')
   },
 
   async uploadPaymentSlip(file) {
-    return uploadOneImage(file, CLOUDINARY_PAYMENT_SLIP_UPLOAD_PRESET, 'VITE_CLOUDINARY_PAYMENT_SLIP_UPLOAD_PRESET')
+    return uploadOneFile(file, CLOUDINARY_PAYMENT_SLIP_UPLOAD_PRESET, 'VITE_CLOUDINARY_PAYMENT_SLIP_UPLOAD_PRESET', 'auto')
   },
 
   async uploadWatchImages(files) {
