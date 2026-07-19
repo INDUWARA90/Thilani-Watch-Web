@@ -4,6 +4,7 @@ import { LoaderCircle } from 'lucide-react'
 const shimmer = 'animate-pulse bg-gradient-to-r from-white/5 via-white/20 to-white/5 rounded-[6px]'
 
 export const LoadingState = ({ label = 'Loading', variant = 'panel', rows = 3 }) => {
+  if (variant === 'page') return <PageLoader label={label} />
   if (variant === 'cards') return <CardSkeleton count={rows} />
   if (variant === 'detail') return <DetailSkeleton />
   if (variant === 'form') return <FormSkeleton />
@@ -12,14 +13,14 @@ export const LoadingState = ({ label = 'Loading', variant = 'panel', rows = 3 })
 
   // Neutral Modern Panel Loading Component
   return (
-    <div className="relative overflow-hidden rounded-[20px] border border-white/30 bg-white/20 p-5 shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] backdrop-blur-md max-w-[400px]">
+    <div className="relative mx-auto max-w-[400px] overflow-hidden rounded-[20px] border border-slate-100 bg-white p-5 shadow-[0_16px_45px_rgba(15,23,42,0.08)]">
       <div className="flex items-center gap-4">
-        <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[#121212] border border-white/20 text-white">
+        <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full border border-orange-100 bg-orange-50 text-[#F49006]">
           <LoaderCircle className="h-5 w-5 animate-spin" aria-hidden="true" />
         </span>
         <div>
-          <p className="text-xs font-medium text-white/60">Please wait</p>
-          <p className="font-bold text-white tracking-tight">{label}</p>
+          <p className="text-xs font-medium text-slate-400">Please wait</p>
+          <p className="font-bold tracking-tight text-slate-900">{label}</p>
         </div>
       </div>
     </div>
@@ -27,6 +28,22 @@ export const LoadingState = ({ label = 'Loading', variant = 'panel', rows = 3 })
 }
 
 export const ButtonSpinner = () => <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />
+
+export const PageLoader = ({ label = 'Loading page' }) => (
+  <div className="grid min-h-[calc(100vh-180px)] w-full place-items-center px-4 py-12">
+    <div className="relative w-full max-w-[340px] overflow-hidden rounded-[22px] border border-orange-100 bg-white p-6 text-center shadow-[0_18px_60px_rgba(15,23,42,0.12)]">
+      <span className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#F49006] via-[#121212] to-[#EB960E]" />
+      <span className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-orange-50 text-[#F49006] ring-8 ring-orange-50/50">
+        <LoaderCircle className="h-8 w-8 animate-spin" aria-hidden="true" />
+      </span>
+      <p className="mt-5 text-xs font-semibold uppercase tracking-wide text-slate-400">Please wait</p>
+      <p className="mt-1 text-base font-bold text-slate-900">{label}</p>
+      <div className="mx-auto mt-5 h-1.5 w-32 overflow-hidden rounded-full bg-slate-100">
+        <span className="block h-full w-1/2 animate-pulse rounded-full bg-[#F49006]" />
+      </div>
+    </div>
+  </div>
+)
 
 export const CardSkeleton = ({ count = 6 }) => (
   <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">

@@ -41,7 +41,12 @@ export const cloudinaryApi = {
   },
 
   async uploadPaymentSlip(file) {
-    return uploadOneFile(file, CLOUDINARY_PAYMENT_SLIP_UPLOAD_PRESET, 'VITE_CLOUDINARY_PAYMENT_SLIP_UPLOAD_PRESET', 'auto')
+    return uploadOneFile(
+      file,
+      CLOUDINARY_PAYMENT_SLIP_UPLOAD_PRESET,
+      'VITE_CLOUDINARY_PAYMENT_SLIP_UPLOAD_PRESET',
+      file.type.startsWith('image/') ? 'image' : 'raw',
+    )
   },
 
   async uploadWatchImages(files) {

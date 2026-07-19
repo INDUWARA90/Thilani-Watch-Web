@@ -42,7 +42,7 @@ const AdminCouponsPage = lazyPage(() => import('@/features/admin/pages/AdminCoup
 const AdminCustomersPage = lazyPage(() => import('@/features/admin/pages/AdminCustomersPage'), 'AdminCustomersPage')
 
 const AppRoutes = () => (
-  <Suspense fallback={<LoadingState label="Loading page" />}>
+  <Suspense fallback={<LoadingState label="Loading page" variant="page" />}>
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/about" element={<AboutPage />} />
