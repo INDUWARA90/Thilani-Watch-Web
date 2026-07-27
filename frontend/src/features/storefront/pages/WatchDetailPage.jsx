@@ -35,10 +35,10 @@ export const WatchDetailPage = () => {
 
   if (error || !watch) {
     return (
-      <div className="mx-auto mt-12 max-w-xl rounded-lg border border-red-400/30 bg-red-500/10 p-4 text-center font-normal text-red-200">
-        {error || 'Watch not found.'}{' '}
-        <Link className="ml-1 text-primary underline hover:text-accent/70" to="/watches">
-          Back to watches
+      <div className="mx-auto mt-16 max-w-xl border border-red-900/30 bg-red-50/50 p-6 text-center font-sans text-sm text-red-700">
+        <p className="mb-4">{error || 'Timepiece not found.'}</p>
+        <Link className="font-mono text-xs font-semibold uppercase tracking-wider text-black underline hover:text-[#F5C518]" to="/watches">
+          Return to watches
         </Link>
       </div>
     )
@@ -49,37 +49,40 @@ export const WatchDetailPage = () => {
   const isAvailable = watch.inStock || stockQuantity > 0
 
   return (
-    <main className="mx-auto max-w-[1200px] min-w-0 overflow-x-hidden bg-base px-4 py-10 text-primary sm:px-6 lg:px-10">
+    <main className="mx-auto max-w-[1280px] min-w-0 bg-white px-4 py-12 text-black sm:px-6 lg:px-10">
+      {/* Back Link */}
       <Link 
-        className="group mb-8 inline-flex min-h-11 max-w-full items-center gap-2 rounded-full border border-primary/10 bg-card px-5 text-sm font-bold text-primary no-underline transition hover:border-primary/10 hover:shadow-premiumSm sm:px-8" 
+        className="group mb-10 inline-flex items-center gap-2 font-mono text-xs font-semibold uppercase tracking-widest text-black no-underline transition hover:text-[#F5C518]" 
         to="/watches"
       >
         <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
         Back to collection
       </Link>
 
-      <section className="grid min-w-0 gap-10 lg:grid-cols-2 lg:items-start lg:gap-12">
+      <section className="grid min-w-0 gap-10 lg:grid-cols-2 lg:items-start lg:gap-14">
+        {/* Gallery Section */}
         <motion.div 
           initial={{ opacity: 0, x: -15 }} 
           animate={{ opacity: 1, x: 0 }} 
           transition={{ duration: 0.5, ease: 'easeOut' }}
           className="min-w-0 flex flex-col gap-4"
         >
-          <div className="relative overflow-hidden rounded-lg border border-primary/10 bg-card shadow-premiumSm">
-                        <img 
-              className="relative z-10 aspect-square w-full object-cover transition-transform duration-700 hover:scale-[1.02]" 
+          <div className="relative aspect-square w-full overflow-hidden border border-black/10 bg-[#FAF9F5]">
+            <img 
+              className="h-full w-full object-cover transition-transform duration-700 hover:scale-105" 
               src={detail.selectedImage || '/favicon.svg'} 
               alt={watch.name} 
             />
           </div>
+
           {images.length > 1 && (
-            <div className="flex flex-wrap gap-2.5">
+            <div className="flex flex-wrap gap-3">
               {images.map((image) => (
                 <button 
-                  className={`relative h-16 w-16 cursor-pointer overflow-hidden rounded-lg border bg-card p-0 transition-all duration-200 ${
+                  className={`relative aspect-square h-20 cursor-pointer overflow-hidden border bg-[#FAF9F5] p-0 transition-all duration-200 focus:outline-none ${
                     detail.selectedImage === image 
-                      ? 'scale-95 border-white ring-2 ring-accent/30' 
-                      : 'border-primary/10 hover:border-primary/10'
+                      ? 'border-[#F5C518] ring-1 ring-[#F5C518]' 
+                      : 'border-black/10 opacity-70 hover:border-black hover:opacity-100'
                   }`} 
                   key={image} 
                   type="button" 
@@ -92,51 +95,65 @@ export const WatchDetailPage = () => {
           )}
         </motion.div>
 
+        {/* Watch Information & Actions */}
         <div className="min-w-0 flex flex-col">
-          <span className="mb-3 inline-flex w-fit rounded-full border border-primary/10 bg-card px-3 py-1 text-xs font-semibold uppercase text-primary">
-            {getTitle(watch.brand, 'Brand')} &middot; {getTitle(watch.category, 'Category')}
-          </span>
+          {/* Category & Brand Metadata Badge */}
+          <div className="mb-4 flex flex-wrap items-center gap-2">
+            <span className="bg-black px-2.5 py-1 font-mono text-[9px] font-semibold uppercase tracking-widest text-white">
+              {getTitle(watch.brand, 'Brand')}
+            </span>
+            <span className="border border-black/10 bg-[#FAF9F5] px-2.5 py-1 font-mono text-[9px] font-semibold uppercase tracking-widest text-neutral-600">
+              {getTitle(watch.category, 'Category')}
+            </span>
+          </div>
           
-          <h1 className="mb-4 break-words font-heading text-4xl font-bold leading-tight text-primary sm:text-[52px]">
+          <h1 className="mb-4 break-words font-serif text-3xl font-normal leading-tight text-black sm:text-4xl lg:text-5xl">
             {watch.name}
           </h1>
 
-          <div className="mb-6 flex flex-wrap items-center gap-4">
-            <span className="font-heading text-2xl font-bold text-primary">
+          <div className="mb-6 flex flex-wrap items-center gap-4 border-y border-black/10 py-4">
+            <span className="font-mono text-2xl font-semibold tracking-wider text-black">
               {formatMoney(watch.price, watch.currency)}
             </span>
-            <div className="h-4 w-px bg-white/12" />
-            <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-              watch.inStock || watch.stockQuantity > 0 ? 'border border-primary/10 bg-card text-primary' : 'border border-red-400/30 bg-red-500/10 text-red-200'
+
+            <div className="h-4 w-px bg-black/10" />
+
+            <span className={`font-mono text-xs font-semibold uppercase tracking-wider ${
+              isAvailable ? 'text-black' : 'text-red-600'
             }`}>
-              {watch.inStock || watch.stockQuantity > 0 ? `${watch.stockQuantity ?? 'Available'} Available` : 'Out of Stock'}
+              {isAvailable ? `${watch.stockQuantity ?? 'In'} Stock` : 'Out of Stock'}
             </span>
+
             {watch.ratingAverage && (
-              <span className="inline-flex items-center gap-1 text-sm font-normal text-primary">
-                <Star className="h-4 w-4 fill-accent text-accent" /> 
-                {Number(watch.ratingAverage).toFixed(1)} Rating
-              </span>
+              <>
+                <div className="h-4 w-px bg-black/10" />
+                <span className="inline-flex items-center gap-1 font-mono text-xs font-semibold text-black">
+                  <Star className="h-3.5 w-3.5 fill-[#F5C518] text-[#F5C518]" /> 
+                  {Number(watch.ratingAverage).toFixed(1)}
+                </span>
+              </>
             )}
           </div>
 
-          <p className="mb-8 text-base leading-7 text-primary">
-            {watch.shortDescription || watch.description || 'A refined modern classic designed to elevate any collection.'}
+          <p className="mb-8 font-sans text-sm text-neutral-600 leading-relaxed sm:text-black">
+            {watch.shortDescription || watch.description || 'A refined timepiece crafted with precise detail and timeless aesthetic.'}
           </p>
 
-          <div className="mb-8 rounded-lg border border-primary/10 bg-card p-5 shadow-premiumSm">
+          {/* Checkout Controls Container */}
+          <div className="mb-10 border border-black/10 bg-[#FAF9F5] p-6">
             {(detail.actionMessage || detail.actionError) && (
-              <div className={`mb-4 border p-3 text-sm font-normal ${
-                detail.actionError ? 'border-red-400/30 bg-red-500/10 text-red-200' : 'border-emerald-300/30 bg-emerald-500/10 text-emerald-200'
+              <div className={`mb-4 border p-3 font-mono text-xs uppercase tracking-wider ${
+                detail.actionError ? 'border-red-600/30 bg-red-50 text-red-700' : 'border-emerald-600/30 bg-emerald-50 text-emerald-800'
               }`}>
                 {detail.actionError || detail.actionMessage}
               </div>
             )}
             
             <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-end">
-              <label className="flex flex-col gap-1.5 text-base font-normal text-primary sm:w-28">
+              <label className="flex flex-col gap-1 font-mono text-[10px] font-semibold uppercase tracking-widest text-neutral-500 sm:w-24">
                 Qty
                 <input
-                  className="h-11 min-w-0 rounded-lg border border-primary/10 bg-black/35 text-center font-normal text-primary outline-none transition focus:border-primary/10 focus:ring-2 focus:ring-accent/30"
+                  className="h-11 min-w-0 border border-black/15 bg-white text-center font-mono text-sm font-semibold text-black outline-none transition focus:border-black focus:ring-1 focus:ring-black"
                   max={stockQuantity || undefined}
                   min="1"
                   type="number"
@@ -146,7 +163,7 @@ export const WatchDetailPage = () => {
               </label>
 
               <button 
-                className="inline-flex min-h-11 min-w-0 flex-1 cursor-pointer items-center justify-center gap-2 rounded-full bg-white px-5 text-sm font-bold text-black transition hover:shadow-premium disabled:opacity-40 sm:px-8" 
+                className="inline-flex h-11 min-w-0 flex-1 cursor-pointer items-center justify-center gap-2 border border-[#F5C518] bg-[#F5C518] px-6 font-sans text-xs font-semibold uppercase tracking-wider text-black transition duration-200 hover:bg-black hover:text-white hover:border-black disabled:opacity-40" 
                 disabled={!isAvailable || detail.isBusy} 
                 type="button" 
                 onClick={detail.handleAddToCart}
@@ -156,24 +173,26 @@ export const WatchDetailPage = () => {
               </button>
 
               <button 
-                className="inline-flex h-11 w-full cursor-pointer items-center justify-center rounded-full border border-primary/10 bg-card text-primary transition hover:border-primary/10 hover:bg-accent hover:text-black disabled:opacity-40 sm:w-11" 
+                className="inline-flex h-11 w-full cursor-pointer items-center justify-center border border-black/10 bg-white text-black transition duration-200 hover:border-[#F5C518] hover:bg-[#F5C518] hover:text-black disabled:opacity-40 sm:w-11" 
                 disabled={detail.isBusy} 
                 type="button" 
+                aria-label="Save to wishlist"
                 onClick={detail.handleWishlist}
               >
-                <Heart className={`h-4 w-4 transition-all ${detail.isWishlisted(detail.watchId) ? 'scale-105 fill-accent text-accent' : ''}`} />
+                <Heart className={`h-4 w-4 transition-all ${detail.isWishlisted(detail.watchId) ? 'fill-[#F5C518] text-[#F5C518]' : 'text-current'}`} />
               </button>
             </div>
           </div>
 
-          <div className="border-t border-primary/10 pt-6">
-            <h2 className="mb-4 font-heading text-xl font-bold text-primary">Specifications</h2>
-            <dl className="grid gap-x-6 gap-y-3 sm:grid-cols-2">
+          {/* Specifications Table */}
+          <div className="border-t border-black/10 pt-8">
+            <h2 className="mb-6 font-serif text-2xl font-normal text-black">Technical Specifications</h2>
+            <dl className="grid gap-x-8 gap-y-3 sm:grid-cols-2">
               {detailFields.map(([label, key]) => (
                 watch[key] ? (
-                  <div className="flex min-w-0 flex-col gap-0.5 border-b border-primary/10 py-2 min-[420px]:flex-row min-[420px]:justify-between sm:flex-col sm:border-none" key={key}>
-                    <dt className="text-sm font-normal text-primary">{label}</dt>
-                    <dd className="min-w-0 break-words text-sm font-bold text-primary min-[420px]:text-right sm:text-left">{watch[key]}</dd>
+                  <div className="flex min-w-0 flex-col gap-0.5 border-b border-black/5 py-2.5 min-[420px]:flex-row min-[420px]:justify-between sm:flex-col sm:border-b-0" key={key}>
+                    <dt className="font-mono text-[10px] font-semibold uppercase tracking-widest text-neutral-500">{label}</dt>
+                    <dd className="min-w-0 break-words font-sans text-xs font-semibold text-black min-[420px]:text-right sm:text-left">{watch[key]}</dd>
                   </div>
                 ) : null
               ))}
@@ -182,7 +201,8 @@ export const WatchDetailPage = () => {
         </div>
       </section>
 
-      <div className="mt-16 border-t border-primary/10 pt-12">
+      {/* Reviews Section */}
+      <div className="mt-20 border-t border-black/10 pt-16">
         <ReviewSection onReviewsChanged={detail.refreshWatchSummary} watchId={detail.watchId} />
       </div>
     </main>

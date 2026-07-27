@@ -15,7 +15,7 @@ const sortOptions = [
   { label: 'Popularity', value: 'popularity' },
 ]
 
-const fieldClass = 'h-11 min-w-0 w-full rounded-lg border border-primary/15 bg-card px-3.5 text-base font-normal  outline-none transition duration-200 placeholder: focus:border-accent focus:ring-2 focus:ring-accent/35'
+const fieldClass = 'h-11 min-w-0 w-full border border-black/20 bg-white px-3.5 text-xs font-sans text-black outline-none transition-all duration-300 placeholder:text-neutral-400 focus:border-[#F5C518] focus:ring-1 focus:ring-[#F5C518]'
 
 export const WatchListingPage = () => {
   usePageTitle('Shop Watches | Thilani Watch Web')
@@ -23,100 +23,170 @@ export const WatchListingPage = () => {
   const { brands, categories, error, filters, isLoading, pagination, searchValue, setSearchValue, updateFilter, watches } = useWatchListing()
 
   return (
-    <main className="min-h-screen overflow-x-hidden bg-base pb-16">
-      <section className="relative overflow-hidden bg-base px-4 pb-28 pt-20  sm:px-6 sm:pt-24 lg:px-10">
-        <div className="relative z-10 mx-auto flex max-w-[1200px] min-w-0 flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-          <div className="max-w-2xl min-w-0">
-            <p className="mb-4 inline-flex min-h-9 items-center rounded-full border border-primary/15 bg-card px-4 text-xs font-semibold uppercase  shadow-premiumSm">
-              Storefront
-            </p>
-            <h1 className="break-words font-heading text-4xl font-bold leading-[1.05]  sm:text-[56px] lg:text-[72px]">
-              Watches Collection
-            </h1>
-            <p className="mt-4 text-sm font-normal leading-relaxed  sm:text-black lg:text-lg">
-              Discover our masterfully engineered collection. Filter curated watches by house, collection, price, availability, and popularity.
-            </p>
+    <main className="min-h-screen overflow-x-hidden bg-[#FAF9F5] pb-24 text-black">
+      {/* Dark Luxury Editorial Header */}
+      <section className="relative overflow-hidden border-b border-white/10 bg-[#0D0D0D] px-6 py-20 text-white lg:px-12">
+        <div className="relative z-10 mx-auto max-w-7xl">
+          {/* Top Bar Navigation & Tag */}
+          <div className="mb-8 flex items-center justify-between border-b border-white/10 pb-6">
+            <div className="flex items-center gap-3">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#F5C518]" />
+              <span className="font-mono text-xs uppercase tracking-[0.25em] text-neutral-400">
+                Curated Vault / 2026 Edition
+              </span>
+            </div>
+
+            <motion.div whileHover={{ scale: 1.02 }}>
+              <Link
+                className="inline-flex items-center justify-center border border-white/20 bg-white/5 px-5 py-2 font-sans text-xs font-medium uppercase tracking-[0.2em] text-white no-underline transition-all duration-300 hover:border-[#F5C518] hover:bg-[#F5C518] hover:text-black"
+                to="/"
+              >
+                Back Home
+              </Link>
+            </motion.div>
           </div>
-          <motion.div whileHover={{ scale: 1.03 }}>
-            <Link className="inline-flex min-h-11 w-fit max-w-full shrink-0 items-center justify-center rounded-full border border-primary/20 bg-card px-5 text-sm font-bold  no-underline shadow-premiumSm transition duration-200 hover:border-accent hover:text-accent active:scale-98 focus:outline-none focus:ring-2 focus:ring-accent sm:mb-2 sm:px-8" to="/">
-              Back home
-            </Link>
-          </motion.div>
-        </div>
-        <div className="pointer-events-none absolute bottom-8 left-1/2 h-24 w-[min(980px,92vw)] -translate-x-1/2" aria-hidden="true">
-          <div className="absolute left-0 top-1/2 h-px w-full bg-primary/15" />
-          <div className="absolute left-1/2 top-4 h-28 w-[80%] -translate-x-1/2 rounded-[50%] border-t border-primary/10" />
+
+          {/* Headline and Description Grid */}
+          <div className="grid gap-8 lg:grid-cols-12 lg:items-center">
+            <div className="lg:col-span-8">
+              <span className="mb-2 inline-block font-mono text-[11px] font-semibold uppercase tracking-[0.3em] text-[#F5C518]">
+                Boutique Gallery
+              </span>
+              <h1 className="font-serif text-4xl font-light tracking-tight text-white sm:text-6xl lg:text-7xl">
+                Timepieces & Fine <br />
+                <span className="font-serif italic text-white/70">Engineering.</span>
+              </h1>
+            </div>
+
+            <div className="flex flex-col gap-6 lg:col-span-4">
+              <p className="font-sans text-xs leading-relaxed text-neutral-400 sm:text-sm">
+                Explore a handpicked selection of precision timepieces, engineered with Swiss quality and timeless aesthetics.
+              </p>
+
+              {/* Stat Chips */}
+              <div className="flex flex-wrap gap-3">
+                <div className="border border-white/10 bg-white/5 px-4 py-2">
+                  <p className="font-mono text-[10px] uppercase text-neutral-400">Catalog</p>
+                  <p className="font-serif text-lg text-white">{pagination.total || watches.length} Models</p>
+                </div>
+                <div className="border border-white/10 bg-white/5 px-4 py-2">
+                  <p className="font-mono text-[10px] uppercase text-neutral-400">Houses</p>
+                  <p className="font-serif text-lg text-[#F5C518]">{brands.length || '12'} Brands</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      <section className="mx-auto grid max-w-[1200px] min-w-0 gap-8 px-4 py-12 sm:px-6 lg:grid-cols-[290px_minmax(0,1fr)] lg:px-10">
-        <aside className="flex h-fit flex-col gap-5 rounded-lg border border-primary/10 bg-card p-5 shadow-premiumSm lg:sticky lg:top-28">
-          <div className="flex items-center gap-2 border-b border-primary/10 pb-3">
-            <Filter className="h-5 w-5 text-accent" />
-            <h2 className="font-heading text-lg font-bold ">Filters</h2>
+      {/* Main Content Layout */}
+      <section className="mx-auto grid max-w-7xl min-w-0 gap-10 px-6 py-12 lg:grid-cols-[290px_minmax(0,1fr)] lg:px-12">
+        {/* Sticky Filter Sidebar */}
+        <aside className="flex h-fit flex-col gap-6 border border-black/10 bg-white p-6 shadow-xl lg:sticky lg:top-28">
+          <div className="flex items-center gap-3 border-b border-black/10 pb-4">
+            <Filter className="h-4 w-4 text-[#F5C518]" />
+            <h2 className="font-serif text-lg font-normal uppercase tracking-wider text-black">Refine Selection</h2>
           </div>
-          <div className="flex flex-col gap-4">
-            <label className="grid gap-1.5 text-sm font-medium ">
-              Search
-              <span className="flex h-11 items-center rounded-lg border border-primary/15 bg-base px-3.5 transition duration-200 focus-within:border-accent focus-within:ring-2 focus-within:ring-accent/35">
-                <Search className="h-4 w-4 shrink-0 " />
-                <input className="min-w-0 flex-1 bg-transparent px-2.5 text-base font-normal  outline-none placeholder:" placeholder="Search watches..." value={searchValue} onChange={(event) => setSearchValue(event.target.value)} />
+
+          <div className="flex flex-col gap-5">
+            {/* Search Input */}
+            <label className="grid gap-2 text-[11px] font-semibold uppercase tracking-widest text-black">
+              Search Catalog
+              <span className="flex h-11 items-center border border-black/20 bg-white px-3.5 transition-all focus-within:border-[#F5C518]">
+                <Search className="h-4 w-4 shrink-0 text-neutral-400" />
+                <input
+                  className="min-w-0 flex-1 bg-transparent px-2.5 font-sans text-xs text-black outline-none placeholder:text-neutral-400"
+                  placeholder="Search timepieces..."
+                  value={searchValue}
+                  onChange={(event) => setSearchValue(event.target.value)}
+                />
               </span>
             </label>
-            
+
+            {/* Category Select */}
             <FilterSelect label="Category" value={filters.category} onChange={(value) => updateFilter('category', value)}>
-              <option value="">Any category</option>
+              <option value="">Any Category</option>
               {categories.map((category) => (
                 <option key={getId(category)} value={getCatalogValue(category)}>{getTitle(category)}</option>
               ))}
             </FilterSelect>
-            
-            <FilterSelect label="Brand" value={filters.brand} onChange={(value) => updateFilter('brand', value)}>
-              <option value="">Any brand</option>
+
+            {/* Brand Select */}
+            <FilterSelect label="Brand / House" value={filters.brand} onChange={(value) => updateFilter('brand', value)}>
+              <option value="">Any Brand</option>
               {brands.map((brand) => (
                 <option key={getId(brand)} value={getCatalogValue(brand)}>{getTitle(brand)}</option>
               ))}
             </FilterSelect>
 
+            {/* Gender Select */}
             <FilterSelect label="Gender" value={filters.gender} onChange={(value) => updateFilter('gender', value)}>
-              <option value="">Any gender</option>
+              <option value="">Any Gender</option>
               <option value="ladies">Ladies</option>
               <option value="gents">Gents</option>
               <option value="unisex">Unisex</option>
             </FilterSelect>
-            
-            <div className="grid gap-1.5">
-              <span className="text-sm font-medium ">Price Range</span>
+
+            {/* Price Range */}
+            <div className="grid gap-2">
+              <span className="text-[11px] font-semibold uppercase tracking-widest text-black">Price Range</span>
               <div className="grid grid-cols-2 gap-3">
-                <input className={fieldClass} min="0" placeholder="Min price" type="number" value={filters.minPrice} onChange={(event) => updateFilter('minPrice', event.target.value)} />
-                <input className={fieldClass} min="0" placeholder="Max price" type="number" value={filters.maxPrice} onChange={(event) => updateFilter('maxPrice', event.target.value)} />
+                <input
+                  className={fieldClass}
+                  min="0"
+                  placeholder="Min Price"
+                  type="number"
+                  value={filters.minPrice}
+                  onChange={(event) => updateFilter('minPrice', event.target.value)}
+                />
+                <input
+                  className={fieldClass}
+                  min="0"
+                  placeholder="Max Price"
+                  type="number"
+                  value={filters.maxPrice}
+                  onChange={(event) => updateFilter('maxPrice', event.target.value)}
+                />
               </div>
             </div>
-            
-            <FilterSelect label="Stock" value={filters.stock} onChange={(value) => updateFilter('stock', value)}>
-              <option value="">Any stock</option>
-              <option value="true">In stock</option>
-              <option value="false">Out of stock</option>
+
+            {/* Stock Select */}
+            <FilterSelect label="Stock Availability" value={filters.stock} onChange={(value) => updateFilter('stock', value)}>
+              <option value="">All Items</option>
+              <option value="true">In Stock Only</option>
+              <option value="false">Out of Stock</option>
             </FilterSelect>
-            
-            <FilterSelect label="Featured Status" value={filters.featured} onChange={(value) => updateFilter('featured', value)}>
-              <option value="">Any featured</option>
-              <option value="true">Featured only</option>
-              <option value="false">Not featured</option>
+
+            {/* Featured Select */}
+            <FilterSelect label="Curated Status" value={filters.featured} onChange={(value) => updateFilter('featured', value)}>
+              <option value="">All Statuses</option>
+              <option value="true">Featured Collection</option>
+              <option value="false">Standard Catalog</option>
             </FilterSelect>
           </div>
         </aside>
 
+        {/* Listing & Results Container */}
         <section className="min-w-0 overflow-hidden">
-          <div className="mb-6 flex flex-col gap-4 rounded-lg border border-primary/10 bg-card p-5 shadow-premiumSm sm:flex-row sm:items-center sm:justify-between">
+          {/* Top Control Bar */}
+          <div className="mb-8 flex flex-col gap-4 border border-black/10 bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase ">{pagination.total || watches.length} watches found</p>
-              <h2 className="mt-0.5 font-heading text-xl font-bold ">Collection Results</h2>
+              <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-400">
+                {pagination.total || watches.length} Timepieces
+              </p>
+              <h2 className="mt-0.5 font-serif text-xl font-normal text-black">Catalog Results</h2>
             </div>
-            <label className="flex w-full min-w-0 flex-wrap items-center gap-3 text-sm font-medium  sm:w-auto sm:flex-nowrap">
-              <span className="flex items-center gap-1.5 whitespace-nowrap "><SlidersHorizontal className="h-4 w-4 text-accent" /> Sort by</span>
+
+            <label className="flex w-full min-w-0 flex-wrap items-center gap-3 font-sans text-xs sm:w-auto sm:flex-nowrap">
+              <span className="flex items-center gap-1.5 whitespace-nowrap text-[11px] font-semibold uppercase tracking-wider text-black">
+                <SlidersHorizontal className="h-3.5 w-3.5 text-[#F5C518]" /> Sort By
+              </span>
               <div className="min-w-0 flex-1 sm:w-48 sm:flex-none">
-                <select className={`${fieldClass} !h-10`} value={filters.sort} onChange={(event) => updateFilter('sort', event.target.value)}>
+                <select
+                  className={`${fieldClass} !h-10`}
+                  value={filters.sort}
+                  onChange={(event) => updateFilter('sort', event.target.value)}
+                >
                   {sortOptions.map((option) => (
                     <option key={option.value} value={option.value}>{option.label}</option>
                   ))}
@@ -125,24 +195,30 @@ export const WatchListingPage = () => {
             </label>
           </div>
 
-          {error && <div className="mb-6 rounded-lg border border-red-500/30 bg-red-50 px-4 py-3.5 font-medium text-red-700 shadow-premiumSm">{error}</div>}
-          
+          {/* Error Banner */}
+          {error && (
+            <div className="mb-6 border border-red-200 bg-red-50 p-4 font-sans text-xs text-red-800">
+              {error}
+            </div>
+          )}
+
+          {/* Watch Grid / Loading / Empty State */}
           {isLoading ? (
-            <LoadingState label="Finding matching watches" variant="cards" rows={6} />
+            <LoadingState label="Finding matching watches" rows={6} variant="cards" />
           ) : (
             <>
-              <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+              <div className="grid gap-8 sm:grid-cols-2 xl:grid-cols-3">
                 {watches.map((watch) => (
                   <WatchCard key={getId(watch)} watch={watch} />
                 ))}
               </div>
-              
+
               {watches.length === 0 && (
-                <div className="rounded-lg border border-dashed border-primary/15 bg-card px-4 py-16 text-center font-medium  shadow-premiumSm">
-                  No watches match these filter metrics. Try adjusting your fields.
+                <div className="border border-dashed border-black/20 bg-white px-6 py-20 text-center font-sans text-xs tracking-wider uppercase text-neutral-500">
+                  No timepieces match these filter criteria. Please adjust your parameters.
                 </div>
               )}
-              
+
               <Pagination pagination={pagination} updateFilter={updateFilter} />
             </>
           )}
@@ -153,7 +229,7 @@ export const WatchListingPage = () => {
 }
 
 const FilterSelect = ({ children, label, onChange, value }) => (
-  <label className="grid gap-1.5 text-sm font-medium ">
+  <label className="grid gap-2 text-[11px] font-semibold uppercase tracking-widest text-black">
     {label}
     <select className={fieldClass} value={value} onChange={(event) => onChange(event.target.value)}>
       {children}
@@ -162,15 +238,29 @@ const FilterSelect = ({ children, label, onChange, value }) => (
 )
 
 const Pagination = ({ pagination, updateFilter }) => (
-  <div className="mt-8 flex flex-col gap-4 rounded-lg border border-primary/10 bg-card p-4 shadow-premiumSm sm:flex-row sm:items-center sm:justify-between">
-    <p className="min-w-0 break-words pl-2 text-sm font-medium  [&_span]:!">
-      Page <span className="font-semibold ">{pagination.page}</span> of <span className="font-semibold ">{pagination.pages}</span> - <span className="">{pagination.total} timepieces</span>
+  <div className="mt-12 flex flex-col gap-4 border border-black/10 bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+    <p className="min-w-0 break-words font-sans text-xs uppercase tracking-wider text-neutral-500">
+      Page <span className="font-semibold text-black">{pagination.page}</span> of{' '}
+      <span className="font-semibold text-black">{pagination.pages}</span> —{' '}
+      <span className="text-black">{pagination.total} timepieces</span>
     </p>
+
     <div className="grid grid-cols-2 gap-3 sm:flex">
-      <button className="inline-flex min-h-11 cursor-pointer items-center justify-center rounded-full border border-primary/15 bg-card px-4 text-sm font-bold  transition duration-200 hover:border-accent hover:text-accent hover:shadow-premiumSm disabled:cursor-not-allowed disabled:opacity-50 active:scale-98 focus:outline-none focus:ring-2 focus:ring-accent sm:px-6" disabled={!pagination.hasPrevPage} type="button" onClick={() => updateFilter('page', String(Math.max(1, pagination.page - 1)))}>
+      <button
+        className="inline-flex min-h-11 cursor-pointer items-center justify-center border border-black bg-white px-6 font-sans text-xs font-medium uppercase tracking-[0.2em] text-black transition-all duration-300 hover:border-[#F5C518] hover:bg-[#F5C518] disabled:cursor-not-allowed disabled:opacity-40"
+        disabled={!pagination.hasPrevPage}
+        type="button"
+        onClick={() => updateFilter('page', String(Math.max(1, pagination.page - 1)))}
+      >
         Previous
       </button>
-      <button className="inline-flex min-h-11 cursor-pointer items-center justify-center rounded-full bg-accent px-4 text-sm font-bold  transition duration-200 hover:bg-accent/90 hover:shadow-premium disabled:cursor-not-allowed disabled:opacity-50 active:scale-98 focus:outline-none focus:ring-2 focus:ring-primary sm:px-6" disabled={!pagination.hasNextPage} type="button" onClick={() => updateFilter('page', String(pagination.page + 1))}>
+
+      <button
+        className="inline-flex min-h-11 cursor-pointer items-center justify-center border border-black bg-black px-6 font-sans text-xs font-medium uppercase tracking-[0.2em] text-white transition-all duration-300 hover:border-[#F5C518] hover:bg-[#F5C518] hover:text-black disabled:cursor-not-allowed disabled:opacity-40"
+        disabled={!pagination.hasNextPage}
+        type="button"
+        onClick={() => updateFilter('page', String(pagination.page + 1))}
+      >
         Next
       </button>
     </div>

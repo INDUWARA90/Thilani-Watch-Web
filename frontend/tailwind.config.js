@@ -5,8 +5,8 @@ export default {
     extend: {
       colors: {
         primary: '#000000',
-        base: '#EAECF0',
-        surface: '#EAECF0',
+        base: '#FAF9F5',
+        surface: '#FAF9F5',
         card: '#F8FAFC',
         accent: '#F5C518',
         border: 'rgba(0,0,0,0.12)',

@@ -69,7 +69,7 @@ export const HomeInteractiveShowcase = () => {
         </motion.div>
 
         <motion.div
-          className="group relative min-h-[380px] min-w-0 overflow-hidden rounded-lg border border-accent/25 bg-[radial-gradient(circle_at_50%_8%,#ffffff_0%,#F8FAFC_38%,#EAECF0_100%)] p-4 shadow-goldHairline [perspective:1200px] sm:min-h-[520px] sm:p-5"
+          className="group relative min-h-[380px] min-w-0 overflow-hidden rounded-lg border border-accent/25 bg-[radial-gradient(circle_at_50%_8%,#ffffff_0%,#FFFEFA_42%,#FAF9F5_100%)] p-4 shadow-goldHairline [perspective:1200px] sm:min-h-[520px] sm:p-5"
           initial={{ opacity: 0, scale: 0.96 }}
           onPointerLeave={handlePointerLeave}
           onPointerMove={handlePointerMove}
