@@ -22,6 +22,19 @@ const normalizeCouponPayload = (body) => {
   return payload
 }
 
+const getCouponDiscount = (coupon, subtotal) => {
+  let discount = 0
+
+  if (coupon.discountType === 'percentage') {
+    discount = (subtotal * coupon.discountValue) / 100
+    if (coupon.maxDiscountAmount) discount = Math.min(discount, coupon.maxDiscountAmount)
+  } else {
+    discount = coupon.discountValue
+  }
+
+  return Math.min(discount, subtotal)
+}
+
 const getCoupons = asyncHandler(async (req, res) => {
   const { page, limit, skip } = getPaginationParams(req.query, 20, 100)
   const filter = {}
@@ -113,8 +126,10 @@ const validateCoupon = asyncHandler(async (req, res, next) => {
     success: true,
     data: {
       code: coupon.code,
+      discountAmount: getCouponDiscount(coupon, normalizedCartTotal),
       discountType: coupon.discountType,
       discountValue: coupon.discountValue,
+      maxDiscountAmount: coupon.maxDiscountAmount,
       perUserLimit: coupon.perUserLimit,
       remainingUsesForUser: coupon.perUserLimit - (usage?.count || 0),
     },

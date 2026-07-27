@@ -11,6 +11,11 @@ const { sendOrderNotification } = require('../services/emailService')
 const ORDER_STATUSES = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled']
 const PAYMENT_STATUSES = ['pending', 'paid', 'failed', 'refunded']
 const RETURN_STATUSES = ['approved', 'rejected', 'received', 'refunded']
+const WESTERN_PROVINCE_SHIPPING_FEE = 400
+const OUTSTATION_SHIPPING_FEE = 450
+
+const getShippingFeeByProvince = (province) =>
+  province === 'Western Province' ? WESTERN_PROVINCE_SHIPPING_FEE : OUTSTATION_SHIPPING_FEE
 
 const getCouponDiscount = (coupon, subtotal) => {
   let discount = 0
@@ -192,7 +197,7 @@ const createOrder = asyncHandler(async (req, res, next) => {
             notes,
             wantedDate,
             couponCode: normalizedCouponCode || undefined,
-            shippingFee: 500,
+            shippingFee: getShippingFeeByProvince(shippingAddress?.state),
           },
         ],
         { session },

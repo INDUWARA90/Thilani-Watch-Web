@@ -35,7 +35,7 @@ export const useCheckoutPage = () => {
   const [useShippingAsBilling, setUseShippingAsBilling] = useState(true)
   const [wantedDate, setWantedDate] = useState('')
 
-  const discount = Number(readCouponDiscount(couponResult) || cart.discount || cart.discountAmount || 0)
+  const discount = readCouponDiscount(couponResult, cart.subtotal) || Number(cart.discount || cart.discountAmount || 0)
   const shippingFee = getShippingFeeByProvince(shippingAddress.state)
   const total = Math.max(0, Number(cart.subtotal || 0) + shippingFee - discount)
 
@@ -225,11 +225,36 @@ const cleanAddress = (address) => {
   return clean
 }
 
-const readCouponDiscount = (payload) =>
-  payload?.discountAmount ??
-  payload?.discount ??
-  payload?.coupon?.discountAmount ??
-  payload?.coupon?.discount ??
-  payload?.data?.discountAmount ??
-  payload?.data?.discount ??
-  0
+const readCouponDiscount = (payload, subtotal = 0) => {
+  const directDiscount =
+    payload?.discountAmount ??
+    payload?.discount ??
+    payload?.coupon?.discountAmount ??
+    payload?.coupon?.discount ??
+    payload?.data?.discountAmount ??
+    payload?.data?.discount
+
+  if (directDiscount !== undefined && directDiscount !== null) {
+    return normalizeDiscountAmount(directDiscount, subtotal)
+  }
+
+  const coupon = payload?.coupon || payload?.data?.coupon || payload?.data || payload
+  return calculateCouponDiscount(coupon, subtotal)
+}
+
+const calculateCouponDiscount = (coupon, subtotal = 0) => {
+  if (!coupon?.discountType || coupon.discountValue === undefined || coupon.discountValue === null) return 0
+
+  const normalizedSubtotal = Number(subtotal || 0)
+  const discountValue = Number(coupon.discountValue || 0)
+  let discount = coupon.discountType === 'percentage' ? (normalizedSubtotal * discountValue) / 100 : discountValue
+
+  if (coupon.maxDiscountAmount) discount = Math.min(discount, Number(coupon.maxDiscountAmount))
+  return normalizeDiscountAmount(discount, normalizedSubtotal)
+}
+
+const normalizeDiscountAmount = (value, subtotal = 0) => {
+  const amount = Number(value || 0)
+  if (!Number.isFinite(amount) || amount <= 0) return 0
+  return Math.min(amount, Number(subtotal || 0))
+}
