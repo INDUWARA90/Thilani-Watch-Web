@@ -80,14 +80,14 @@ export const WatchForm = ({
           <div className="inline-flex items-center gap-1.5 rounded-md bg-teal-50 px-2 py-0.5 text-xs font-semibold text-teal-700 ring-1 ring-inset ring-teal-700/10">
             Inventory System
           </div>
-          <h2 className="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+          <h2 className="mt-2 font-heading text-2xl font-bold tracking-wide text-primary sm:text-3xl">
             {editingWatch ? 'Edit Watch Specifications' : 'Catalog New Watch'}
           </h2>
-          <p className="text-sm text-slate-500">Specify details, metadata, and upload media assets.</p>
+          <p className="text-sm text-primary/60">Specify details, metadata, and upload media assets.</p>
         </div>
         {editingWatch && (
           <button 
-            className="inline-flex h-10 w-fit cursor-pointer items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50 active:scale-98" 
+            className="inline-flex h-10 w-fit cursor-pointer items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-primary transition-all hover:bg-slate-50 active:scale-98" 
             type="button" 
             onClick={onReset}
           >
@@ -100,17 +100,17 @@ export const WatchForm = ({
       <form className="space-y-8" onSubmit={submitWatch}>
         {/* Section 1: Specifications */}
         <section className="rounded-2xl border border-slate-200/60 bg-white p-6 shadow-sm">
-          <h3 className="mb-6 text-lg font-bold text-slate-900">1. Watch Specifications</h3>
+          <h3 className="mb-6 font-heading text-lg font-bold tracking-wide text-primary">1. Watch Specifications</h3>
           
           <div className="grid gap-5 sm:grid-cols-2">
             {watchTextFields.map(([name, label, required, type]) => (
-              <label className="flex flex-col gap-1.5 text-sm font-medium text-slate-700" key={name}>
+              <label className="flex flex-col gap-1.5 text-sm font-medium text-primary" key={name}>
                 <span className="flex items-center gap-1">
                   {label}
                   {required && <span className="text-red-500">*</span>}
                 </span>
                 <input
-                  className="rounded-xl border border-slate-200 bg-slate-50/30 px-3.5 py-2.5 text-sm text-slate-900 placeholder-slate-400 outline-none transition-all focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/10"
+                  className="rounded-xl border border-slate-200 bg-slate-50/30 px-3.5 py-2.5 text-sm text-primary placeholder-slate-400 outline-none transition-all focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/10"
                   min={type === 'number' ? 0 : undefined}
                   name={name}
                   onBlur={name === 'name' ? handleNameBlur : undefined}
@@ -123,9 +123,9 @@ export const WatchForm = ({
             ))}
 
             {/* Select Menus */}
-            <label className="flex flex-col gap-1.5 text-sm font-medium text-slate-700">
+            <label className="flex flex-col gap-1.5 text-sm font-medium text-primary">
               <span>Brand <span className="text-red-500">*</span></span>
-              <select className="rounded-xl border border-slate-200 bg-slate-50/30 px-3.5 py-2.5 text-sm text-slate-900 outline-none transition-all focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/10" name="brand" value={form.brand} onChange={updateForm} required>
+              <select className="rounded-xl border border-slate-200 bg-slate-50/30 px-3.5 py-2.5 text-sm text-primary outline-none transition-all focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/10" name="brand" value={form.brand} onChange={updateForm} required>
                 <option value="">Select brand</option>
                 {brands.map((brand) => (
                   <option key={getId(brand)} value={getId(brand)}>
@@ -135,9 +135,9 @@ export const WatchForm = ({
               </select>
             </label>
 
-            <label className="flex flex-col gap-1.5 text-sm font-medium text-slate-700">
+            <label className="flex flex-col gap-1.5 text-sm font-medium text-primary">
               <span>Category <span className="text-red-500">*</span></span>
-              <select className="rounded-xl border border-slate-200 bg-slate-50/30 px-3.5 py-2.5 text-sm text-slate-900 outline-none transition-all focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/10" name="category" value={form.category} onChange={updateForm} required>
+              <select className="rounded-xl border border-slate-200 bg-slate-50/30 px-3.5 py-2.5 text-sm text-primary outline-none transition-all focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/10" name="category" value={form.category} onChange={updateForm} required>
                 <option value="">Select category</option>
                 {categories.map((category) => (
                   <option key={getId(category)} value={getId(category)}>
@@ -147,9 +147,9 @@ export const WatchForm = ({
               </select>
             </label>
 
-            <label className="flex flex-col gap-1.5 text-sm font-medium text-slate-700 sm:col-span-2">
+            <label className="flex flex-col gap-1.5 text-sm font-medium text-primary sm:col-span-2">
               <span>Gender Focus</span>
-              <select className="rounded-xl border border-slate-200 bg-slate-50/30 px-3.5 py-2.5 text-sm text-slate-900 outline-none transition-all focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/10" name="gender" value={form.gender} onChange={updateForm}>
+              <select className="rounded-xl border border-slate-200 bg-slate-50/30 px-3.5 py-2.5 text-sm text-primary outline-none transition-all focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/10" name="gender" value={form.gender} onChange={updateForm}>
                 <option value="gents">Gents</option>
                 <option value="ladies">Ladies</option>
                 <option value="unisex">Unisex</option>
@@ -160,13 +160,13 @@ export const WatchForm = ({
 
         {/* Section 2: Copywriting */}
         <section className="rounded-2xl border border-slate-200/60 bg-white p-6 shadow-sm">
-          <h3 className="mb-6 text-lg font-bold text-slate-900">2. Marketing & Description</h3>
+          <h3 className="mb-6 font-heading text-lg font-bold tracking-wide text-primary">2. Marketing & Description</h3>
           
           <div className="space-y-5">
-            <label className="flex flex-col gap-1.5 text-sm font-medium text-slate-700">
+            <label className="flex flex-col gap-1.5 text-sm font-medium text-primary">
               <span>Short Description</span>
               <textarea 
-                className="rounded-xl border border-slate-200 bg-slate-50/30 px-3.5 py-2.5 text-sm text-slate-900 outline-none transition-all focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/10" 
+                className="rounded-xl border border-slate-200 bg-slate-50/30 px-3.5 py-2.5 text-sm text-primary outline-none transition-all focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/10" 
                 name="shortDescription" 
                 value={form.shortDescription} 
                 onChange={updateForm} 
@@ -174,10 +174,10 @@ export const WatchForm = ({
               />
             </label>
 
-            <label className="flex flex-col gap-1.5 text-sm font-medium text-slate-700">
+            <label className="flex flex-col gap-1.5 text-sm font-medium text-primary">
               <span>Detailed Product Story</span>
               <textarea 
-                className="rounded-xl border border-slate-200 bg-slate-50/30 px-3.5 py-2.5 text-sm text-slate-900 outline-none transition-all focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/10" 
+                className="rounded-xl border border-slate-200 bg-slate-50/30 px-3.5 py-2.5 text-sm text-primary outline-none transition-all focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/10" 
                 name="description" 
                 value={form.description} 
                 onChange={updateForm} 
@@ -190,34 +190,34 @@ export const WatchForm = ({
         {/* Section 3: Media Hub */}
         <section className="rounded-2xl border border-slate-200/60 bg-white p-6 shadow-sm">
           <div className="mb-6">
-            <h3 className="text-lg font-bold text-slate-900">3. Media Assets Manager</h3>
-            <p className="text-xs text-slate-400 mt-1">Associate imagery strings directly or use Cloudinary pipelines.</p>
+            <h3 className="font-heading text-lg font-bold tracking-wide text-primary">3. Media Assets Manager</h3>
+            <p className="text-xs text-primary/45 mt-1">Associate imagery strings directly or use Cloudinary pipelines.</p>
           </div>
 
           <div className="space-y-6">
             {/* Raw URL list */}
-            <label className="flex flex-col gap-1.5 text-sm font-medium text-slate-700">
+            <label className="flex flex-col gap-1.5 text-sm font-medium text-primary">
               <span className="flex items-center gap-1.5">
-                <Link2 className="h-4 w-4 text-slate-400" /> Image Assets (Active Order)
+                <Link2 className="h-4 w-4 text-primary/45" /> Image Assets (Active Order)
               </span>
               <textarea 
-                className="font-mono rounded-xl border border-slate-200 bg-slate-50/30 px-3.5 py-2.5 text-xs text-slate-900 outline-none transition-all focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/10" 
+                className="font-sans rounded-xl border border-slate-200 bg-slate-50/30 px-3.5 py-2.5 text-xs text-primary outline-none transition-all focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/10" 
                 name="images" 
                 value={form.images} 
                 onChange={updateForm} 
                 rows={3} 
               />
-              <span className="text-xs text-slate-400">One URL parsed per line. Sent natively to watch records.</span>
+              <span className="text-xs text-primary/45">One URL parsed per line. Sent natively to watch records.</span>
             </label>
 
             {/* Upload Zone & Draft Utilities */}
             <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50/50 p-5 space-y-5">
               {/* Draft paste */}
-              <label className="flex flex-col gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-400">
+              <label className="flex flex-col gap-1.5 text-xs font-semibold uppercase tracking-wider text-primary/45">
                 <span>Manually Register Cloudinary Link</span>
                 <div className="flex gap-2 mt-1.5">
                   <input
-                    className="min-w-0 flex-1 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-sm text-slate-900 placeholder-slate-400 outline-none transition-all focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10"
+                    className="min-w-0 flex-1 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-sm text-primary placeholder-slate-400 outline-none transition-all focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10"
                     name="imageUrlDraft"
                     placeholder="https://res.cloudinary.com/..."
                     type="url"
@@ -225,7 +225,7 @@ export const WatchForm = ({
                     onChange={updateForm}
                   />
                   <button 
-                    className="inline-flex h-10 cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 text-xs font-bold text-slate-700 transition-all hover:bg-slate-50 active:scale-95" 
+                    className="inline-flex h-10 cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 text-xs font-bold text-primary transition-all hover:bg-slate-50 active:scale-95" 
                     type="button" 
                     onClick={addImageUrl}
                   >
@@ -236,11 +236,11 @@ export const WatchForm = ({
 
               {/* Styled File Dropzone */}
               <div>
-                <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">Upload Raw Watch Images</span>
+                <span className="text-xs font-semibold uppercase tracking-wider text-primary/45">Upload Raw Watch Images</span>
                 <label className="group mt-2.5 flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-200 bg-white py-6 text-center transition-all hover:border-teal-500/40 hover:bg-slate-50/30">
-                  <Upload className="mb-2 h-6 w-6 text-slate-400 transition-colors group-hover:text-teal-600" />
-                  <span className="text-xs font-semibold text-slate-700">Click to upload raw assets</span>
-                  <span className="mt-0.5 text-[10px] text-slate-400">Maximum 5 items per transaction. Added automatically.</span>
+                  <Upload className="mb-2 h-6 w-6 text-primary/45 transition-colors group-hover:text-teal-600" />
+                  <span className="text-xs font-semibold text-primary">Click to upload raw assets</span>
+                  <span className="mt-0.5 text-[10px] text-primary/45">Maximum 5 items per transaction. Added automatically.</span>
                   <input className="hidden" accept="image/*" multiple onChange={handleUpload} type="file" />
                 </label>
               </div>
@@ -248,14 +248,14 @@ export const WatchForm = ({
               {/* Dynamic Previews */}
               {splitImageUrls(form.images).length > 0 && (
                 <div className="space-y-2 pt-2 border-t border-slate-200/50">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">Linked Previews</span>
+                  <span className="text-xs font-semibold uppercase tracking-wider text-primary/45">Linked Previews</span>
                   <div className="grid gap-2">
                     {splitImageUrls(form.images).map((url) => (
                       <div className="flex items-center gap-3 rounded-xl border border-slate-100 bg-white p-2" key={url}>
                         <img className="h-12 w-12 rounded-lg bg-slate-50 object-cover border border-slate-100" src={url} alt="Watch preview" />
-                        <span className="min-w-0 flex-1 truncate font-mono text-[11px] text-slate-400">{url}</span>
+                        <span className="min-w-0 flex-1 truncate font-sans text-[11px] text-primary/45">{url}</span>
                         <button 
-                          className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-slate-400 hover:bg-red-50 hover:text-red-600 transition-all" 
+                          className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-primary/45 hover:bg-red-50 hover:text-red-600 transition-all" 
                           type="button" 
                           onClick={() => removeImageUrl(url)}
                         >
@@ -279,7 +279,7 @@ export const WatchForm = ({
             <div className="grid gap-2">
               {uploadedImages.map((image) => (
                 <div className="flex items-center justify-between gap-3 rounded-xl border border-red-100/50 bg-white p-3 text-xs" key={image.publicId || image.public_id || image.url}>
-                  <span className="truncate font-mono text-slate-400">{image.url || image.path}</span>
+                  <span className="truncate font-sans text-primary/45">{image.url || image.path}</span>
                   <button 
                     className="inline-flex h-8 cursor-pointer items-center justify-center rounded-lg bg-red-50 px-3 font-semibold text-red-600 transition-all hover:bg-red-100" 
                     type="button" 
@@ -307,7 +307,7 @@ export const WatchForm = ({
                 />
                 <Check className="pointer-events-none absolute left-1/2 top-1/2 h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 text-white opacity-0 transition-opacity peer-checked:opacity-100" />
               </div>
-              <span className="text-sm font-semibold text-slate-700">Feature on Homepage</span>
+              <span className="text-sm font-semibold text-primary">Feature on Homepage</span>
             </label>
 
             <label className="inline-flex cursor-pointer items-center gap-2.5 select-none">
@@ -321,7 +321,7 @@ export const WatchForm = ({
                 />
                 <Check className="pointer-events-none absolute left-1/2 top-1/2 h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 text-white opacity-0 transition-opacity peer-checked:opacity-100" />
               </div>
-              <span className="text-sm font-semibold text-slate-700">Publish Immediately</span>
+              <span className="text-sm font-semibold text-primary">Publish Immediately</span>
             </label>
           </div>
 

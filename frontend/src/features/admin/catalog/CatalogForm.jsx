@@ -18,10 +18,10 @@ export const CatalogForm = ({ editingItem, form, isUploadingImage, label, setFor
     <form className="space-y-6" onSubmit={submitItem}>
       {/* Primary Details Grid */}
       <div className="grid gap-5 sm:grid-cols-2">
-        <label className="flex flex-col gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500">
+        <label className="flex flex-col gap-1.5 text-xs font-bold uppercase tracking-wider text-primary/60">
           Name
           <input
-            className="w-full rounded-xl border border-slate-200 bg-slate-50/30 px-3.5 py-2.5 text-sm text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/10"
+            className="w-full rounded-xl border border-slate-200 bg-slate-50/30 px-3.5 py-2.5 text-sm text-primary outline-none transition-all placeholder:text-primary/45 focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/10"
             name="name"
             placeholder="e.g. Chronograph Classic"
             onBlur={() => !form.slug && setForm((current) => ({ ...current, slug: toSlug(current.name) }))}
@@ -31,10 +31,10 @@ export const CatalogForm = ({ editingItem, form, isUploadingImage, label, setFor
           />
         </label>
 
-        <label className="flex flex-col gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500">
+        <label className="flex flex-col gap-1.5 text-xs font-bold uppercase tracking-wider text-primary/60">
           Slug (Auto-generated)
           <input 
-            className="w-full rounded-xl border border-slate-200 bg-slate-50/30 px-3.5 py-2.5 font-mono text-sm text-slate-700 outline-none transition-all focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/10" 
+            className="w-full rounded-xl border border-slate-200 bg-slate-50/30 px-3.5 py-2.5 font-sans text-sm text-primary outline-none transition-all focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/10" 
             name="slug" 
             placeholder="chronograph-classic"
             onChange={updateForm} 
@@ -43,10 +43,10 @@ export const CatalogForm = ({ editingItem, form, isUploadingImage, label, setFor
           />
         </label>
 
-        <label className="flex flex-col gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500">
+        <label className="flex flex-col gap-1.5 text-xs font-bold uppercase tracking-wider text-primary/60">
           Image URL (Direct Link)
           <input 
-            className="w-full rounded-xl border border-slate-200 bg-slate-50/30 px-3.5 py-2.5 text-sm text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/10" 
+            className="w-full rounded-xl border border-slate-200 bg-slate-50/30 px-3.5 py-2.5 text-sm text-primary outline-none transition-all placeholder:text-primary/45 focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/10" 
             name="imageUrl" 
             placeholder="https://res.cloudinary.com/..."
             onChange={updateForm} 
@@ -54,10 +54,10 @@ export const CatalogForm = ({ editingItem, form, isUploadingImage, label, setFor
           />
         </label>
 
-        <label className="flex flex-col gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500">
+        <label className="flex flex-col gap-1.5 text-xs font-bold uppercase tracking-wider text-primary/60">
           Sort Order
           <input 
-            className="w-full rounded-xl border border-slate-200 bg-slate-50/30 px-3.5 py-2.5 text-sm text-slate-900 outline-none transition-all focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/10" 
+            className="w-full rounded-xl border border-slate-200 bg-slate-50/30 px-3.5 py-2.5 text-sm text-primary outline-none transition-all focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/10" 
             min="0" 
             name="sortOrder" 
             onChange={updateForm} 
@@ -70,11 +70,11 @@ export const CatalogForm = ({ editingItem, form, isUploadingImage, label, setFor
       {/* Asset Manager Section */}
       <div className="rounded-2xl border border-slate-200/70 bg-slate-50/50 p-5 space-y-4">
         <div>
-          <h3 className="text-sm font-bold text-slate-900 flex items-center gap-1.5">
-            <ImageIcon className="h-4 w-4 text-slate-500" />
+          <h3 className="flex items-center gap-1.5 font-heading text-sm font-bold tracking-wide text-primary">
+            <ImageIcon className="h-4 w-4 text-primary/60" />
             <span>{label} Media Asset</span>
           </h3>
-          <p className="mt-1 text-xs text-slate-500">
+          <p className="mt-1 text-xs text-primary/60">
             Upload an image directly to your Cloudinary storage, or paste a structured CDN URL above.
           </p>
         </div>
@@ -96,13 +96,13 @@ export const CatalogForm = ({ editingItem, form, isUploadingImage, label, setFor
             {isUploadingImage ? (
               <div className="flex flex-col items-center gap-2">
                 <Loader2 className="h-6 w-6 animate-spin text-teal-600" />
-                <span className="text-xs font-semibold text-slate-600">Uploading media...</span>
+                <span className="text-xs font-semibold text-primary/75">Uploading media...</span>
               </div>
             ) : (
               <div className="flex flex-col items-center gap-1.5">
-                <UploadCloud className="h-6 w-6 text-slate-400 group-hover:text-teal-500" />
-                <span className="text-xs font-semibold text-slate-700">Click to upload brand asset</span>
-                <span className="text-[10px] text-slate-400">Supports PNG, JPG, WEBP</span>
+                <UploadCloud className="h-6 w-6 text-primary/45 group-hover:text-teal-500" />
+                <span className="text-xs font-semibold text-primary">Click to upload brand asset</span>
+                <span className="text-[10px] text-primary/45">Supports PNG, JPG, WEBP</span>
               </div>
             )}
           </label>
@@ -117,8 +117,8 @@ export const CatalogForm = ({ editingItem, form, isUploadingImage, label, setFor
               alt={`${label} preview`} 
             />
             <div className="min-w-0 flex-1">
-              <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Active URL</p>
-              <p className="truncate text-xs font-mono text-slate-500 mt-0.5">{form.imageUrl}</p>
+              <p className="text-xs font-semibold text-primary/45 uppercase tracking-wider">Active URL</p>
+              <p className="truncate text-xs font-sans text-primary/60 mt-0.5">{form.imageUrl}</p>
             </div>
             <button 
               className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-rose-100 bg-rose-50/30 text-rose-600 transition-all hover:bg-rose-50 hover:text-rose-700 active:scale-95" 
@@ -133,10 +133,10 @@ export const CatalogForm = ({ editingItem, form, isUploadingImage, label, setFor
       </div>
 
       {/* Description Field */}
-      <label className="flex flex-col gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500">
+      <label className="flex flex-col gap-1.5 text-xs font-bold uppercase tracking-wider text-primary/60">
         Description
         <textarea 
-          className="w-full rounded-xl border border-slate-200 bg-slate-50/30 px-3.5 py-2.5 text-sm text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/10" 
+          className="w-full rounded-xl border border-slate-200 bg-slate-50/30 px-3.5 py-2.5 text-sm text-primary outline-none transition-all placeholder:text-primary/45 focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/10" 
           name="description" 
           placeholder={`Describe this ${label.toLowerCase()}...`}
           onChange={updateForm} 
@@ -155,7 +155,7 @@ export const CatalogForm = ({ editingItem, form, isUploadingImage, label, setFor
             onChange={updateForm} 
             type="checkbox" 
           />
-          <span className="text-sm font-semibold text-slate-700">Publish as active asset</span>
+          <span className="text-sm font-semibold text-primary">Publish as active asset</span>
         </label>
 
         <button 

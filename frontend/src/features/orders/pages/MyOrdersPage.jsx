@@ -11,33 +11,33 @@ export const MyOrdersPage = () => {
   const { error, isLoading, orders } = useOrdersList()
 
   return (
-    <main className="bg-base text-white">
-      <section className="relative overflow-hidden bg-base px-4 pb-28 pt-20 text-white sm:px-6 sm:pt-24 lg:px-8">
+    <main className="bg-base text-primary">
+      <section className="relative overflow-hidden bg-base px-4 pb-28 pt-20 text-primary sm:px-6 sm:pt-24 lg:px-8">
         <div className="mx-auto grid max-w-[1200px] min-w-0 gap-10 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-end">
           <div className="min-w-0">
-            <p className="mb-4 inline-flex items-center rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-xs font-semibold uppercase text-white/75 backdrop-blur-sm">
+            <p className="mb-4 inline-flex items-center rounded-full border border-primary/10 bg-card px-4 py-1.5 text-xs font-semibold uppercase text-primary/75 backdrop-blur-sm">
               Account orders
             </p>
-            <h1 className="max-w-3xl break-words font-heading text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
+            <h1 className="max-w-3xl break-words font-heading text-4xl font-bold tracking-tight text-primary sm:text-5xl lg:text-6xl">
               My Orders
             </h1>
-            <p className="mt-4 max-w-xl text-sm font-medium leading-relaxed text-white/75 sm:text-base">
+            <p className="mt-4 max-w-xl text-sm font-medium leading-relaxed text-primary/75 sm:text-base">
               Track every Thilani Watch purchase, payment update, and delivery step from one bright, simple account view.
             </p>
           </div>
 
-          <div className="min-w-0 rounded-lg border border-white/12 bg-surface p-5 text-white shadow-glowSm backdrop-blur-md sm:p-6">
+          <div className="min-w-0 rounded-lg border border-primary/10 bg-card p-5 text-primary shadow-premiumSm backdrop-blur-md sm:p-6">
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-white text-black shadow-sm">
               <PackageCheck className="h-6 w-6" aria-hidden="true" />
             </div>
             <p className="font-heading text-2xl font-bold tracking-tight">
               {isLoading ? 'Checking orders' : `${orders.length} ${orders.length === 1 ? 'order' : 'orders'}`}
             </p>
-            <p className="mt-1 text-xs font-medium text-white/65">
+            <p className="mt-1 text-xs font-medium text-primary/75">
               Your completed checkouts and order details stay ready here.
             </p>
             <Link
-              className="mt-5 inline-flex h-10 w-full items-center justify-center gap-2 rounded-full bg-white px-4 text-xs font-bold text-black no-underline shadow-md transition hover:scale-[1.01] hover:shadow-glowSm active:scale-[0.99]"
+              className="mt-5 inline-flex h-10 w-full items-center justify-center gap-2 rounded-full bg-white px-4 text-xs font-bold text-black no-underline shadow-md transition hover:scale-[1.01] hover:shadow-premiumSm active:scale-[0.99]"
               to="/watches"
             >
               Continue shopping
@@ -60,22 +60,22 @@ export const MyOrdersPage = () => {
         )}
 
         {isLoading ? (
-          <div className="rounded-lg border border-white/12 bg-surface p-12 shadow-glowSm">
+          <div className="rounded-lg border border-primary/10 bg-card p-12 shadow-premiumSm">
             <LoadingState label="Loading your orders" variant="reviews" rows={4} />
           </div>
         ) : orders.length === 0 ? (
-          <section className="mx-auto max-w-2xl rounded-lg border border-white/12 bg-surface p-10 text-center shadow-glowSm">
-            <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-white/10 text-white shadow-inner">
+          <section className="mx-auto max-w-2xl rounded-lg border border-primary/10 bg-card p-10 text-center shadow-premiumSm">
+            <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-primary/5 text-primary shadow-inner">
               <ShoppingBag className="h-6 w-6" aria-hidden="true" />
             </div>
-            <h2 className="mb-2 font-heading text-2xl font-bold tracking-tight text-white">
+            <h2 className="mb-2 font-heading text-2xl font-bold tracking-tight text-primary">
               No orders yet
             </h2>
-            <p className="mx-auto mb-6 max-w-sm text-sm leading-relaxed text-white/65">
+            <p className="mx-auto mb-6 max-w-sm text-sm leading-relaxed text-primary/75">
               Your completed checkouts will appear here after you place an order.
             </p>
             <Link
-              className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-white px-8 text-sm font-bold text-black no-underline shadow-lg transition hover:scale-[1.02] hover:shadow-glow active:scale-[0.98]"
+              className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-white px-8 text-sm font-bold text-black no-underline shadow-lg transition hover:scale-[1.02] hover:shadow-premium active:scale-[0.98]"
               to="/watches"
             >
               Browse watches
@@ -90,17 +90,17 @@ export const MyOrdersPage = () => {
 
               return (
                 <article
-                  className="group grid min-w-0 gap-6 rounded-lg border border-white/12 bg-surface p-5 shadow-[0_18px_50px_rgba(0,0,0,0.22)] transition duration-200 hover:border-white/30 hover:shadow-glowSm sm:p-6 lg:grid-cols-[minmax(0,1fr)_260px]"
+                  className="group grid min-w-0 gap-6 rounded-lg border border-primary/10 bg-card p-5 shadow-[0_18px_50px_rgba(0,0,0,0.22)] transition duration-200 hover:border-primary/10 hover:shadow-premiumSm sm:p-6 lg:grid-cols-[minmax(0,1fr)_260px]"
                   key={getOrderId(order)}
                 >
                   <div className="grid gap-4">
                     <div className="flex min-w-0 flex-wrap items-center gap-3">
-                      <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-white/10 text-white transition group-hover:bg-white group-hover:text-black">
+                      <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary/5 text-primary transition group-hover:bg-accent group-hover:text-black">
                         <ReceiptText className="h-5 w-5" aria-hidden="true" />
                       </span>
                       <div className="min-w-0">
-                        <p className="text-xs font-semibold uppercase text-white/75">Order number</p>
-                        <h2 className="break-words font-heading text-xl font-bold tracking-tight text-white">
+                        <p className="text-xs font-semibold uppercase text-primary/75">Order number</p>
+                        <h2 className="break-words font-heading text-xl font-bold tracking-tight text-primary">
                           {getOrderNumber(order) || getOrderId(order)}
                         </h2>
                       </div>
@@ -112,13 +112,13 @@ export const MyOrdersPage = () => {
                       {canCancelOrder(order) && <StatusPill label="Cancelable" tone="warning" />}
                     </div>
 
-                    <p className="flex items-center gap-2 text-xs font-medium text-white/65">
-                      <CalendarDays className="h-4 w-4 text-white/70" aria-hidden="true" />
+                    <p className="flex items-center gap-2 text-xs font-medium text-primary/75">
+                      <CalendarDays className="h-4 w-4 text-primary/75" aria-hidden="true" />
                       Created {formatDate(order.createdAt)}
                     </p>
                     {order.wantedDate && (
-                      <p className="flex items-center gap-2 text-xs font-medium text-white/65">
-                        <CalendarDays className="h-4 w-4 text-white/70" aria-hidden="true" />
+                      <p className="flex items-center gap-2 text-xs font-medium text-primary/75">
+                        <CalendarDays className="h-4 w-4 text-primary/75" aria-hidden="true" />
                         Wanted {formatDate(order.wantedDate)}
                       </p>
                     )}
@@ -126,13 +126,13 @@ export const MyOrdersPage = () => {
 
                   <div className="flex flex-col justify-between gap-4 lg:items-end lg:text-right">
                     <div>
-                      <p className="text-xs font-semibold uppercase text-white/75">Total amount</p>
-                      <strong className="break-words font-heading text-2xl font-bold tracking-tight text-white">
+                      <p className="text-xs font-semibold uppercase text-primary/75">Total amount</p>
+                      <strong className="break-words font-heading text-2xl font-bold tracking-tight text-primary">
                         {formatOrderMoney(getOrderTotal(order), order.currency)}
                       </strong>
                     </div>
                     <Link
-                      className="inline-flex h-10 items-center justify-center gap-2 rounded-full border border-white/15 bg-white/5 px-5 text-xs font-bold text-white no-underline transition hover:border-white/45 hover:shadow-glowSm"
+                      className="inline-flex h-10 items-center justify-center gap-2 rounded-full border border-primary/10 bg-card px-5 text-xs font-bold text-primary no-underline transition hover:border-primary/10 hover:shadow-premiumSm"
                       to={`/orders/${getOrderId(order)}`}
                     >
                       View details
@@ -151,8 +151,8 @@ export const MyOrdersPage = () => {
 
 const GlowDivider = () => (
   <div className="pointer-events-none absolute bottom-8 left-1/2 h-24 w-[min(980px,92vw)] -translate-x-1/2" aria-hidden="true">
-    <div className="glow-beam absolute left-0 top-1/2 h-px w-full bg-white/70 shadow-glow" />
-    <div className="glow-beam absolute left-1/2 top-4 h-28 w-[80%] -translate-x-1/2 rounded-[50%] border-t border-white/45" />
+    <div className="absolute left-0 top-1/2 h-px w-full bg-white/70 shadow-premium" />
+    <div className="absolute left-1/2 top-4 h-28 w-[80%] -translate-x-1/2 rounded-[50%] border-t border-primary/10" />
   </div>
 )
 
@@ -167,9 +167,9 @@ const getStatusTone = (value) => {
 
 const toneClasses = {
   danger: 'border-red-400/25 bg-red-500/10 text-red-200',
-  neutral: 'border-white/12 bg-white/5 text-white/70',
+  neutral: 'border-primary/10 bg-card text-primary/75',
   success: 'border-emerald-300/25 bg-emerald-500/10 text-emerald-200',
-  warning: 'border-white/20 bg-white/10 text-white',
+  warning: 'border-primary/10 bg-primary/5 text-primary',
 }
 
 const StatusPill = ({ label, tone = 'neutral' }) => (

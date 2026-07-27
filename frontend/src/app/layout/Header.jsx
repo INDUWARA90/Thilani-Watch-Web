@@ -27,10 +27,10 @@ export const Header = () => {
     <motion.header
       animate={{ y: 0, opacity: 1 }}
       className={[
-        'sticky top-0 z-40 border-b transition-all duration-500',
-        isScrolled
-          ? 'border-white/12 bg-black/75 shadow-[0_18px_45px_rgba(0,0,0,0.45),0_0_22px_rgba(255,255,255,0.08)] backdrop-blur-xl'
-          : 'border-white/[0.04] bg-black/20 backdrop-blur-sm',
+        'fixed inset-x-0 top-0 z-40 border-b transition-all duration-500',
+        isScrolled || isMenuOpen
+          ? 'border-accent/30 bg-primary/95 shadow-premium backdrop-blur-xl'
+          : 'border-white/10 bg-transparent backdrop-blur-[2px]',
       ]
         .filter(Boolean)
         .join(' ')}
@@ -41,12 +41,12 @@ export const Header = () => {
         <Link className="group flex min-w-0 items-center gap-2 no-underline sm:gap-3" to="/" onClick={() => setIsMenuOpen(false)}>
           <img
             alt="Thilani Watch Center logo"
-            className="h-10 w-10 shrink-0 rounded-full bg-white object-cover ring-1 ring-white/20 transition group-hover:ring-white/55 sm:h-13 sm:w-13"
+            className="h-10 w-10 shrink-0 rounded-full bg-white object-cover ring-1 ring-accent/45 transition duration-300 group-hover:ring-accent sm:h-13 sm:w-13"
             src="/logo.jpeg"
           />
           <span className="min-w-0 leading-none">
-            <span className="block truncate font-heading text-base font-bold text-white sm:text-lg">Thilani</span>
-            <span className="block truncate text-[11px] font-medium text-white/70 transition group-hover:text-white sm:text-[13px]">Watch Web</span>
+            <span className="block truncate font-heading text-lg font-bold tracking-wide text-white sm:text-xl">Thilani</span>
+            <span className="block truncate text-[10px] font-bold uppercase tracking-[0.2em] text-white/62 transition group-hover:text-accent sm:text-[11px]">Watch Web</span>
           </span>
         </Link>
 
@@ -70,20 +70,20 @@ export const Header = () => {
               <AccountLink initial={accountInitial} label={accountLabel} />
             </>
           ) : (
-            <Link className="hidden min-h-12 items-center rounded-full border border-white/15 px-6 text-sm font-semibold text-white/80 no-underline transition hover:border-white/45 hover:text-white hover:shadow-glowSm sm:inline-flex" to="/login">
+            <Link className="hidden min-h-12 items-center rounded-full border border-white/15 px-6 text-xs font-bold uppercase tracking-[0.14em] text-white/80 no-underline transition duration-200 hover:border-accent hover:text-accent hover:shadow-premiumSm focus:outline-none focus:ring-2 focus:ring-accent sm:inline-flex" to="/login">
               Login
             </Link>
           )}
           <motion.div whileHover={{ scale: 1.03 }} transition={{ type: 'spring', stiffness: 320, damping: 20 }}>
             <Link
-              className="hidden min-h-12 items-center rounded-full bg-white px-6 text-sm font-bold text-black no-underline shadow-glowSm transition hover:shadow-glow sm:inline-flex"
+              className="hidden min-h-12 items-center rounded-full bg-accent px-7 text-xs font-bold uppercase tracking-[0.14em] text-primary no-underline shadow-goldHairline transition duration-300 hover:-translate-y-0.5 hover:bg-accent/90 hover:shadow-luxe focus:outline-none focus:ring-2 focus:ring-white sm:inline-flex"
               to="/watches"
             >
               Shop Now
             </Link>
           </motion.div>
           <button
-            className="inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-white/15 bg-white/5 text-white backdrop-blur transition hover:border-white/35 hover:bg-white/10 hover:shadow-glowSm sm:h-12 sm:w-12 lg:hidden"
+            className="inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-white/15 bg-white/5 text-white backdrop-blur transition duration-200 hover:border-accent hover:bg-accent hover:text-primary hover:shadow-premiumSm focus:outline-none focus:ring-2 focus:ring-accent sm:h-12 sm:w-12 lg:hidden"
             type="button"
             aria-label="Toggle navigation"
             onClick={() => setIsMenuOpen((current) => !current)}
@@ -104,7 +104,7 @@ export const Header = () => {
       {/* Right side drawer container */}
       <div 
         className={[
-          'fixed top-[70px] right-0 z-30 h-[calc(100vh-70px)] w-[min(290px,86vw)] border-l border-white/10 bg-black/85 px-4 py-6 shadow-glowSm backdrop-blur-xl transition-transform duration-300 sm:top-[94px] sm:h-[calc(100vh-94px)] lg:hidden',
+          'fixed right-0 top-[70px] z-30 h-[calc(100vh-70px)] w-[min(290px,86vw)] border-l border-accent/20 bg-primary px-4 py-6 shadow-premium backdrop-blur-xl transition-transform duration-300 sm:top-[94px] sm:h-[calc(100vh-94px)] lg:hidden',
           isMenuOpen ? 'translate-x-0' : 'translate-x-full'
         ].join(' ')}
       >
@@ -138,8 +138,8 @@ const LuxuryNavLink = ({ children, ...props }) => (
   <NavLink
     className={({ isActive }) =>
       [
-        'rounded-full px-5 py-2.5 text-[15px] font-semibold text-white/75 no-underline transition hover:bg-white/5 hover:text-white hover:shadow-glowSm',
-        isActive && 'bg-white/10 text-white shadow-glowSm',
+        'relative px-4 py-3 text-xs font-bold uppercase tracking-[0.18em] text-white/72 no-underline transition duration-300 after:absolute after:bottom-1 after:left-4 after:h-px after:w-[calc(100%-2rem)] after:origin-left after:scale-x-0 after:bg-accent after:transition-transform after:duration-300 hover:text-white hover:after:scale-x-100',
+        isActive && 'text-white after:scale-x-100',
       ]
         .filter(Boolean)
         .join(' ')
@@ -154,8 +154,8 @@ const MobileNavLink = ({ children, ...props }) => (
   <NavLink
     className={({ isActive }) =>
       [
-        'min-h-12 rounded-lg px-5 py-4 text-base font-semibold text-white/70 no-underline transition hover:bg-white/10 hover:text-white',
-        isActive && 'bg-white/10 text-white shadow-glowSm',
+        'min-h-12 rounded-lg border border-transparent px-5 py-4 text-sm font-bold uppercase tracking-[0.16em] text-white/70 no-underline transition duration-200 hover:border-accent/20 hover:bg-accent/10 hover:text-accent',
+        isActive && 'border-accent/35 bg-accent/10 text-accent',
       ]
         .filter(Boolean)
         .join(' ')
@@ -167,9 +167,9 @@ const MobileNavLink = ({ children, ...props }) => (
 )
 
 const IconLink = ({ children, count, label, to }) => (
-  <Link className="relative inline-flex h-10 w-10 items-center justify-center rounded-full bg-transparent text-white/75 no-underline transition hover:bg-white/10 hover:text-white hover:shadow-glowSm sm:h-12 sm:w-12" to={to} aria-label={label}>
+  <Link className="relative inline-flex h-10 w-10 items-center justify-center rounded-full bg-transparent text-white/75 no-underline transition duration-200 hover:bg-accent hover:text-primary hover:shadow-premiumSm focus:outline-none focus:ring-2 focus:ring-accent sm:h-12 sm:w-12" to={to} aria-label={label}>
     {children}
-    {count ? <span className="absolute -right-1 -top-1 min-w-5 rounded-full bg-white px-1.5 text-center text-[11px] font-bold text-black">{count}</span> : null}
+    {count ? <span className="absolute -right-1 -top-1 min-w-5 rounded-full bg-accent px-1.5 text-center text-[11px] font-bold text-primary">{count}</span> : null}
   </Link>
 )
 
@@ -191,14 +191,14 @@ const AccountLink = ({ initial, label }) => (
       [
         'hidden h-12 items-center gap-2 rounded-[14px] border px-2.5 pr-4 text-sm font-semibold no-underline transition sm:inline-flex',
         isActive
-          ? 'border-white/40 bg-white/10 text-white shadow-glowSm'
-          : 'border-white/15 bg-white/5 text-white/75 hover:border-white/40 hover:bg-white/10 hover:text-white',
+          ? 'border-accent bg-accent text-primary shadow-premiumSm'
+          : 'border-white/15 bg-white/5 text-white/75 hover:border-accent hover:bg-accent hover:text-primary',
       ]
         .filter(Boolean)
         .join(' ')
     }
   >
-    <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-white text-xs font-bold uppercase text-black">
+    <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-accent text-xs font-bold uppercase text-primary">
       {initial || <User className="h-4 w-4" />}
     </span>
     <span className="leading-none">{label}</span>

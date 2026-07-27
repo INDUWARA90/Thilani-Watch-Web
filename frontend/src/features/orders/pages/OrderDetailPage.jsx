@@ -40,10 +40,10 @@ export const OrderDetailPage = () => {
   const paymentSlip = order ? getPaymentSlip(order) : null
 
   return (
-    <main className="mx-auto min-h-screen max-w-[1200px] bg-base px-4 py-8 text-white sm:px-6 lg:px-8">
+    <main className="mx-auto min-h-screen max-w-[1200px] bg-base px-4 py-8 text-primary sm:px-6 lg:px-8">
       {/* Back Button Link */}
       <Link 
-        className="mb-6 inline-flex h-10 items-center gap-2 rounded-full border border-white/15 bg-white/5 px-5 text-xs font-bold text-white no-underline shadow-sm transition hover:border-white/45 hover:shadow-glowSm" 
+        className="mb-6 inline-flex h-10 items-center gap-2 rounded-full border border-primary/10 bg-card px-5 text-xs font-bold text-primary no-underline shadow-sm transition hover:border-primary/10 hover:shadow-premiumSm" 
         to="/orders"
       >
         <ArrowLeft className="h-4 w-4" />
@@ -60,7 +60,7 @@ export const OrderDetailPage = () => {
       
       {message && (
         <div className="mb-6 flex animate-fade-in items-center gap-2.5 rounded-lg border border-emerald-300/30 bg-emerald-500/10 p-4 text-sm font-medium text-emerald-200 shadow-sm">
-          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-white text-xs font-bold">✓</span>
+          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-primary text-xs font-bold">✓</span>
           {message}
         </div>
       )}
@@ -69,20 +69,20 @@ export const OrderDetailPage = () => {
         <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
           <div className="grid gap-6">
             {/* Essential Header Banner Card */}
-            <div className="relative overflow-hidden rounded-lg border border-white/12 bg-surface p-6 shadow-glowSm">
+            <div className="relative overflow-hidden rounded-lg border border-primary/10 bg-card p-6 shadow-premiumSm">
               <div className="relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
-                  <p className="mb-1.5 text-xs font-semibold uppercase text-white/75">Order Ref</p>
-                  <h1 className="font-heading text-2xl font-bold tracking-tight text-white sm:text-3xl">
+                  <p className="mb-1.5 text-xs font-semibold uppercase text-primary/75">Order Ref</p>
+                  <h1 className="font-heading text-2xl font-bold tracking-tight text-primary sm:text-3xl">
                     {getOrderNumber(order) || getOrderId(order)}
                   </h1>
-                  <p className="mt-2 flex items-center gap-2 text-xs font-medium text-white/65">
-                    <CalendarDays className="h-4 w-4 text-white/70" />
+                  <p className="mt-2 flex items-center gap-2 text-xs font-medium text-primary/75">
+                    <CalendarDays className="h-4 w-4 text-primary/75" />
                     Placed on {formatDate(order.createdAt)}
                   </p>
                   {order.wantedDate && (
-                    <p className="mt-2 flex items-center gap-2 text-xs font-medium text-white/65">
-                      <CalendarDays className="h-4 w-4 text-white/70" />
+                    <p className="mt-2 flex items-center gap-2 text-xs font-medium text-primary/75">
+                      <CalendarDays className="h-4 w-4 text-primary/75" />
                       Wanted date {formatDate(order.wantedDate)}
                     </p>
                   )}
@@ -96,7 +96,7 @@ export const OrderDetailPage = () => {
 
               {/* Action Drawer Footer within Header */}
               {canCancelOrder(order) && (
-                <div className="mt-6 flex justify-end border-t border-white/10 pt-4">
+                <div className="mt-6 flex justify-end border-t border-primary/10 pt-4">
                   <button 
                     className="inline-flex h-9 items-center gap-2 rounded-full border border-red-400/25 bg-red-500/10 px-4 text-xs font-bold text-red-200 transition hover:bg-red-500/20" 
                     type="button" 
@@ -119,16 +119,16 @@ export const OrderDetailPage = () => {
 
             {/* Return Request Workflow Area */}
             {canRequestReturn(order) && (
-              <form className="rounded-lg border border-white/12 bg-surface p-6 shadow-glowSm" onSubmit={requestReturn}>
+              <form className="rounded-lg border border-primary/10 bg-card p-6 shadow-premiumSm" onSubmit={requestReturn}>
                 <div className="mb-4 flex items-center gap-2.5">
-                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10 text-white">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/5 text-primary">
                     <RefreshCcw className="h-4 w-4" />
                   </span>
-                  <h2 className="font-heading text-lg font-bold tracking-tight text-white">Request a return</h2>
+                  <h2 className="font-heading text-lg font-bold tracking-tight text-primary">Request a return</h2>
                 </div>
                 
                 <div className="grid gap-4">
-                  <label className="grid gap-1.5 text-sm font-semibold text-white/65">
+                  <label className="grid gap-1.5 text-sm font-semibold text-primary/75">
                     Reason for return
                     <input 
                       className={inputClass} 
@@ -139,7 +139,7 @@ export const OrderDetailPage = () => {
                     />
                   </label>
                   
-                  <label className="grid gap-1.5 text-sm font-semibold text-white/65">
+                  <label className="grid gap-1.5 text-sm font-semibold text-primary/75">
                     Additional details
                     <textarea 
                       className={`${inputClass} min-h-[90px] py-2.5 resize-none`} 
@@ -149,7 +149,7 @@ export const OrderDetailPage = () => {
                     />
                   </label>
                   
-                  <button className="mt-2 inline-flex h-11 w-full items-center justify-center rounded-full bg-white px-5 text-sm font-bold text-black transition hover:shadow-glowSm sm:w-fit" type="submit">
+                  <button className="mt-2 inline-flex h-11 w-full items-center justify-center rounded-full bg-white px-5 text-sm font-bold text-black transition hover:shadow-premiumSm sm:w-fit" type="submit">
                     Submit return request
                   </button>
                 </div>
@@ -158,9 +158,9 @@ export const OrderDetailPage = () => {
           </div>
 
           {/* Checkout Right Invoice Sidebar */}
-          <aside className="sticky top-6 h-fit rounded-lg border border-white/12 bg-surface p-6 shadow-glowSm">
-            <h2 className="mb-4 flex items-center gap-2 font-heading text-lg font-bold tracking-tight text-white">
-              <ClipboardList className="h-4 w-4 text-white/75" />
+          <aside className="sticky top-6 h-fit rounded-lg border border-primary/10 bg-card p-6 shadow-premiumSm">
+            <h2 className="mb-4 flex items-center gap-2 font-heading text-lg font-bold tracking-tight text-primary">
+              <ClipboardList className="h-4 w-4 text-primary/75" />
               Summary
             </h2>
             
@@ -170,22 +170,22 @@ export const OrderDetailPage = () => {
               <SummaryRow label="Discount" value={`-${formatOrderMoney(order.discountAmount || order.discount || 0, order.currency)}`} isDiscount />
             </div>
 
-            <div className="my-4 border-t border-white/10" />
+            <div className="my-4 border-t border-primary/10" />
             <SummaryRow isStrong label="Total" value={formatOrderMoney(getOrderTotal(order), order.currency)} />
             
-            <div className="mt-5 flex items-center gap-2 rounded-lg border border-white/12 bg-white/5 px-4 py-3 text-xs font-semibold text-white/70">
-              <CreditCard className="h-4 w-4 text-white/70" />
-              <span>Payment method: <span className="capitalize text-white">{getPaymentMethodLabel(order.paymentMethod)}</span></span>
+            <div className="mt-5 flex items-center gap-2 rounded-lg border border-primary/10 bg-card px-4 py-3 text-xs font-semibold text-primary/75">
+              <CreditCard className="h-4 w-4 text-primary/75" />
+              <span>Payment method: <span className="capitalize text-primary">{getPaymentMethodLabel(order.paymentMethod)}</span></span>
             </div>
 
             {paymentSlip && (
-              <a className="mt-3 block overflow-hidden rounded-lg border border-white/12 bg-white/5 p-3 text-xs font-semibold text-white/70 no-underline transition hover:border-white/35 hover:shadow-glowSm" href={paymentSlip.url} rel="noreferrer" target="_blank">
-                <span className="mb-2 block text-white">Attached payment slip</span>
+              <a className="mt-3 block overflow-hidden rounded-lg border border-primary/10 bg-card p-3 text-xs font-semibold text-primary/75 no-underline transition hover:border-primary/10 hover:shadow-premiumSm" href={paymentSlip.url} rel="noreferrer" target="_blank">
+                <span className="mb-2 block text-primary">Attached payment slip</span>
                 {isPaymentSlipImage(paymentSlip) ? (
-                  <img alt="Attached payment slip" className="h-32 w-full rounded-lg border border-white/12 bg-black/35 object-cover" src={paymentSlip.url} />
+                  <img alt="Attached payment slip" className="h-32 w-full rounded-lg border border-primary/10 bg-black/35 object-cover" src={paymentSlip.url} />
                 ) : (
-                  <span className="flex min-h-24 items-center gap-3 rounded-lg border border-white/12 bg-black/35 p-4 text-white/70">
-                    <FileText className="h-6 w-6 text-white" />
+                  <span className="flex min-h-24 items-center gap-3 rounded-lg border border-primary/10 bg-black/35 p-4 text-primary/75">
+                    <FileText className="h-6 w-6 text-primary" />
                     <span className="min-w-0 truncate">{paymentSlip.fileName || 'Open attached slip'}</span>
                   </span>
                 )}
@@ -202,23 +202,23 @@ export const OrderDetailPage = () => {
 }
 
 const OrderItemsTable = ({ order }) => (
-  <section className="rounded-lg border border-white/12 bg-surface p-6 shadow-glowSm">
-    <h2 className="mb-4 font-heading text-lg font-bold tracking-tight text-white">Items Ordered</h2>
-    <div className="w-full overflow-x-auto rounded-lg border border-white/10">
+  <section className="rounded-lg border border-primary/10 bg-card p-6 shadow-premiumSm">
+    <h2 className="mb-4 font-heading text-lg font-bold tracking-tight text-primary">Items Ordered</h2>
+    <div className="w-full overflow-x-auto rounded-lg border border-primary/10">
       <table className="w-full min-w-[600px] border-collapse">
         <thead>
-          <tr className="bg-white/[0.04]">
-            <th className="border-b border-white/10 p-3.5 text-left text-xs font-bold uppercase text-white/75">Item Name</th>
-            <th className="w-24 border-b border-white/10 p-3.5 text-center text-xs font-bold uppercase text-white/75">Qty</th>
-            <th className="w-36 border-b border-white/10 p-3.5 text-right text-xs font-bold uppercase text-white/75">Unit Price</th>
+          <tr className="bg-card">
+            <th className="border-b border-primary/10 p-3.5 text-left text-xs font-bold uppercase text-primary/75">Item Name</th>
+            <th className="w-24 border-b border-primary/10 p-3.5 text-center text-xs font-bold uppercase text-primary/75">Qty</th>
+            <th className="w-36 border-b border-primary/10 p-3.5 text-right text-xs font-bold uppercase text-primary/75">Unit Price</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-white/10">
+        <tbody className="divide-y divide-primary/10">
           {(order.items || []).map((item, index) => (
-            <tr key={`${getOrderItemName(item)}-${index}`} className="transition-colors hover:bg-white/[0.03]">
-              <td className="p-3.5 align-middle text-sm font-semibold text-white">{getOrderItemName(item)}</td>
-              <td className="p-3.5 text-center align-middle text-sm font-medium text-white/70">{item.quantity}</td>
-              <td className="p-3.5 text-right align-middle text-sm font-bold text-white">{formatOrderMoney(getOrderItemPrice(item), order.currency)}</td>
+            <tr key={`${getOrderItemName(item)}-${index}`} className="transition-colors hover:bg-accent/[0.03]">
+              <td className="p-3.5 align-middle text-sm font-semibold text-primary">{getOrderItemName(item)}</td>
+              <td className="p-3.5 text-center align-middle text-sm font-medium text-primary/75">{item.quantity}</td>
+              <td className="p-3.5 text-right align-middle text-sm font-bold text-primary">{formatOrderMoney(getOrderItemPrice(item), order.currency)}</td>
             </tr>
           ))}
         </tbody>
@@ -231,18 +231,18 @@ const AddressCard = ({ address, title }) => {
   if (!address) return null
 
   return (
-    <section className="flex flex-col gap-2.5 rounded-lg border border-white/12 bg-surface p-6 shadow-glowSm">
-      <h2 className="flex items-center gap-2 text-base font-bold tracking-tight text-white">
-        <MapPin className="h-4 w-4 text-white/75" />
+    <section className="flex flex-col gap-2.5 rounded-lg border border-primary/10 bg-card p-6 shadow-premiumSm">
+      <h2 className="flex items-center gap-2 font-heading text-base font-bold tracking-wide text-primary">
+        <MapPin className="h-4 w-4 text-primary/75" />
         {title}
       </h2>
-      <div className="text-sm font-medium leading-relaxed text-white/65">
-        <p className="font-semibold text-white">{address.street}</p>
+      <div className="text-sm font-medium leading-relaxed text-primary/75">
+        <p className="font-semibold text-primary">{address.street}</p>
         <p>{[address.city, address.state, address.zip].filter(Boolean).join(', ')}</p>
-        <p className="mt-0.5 text-xs font-bold uppercase text-white/70">{address.country}</p>
+        <p className="mt-0.5 text-xs font-bold uppercase text-primary/75">{address.country}</p>
         {address.phone && (
-          <p className="mt-2 border-t border-white/10 pt-2 text-xs text-white/75">
-            Phone: <span className="font-semibold text-white/65">{address.phone}</span>
+          <p className="mt-2 border-t border-primary/10 pt-2 text-xs text-primary/75">
+            Phone: <span className="font-semibold text-primary/75">{address.phone}</span>
           </p>
         )}
       </div>
@@ -260,9 +260,9 @@ const getStatusTone = (value) => {
 
 const toneClasses = {
   danger: 'border-red-400/25 bg-red-500/10 text-red-200',
-  neutral: 'border-white/12 bg-white/5 text-white/70',
+  neutral: 'border-primary/10 bg-card text-primary/75',
   success: 'border-emerald-300/25 bg-emerald-500/10 text-emerald-200',
-  warning: 'border-white/20 bg-white/10 text-white',
+  warning: 'border-primary/10 bg-primary/5 text-primary',
 }
 
 const StatusPill = ({ label, tone = 'success' }) => (
@@ -271,7 +271,7 @@ const StatusPill = ({ label, tone = 'success' }) => (
   </span>
 )
 
-const inputClass = 'min-h-[44px] min-w-0 w-full rounded-lg border border-white/12 bg-black/35 px-4 py-2.5 text-sm text-white outline-none transition placeholder:text-white/65 focus:border-white/45 focus:ring-2 focus:ring-white/10'
+const inputClass = 'min-h-[44px] min-w-0 w-full rounded-lg border border-primary/10 bg-black/35 px-4 py-2.5 text-sm text-primary outline-none transition placeholder:text-primary/60 focus:border-primary/10 focus:ring-2 focus:ring-accent/30'
 
 const canRequestReturn = (order) => getOrderStatus(order) === 'delivered' && !order.returnRequest && !order.returnStatus
 
@@ -299,9 +299,9 @@ const ShippingLogistics = ({ order }) => {
   if (!hasShippingLogistics(order)) return null
 
   return (
-    <section className="mt-4 rounded-lg border border-white/12 bg-white/5 p-4">
-      <h3 className="mb-3 flex items-center gap-2 text-sm font-bold text-white">
-        <Truck className="h-4 w-4 text-white/65" />
+    <section className="mt-4 rounded-lg border border-primary/10 bg-card p-4">
+      <h3 className="mb-3 flex items-center gap-2 font-heading text-sm font-bold tracking-wide text-primary">
+        <Truck className="h-4 w-4 text-primary/75" />
         Shipping Logistics
       </h3>
       <div className="grid gap-2 text-xs">
@@ -322,9 +322,9 @@ const ReturnsRefunds = ({ order }) => {
   const refund = order.refund || {}
 
   return (
-    <section className="mt-4 rounded-lg border border-white/12 bg-white/5 p-4">
-      <h3 className="mb-3 flex items-center gap-2 text-sm font-bold text-white">
-        <RefreshCcw className="h-4 w-4 text-white/65" />
+    <section className="mt-4 rounded-lg border border-primary/10 bg-card p-4">
+      <h3 className="mb-3 flex items-center gap-2 font-heading text-sm font-bold tracking-wide text-primary">
+        <RefreshCcw className="h-4 w-4 text-primary/75" />
         Returns & Refunds
       </h3>
       <div className="grid gap-2 text-xs">
@@ -344,20 +344,20 @@ const ReturnsRefunds = ({ order }) => {
 
 const InfoRow = ({ label, value }) => (
   <div className="flex items-start justify-between gap-3">
-    <span className="shrink-0 font-semibold text-white/65">{label}</span>
-    <span className="min-w-0 text-right font-bold capitalize text-white">{value}</span>
+    <span className="shrink-0 font-semibold text-primary/75">{label}</span>
+    <span className="min-w-0 text-right font-bold capitalize text-primary">{value}</span>
   </div>
 )
 
 const SummaryRow = ({ isStrong = false, label, value, isDiscount = false }) => (
   <div className="flex items-center justify-between gap-3">
-    <span className={`${isStrong ? 'text-base font-bold text-white' : 'text-sm font-medium text-white/65'}`}>{label}</span>
+    <span className={`${isStrong ? 'text-base font-bold text-primary' : 'text-sm font-medium text-primary/75'}`}>{label}</span>
     <strong className={`${
       isStrong 
-        ? 'text-xl text-white font-black' 
+        ? 'text-xl text-primary font-black' 
         : isDiscount 
           ? 'text-sm text-emerald-600 font-semibold' 
-          : 'text-sm text-white font-semibold'
+          : 'text-sm text-primary font-semibold'
     }`}>
       {value}
     </strong>

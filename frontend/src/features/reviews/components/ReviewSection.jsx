@@ -14,12 +14,12 @@ export const ReviewSection = ({ onReviewsChanged, watchId }) => {
   return (
     <section className="mt-12">
       {/* Dynamic Headers */}
-      <div className="mb-8 flex flex-col gap-2 border-b border-white/10 pb-5 sm:flex-row sm:items-end sm:justify-between">
+      <div className="mb-8 flex flex-col gap-2 border-b border-primary/10 pb-5 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <span className="text-xs font-bold uppercase text-white/65">Verified Opinions</span>
-          <h2 className="mt-1 font-heading text-2xl font-bold tracking-tight text-white">Customer Feedback</h2>
+          <span className="text-xs font-bold uppercase text-primary/75">Verified Opinions</span>
+          <h2 className="mt-1 font-heading text-2xl font-bold tracking-tight text-primary">Customer Feedback</h2>
         </div>
-        <span className="text-xs font-semibold uppercase text-white/75">
+        <span className="text-xs font-semibold uppercase text-primary/75">
           {reviewState.reviews.length} Approved {reviewState.reviews.length === 1 ? 'Review' : 'Reviews'}
         </span>
       </div>
@@ -44,28 +44,28 @@ export const ReviewSection = ({ onReviewsChanged, watchId }) => {
               />
             ))
           ) : (
-            <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-white/15 bg-white/[0.03] p-8 text-center">
-              <MessageSquare className="mb-2 h-6 w-6 text-white/70" />
-              <p className="text-xs font-medium text-white/65">No approved comments posted for this model yet.</p>
+            <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-primary/10 bg-card p-8 text-center">
+              <MessageSquare className="mb-2 h-6 w-6 text-primary/75" />
+              <p className="text-xs font-medium text-primary/75">No approved comments posted for this model yet.</p>
             </div>
           )}
         </div>
 
         {/* Dynamic Interactive Management Panel Container */}
         <div className="lg:sticky lg:top-28 lg:self-start">
-          <div className="rounded-lg border border-white/12 bg-surface p-6 shadow-glowSm backdrop-blur-sm">
+          <div className="rounded-lg border border-primary/10 bg-card p-6 shadow-premiumSm backdrop-blur-sm">
             {isAuthenticated ? (
               reviewState.myReview && !reviewState.editingReviewId ? (
                 <div className="text-center py-4">
-                  <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white">
-                    <Star className="h-5 w-5 fill-white" />
+                  <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-full bg-primary/5 text-primary">
+                    <Star className="h-5 w-5 fill-accent" />
                   </div>
-                  <h3 className="mb-1.5 text-sm font-bold text-white">Your review is live</h3>
-                  <p className="mb-5 text-xs leading-relaxed text-white/65">
+                  <h3 className="mb-1.5 font-heading text-sm font-bold tracking-wide text-primary">Your review is live</h3>
+                  <p className="mb-5 text-xs leading-relaxed text-primary/75">
                     To maintain dynamic accuracy, our server processes one review per client profile. You can edit your entry anytime.
                   </p>
                   <button 
-                    className="inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-full bg-white px-5 text-xs font-bold text-black transition hover:shadow-glowSm" 
+                    className="inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-full bg-white px-5 text-xs font-bold text-black transition hover:shadow-premiumSm" 
                     type="button" 
                     onClick={() => reviewState.startEdit(reviewState.myReview)}
                   >
@@ -84,12 +84,12 @@ export const ReviewSection = ({ onReviewsChanged, watchId }) => {
               )
             ) : (
               <div className="text-center py-6">
-                <h3 className="mb-1.5 text-sm font-bold text-white">Share Your Experience</h3>
-                <p className="mb-5 text-xs leading-relaxed text-white/65">
+                <h3 className="mb-1.5 font-heading text-sm font-bold tracking-wide text-primary">Share Your Experience</h3>
+                <p className="mb-5 text-xs leading-relaxed text-primary/75">
                   Logged in profiles can rate mechanical performance, fit, and build aesthetic.
                 </p>
                 <Link 
-                  className="inline-flex h-10 items-center justify-center rounded-full bg-white px-5 text-xs font-bold text-black no-underline transition hover:shadow-glowSm" 
+                  className="inline-flex h-10 items-center justify-center rounded-full bg-white px-5 text-xs font-bold text-black no-underline transition hover:shadow-premiumSm" 
                   state={{ from: location }} 
                   to="/login"
                 >
@@ -110,39 +110,39 @@ const ReviewCard = ({ canManage, onDelete, onEdit, review }) => {
   const ratingValue = Number(review.rating || 0)
 
   return (
-    <article className="rounded-lg border border-white/12 bg-surface p-5 shadow-sm transition hover:border-white/30 hover:shadow-glowSm">
+    <article className="rounded-lg border border-primary/10 bg-card p-5 shadow-sm transition hover:border-primary/10 hover:shadow-premiumSm">
       <div className="mb-3 flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h4 className="text-sm font-bold text-white">
+          <h4 className="text-sm font-bold text-primary">
             {review.title || `Rated ${ratingValue}/5`}
           </h4>
           <div className="mt-1.5 flex items-center gap-0.5">
             {[...Array(5)].map((_, index) => (
               <Star
                 key={index}
-                className={`h-3.5 w-3.5 ${index < ratingValue ? 'fill-white text-white' : 'text-white/15'}`}
+                className={`h-3.5 w-3.5 ${index < ratingValue ? 'fill-accent text-accent' : 'text-primary/35'}`}
               />
             ))}
           </div>
         </div>
-        <span className="text-[11px] font-medium text-white/70">
+        <span className="text-[11px] font-medium text-primary/75">
           {formatReviewDate(review.createdAt)}
         </span>
       </div>
       
-      <p className="mb-4 text-xs leading-relaxed text-white/65">
+      <p className="mb-4 text-xs leading-relaxed text-primary/75">
         {review.comment}
       </p>
       
-      <div className="flex items-center justify-between gap-4 border-t border-white/10 pt-3">
-        <span className="text-xs font-semibold text-white/70">
+      <div className="flex items-center justify-between gap-4 border-t border-primary/10 pt-3">
+        <span className="text-xs font-semibold text-primary/75">
           {getReviewUserName(review)}
         </span>
         
         {canManage && (
           <div className="flex items-center gap-1.5">
             <button 
-              className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-white/12 bg-white/5 text-white/65 transition hover:border-white/35 hover:text-white" 
+              className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-primary/10 bg-card text-primary/75 transition hover:border-primary/10 hover:text-accent" 
               type="button" 
               title="Edit entry"
               onClick={() => onEdit(review)}
@@ -173,12 +173,12 @@ const ReviewForm = ({ form, isEditing, isSubmitting, onCancel, onChange, onSubmi
 
   return (
     <form className="flex flex-col gap-4" onSubmit={onSubmit}>
-      <h3 className="text-sm font-bold uppercase text-white">
+      <h3 className="font-heading text-sm font-bold uppercase tracking-wide text-primary">
         {isEditing ? 'Modify Review' : 'Compose Feedback'}
       </h3>
       
       <div className="flex flex-col gap-1.5">
-        <span className="text-xs font-bold uppercase text-white/65">Rating Selection</span>
+        <span className="text-xs font-bold uppercase text-primary/75">Rating Selection</span>
         <div className="flex items-center gap-1 py-1">
           {[1, 2, 3, 4, 5].map((starValue) => {
             const isActive = hoverRating ? starValue <= hoverRating : starValue <= form.rating
@@ -186,32 +186,32 @@ const ReviewForm = ({ form, isEditing, isSubmitting, onCancel, onChange, onSubmi
               <button
                 key={starValue}
                 type="button"
-                className="cursor-pointer p-0.5 text-white/20 transition-transform active:scale-95 hover:scale-110"
+                className="cursor-pointer p-0.5 text-primary/35 transition-transform active:scale-95 hover:scale-110"
                 onMouseEnter={() => setHoverRating(starValue)}
                 onMouseLeave={() => setHoverRating(0)}
                 onClick={() => updateField('rating', starValue)}
               >
-                <Star className={`h-5 w-5 transition-colors ${isActive ? 'fill-white text-white' : 'text-white/20'}`} />
+                <Star className={`h-5 w-5 transition-colors ${isActive ? 'fill-accent text-accent' : 'text-primary/35'}`} />
               </button>
             )
           })}
         </div>
       </div>
 
-      <label className="flex flex-col gap-1.5 text-xs font-bold uppercase text-white/65">
+      <label className="flex flex-col gap-1.5 text-xs font-bold uppercase text-primary/75">
         Summary Header
         <input 
-          className="h-10 rounded-lg border border-white/12 bg-black/35 px-3 text-xs font-medium text-white outline-none transition focus:border-white/45 focus:ring-2 focus:ring-white/10" 
+          className="h-10 rounded-lg border border-primary/10 bg-black/35 px-3 text-xs font-medium text-primary outline-none transition focus:border-primary/10 focus:ring-2 focus:ring-accent/30" 
           placeholder="e.g. Magnificent craftsmanship" 
           value={form.title} 
           onChange={(event) => updateField('title', event.target.value)} 
         />
       </label>
 
-      <label className="flex flex-col gap-1.5 text-xs font-bold uppercase text-white/65">
+      <label className="flex flex-col gap-1.5 text-xs font-bold uppercase text-primary/75">
         Detailed Review
         <textarea 
-          className="min-h-24 resize-none rounded-lg border border-white/12 bg-black/35 px-3 py-2.5 text-xs font-medium text-white outline-none transition focus:border-white/45 focus:ring-2 focus:ring-white/10" 
+          className="min-h-24 resize-none rounded-lg border border-primary/10 bg-black/35 px-3 py-2.5 text-xs font-medium text-primary outline-none transition focus:border-primary/10 focus:ring-2 focus:ring-accent/30" 
           placeholder="Share metrics about accuracy, comfort, weight..."
           required 
           value={form.comment} 
@@ -221,7 +221,7 @@ const ReviewForm = ({ form, isEditing, isSubmitting, onCancel, onChange, onSubmi
 
       <div className="mt-2 flex flex-col gap-2">
         <button 
-          className="inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-full bg-white text-xs font-bold text-black transition hover:shadow-glowSm disabled:opacity-50" 
+          className="inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-full bg-white text-xs font-bold text-black transition hover:shadow-premiumSm disabled:opacity-50" 
           disabled={isSubmitting} 
           type="submit"
         >
@@ -231,7 +231,7 @@ const ReviewForm = ({ form, isEditing, isSubmitting, onCancel, onChange, onSubmi
         
         {isEditing && (
           <button 
-            className="inline-flex h-10 cursor-pointer items-center justify-center gap-1.5 rounded-full border border-white/15 bg-white/5 text-xs font-bold text-white transition hover:border-white/35" 
+            className="inline-flex h-10 cursor-pointer items-center justify-center gap-1.5 rounded-full border border-primary/10 bg-card text-xs font-bold text-primary transition hover:border-primary/10" 
             type="button" 
             onClick={onCancel}
           >

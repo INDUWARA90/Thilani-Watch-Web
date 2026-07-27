@@ -24,8 +24,8 @@ export const WatchFilters = ({ brands, categories, filters, setFilters }) => {
     <div className="rounded-2xl border border-slate-200/60 bg-white p-5 shadow-sm space-y-4">
       {/* Control Header */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2 text-sm font-bold text-slate-800">
-          <SlidersHorizontal className="h-4 w-4 text-slate-500" />
+        <div className="flex items-center gap-2 text-sm font-bold text-primary">
+          <SlidersHorizontal className="h-4 w-4 text-primary/60" />
           <span>Filter Inventory</span>
         </div>
         {hasActiveFilters && (
@@ -44,9 +44,9 @@ export const WatchFilters = ({ brands, categories, filters, setFilters }) => {
       <div className="grid gap-3.5 sm:grid-cols-2 md:grid-cols-3">
         {/* Search Field */}
         <div className="relative">
-          <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+          <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-primary/45" />
           <input
-            className="w-full rounded-xl border border-slate-200 bg-slate-50/40 pl-10 pr-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 outline-none transition-all focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/10"
+            className="w-full rounded-xl border border-slate-200 bg-slate-50/40 pl-10 pr-4 py-2.5 text-sm text-primary placeholder-slate-400 outline-none transition-all focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/10"
             placeholder="Search watches..."
             value={filters.search}
             onChange={(event) => updateFilter('search', event.target.value)}
@@ -56,7 +56,7 @@ export const WatchFilters = ({ brands, categories, filters, setFilters }) => {
         {/* Stock Select */}
         <div className="relative">
           <select 
-            className="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50/40 px-3.5 py-2.5 text-sm text-slate-900 outline-none transition-all focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/10" 
+            className="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50/40 px-3.5 py-2.5 text-sm text-primary outline-none transition-all focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/10" 
             value={filters.stock} 
             onChange={(event) => updateFilter('stock', event.target.value)}
           >
@@ -69,7 +69,7 @@ export const WatchFilters = ({ brands, categories, filters, setFilters }) => {
         {/* Brand Select */}
         <div className="relative">
           <select 
-            className="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50/40 px-3.5 py-2.5 text-sm text-slate-900 outline-none transition-all focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/10" 
+            className="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50/40 px-3.5 py-2.5 text-sm text-primary outline-none transition-all focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/10" 
             value={filters.brand} 
             onChange={(event) => updateFilter('brand', event.target.value)}
           >
@@ -85,7 +85,7 @@ export const WatchFilters = ({ brands, categories, filters, setFilters }) => {
         {/* Category Select */}
         <div className="relative">
           <select 
-            className="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50/40 px-3.5 py-2.5 text-sm text-slate-900 outline-none transition-all focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/10" 
+            className="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50/40 px-3.5 py-2.5 text-sm text-primary outline-none transition-all focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/10" 
             value={filters.category} 
             onChange={(event) => updateFilter('category', event.target.value)}
           >
@@ -101,7 +101,7 @@ export const WatchFilters = ({ brands, categories, filters, setFilters }) => {
         {/* Gender Select */}
         <div className="relative">
           <select
-            className="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50/40 px-3.5 py-2.5 text-sm text-slate-900 outline-none transition-all focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/10"
+            className="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50/40 px-3.5 py-2.5 text-sm text-primary outline-none transition-all focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/10"
             value={filters.gender}
             onChange={(event) => updateFilter('gender', event.target.value)}
           >
@@ -115,7 +115,7 @@ export const WatchFilters = ({ brands, categories, filters, setFilters }) => {
         {/* Featured Select */}
         <div className="relative">
           <select 
-            className="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50/40 px-3.5 py-2.5 text-sm text-slate-900 outline-none transition-all focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/10" 
+            className="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50/40 px-3.5 py-2.5 text-sm text-primary outline-none transition-all focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/10" 
             value={filters.featured} 
             onChange={(event) => updateFilter('featured', event.target.value)}
           >
@@ -128,7 +128,7 @@ export const WatchFilters = ({ brands, categories, filters, setFilters }) => {
         {/* Published Select */}
         <div className="relative">
           <select 
-            className="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50/40 px-3.5 py-2.5 text-sm text-slate-900 outline-none transition-all focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/10" 
+            className="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50/40 px-3.5 py-2.5 text-sm text-primary outline-none transition-all focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/10" 
             value={filters.published} 
             onChange={(event) => updateFilter('published', event.target.value)}
           >

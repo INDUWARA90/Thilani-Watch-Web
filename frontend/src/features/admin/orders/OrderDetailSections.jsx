@@ -11,50 +11,50 @@ export const OrderDetailSections = ({ order, onUpdated }) => {
       {/* Summary Section */}
       <section className="flex flex-col gap-5 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
         <div>
-          <h3 className="text-lg font-bold text-slate-900 tracking-tight">Summary</h3>
-          <p className="text-xs text-slate-500">Overview of the order details</p>
+          <h3 className="font-heading text-lg font-bold tracking-wide text-primary">Summary</h3>
+          <p className="text-xs text-primary/60">Overview of the order details</p>
         </div>
 
         <div className="grid gap-3 text-sm border-t border-slate-100 pt-4">
           {(getOrderNumber(order) || order._id) && (
             <div className="flex justify-between items-center py-1">
-              <span className="text-slate-500 font-medium">Order No</span>
-              <span className="font-semibold text-slate-800">{getOrderNumber(order) || order._id}</span>
+              <span className="text-primary/60 font-medium">Order No</span>
+              <span className="font-semibold text-primary">{getOrderNumber(order) || order._id}</span>
             </div>
           )}
           <div className="flex justify-between items-center py-1">
-            <span className="text-slate-500 font-medium">Customer</span>
-            <span className="font-semibold text-slate-800">{getTitle(order.user, 'Customer')}</span>
+            <span className="text-primary/60 font-medium">Customer</span>
+            <span className="font-semibold text-primary">{getTitle(order.user, 'Customer')}</span>
           </div>
           {order.wantedDate && (
             <div className="flex justify-between items-center py-1">
-              <span className="text-slate-500 font-medium">Wanted Date</span>
-              <span className="text-slate-700">{formatDate(order.wantedDate)}</span>
+              <span className="text-primary/60 font-medium">Wanted Date</span>
+              <span className="text-primary">{formatDate(order.wantedDate)}</span>
             </div>
           )}
           <div className="flex justify-between items-center py-1">
-            <span className="text-slate-500 font-medium">Created</span>
-            <span className="text-slate-700">{formatDate(order.createdAt)}</span>
+            <span className="text-primary/60 font-medium">Created</span>
+            <span className="text-primary">{formatDate(order.createdAt)}</span>
           </div>
           <div className="flex justify-between items-center py-1">
-            <span className="text-slate-500 font-medium">Payment Method</span>
-            <span className="font-semibold capitalize text-slate-800">{getPaymentMethodLabel(order.paymentMethod)}</span>
+            <span className="text-primary/60 font-medium">Payment Method</span>
+            <span className="font-semibold capitalize text-primary">{getPaymentMethodLabel(order.paymentMethod)}</span>
           </div>
           <div className="flex justify-between items-center py-1 bg-slate-50 -mx-6 px-6 my-1">
-            <span className="text-slate-600 font-semibold">Total Amount</span>
-            <span className="text-base font-bold text-slate-950">
+            <span className="text-primary/75 font-semibold">Total Amount</span>
+            <span className="text-base font-bold text-primary">
               {formatMoney(order.totalAmount ?? order.total, order.currency)}
             </span>
           </div>
         </div>
 
         {paymentSlip && (
-          <a className="block rounded-xl border border-slate-100 bg-slate-50 p-3 text-xs font-semibold text-slate-600 no-underline transition hover:border-teal-200 hover:bg-teal-50/40" href={paymentSlip.url} rel="noreferrer" target="_blank">
-            <span className="mb-2 block text-slate-800">Payment Slip</span>
+          <a className="block rounded-xl border border-slate-100 bg-slate-50 p-3 text-xs font-semibold text-primary/75 no-underline transition hover:border-teal-200 hover:bg-teal-50/40" href={paymentSlip.url} rel="noreferrer" target="_blank">
+            <span className="mb-2 block text-primary">Payment Slip</span>
             {isPaymentSlipImage(paymentSlip) ? (
               <img alt="Customer payment slip" className="h-36 w-full rounded-lg border border-slate-100 bg-white object-cover" src={paymentSlip.url} />
             ) : (
-              <span className="flex min-h-24 items-center gap-3 rounded-lg border border-slate-100 bg-white p-4 text-slate-700">
+              <span className="flex min-h-24 items-center gap-3 rounded-lg border border-slate-100 bg-white p-4 text-primary">
                 <FileText className="h-6 w-6 text-teal-500" />
                 <span className="min-w-0 truncate">{paymentSlip.fileName || 'Open attached slip'}</span>
               </span>
@@ -73,18 +73,18 @@ export const OrderDetailSections = ({ order, onUpdated }) => {
       {/* Items Section */}
       <section className="flex flex-col gap-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
         <div>
-          <h3 className="text-lg font-bold text-slate-900 tracking-tight">Items</h3>
-          <p className="text-xs text-slate-500">Products included in this order</p>
+          <h3 className="font-heading text-lg font-bold tracking-wide text-primary">Items</h3>
+          <p className="text-xs text-primary/60">Products included in this order</p>
         </div>
 
         <div className="w-full overflow-x-auto rounded-lg border border-slate-100">
           <table className="w-full min-w-[600px] border-collapse text-sm">
             <thead>
               <tr className="bg-slate-50/75 border-b border-slate-200">
-                <th className="p-3 text-left font-semibold text-slate-600">Item</th>
-                <th className="p-3 text-left font-semibold text-slate-600">SKU</th>
-                <th className="p-3 text-right font-semibold text-slate-600">Qty</th>
-                <th className="p-3 text-right font-semibold text-slate-600">Price</th>
+                <th className="p-3 text-left font-semibold text-primary/75">Item</th>
+                <th className="p-3 text-left font-semibold text-primary/75">SKU</th>
+                <th className="p-3 text-right font-semibold text-primary/75">Qty</th>
+                <th className="p-3 text-right font-semibold text-primary/75">Price</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -93,16 +93,16 @@ export const OrderDetailSections = ({ order, onUpdated }) => {
                   key={`${item.sku}-${item.name}`}
                   className="transition-colors hover:bg-slate-50/50"
                 >
-                  <td className="p-3 text-left font-medium text-slate-900 max-w-[240px] truncate">
+                  <td className="p-3 text-left font-medium text-primary max-w-[240px] truncate">
                     {item.name || getTitle(item.watch)}
                   </td>
-                  <td className="p-3 text-left font-mono text-xs text-slate-500">
+                  <td className="p-3 text-left font-sans text-xs text-primary/60">
                     {item.sku}
                   </td>
-                  <td className="p-3 text-right font-mono text-slate-700">
+                  <td className="p-3 text-right font-sans text-primary">
                     {item.quantity}
                   </td>
-                  <td className="p-3 text-right font-semibold text-slate-900">
+                  <td className="p-3 text-right font-semibold text-primary">
                     {formatMoney(item.price, order.currency)}
                   </td>
                 </tr>
@@ -140,7 +140,7 @@ const ShippingLogistics = ({ order }) => {
 
   return (
     <section className="rounded-xl border border-slate-100 bg-slate-50 p-4">
-      <h4 className="mb-3 flex items-center gap-2 text-sm font-bold text-slate-900">
+      <h4 className="mb-3 flex items-center gap-2 text-sm font-bold text-primary">
         <Truck className="h-4 w-4 text-teal-600" />
         Shipping Logistics
       </h4>
@@ -163,7 +163,7 @@ const ReturnsRefunds = ({ order }) => {
 
   return (
     <section className="rounded-xl border border-slate-100 bg-slate-50 p-4">
-      <h4 className="mb-3 flex items-center gap-2 text-sm font-bold text-slate-900">
+      <h4 className="mb-3 flex items-center gap-2 text-sm font-bold text-primary">
         <RefreshCcw className="h-4 w-4 text-teal-600" />
         Returns & Refunds
       </h4>
@@ -184,7 +184,7 @@ const ReturnsRefunds = ({ order }) => {
 
 const InfoRow = ({ label, value }) => (
   <div className="flex items-start justify-between gap-3">
-    <span className="shrink-0 font-semibold text-slate-500">{label}</span>
-    <span className="min-w-0 text-right font-bold capitalize text-slate-800">{value}</span>
+    <span className="shrink-0 font-semibold text-primary/60">{label}</span>
+    <span className="min-w-0 text-right font-bold capitalize text-primary">{value}</span>
   </div>
 )

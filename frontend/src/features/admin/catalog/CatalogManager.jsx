@@ -167,10 +167,10 @@ export const CatalogManager = ({ api, label, plural }) => {
             <span className="inline-flex items-center gap-1.5 rounded-md bg-teal-50 px-2.5 py-0.5 text-xs font-semibold text-teal-700 ring-1 ring-inset ring-teal-700/10">
               {plural} Catalog
             </span>
-            <h2 className="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+            <h2 className="mt-2 font-heading text-2xl font-bold tracking-wide text-primary sm:text-3xl">
               {plural} Directory
             </h2>
-            <p className="mt-1 text-sm text-slate-500">
+            <p className="mt-1 text-sm text-primary/60">
               Create, edit, and organize {plural.toLowerCase()} using the database controls below.
             </p>
           </div>
@@ -212,12 +212,12 @@ export const CatalogManager = ({ api, label, plural }) => {
                 <span className="text-[10px] font-bold uppercase tracking-widest text-teal-600">
                   {plural} Manager
                 </span>
-                <h2 className="text-lg font-extrabold text-slate-900 mt-0.5">
+                <h2 className="mt-0.5 font-heading text-lg font-extrabold tracking-wide text-primary">
                   {editingItem ? `Edit ${label}` : `Create New ${label}`}
                 </h2>
               </div>
               <button
-                className="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-400 transition-all hover:bg-slate-50 hover:text-slate-600 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
+                className="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl border border-slate-200 bg-white text-primary/45 transition-all hover:bg-slate-50 hover:text-primary/75 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
                 type="button"
                 aria-label={`Close ${label.toLowerCase()} form`}
                 disabled={isUploadingImage}

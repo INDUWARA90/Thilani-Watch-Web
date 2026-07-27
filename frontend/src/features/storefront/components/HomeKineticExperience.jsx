@@ -101,8 +101,8 @@ export const HomeKineticExperience = ({ home = {}, loading = {} }) => {
   ]
 
   return (
-    <section className="relative overflow-hidden border-b border-white/[0.06] bg-[linear-gradient(180deg,rgba(255,255,255,0.012),transparent)] px-4 py-12 text-white sm:px-6 sm:py-16 lg:px-10 lg:py-20">
-      <div className="absolute inset-x-0 top-16 h-px bg-white/10" aria-hidden="true" />
+    <section className="relative overflow-hidden border-b border-accent/20 px-4 py-20 text-primary sm:px-6 sm:py-24 lg:px-10">
+      <div className="absolute inset-x-0 top-16 h-px bg-accent/20" aria-hidden="true" />
       <motion.div
         className="mx-auto max-w-[1200px]"
         initial="hidden"
@@ -112,13 +112,14 @@ export const HomeKineticExperience = ({ home = {}, loading = {} }) => {
       >
         <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
           <motion.div variants={variants}>
-            <p className="inline-flex min-h-8 items-center rounded-full border border-white/15 bg-white/5 px-3 text-xs font-semibold uppercase text-white/75">
+            <p className="inline-flex min-h-8 items-center border-b border-accent/60 px-0 pb-2 text-xs font-bold uppercase tracking-[0.24em] text-primary/70">
               Live shopping experience
             </p>
-            <h2 className="mt-4 max-w-2xl font-heading text-3xl font-bold leading-tight text-white sm:text-5xl">
+            <div className="mt-5 h-px w-20 bg-accent" aria-hidden="true" />
+            <h2 className="mt-5 max-w-2xl font-heading text-4xl font-bold leading-none tracking-wide text-primary sm:text-6xl">
               Discover what is live in the collection now.
             </h2>
-            <p className="mt-4 max-w-xl text-sm leading-7 text-white/75 sm:text-base">
+            <p className="mt-4 max-w-xl text-sm leading-7 text-primary/75 sm:text-base">
               Featured watches, new arrivals, brands, and categories update here from the same catalog data used across the shop.
             </p>
           </motion.div>
@@ -126,14 +127,14 @@ export const HomeKineticExperience = ({ home = {}, loading = {} }) => {
           <motion.div className="grid gap-3 sm:grid-cols-4" variants={variants}>
             {journey.map((step, index) => (
               <motion.div
-                className="relative overflow-hidden rounded-lg border border-white/12 bg-white/[0.04] p-4 shadow-glowSm"
+                className="relative overflow-hidden rounded-lg border border-primary/10 bg-[linear-gradient(180deg,#ffffff_0%,#F8FAFC_100%)] p-5 shadow-premiumSm"
                 key={step.label}
                 transition={{ delay: index * 0.06, duration: 0.45, ease: 'easeOut' }}
                 whileHover={{ y: -5, scale: 1.025 }}
               >
                 <div className="kinetic-scan absolute inset-0" />
-                <span className="font-heading text-3xl font-bold text-white">{step.loading ? '--' : step.value}</span>
-                <span className="mt-5 block text-xs font-semibold uppercase text-white/65">{step.label}</span>
+                <span className="font-heading text-3xl font-bold text-primary">{step.loading ? '--' : step.value}</span>
+                <span className="mt-5 block text-xs font-semibold uppercase text-primary/75">{step.label}</span>
               </motion.div>
             ))}
           </motion.div>
@@ -141,11 +142,10 @@ export const HomeKineticExperience = ({ home = {}, loading = {} }) => {
 
         <div className="mt-10 grid min-w-0 gap-6 lg:grid-cols-[minmax(0,1fr)_390px]">
           <motion.div
-            className="relative min-w-0 overflow-hidden rounded-lg border border-white/12 bg-[radial-gradient(circle_at_30%_0%,rgba(255,255,255,0.13),rgba(255,255,255,0.04)_36%,rgba(255,255,255,0.02)_100%)] p-4 shadow-glowSm sm:p-5"
+            className="relative min-w-0 overflow-hidden rounded-lg border border-accent/20 bg-[radial-gradient(circle_at_30%_0%,rgba(255,255,255,0.22),rgba(234,236,240,0.92)_36%,rgba(248,250,252,0.98)_100%)] p-4 shadow-goldHairline sm:p-5"
             variants={variants}
           >
-            <div className="pointer-events-none absolute inset-x-8 bottom-10 h-20 rounded-full bg-white/18 blur-3xl" aria-hidden="true" />
-            <div className="pointer-events-none absolute left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/10" aria-hidden="true" />
+                        <div className="pointer-events-none absolute left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/10" aria-hidden="true" />
 
             <motion.div
               className="flex cursor-grab gap-4 active:cursor-grabbing"
@@ -155,7 +155,7 @@ export const HomeKineticExperience = ({ home = {}, loading = {} }) => {
             >
               {cards.map(({ icon: Icon, image, link, title, text }, index) => (
                 <motion.article
-                  className="group relative min-h-[260px] w-[min(250px,74vw)] shrink-0 overflow-hidden rounded-lg border border-white/12 bg-black/55 p-5 shadow-glowSm backdrop-blur-sm sm:w-[290px]"
+                  className="group relative min-h-[260px] w-[min(250px,74vw)] shrink-0 overflow-hidden rounded-lg border border-accent/20 bg-[linear-gradient(180deg,#151515,#000000)] p-5 shadow-premiumSm backdrop-blur-sm sm:w-[290px]"
                   key={`${title}-${index}`}
                   transition={{ type: 'spring', stiffness: 190, damping: 18 }}
                   whileHover={{ rotateY: index % 2 === 0 ? 8 : -8, y: -8, scale: 1.03 }}
@@ -164,7 +164,7 @@ export const HomeKineticExperience = ({ home = {}, loading = {} }) => {
                     <span className="sr-only">View {title}</span>
                   </Link>
                   <div className="kinetic-scan absolute inset-0 opacity-60" />
-                  <span className="relative z-10 grid h-12 w-12 place-items-center rounded-md border border-white/15 bg-white/5 text-white shadow-glowSm">
+                  <span className="relative z-10 grid h-12 w-12 place-items-center rounded-md border border-white/15 bg-white/5 text-white shadow-premiumSm">
                     <Icon className="h-5 w-5" />
                   </span>
                   {image && (
@@ -183,32 +183,31 @@ export const HomeKineticExperience = ({ home = {}, loading = {} }) => {
           </motion.div>
 
           <motion.div
-            className="relative min-h-[390px] min-w-0 overflow-hidden rounded-lg border border-white/12 bg-surface p-4 shadow-glowSm sm:min-h-[380px] sm:p-5"
+            className="relative min-h-[390px] min-w-0 overflow-hidden rounded-lg border border-accent/20 bg-[linear-gradient(180deg,#ffffff_0%,#F8FAFC_100%)] p-4 shadow-goldHairline sm:min-h-[380px] sm:p-5"
             variants={variants}
           >
-            <div className="absolute inset-x-8 bottom-8 h-16 rounded-full bg-white/20 blur-3xl" aria-hidden="true" />
-            <div className="depth-card depth-card-one absolute left-3 top-10 h-36 w-[min(192px,58vw)] rounded-lg border border-white/16 bg-white/[0.06] p-4 shadow-glowSm sm:left-8 sm:h-40 sm:w-56">
-              <Sparkles className="h-5 w-5 text-white" />
-              <p className="mt-14 text-xs font-semibold uppercase text-white/60">
+                        <div className="depth-card depth-card-one absolute left-3 top-10 h-36 w-[min(192px,58vw)] rounded-lg border border-primary/10 bg-base p-4 shadow-premiumSm sm:left-8 sm:h-40 sm:w-56">
+              <Sparkles className="h-5 w-5 text-accent" />
+              <p className="mt-14 text-xs font-semibold uppercase text-primary/75">
                 {loading.newArrivals ? 'Loading arrivals' : `${getCount(home.newArrivals)} new arrivals`}
               </p>
             </div>
-            <div className="depth-card depth-card-two absolute right-3 top-28 h-40 w-[min(192px,58vw)] rounded-lg border border-white/16 bg-black/70 p-4 shadow-glowSm backdrop-blur-sm sm:right-8 sm:top-24 sm:h-44 sm:w-56">
+            <div className="depth-card depth-card-two absolute right-3 top-28 h-40 w-[min(192px,58vw)] rounded-lg border border-white/16 bg-black/70 p-4 shadow-premiumSm backdrop-blur-sm sm:right-8 sm:top-24 sm:h-44 sm:w-56">
               <Clock3 className="h-5 w-5 text-white" />
               <p className="mt-16 text-xs font-semibold uppercase text-white/60">
                 {loading.bestSellers ? 'Loading favorites' : `${getCount(home.bestSellers)} customer favorites`}
               </p>
             </div>
-            <div className="depth-card depth-card-three absolute bottom-10 left-1/2 h-36 w-[min(224px,72vw)] -translate-x-1/2 rounded-lg border border-white/20 bg-white/[0.08] p-4 shadow-glow backdrop-blur-sm sm:h-40 sm:w-60">
-              <span className="block font-heading text-4xl font-bold text-white">{loading.featured ? '--' : getCount(home.featured)}</span>
-              <p className="mt-8 text-xs font-semibold uppercase text-white/65">Featured live now</p>
+            <div className="depth-card depth-card-three absolute bottom-10 left-1/2 h-36 w-[min(224px,72vw)] -translate-x-1/2 rounded-lg border border-primary/10 bg-base p-4 shadow-premium backdrop-blur-sm sm:h-40 sm:w-60">
+              <span className="block font-heading text-4xl font-bold text-primary">{loading.featured ? '--' : getCount(home.featured)}</span>
+              <p className="mt-8 text-xs font-semibold uppercase text-primary/75">Featured live now</p>
             </div>
           </motion.div>
         </div>
 
         <motion.div className="mt-8 flex justify-center" variants={variants} whileHover={{ scale: 1.03 }}>
           <Link
-            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-white/25 bg-white/5 px-7 text-sm font-bold text-white no-underline shadow-glowSm transition hover:border-white/55 hover:bg-white/10 hover:shadow-glow"
+            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-accent bg-accent px-7 text-sm font-bold text-primary no-underline shadow-premiumSm transition hover:bg-accent/90 hover:shadow-premium focus:outline-none focus:ring-2 focus:ring-primary"
             to="/watches"
           >
             Explore the live collection <ArrowRight className="h-4 w-4" />

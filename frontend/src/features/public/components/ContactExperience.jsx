@@ -73,12 +73,12 @@ export const ContactExperience = ({ contacts, social }) => {
 }
 
 const ContactForm = ({ error, form, isSubmitting, onChange, onSubmit }) => (
-  <form className="rounded-lg border border-white/12 bg-surface p-5 shadow-glowSm sm:p-7" onSubmit={onSubmit}>
+  <form className="rounded-lg border border-primary/10 bg-card p-5 shadow-premiumSm sm:p-7" onSubmit={onSubmit}>
     <div className="mb-7">
-      <h2 className="font-heading text-3xl font-bold leading-tight text-white sm:text-[34px]">
-        Send Us a <span className="drop-shadow-[0_0_16px_rgba(255,255,255,0.45)]">Message</span>
+      <h2 className="font-heading text-3xl font-bold leading-tight text-primary sm:text-[34px]">
+        Send Us a <span className="">Message</span>
       </h2>
-      <p className="mt-3 max-w-[450px] text-sm leading-6 text-white/70">
+      <p className="mt-3 max-w-[450px] text-sm leading-6 text-primary">
         Have a question or inquiry? Fill out the form below and we'll get back to you as soon as possible.
       </p>
     </div>
@@ -88,7 +88,7 @@ const ContactForm = ({ error, form, isSubmitting, onChange, onSubmit }) => (
       <FormField label="Email Address" name="email" placeholder="john@example.com" required type="email" value={form.email} onChange={onChange} />
       <FormField label="Phone Number" name="phone" placeholder="+94 00 000-0000" type="tel" value={form.phone} onChange={onChange} />
 
-      <label className="grid gap-2 text-xs font-semibold text-white/75 sm:col-span-2">
+      <label className="grid gap-2 text-xs font-semibold text-primary sm:col-span-2">
         Subject *
         <select
           className={fieldClass}
@@ -106,7 +106,7 @@ const ContactForm = ({ error, form, isSubmitting, onChange, onSubmit }) => (
         </select>
       </label>
       
-      <label className="grid gap-2 text-xs font-semibold text-white/75 sm:col-span-2">
+      <label className="grid gap-2 text-xs font-semibold text-primary sm:col-span-2">
         Message *
         <textarea
           className={`${fieldClass} min-h-[118px] resize-y py-3`}
@@ -122,7 +122,7 @@ const ContactForm = ({ error, form, isSubmitting, onChange, onSubmit }) => (
     {error && <p className="mt-4 rounded-lg border border-red-400/30 bg-red-500/10 px-4 py-3 text-xs font-medium text-red-200">{error}</p>}
 
     <button 
-      className="mt-5 inline-flex min-h-[44px] w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-white px-6 text-xs font-bold uppercase text-black shadow-glowSm transition hover:shadow-glow active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60" 
+      className="mt-5 inline-flex min-h-[44px] w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-accent px-6 text-xs font-bold uppercase text-primary shadow-premiumSm transition duration-200 hover:bg-accent/90 hover:shadow-premium focus:outline-none focus:ring-2 focus:ring-primary active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60" 
       disabled={isSubmitting} 
       type="submit"
     >
@@ -133,7 +133,7 @@ const ContactForm = ({ error, form, isSubmitting, onChange, onSubmit }) => (
 )
 
 const FormField = ({ className = '', label, name, onChange, placeholder, required = false, type = 'text', value }) => (
-  <label className={`grid gap-2 text-xs font-semibold text-white/75 ${className}`}>
+  <label className={`grid gap-2 text-xs font-semibold text-primary ${className}`}>
     {label}{required ? ' *' : ''}
     <input
       className={fieldClass}
@@ -158,16 +158,16 @@ const SuccessToast = ({ message, onClose }) => {
   if (!message) return null
 
   return (
-    <div className="fixed right-4 top-24 z-50 w-[calc(100%-2rem)] max-w-sm rounded-lg border border-emerald-300/30 bg-surface p-4 text-white shadow-glowSm sm:right-6" role="status">
+    <div className="fixed right-4 top-24 z-50 w-[calc(100%-2rem)] max-w-sm rounded-lg border border-primary/10 bg-card p-4 text-primary shadow-premium sm:right-6" role="status">
       <div className="flex items-start gap-3">
         <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-emerald-500/10 text-emerald-200">
           <CheckCircle2 className="h-5 w-5" />
         </span>
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-semibold text-white">Message sent</p>
-          <p className="mt-1 text-xs leading-5 text-white/70">{message}</p>
+          <p className="text-sm font-semibold text-primary">Message sent</p>
+          <p className="mt-1 text-xs leading-5 text-primary">{message}</p>
         </div>
-        <button className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-white/65 transition hover:bg-white/10 hover:text-white" type="button" onClick={onClose} aria-label="Close message">
+        <button className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-primary/60 transition duration-200 hover:bg-accent hover:text-primary" type="button" onClick={onClose} aria-label="Close message">
           <X className="h-4 w-4" />
         </button>
       </div>
@@ -176,14 +176,14 @@ const SuccessToast = ({ message, onClose }) => {
 }
 
 const MapCard = ({ address }) => (
-  <div className="overflow-hidden rounded-lg border border-white/12 bg-surface shadow-glowSm">
-    <div className="flex items-center justify-between gap-4 border-b border-white/10 bg-surface px-5 py-4">
+  <div className="overflow-hidden rounded-lg border border-primary/10 bg-card shadow-premiumSm">
+    <div className="flex items-center justify-between gap-4 border-b border-primary/10 bg-card px-5 py-4">
       <div className="min-w-0">
-        <p className="text-[11px] font-bold uppercase text-white/65">Store Location</p>
-        <h3 className="truncate text-base font-semibold text-white">Thilani Watch Centre</h3>
+        <p className="text-[11px] font-bold uppercase text-primary/60">Store Location</p>
+        <h3 className="truncate font-heading text-base font-semibold tracking-wide text-primary">Thilani Watch Centre</h3>
       </div>
       <a
-        className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/15 text-white/70 transition hover:border-white/45 hover:bg-white hover:text-black"
+        className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-primary/15 text-primary transition duration-200 hover:border-accent hover:bg-accent focus:outline-none focus:ring-2 focus:ring-accent"
         href={address?.href || 'https://www.google.com/maps/search/?api=1&query=Thilani+Watch+Centre+Moratuwa'}
         rel="noreferrer"
         target="_blank"
@@ -206,9 +206,9 @@ const MapCard = ({ address }) => (
 
 const ShowroomCard = ({ address, email, phones, social }) => {
   return (
-    <div className="rounded-lg border border-white/12 bg-surface p-6 text-white shadow-glowSm sm:p-7">
-      <h3 className="font-heading text-xl font-bold text-white">Visit Our Showroom</h3>
-      <p className="mt-4 text-sm leading-6 text-white/70">
+    <div className="rounded-lg border border-primary/10 bg-card p-6 text-primary shadow-premiumSm sm:p-7">
+      <h3 className="font-heading text-xl font-bold text-primary">Visit Our Showroom</h3>
+      <p className="mt-4 text-sm leading-6 text-primary">
         Experience our exclusive collection in person. Our expert consultants are ready to help you find the perfect timepiece.
       </p>
 
@@ -233,12 +233,12 @@ const ShowroomCard = ({ address, email, phones, social }) => {
         />
       </div>
 
-      <p className="mt-7 text-[11px] font-semibold uppercase text-white/65">Follow Us</p>
+      <p className="mt-7 text-[11px] font-semibold uppercase text-primary/60">Follow Us</p>
       <div className="mt-3 flex flex-wrap gap-3">
         {social.map((item) => (
           <a
             aria-label={item.label}
-            className="grid h-9 w-9 place-items-center rounded-full border border-white/15 text-white/70 no-underline transition hover:border-white/45 hover:bg-white hover:text-black"
+            className="grid h-9 w-9 place-items-center rounded-full border border-primary/15 text-primary no-underline transition duration-200 hover:border-accent hover:bg-accent focus:outline-none focus:ring-2 focus:ring-accent"
             href={item.href}
             key={item.label}
             rel="noreferrer"
@@ -255,10 +255,10 @@ const ShowroomCard = ({ address, email, phones, social }) => {
 const ContactLine = ({ href, icon: Icon, label, text }) => {
   const content = (
     <>
-      <Icon className="mt-0.5 h-4 w-4 shrink-0 text-white/65" />
+      <Icon className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
       <span>
-        <span className="block text-sm font-semibold text-white">{label}</span>
-        <span className="mt-0.5 block whitespace-pre-line text-xs leading-5 text-white/70">{text}</span>
+        <span className="block text-sm font-semibold text-primary">{label}</span>
+        <span className="mt-0.5 block whitespace-pre-line text-xs leading-5 text-primary">{text}</span>
       </span>
     </>
   )
@@ -268,10 +268,10 @@ const ContactLine = ({ href, icon: Icon, label, text }) => {
   }
 
   return (
-    <a className="flex gap-3 text-inherit no-underline transition hover:text-white/75" href={href} rel="noreferrer" target={href.startsWith('http') ? '_blank' : undefined}>
+    <a className="flex gap-3 text-inherit no-underline transition duration-200 hover:text-accent" href={href} rel="noreferrer" target={href.startsWith('http') ? '_blank' : undefined}>
       {content}
     </a>
   )
 }
 
-const fieldClass = 'min-h-[40px] w-full rounded-lg border border-white/12 bg-black/35 px-4 text-sm font-medium text-white outline-none transition placeholder:text-white/65 focus:border-white/45 focus:ring-2 focus:ring-white/10'
+const fieldClass = 'min-h-[40px] w-full rounded-lg border border-primary/15 bg-base px-4 text-sm font-medium text-primary outline-none transition duration-200 placeholder:text-primary/60 focus:border-accent focus:ring-2 focus:ring-accent/35'

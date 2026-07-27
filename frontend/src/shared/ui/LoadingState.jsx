@@ -13,14 +13,14 @@ export const LoadingState = ({ label = 'Loading', variant = 'panel', rows = 3 })
 
   // Neutral Modern Panel Loading Component
   return (
-    <div className="relative mx-auto max-w-[400px] overflow-hidden rounded-lg border border-white/12 bg-surface p-5 shadow-glowSm">
+    <div className="relative mx-auto max-w-[400px] overflow-hidden rounded-lg border border-primary/10 bg-card p-5 shadow-premiumSm">
       <div className="flex items-center gap-4">
-        <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full border border-white/12 bg-white/5 text-white">
+        <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full border border-primary/10 bg-card text-primary">
           <LoaderCircle className="h-5 w-5 animate-spin" aria-hidden="true" />
         </span>
         <div>
-          <p className="text-xs font-medium text-white/75">Please wait</p>
-          <p className="font-bold tracking-tight text-white">{label}</p>
+          <p className="text-xs font-medium text-primary/75">Please wait</p>
+          <p className="font-bold tracking-tight text-primary">{label}</p>
         </div>
       </div>
     </div>
@@ -31,9 +31,9 @@ export const ButtonSpinner = () => <LoaderCircle className="h-4 w-4 animate-spin
 
 export const PageLoader = ({ label = 'Loading page' }) => (
   <div className="grid min-h-[calc(100vh-180px)] w-full place-items-center px-4 py-12">
-    <div className="relative grid h-28 w-28 place-items-center rounded-full border border-white/12 bg-surface shadow-glowSm" aria-label={label}>
-      <span className="absolute inset-3 rounded-full border border-white/10" />
-      <span className="grid h-20 w-20 place-items-center rounded-full bg-white/10 text-white ring-8 ring-white/5">
+    <div className="relative grid h-28 w-28 place-items-center rounded-full border border-primary/10 bg-card shadow-premiumSm" aria-label={label}>
+      <span className="absolute inset-3 rounded-full border border-primary/10" />
+      <span className="grid h-20 w-20 place-items-center rounded-full bg-primary/5 text-primary ring-8 ring-accent/30">
         <LoaderCircle className="h-11 w-11 animate-spin" aria-hidden="true" />
       </span>
     </div>
@@ -43,7 +43,7 @@ export const PageLoader = ({ label = 'Loading page' }) => (
 export const CardSkeleton = ({ count = 6 }) => (
   <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
     {Array.from({ length: count }).map((_, index) => (
-      <article className="overflow-hidden rounded-[24px] border border-white/20 bg-white/10 p-4 shadow-[0_8px_32px_0_rgba(0,0,0,0.05)] backdrop-blur-sm" key={index}>
+      <article className="overflow-hidden rounded-[24px] border border-primary/10 bg-primary/5 p-4 shadow-[0_8px_32px_0_rgba(0,0,0,0.05)] backdrop-blur-sm" key={index}>
         <div className={`${shimmer} aspect-[4/3] w-full rounded-[14px]`} />
         <div className="grid gap-3 pt-4 px-1">
           <div className={`${shimmer} h-3 w-1/3`} />
@@ -61,7 +61,7 @@ export const CardSkeleton = ({ count = 6 }) => (
 )
 
 export const DetailSkeleton = () => (
-  <section className="grid gap-8 rounded-[24px] border border-white/20 bg-white/10 p-5 sm:p-6 shadow-[0_8px_32px_0_rgba(0,0,0,0.05)] backdrop-blur-sm lg:grid-cols-[minmax(0,1fr)_440px]">
+  <section className="grid gap-8 rounded-[24px] border border-primary/10 bg-primary/5 p-5 sm:p-6 shadow-[0_8px_32px_0_rgba(0,0,0,0.05)] backdrop-blur-sm lg:grid-cols-[minmax(0,1fr)_440px]">
     <div>
       <div className={`${shimmer} aspect-[4/3] w-full rounded-[16px]`} />
       <div className="mt-3 grid grid-cols-5 gap-2">
@@ -88,7 +88,7 @@ export const FormSkeleton = () => (
   <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
     <div className="grid gap-5">
       {Array.from({ length: 3 }).map((_, index) => (
-        <section className="rounded-[24px] border border-white/20 bg-white/10 p-5 sm:p-6 shadow-[0_8px_32px_0_rgba(0,0,0,0.05)] backdrop-blur-sm" key={index}>
+        <section className="rounded-[24px] border border-primary/10 bg-primary/5 p-5 sm:p-6 shadow-[0_8px_32px_0_rgba(0,0,0,0.05)] backdrop-blur-sm" key={index}>
           <div className={`${shimmer} mb-5 h-6 w-1/3`} />
           <div className="grid gap-4 sm:grid-cols-2">
             <div className={`${shimmer} h-12 rounded-[10px]`} />
@@ -99,7 +99,7 @@ export const FormSkeleton = () => (
         </section>
       ))}
     </div>
-    <aside className="h-fit rounded-[24px] border border-white/20 bg-white/10 p-5 shadow-[0_8px_32px_0_rgba(0,0,0,0.05)] backdrop-blur-sm">
+    <aside className="h-fit rounded-[24px] border border-primary/10 bg-primary/5 p-5 shadow-[0_8px_32px_0_rgba(0,0,0,0.05)] backdrop-blur-sm">
       <div className={`${shimmer} mb-5 h-6 w-1/2`} />
       <div className="grid gap-3">
         <div className={`${shimmer} h-5`} />
@@ -114,7 +114,7 @@ export const FormSkeleton = () => (
 export const ReviewSkeleton = ({ count = 3 }) => (
   <div className="grid gap-3">
     {Array.from({ length: count }).map((_, index) => (
-      <article className="rounded-[16px] border border-white/10 bg-black/10 p-4" key={index}>
+      <article className="rounded-[16px] border border-primary/10 bg-black/10 p-4" key={index}>
         <div className="mb-4 flex items-start justify-between gap-3">
           <div className={`${shimmer} h-5 w-1/2`} />
           <div className={`${shimmer} h-4 w-24`} />
@@ -127,13 +127,13 @@ export const ReviewSkeleton = ({ count = 3 }) => (
 )
 
 export const TableSkeleton = ({ rows = 5 }) => (
-  <div className="w-full overflow-x-auto rounded-[24px] border border-white/20 bg-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.05)] backdrop-blur-sm">
+  <div className="w-full overflow-x-auto rounded-[24px] border border-primary/10 bg-primary/5 shadow-[0_8px_32px_0_rgba(0,0,0,0.05)] backdrop-blur-sm">
     <div className="min-w-[720px]">
-      <div className="grid grid-cols-5 gap-4 border-b border-white/10 p-4">
+      <div className="grid grid-cols-5 gap-4 border-b border-primary/10 p-4">
         {Array.from({ length: 5 }).map((_, index) => <div className={`${shimmer} h-4`} key={index} />)}
       </div>
       {Array.from({ length: rows }).map((_, row) => (
-        <div className="grid grid-cols-5 gap-4 border-b border-white/5 p-4 last:border-b-0" key={row}>
+        <div className="grid grid-cols-5 gap-4 border-b border-primary/10 p-4 last:border-b-0" key={row}>
           {Array.from({ length: 5 }).map((_, cell) => <div className={`${shimmer} h-5`} key={cell} />)}
         </div>
       ))}

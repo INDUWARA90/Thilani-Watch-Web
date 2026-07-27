@@ -8,24 +8,24 @@ export const AppLayout = ({ children }) => {
   const { pathname } = useLocation()
   const isAuthPage = authRoutes.includes(pathname)
   const isAdminPage = pathname.startsWith('/admin')
+  const isHomePage = pathname === '/'
 
   if (isAuthPage) {
     return (
-      <div className="grid min-h-screen w-full overflow-x-hidden bg-base px-4 py-8 text-white sm:px-6 lg:px-8">
-        <div className="glow-beam fixed left-1/2 top-20 h-px w-[min(760px,80vw)] -translate-x-1/2 bg-white/70 shadow-glow" />
+      <div className="grid min-h-screen w-full overflow-x-hidden bg-base px-4 py-8 font-sans text-primary sm:px-6 lg:px-8">
         <div className="m-auto w-full min-w-0">{children}</div>
       </div>
     )
   }
 
   if (isAdminPage) {
-    return <div className="min-h-screen bg-base text-white">{children}</div>
+    return <div className="min-h-screen bg-base font-sans text-primary">{children}</div>
   }
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-base text-white">
+    <div className="min-h-screen overflow-x-hidden bg-base font-sans text-primary">
       <Header />
-      <div className="mx-auto min-h-screen w-full min-w-0">
+      <div className={`mx-auto min-h-screen w-full min-w-0 ${isHomePage ? '' : 'pt-[72px] sm:pt-[92px]'}`}>
         <div className="min-w-0">{children}</div>
       </div>
       <Footer />

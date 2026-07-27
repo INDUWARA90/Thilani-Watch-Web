@@ -13,10 +13,10 @@ export const AdminOrdersPage = () => {
       {/* Page Header */}
       <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <span className="text-xs font-semibold tracking-wider uppercase text-slate-400">
+          <span className="text-xs font-semibold tracking-wider uppercase text-primary/45">
             Overview
           </span>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+          <h1 className="font-heading text-2xl font-bold tracking-wide text-primary sm:text-3xl">
             Customer Orders
           </h1>
         </div>
@@ -58,7 +58,7 @@ export const AdminOrderDetailPage = () => {
       {/* Navigation Breadcrumb / Flow Control */}
       <div>
         <Link 
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 transition-colors hover:text-teal-600 group" 
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary/60 transition-colors hover:text-teal-600 group" 
           to="/admin/orders"
         >
           <span className="transform transition-transform group-hover:-translate-x-0.5">←</span> 
@@ -77,10 +77,10 @@ export const AdminOrderDetailPage = () => {
       {order && (
         <>
           <div className="flex flex-col gap-1">
-            <span className="text-xs font-semibold tracking-wider uppercase text-slate-400">
+            <span className="text-xs font-semibold tracking-wider uppercase text-primary/45">
               Order Profile
             </span>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl font-mono">
+            <h1 className="font-heading text-2xl font-bold tracking-wide text-primary sm:text-3xl">
               #{order.orderNumber || getId(order).slice(-8).toUpperCase()}
             </h1>
           </div>

@@ -10,7 +10,7 @@ export const AdminReviewsPage = () => {
       {/* Header Area */}
       <div className="mb-6">
         <p className="mb-1 text-xs font-bold uppercase tracking-wider text-teal-600">Moderation Desk</p>
-        <h2 className="m-0 text-2xl font-bold tracking-tight text-slate-900">Customer Reviews</h2>
+        <h2 className="m-0 font-heading text-2xl font-bold tracking-wide text-primary">Customer Reviews</h2>
       </div>
 
       {/* Notifications */}
@@ -45,24 +45,24 @@ export const AdminReviewsPage = () => {
               >
                 <div className="flex flex-col gap-1.5 max-w-3xl">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="font-bold text-slate-900">
+                    <span className="font-bold text-primary">
                       {review.title || `Untitled Review`}
                     </span>
-                    <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-slate-100 text-xs font-semibold text-slate-700">
+                    <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-slate-100 text-xs font-semibold text-primary">
                       ★ {review.rating || 0}/5
                     </span>
                   </div>
                   
-                  <p className="text-slate-600 text-[13px] leading-relaxed m-0">
-                    {review.comment || <em className="text-slate-400">No comment text provided.</em>}
+                  <p className="text-primary/75 text-[13px] leading-relaxed m-0">
+                    {review.comment || <em className="text-primary/45">No comment text provided.</em>}
                   </p>
-                  <div className="mt-1.5 inline-flex w-fit items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs font-semibold text-slate-600">
-                    <span className="text-slate-400">Watch:</span>
-                    <span className="text-slate-800">{reviewedWatch}</span>
+                  <div className="mt-1.5 inline-flex w-fit items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs font-semibold text-primary/75">
+                    <span className="text-primary/45">Watch:</span>
+                    <span className="text-primary">{reviewedWatch}</span>
                   </div>
                   
-                  <span className="text-xs text-slate-400 mt-0.5">
-                    By <span className="font-medium text-slate-500">{getTitle(review.user, 'Customer')}</span> • {formatDate(review.createdAt)}
+                  <span className="text-xs text-primary/45 mt-0.5">
+                    By <span className="font-medium text-primary/60">{getTitle(review.user, 'Customer')}</span> • {formatDate(review.createdAt)}
                   </span>
                 </div>
 
@@ -79,7 +79,7 @@ export const AdminReviewsPage = () => {
                   <button 
                     className={`inline-flex h-8 items-center justify-center rounded-lg border px-3 text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap ${
                       isApproved
-                        ? 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:text-slate-950'
+                        ? 'border-slate-200 bg-white text-primary hover:bg-slate-50 hover:text-primary'
                         : 'border-amber-200 bg-amber-50 text-amber-900 hover:bg-amber-100/70'
                     }`} 
                     type="button" 
@@ -93,7 +93,7 @@ export const AdminReviewsPage = () => {
           })}
 
           {reviews.length === 0 && (
-            <div className="rounded-xl border border-slate-200 border-dashed p-8 text-center text-slate-400 font-medium">
+            <div className="rounded-xl border border-slate-200 border-dashed p-8 text-center text-primary/45 font-medium">
               No product reviews require current moderation.
             </div>
           )}

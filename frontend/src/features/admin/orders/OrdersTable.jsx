@@ -14,21 +14,21 @@ const getStatusStyles = (status) => {
   if (['cancelled', 'failed', 'refunded'].includes(norm)) {
     return 'bg-rose-50 text-rose-700 border-rose-200/60'
   }
-  return 'bg-slate-100 text-slate-700 border-slate-200'
+  return 'bg-slate-100 text-primary border-slate-200'
 }
 
 export const OrdersTable = ({ orders }) => (
   <div className="w-full overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
-    <table className="w-full min-w-[940px] border-collapse text-sm text-slate-600">
+    <table className="w-full min-w-[940px] border-collapse text-sm text-primary/75">
       <thead>
         <tr className="bg-slate-50/75 border-b border-slate-200">
-          <th className="p-4 text-left font-semibold text-slate-700 w-[120px]">Order</th>
-          <th className="p-4 text-left font-semibold text-slate-700">Customer</th>
-          <th className="p-4 text-right font-semibold text-slate-700">Total</th>
-          <th className="p-4 text-left font-semibold text-slate-700">Status</th>
-          <th className="p-4 text-left font-semibold text-slate-700">Payment</th>
-          <th className="p-4 text-left font-semibold text-slate-700">Wanted Date</th>
-          <th className="p-4 text-left font-semibold text-slate-700">Created</th>
+          <th className="p-4 text-left font-semibold text-primary w-[120px]">Order</th>
+          <th className="p-4 text-left font-semibold text-primary">Customer</th>
+          <th className="p-4 text-right font-semibold text-primary">Total</th>
+          <th className="p-4 text-left font-semibold text-primary">Status</th>
+          <th className="p-4 text-left font-semibold text-primary">Payment</th>
+          <th className="p-4 text-left font-semibold text-primary">Wanted Date</th>
+          <th className="p-4 text-left font-semibold text-primary">Created</th>
           <th className="p-4 w-[80px]"></th>
         </tr>
       </thead>
@@ -41,17 +41,17 @@ export const OrdersTable = ({ orders }) => (
               className="transition-colors hover:bg-slate-50/50 group"
             >
               {/* Order Number / ID */}
-              <td className="p-4 text-left align-middle font-mono text-xs font-semibold text-slate-900">
+              <td className="p-4 text-left align-middle font-sans text-xs font-semibold text-primary">
                 {getOrderNumber(order) || `#${orderId.slice(-6)}`}
               </td>
 
               {/* Customer */}
-              <td className="p-4 text-left align-middle font-medium text-slate-900">
+              <td className="p-4 text-left align-middle font-medium text-primary">
                 {getTitle(order.user, 'Customer')}
               </td>
 
               {/* Total */}
-              <td className="p-4 text-right align-middle font-mono font-semibold text-slate-900">
+              <td className="p-4 text-right align-middle font-sans font-semibold text-primary">
                 {formatMoney(order.totalAmount ?? order.total, order.currency)}
               </td>
 
@@ -70,12 +70,12 @@ export const OrdersTable = ({ orders }) => (
               </td>
 
               {/* Wanted Date */}
-              <td className="p-4 text-left align-middle text-slate-500 text-xs">
+              <td className="p-4 text-left align-middle text-primary/60 text-xs">
                 {formatDate(order.wantedDate)}
               </td>
 
               {/* Created Date */}
-              <td className="p-4 text-left align-middle text-slate-500 text-xs">
+              <td className="p-4 text-left align-middle text-primary/60 text-xs">
                 {formatDate(order.createdAt)}
               </td>
 
@@ -95,10 +95,10 @@ export const OrdersTable = ({ orders }) => (
         {/* Empty State Block */}
         {orders.length === 0 && (
           <tr>
-            <td className="p-12 text-center text-slate-400 font-medium" colSpan="8">
+            <td className="p-12 text-center text-primary/45 font-medium" colSpan="8">
               <div className="flex flex-col items-center justify-center gap-1">
-                <span className="text-base text-slate-500">No records found</span>
-                <span className="text-xs text-slate-400 font-normal">There are no active orders available in this scope.</span>
+                <span className="text-base text-primary/60">No records found</span>
+                <span className="text-xs text-primary/45 font-normal">There are no active orders available in this scope.</span>
               </div>
             </td>
           </tr>

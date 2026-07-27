@@ -37,12 +37,12 @@ export const RegisterPage = () => {
   }
 
   return (
-    <section className="mx-auto w-full max-w-[560px] min-w-0 rounded-lg border border-white/12 bg-surface p-5 text-white shadow-glowSm sm:p-9">
-      <p className="mb-3 inline-flex rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-semibold uppercase text-white/70">Create account</p>
-      <h1 className="mb-3 font-heading text-4xl font-bold leading-[1.1] tracking-tight text-white sm:text-[44px]">
+    <section className="mx-auto w-full max-w-[560px] min-w-0 rounded-lg border border-primary/10 bg-card p-5 text-primary shadow-premiumSm sm:p-9">
+      <p className="mb-3 inline-flex rounded-full border border-primary/10 bg-card px-3 py-1 text-xs font-semibold uppercase text-primary/75">Create account</p>
+      <h1 className="mb-3 font-heading text-4xl font-bold leading-[1.1] tracking-tight text-primary sm:text-[44px]">
         Register
       </h1>
-      <p className="mb-8 text-base leading-7 text-white/70">
+      <p className="mb-8 text-base leading-7 text-primary/75">
         Create a customer account with your contact details.
       </p>
 
@@ -57,21 +57,21 @@ export const RegisterPage = () => {
         )}
 
         <div className="grid gap-4">
-          <label className="grid gap-2 text-sm font-medium text-white/65">
+          <label className="grid gap-2 text-sm font-medium text-primary/75">
             Name
             <input className={authInputClass} name="name" placeholder="Full name" required />
           </label>
 
-          <label className="grid gap-2 text-sm font-medium text-white/65">
+          <label className="grid gap-2 text-sm font-medium text-primary/75">
             Email
             <input className={authInputClass} name="email" type="email" placeholder="you@example.com" required />
           </label>
 
-          <label className="grid gap-2 text-sm font-medium text-white/65">
+          <label className="grid gap-2 text-sm font-medium text-primary/75">
             Password
-            <span className="flex items-center rounded-lg border border-white/12 bg-black/35 px-[15px] transition focus-within:border-white/45 focus-within:ring-2 focus-within:ring-white/10">
+            <span className="flex items-center rounded-lg border border-primary/10 bg-black/35 px-[15px] transition focus-within:border-primary/10 focus-within:ring-2 focus-within:ring-accent/30">
               <input
-                className="min-h-[46px] min-w-0 flex-1 bg-transparent px-1 text-[15px] text-white outline-none placeholder:text-white/65"
+                className="min-h-[46px] min-w-0 flex-1 bg-transparent px-1 text-[15px] text-primary outline-none placeholder:text-primary/60"
                 name="password"
                 type={showPassword ? 'text' : 'password'}
                 placeholder="••••••••"
@@ -79,7 +79,7 @@ export const RegisterPage = () => {
                 required
               />
               <button
-                className="cursor-pointer text-white/65 transition hover:text-white"
+                className="cursor-pointer text-primary/75 transition hover:text-accent"
                 type="button"
                 aria-label="Toggle password visibility"
                 aria-pressed={showPassword}
@@ -90,14 +90,14 @@ export const RegisterPage = () => {
             </span>
           </label>
 
-          <label className="grid gap-2 text-sm font-medium text-white/65">
+          <label className="grid gap-2 text-sm font-medium text-primary/75">
             Phone
             <input className={authInputClass} name="phone" type="tel" placeholder="Optional" />
           </label>
         </div>
 
         <button
-          className="mt-1 inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-white px-8 text-sm font-bold text-black transition hover:shadow-glow disabled:cursor-not-allowed disabled:opacity-60 sm:w-fit"
+          className="mt-1 inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-white px-8 text-sm font-bold text-black transition hover:shadow-premium disabled:cursor-not-allowed disabled:opacity-60 sm:w-fit"
           type="submit"
           disabled={isSubmitting}
         >
@@ -105,9 +105,9 @@ export const RegisterPage = () => {
         </button>
       </form>
 
-      <p className="mt-6 text-sm text-white/70">
+      <p className="mt-6 text-sm text-primary/75">
         Already registered?{' '}
-        <Link className="font-semibold text-white no-underline transition hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]" to="/login">
+        <Link className="font-semibold text-primary no-underline transition " to="/login">
           Log in
         </Link>
       </p>
@@ -116,4 +116,4 @@ export const RegisterPage = () => {
 }
 
 const authInputClass =
-  'min-h-[46px] min-w-0 rounded-lg border border-white/12 bg-black/35 px-[15px] text-[15px] text-white outline-none placeholder:text-white/65 transition focus:border-white/45 focus:ring-2 focus:ring-white/10'
+  'min-h-[46px] min-w-0 rounded-lg border border-primary/10 bg-black/35 px-[15px] text-[15px] text-primary outline-none placeholder:text-primary/60 transition focus:border-primary/10 focus:ring-2 focus:ring-accent/30'

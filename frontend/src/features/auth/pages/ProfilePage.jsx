@@ -133,12 +133,12 @@ export const ProfilePage = () => {
   }
 
   return (
-    <main className="mx-auto grid w-full min-w-0 max-w-[1200px] animate-fade-in gap-8 bg-base pb-12 text-white">
-      <section className="relative min-w-0 overflow-hidden rounded-lg border border-white/12 bg-surface p-5 shadow-glowSm sm:p-10">
-        <div className="glow-beam absolute left-0 top-0 h-px w-full bg-white/70 shadow-glow" />
-        <p className="mb-2 text-xs font-bold uppercase text-white/65">Account settings</p>
-        <h1 className="break-words font-heading text-3xl font-bold tracking-tight text-white sm:text-4xl">Profile & Addresses</h1>
-        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-white/70 sm:text-base">
+    <main className="mx-auto grid w-full min-w-0 max-w-[1200px] animate-fade-in gap-8 bg-base pb-12 text-primary">
+      <section className="relative min-w-0 overflow-hidden rounded-lg border border-primary/10 bg-card p-5 shadow-premiumSm sm:p-10">
+        <div className="absolute left-0 top-0 h-px w-full bg-white/70 shadow-premium" />
+        <p className="mb-2 text-xs font-bold uppercase text-primary/75">Account settings</p>
+        <h1 className="break-words font-heading text-3xl font-bold tracking-tight text-primary sm:text-4xl">Profile & Addresses</h1>
+        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-primary/75 sm:text-base">
           Manage your account contact details, security credentials, and shipping addresses.
         </p>
       </section>
@@ -158,13 +158,13 @@ export const ProfilePage = () => {
       )}
 
       {/* Profile Card */}
-      <form className="flex min-w-0 flex-col justify-between rounded-lg border border-white/12 bg-surface p-5 shadow-glowSm sm:p-6" onSubmit={saveProfile}>
+      <form className="flex min-w-0 flex-col justify-between rounded-lg border border-primary/10 bg-card p-5 shadow-premiumSm sm:p-6" onSubmit={saveProfile}>
         <div className="grid gap-5">
-          <div className="flex items-center gap-2.5 border-b border-white/10 pb-2">
-            <div className="rounded-lg bg-white/10 p-2 text-white">
+          <div className="flex items-center gap-2.5 border-b border-primary/10 pb-2">
+            <div className="rounded-lg bg-primary/5 p-2 text-primary">
               <User className="h-5 w-5" />
             </div>
-            <h2 className="font-heading text-lg font-bold text-white">Personal Details</h2>
+            <h2 className="font-heading text-lg font-bold text-primary">Personal Details</h2>
           </div>
           <Field label="Full Name" required value={profile.name} onChange={(value) => setProfile((current) => ({ ...current, name: value }))} />
           <Field label="Phone Number" type="tel" value={profile.phone} onChange={(value) => setProfile((current) => ({ ...current, phone: value }))} />
@@ -175,12 +175,12 @@ export const ProfilePage = () => {
       </form>
 
       {/* Address Book Section */}
-      <section className="grid min-w-0 gap-6 rounded-lg border border-white/12 bg-surface p-5 shadow-glowSm sm:p-6">
-        <div className="flex items-center gap-2.5 border-b border-white/10 pb-3">
-          <div className="rounded-lg bg-white/10 p-2 text-white">
+      <section className="grid min-w-0 gap-6 rounded-lg border border-primary/10 bg-card p-5 shadow-premiumSm sm:p-6">
+        <div className="flex items-center gap-2.5 border-b border-primary/10 pb-3">
+          <div className="rounded-lg bg-primary/5 p-2 text-primary">
             <MapPin className="h-5 w-5" />
           </div>
-          <h2 className="font-heading text-lg font-bold text-white">Saved Addresses</h2>
+          <h2 className="font-heading text-lg font-bold text-primary">Saved Addresses</h2>
         </div>
 
         {isLoading ? (
@@ -188,10 +188,10 @@ export const ProfilePage = () => {
         ) : (
           <div className="grid gap-4 md:grid-cols-2">
             {addresses.map((address) => (
-              <article className="group relative flex min-w-0 flex-col justify-between rounded-lg border border-white/12 bg-black/25 p-5 transition duration-200 hover:border-white/30 hover:shadow-glowSm" key={getAddressId(address)}>
+              <article className="group relative flex min-w-0 flex-col justify-between rounded-lg border border-primary/10 bg-black/25 p-5 transition duration-200 hover:border-primary/10 hover:shadow-premiumSm" key={getAddressId(address)}>
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-3">
-                    <span className="inline-flex items-center rounded-md border border-white/12 bg-white/5 px-2.5 py-1 text-xs font-bold text-white shadow-2xs">
+                    <span className="inline-flex items-center rounded-md border border-primary/10 bg-card px-2.5 py-1 text-xs font-bold text-primary shadow-2xs">
                       {address.label || 'Address'}
                     </span>
                     {address.isDefault && (
@@ -200,17 +200,17 @@ export const ProfilePage = () => {
                       </span>
                     )}
                   </div>
-                  <div className="min-w-0 space-y-0.5 text-sm leading-relaxed text-white/65">
-                    <p className="font-semibold text-white">{address.fullName}</p>
+                  <div className="min-w-0 space-y-0.5 text-sm leading-relaxed text-primary/75">
+                    <p className="font-semibold text-primary">{address.fullName}</p>
                     <p>{address.addressLine1}</p>
                     {address.addressLine2 && <p>{address.addressLine2}</p>}
                     <p>{[address.city, address.district, address.postalCode].filter(Boolean).join(', ')}</p>
-                    <p className="mt-1 text-xs font-medium uppercase text-white/70">{address.country}</p>
-                    <p className="pt-1 font-mono text-xs text-white/65">{address.phone}</p>
+                    <p className="mt-1 text-xs font-medium uppercase text-primary/75">{address.country}</p>
+                    <p className="pt-1 font-sans text-xs text-primary/75">{address.phone}</p>
                   </div>
                 </div>
                 
-                <div className="mt-5 flex flex-wrap gap-2 border-t border-white/10 pt-3">
+                <div className="mt-5 flex flex-wrap gap-2 border-t border-primary/10 pt-3">
                   <button className={secondaryButtonClass} type="button" onClick={() => editAddress(address)}>Edit</button>
                   {!address.isDefault && (
                     <button className={secondaryButtonClass} type="button" onClick={() => setDefaultAddress(address)}>Set Default</button>
@@ -220,27 +220,27 @@ export const ProfilePage = () => {
               </article>
             ))}
             {addresses.length === 0 && (
-              <div className="rounded-lg border border-dashed border-white/15 bg-white/[0.03] py-8 text-center md:col-span-2">
-                <p className="text-sm font-medium text-white/65">No saved dispatch addresses found.</p>
+              <div className="rounded-lg border border-dashed border-primary/10 bg-card py-8 text-center md:col-span-2">
+                <p className="text-sm font-medium text-primary/75">No saved dispatch addresses found.</p>
               </div>
             )}
           </div>
         )}
 
         {/* Dynamic Address Management Form */}
-        <form className="mt-6 space-y-6 border-t border-white/10 pt-6" onSubmit={saveAddress}>
+        <form className="mt-6 space-y-6 border-t border-primary/10 pt-6" onSubmit={saveAddress}>
           <div className="flex items-center justify-between gap-4">
-            <h3 className="inline-flex items-center gap-2 font-heading text-base font-bold text-white">
+            <h3 className="inline-flex items-center gap-2 font-heading text-base font-bold text-primary">
               {editingAddressId ? (
                 <>Modify Address Entry</>
               ) : (
-                <><Plus className="h-4 w-4 text-white" /> Register New Address</>
+                <><Plus className="h-4 w-4 text-primary" /> Register New Address</>
               )}
             </h3>
             {editingAddressId && (
               <button 
                 type="button" 
-                className="inline-flex items-center gap-1.5 text-xs font-bold text-white/65 transition hover:text-white"
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-primary/75 transition hover:text-accent"
                 onClick={() => {
                   setEditingAddressId('')
                   setAddressForm(emptyAddress)
@@ -272,7 +272,7 @@ export const ProfilePage = () => {
                 className="h-4 w-4 rounded border-slate-300 text-[#F49006] focus:ring-[#F49006]/20 transition-all cursor-pointer"
                 onChange={(event) => setAddressForm((current) => ({ ...current, isDefault: event.target.checked }))} 
               />
-              <span className="text-sm font-medium text-white/75 transition group-hover:text-white">Set as preferred destination</span>
+              <span className="text-sm font-medium text-primary/75 transition group-hover:text-accent">Set as preferred destination</span>
             </label>
 
             <button className={`${primaryButtonClass} mt-0`} disabled={isSaving} type="submit">
@@ -298,12 +298,12 @@ const addressFields = [
 ]
 
 const Field = ({ label, onChange, required = false, type = 'text', value }) => (
-  <label className="flex w-full flex-col gap-1.5 text-xs font-bold uppercase text-white/65">
+  <label className="flex w-full flex-col gap-1.5 text-xs font-bold uppercase text-primary/75">
     <span>
-      {label} {required && <span className="font-serif text-white">*</span>}
+      {label} {required && <span className="font-heading text-primary">*</span>}
     </span>
     <input 
-      className="h-11 w-full rounded-lg border border-white/12 bg-black/35 px-3.5 text-sm font-medium tracking-normal text-white normal-case shadow-2xs outline-none transition placeholder:text-white/65 hover:border-white/30 focus:border-white/45 focus:ring-2 focus:ring-white/10" 
+      className="h-11 w-full rounded-lg border border-primary/10 bg-black/35 px-3.5 text-sm font-medium tracking-normal text-primary normal-case shadow-2xs outline-none transition placeholder:text-primary/60 hover:border-primary/10 focus:border-primary/10 focus:ring-2 focus:ring-accent/30" 
       required={required} 
       type={type} 
       value={value} 
@@ -312,8 +312,8 @@ const Field = ({ label, onChange, required = false, type = 'text', value }) => (
   </label>
 )
 
-const primaryButtonClass = 'mt-6 inline-flex h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-white px-6 text-sm font-bold text-black transition hover:shadow-glowSm active:scale-98 disabled:cursor-not-allowed disabled:opacity-50 sm:w-fit'
-const secondaryButtonClass = 'inline-flex h-9 w-fit cursor-pointer items-center justify-center rounded-full border border-white/15 bg-white/5 px-3 text-xs font-bold text-white/70 shadow-2xs transition hover:border-white/35 hover:text-white active:scale-98'
+const primaryButtonClass = 'mt-6 inline-flex h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-white px-6 text-sm font-bold text-black transition hover:shadow-premiumSm active:scale-98 disabled:cursor-not-allowed disabled:opacity-50 sm:w-fit'
+const secondaryButtonClass = 'inline-flex h-9 w-fit cursor-pointer items-center justify-center rounded-full border border-primary/10 bg-card px-3 text-xs font-bold text-primary/75 shadow-2xs transition hover:border-primary/10 hover:text-accent active:scale-98'
 
 const normalizeAddresses = (payload) => {
   if (Array.isArray(payload)) return payload
