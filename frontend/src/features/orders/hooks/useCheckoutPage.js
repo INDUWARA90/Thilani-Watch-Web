@@ -18,13 +18,15 @@ const emptyAddress = {
 const MAX_PAYMENT_SLIP_SIZE = 5 * 1024 * 1024
 
 export const useCheckoutPage = () => {
-  const { cart, isLoading, loadCommerce } = useCommerce()
+  const { cart, isLoading, isRestoring, loadCommerce } = useCommerce()
   const navigate = useNavigate()
   const [billingAddress, setBillingAddress] = useState(emptyAddress)
   const [couponCode, setCouponCode] = useState('')
   const [couponMessage, setCouponMessage] = useState('')
   const [couponResult, setCouponResult] = useState(null)
   const [error, setError] = useState('')
+  const [fieldErrors, setFieldErrors] = useState({})
+  const [touchedFields, setTouchedFields] = useState({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isValidatingCoupon, setIsValidatingCoupon] = useState(false)
   const [notes, setNotes] = useState('')
@@ -39,8 +41,25 @@ export const useCheckoutPage = () => {
   const shippingFee = getShippingFeeByProvince(shippingAddress.state)
   const total = Math.max(0, Number(cart.subtotal || 0) + shippingFee - discount)
 
-  const updateAddress = (setter, name, value) => {
+  const updateAddress = (setter, name, value, addressType = 'shipping') => {
+    const fieldKey = `${addressType}.${name}`
+
     setter((current) => ({ ...current, [name]: value }))
+    setTouchedFields((current) => ({ ...current, [fieldKey]: true }))
+    setFieldErrors((current) => ({ ...current, [fieldKey]: validateAddressField(name, value) }))
+  }
+
+  const markAddressFieldTouched = (addressType, name, value) => {
+    const fieldKey = `${addressType}.${name}`
+
+    setTouchedFields((current) => ({ ...current, [fieldKey]: true }))
+    setFieldErrors((current) => ({ ...current, [fieldKey]: validateAddressField(name, value) }))
+  }
+
+  const updateWantedDate = (value) => {
+    setWantedDate(value)
+    setTouchedFields((current) => ({ ...current, wantedDate: true }))
+    setFieldErrors((current) => ({ ...current, wantedDate: validateWantedDate(value) }))
   }
 
   const updateCouponCode = (value) => {
@@ -62,17 +81,23 @@ export const useCheckoutPage = () => {
       setPaymentSlipFile(null)
       setPaymentSlipPreview('')
       setError('Payment slip file must be 5MB or smaller.')
+      setTouchedFields((current) => ({ ...current, paymentSlip: true }))
+      setFieldErrors((current) => ({ ...current, paymentSlip: 'Payment slip file must be 5MB or smaller.' }))
       return
     }
 
     setPaymentSlipFile(file)
     setPaymentSlipPreview('')
     setIsPaymentSlipPopupOpen(false)
+    setTouchedFields((current) => ({ ...current, paymentSlip: true }))
+    setFieldErrors((current) => ({ ...current, paymentSlip: '' }))
   }
 
   const removePaymentSlipFile = () => {
     setPaymentSlipFile(null)
     setPaymentSlipPreview('')
+    setTouchedFields((current) => ({ ...current, paymentSlip: true }))
+    setFieldErrors((current) => ({ ...current, paymentSlip: 'Please attach your bank transfer payment slip.' }))
   }
 
   useEffect(() => {
@@ -120,6 +145,21 @@ export const useCheckoutPage = () => {
     event.preventDefault()
     setError('')
 
+    const checkoutErrors = validateCheckoutForm({
+      billingAddress,
+      paymentSlipFile,
+      shippingAddress,
+      useShippingAsBilling,
+      wantedDate,
+    })
+
+    if (hasValidationErrors(checkoutErrors)) {
+      setTouchedFields(markErrorsTouched(checkoutErrors))
+      setFieldErrors(checkoutErrors)
+      setError('Please correct the highlighted checkout fields before placing your order.')
+      return
+    }
+
     if (!paymentSlipFile) {
       setIsPaymentSlipPopupOpen(true)
       setError('Please attach your bank transfer payment slip before placing the order.')
@@ -160,16 +200,19 @@ export const useCheckoutPage = () => {
     couponMessage,
     discount,
     error,
+    fieldErrors,
     handleSubmit,
     handleValidateCoupon,
     isLoading,
     isPaymentSlipPopupOpen,
+    isSessionRestoring: isRestoring || isLoading,
     isSubmitting,
     isValidatingCoupon,
     notes,
     paymentSlipFile,
     paymentSlipPreview,
     removePaymentSlipFile,
+    markAddressFieldTouched,
     setIsPaymentSlipPopupOpen,
     setBillingAddress,
     setNotes,
@@ -177,13 +220,14 @@ export const useCheckoutPage = () => {
     setUseShippingAsBilling,
     shippingAddress,
     shippingFee,
+    touchedFields,
     total,
     updateAddress,
     updateCouponCode,
     updatePaymentSlipFile,
     useShippingAsBilling,
     wantedDate,
-    setWantedDate,
+    setWantedDate: updateWantedDate,
   }
 }
 
@@ -210,9 +254,66 @@ const buildOrderPayload = ({ billingAddress, cart, couponCode, notes, paymentSli
 }
 
 const validateAddress = (address, label) => {
-  const missing = ['street', 'city', 'state', 'zip', 'country', 'phone'].filter((field) => !address[field]?.trim())
+  const missing = requiredAddressFields.filter((field) => !address[field]?.trim())
   if (missing.length > 0) throw new Error(`${label} is missing: ${missing.join(', ')}.`)
 }
+
+const requiredAddressFields = ['street', 'city', 'state', 'zip', 'country', 'phone']
+
+const addressFieldLabels = {
+  city: 'City',
+  country: 'Country',
+  phone: 'Phone number',
+  state: 'Province',
+  street: 'Street address',
+  zip: 'ZIP / Postal code',
+}
+
+const validateAddressField = (name, value) => {
+  const normalized = String(value || '').trim()
+  const label = addressFieldLabels[name] || 'This field'
+
+  if (requiredAddressFields.includes(name) && !normalized) return `${label} is required.`
+  if (name === 'phone' && normalized && !/^[+()\d\s-]{7,20}$/.test(normalized)) return 'Enter a valid phone number.'
+  if (name === 'zip' && normalized && normalized.length < 3) return 'Enter a valid postal code.'
+  if (['city', 'country', 'state'].includes(name) && normalized && normalized.length < 2) return `${label} is too short.`
+  if (name === 'street' && normalized && normalized.length < 5) return 'Enter a complete street address.'
+
+  return ''
+}
+
+const validateWantedDate = (value) => {
+  if (!value) return ''
+
+  const selectedDate = new Date(`${value}T00:00:00`)
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+
+  if (Number.isNaN(selectedDate.getTime())) return 'Enter a valid delivery date.'
+  if (selectedDate < today) return 'Wanted delivery date cannot be in the past.'
+  return ''
+}
+
+const validateAddressFields = (address, addressType) =>
+  requiredAddressFields.reduce((errors, field) => {
+    errors[`${addressType}.${field}`] = validateAddressField(field, address[field])
+    return errors
+  }, {})
+
+const validateCheckoutForm = ({ billingAddress, paymentSlipFile, shippingAddress, useShippingAsBilling, wantedDate }) => ({
+  ...validateAddressFields(shippingAddress, 'shipping'),
+  ...(!useShippingAsBilling ? validateAddressFields(billingAddress, 'billing') : {}),
+  paymentSlip: paymentSlipFile ? '' : 'Please attach your bank transfer payment slip.',
+  wantedDate: validateWantedDate(wantedDate),
+})
+
+const hasValidationErrors = (errors) => Object.values(errors).some(Boolean)
+
+const markErrorsTouched = (errors) =>
+  Object.keys(errors).reduce((touched, key) => {
+    touched[key] = true
+    return touched
+  }, {})
 
 const cleanAddress = (address) => {
   const clean = {}

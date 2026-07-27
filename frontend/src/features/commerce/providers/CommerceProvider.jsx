@@ -169,6 +169,7 @@ export const CommerceProvider = ({ children }) => {
     clearCart,
     error,
     isLoading,
+    isRestoring,
     isPending: (watchId) => pendingIds.includes(watchId),
     isWishlisted,
     loadCommerce,

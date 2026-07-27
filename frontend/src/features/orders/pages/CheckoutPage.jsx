@@ -1,5 +1,5 @@
 import { Link } from 'react-router'
-import { AlertCircle, CalendarDays, FileText, ImagePlus, Trash2, Upload, ShieldCheck, ArrowRight, CheckCircle2, Lock } from 'lucide-react'
+import { AlertCircle, CalendarDays, FileText, ImagePlus, Trash2, Upload, ArrowRight, CheckCircle2, Lock } from 'lucide-react'
 import { ButtonSpinner, LoadingState } from '@/shared/ui/LoadingState'
 import { usePageTitle } from '@/shared/hooks/usePageTitle'
 import { formatMoney } from '@/features/storefront/lib/storefrontUtils'
@@ -62,6 +62,8 @@ export const CheckoutPage = () => {
         </div>
       )}
 
+      {checkout.isSessionRestoring && <RestoringSessionModal />}
+
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-b from-stone-100/80 via-base to-base px-4 pb-16 pt-16 sm:px-6 sm:pt-20 lg:px-10 border-b border-black/5">
         <div className="absolute inset-0 pointer-events-none opacity-40">
@@ -92,7 +94,7 @@ export const CheckoutPage = () => {
         )}
 
         {checkout.isLoading ? (
-          <div className="py-12">
+          <div className="rounded-3xl border border-black/10 bg-white p-6 shadow-[0_10px_30px_rgba(0,0,0,0.04)] sm:p-8">
             <LoadingState label="Preparing checkout details" variant="form" />
           </div>
         ) : checkout.cart.items.length === 0 ? (
@@ -117,7 +119,16 @@ export const CheckoutPage = () => {
           <form className="grid min-w-0 gap-8 lg:grid-cols-[minmax(0,1fr)_400px]" onSubmit={checkout.handleSubmit}>
             <div className="grid gap-6">
               {/* Shipping Address */}
-              <AddressForm address={checkout.shippingAddress} legend="Shipping Address" setAddress={checkout.setShippingAddress} updateAddress={checkout.updateAddress} />
+              <AddressForm
+                address={checkout.shippingAddress}
+                addressType="shipping"
+                fieldErrors={checkout.fieldErrors}
+                legend="Shipping Address"
+                markAddressFieldTouched={checkout.markAddressFieldTouched}
+                setAddress={checkout.setShippingAddress}
+                touchedFields={checkout.touchedFields}
+                updateAddress={checkout.updateAddress}
+              />
 
               {/* Billing Toggle */}
               <section className="rounded-3xl border border-black/10 bg-white p-6 shadow-[0_10px_30px_rgba(0,0,0,0.04)] transition hover:border-black/20">
@@ -134,7 +145,16 @@ export const CheckoutPage = () => {
 
               {/* Billing Address (if separate) */}
               {!checkout.useShippingAsBilling && (
-                <AddressForm address={checkout.billingAddress} legend="Billing Address" setAddress={checkout.setBillingAddress} updateAddress={checkout.updateAddress} />
+                <AddressForm
+                  address={checkout.billingAddress}
+                  addressType="billing"
+                  fieldErrors={checkout.fieldErrors}
+                  legend="Billing Address"
+                  markAddressFieldTouched={checkout.markAddressFieldTouched}
+                  setAddress={checkout.setBillingAddress}
+                  touchedFields={checkout.touchedFields}
+                  updateAddress={checkout.updateAddress}
+                />
               )}
 
               {/* Wanted Date */}
@@ -146,12 +166,14 @@ export const CheckoutPage = () => {
                     <span className="rounded-full bg-stone-100 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-stone-500">Optional</span>
                   </span>
                   <input
-                    className={inputClass}
+                    aria-invalid={Boolean(checkout.fieldErrors.wantedDate)}
+                    className={getInputClass(checkout.fieldErrors.wantedDate)}
                     min={new Date().toISOString().slice(0, 10)}
                     type="date"
                     value={checkout.wantedDate}
                     onChange={(event) => checkout.setWantedDate(event.target.value)}
                   />
+                  {checkout.fieldErrors.wantedDate && <FieldError>{checkout.fieldErrors.wantedDate}</FieldError>}
                 </label>
               </section>
 
@@ -215,6 +237,7 @@ export const CheckoutPage = () => {
                       <input className="hidden" type="file" onChange={handlePaymentSlipChange} />
                     </label>
                   )}
+                  {checkout.fieldErrors.paymentSlip && <FieldError>{checkout.fieldErrors.paymentSlip}</FieldError>}
                 </div>
               </section>
 
@@ -298,38 +321,77 @@ export const CheckoutPage = () => {
 }
 
 const inputClass = 'min-h-[46px] min-w-0 w-full rounded-2xl border border-black/15 bg-stone-50/50 px-4 py-2.5 text-sm font-medium text-black outline-none transition focus:border-black focus:bg-white focus:ring-2 focus:ring-black/10 placeholder:text-stone-400'
+const errorInputClass = 'border-red-500/70 bg-red-50/40 focus:border-red-600 focus:ring-red-500/20'
 
-const AddressForm = ({ address, legend, setAddress, updateAddress }) => (
+const getInputClass = (error) => `${inputClass} ${error ? errorInputClass : ''}`
+
+const AddressForm = ({ address, addressType, fieldErrors, legend, markAddressFieldTouched, setAddress, touchedFields, updateAddress }) => (
   <fieldset className="grid min-w-0 gap-6 rounded-3xl border border-black/10 bg-white p-6 sm:p-8 shadow-[0_10px_30px_rgba(0,0,0,0.04)]">
     <legend className="px-2 font-heading text-xl font-bold tracking-tight text-black">{legend}</legend>
     <div className="grid gap-5 sm:grid-cols-2 pt-2">
-      {addressFields.map(([name, label]) => (
-        <label className="grid gap-2 text-sm font-bold text-black" key={name}>
-          {label}
-          {name === 'state' ? (
-            <select
-              className={inputClass}
-              required
-              value={address[name]}
-              onChange={(event) => updateAddress(setAddress, name, event.target.value)}
-            >
-              <option value="" disabled>Select province</option>
-              {SRI_LANKA_PROVINCES.map((province) => (
-                <option key={province} value={province}>{province}</option>
-              ))}
-            </select>
-          ) : (
-            <input
-              className={inputClass}
-              required
-              value={address[name]}
-              onChange={(event) => updateAddress(setAddress, name, event.target.value)}
-            />
-          )}
-        </label>
-      ))}
+      {addressFields.map(([name, label]) => {
+        const fieldKey = `${addressType}.${name}`
+        const error = touchedFields[fieldKey] ? fieldErrors[fieldKey] : ''
+
+        return (
+          <label className="grid gap-2 text-sm font-bold text-black" key={name}>
+            {label}
+            {name === 'state' ? (
+              <select
+                aria-invalid={Boolean(error)}
+                className={getInputClass(error)}
+                required
+                value={address[name]}
+                onBlur={() => markAddressFieldTouched(addressType, name, address[name])}
+                onChange={(event) => updateAddress(setAddress, name, event.target.value, addressType)}
+              >
+                <option value="" disabled>Select province</option>
+                {SRI_LANKA_PROVINCES.map((province) => (
+                  <option key={province} value={province}>{province}</option>
+                ))}
+              </select>
+            ) : (
+              <input
+                aria-invalid={Boolean(error)}
+                className={getInputClass(error)}
+                inputMode={name === 'phone' ? 'tel' : undefined}
+                required
+                value={address[name]}
+                onBlur={() => markAddressFieldTouched(addressType, name, address[name])}
+                onChange={(event) => updateAddress(setAddress, name, event.target.value, addressType)}
+              />
+            )}
+            {error && <FieldError>{error}</FieldError>}
+          </label>
+        )
+      })}
     </div>
   </fieldset>
+)
+
+const FieldError = ({ children }) => (
+  <span className="flex items-start gap-1.5 text-xs font-semibold leading-snug text-red-600">
+    <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+    {children}
+  </span>
+)
+
+const RestoringSessionModal = () => (
+  <div className="fixed inset-0 z-40 grid place-items-center bg-black/45 px-4 backdrop-blur-sm">
+    <section
+      aria-live="polite"
+      className="w-full max-w-sm rounded-3xl border border-black/10 bg-white p-6 text-center text-black shadow-2xl shadow-black/20"
+      role="status"
+    >
+      <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-500/10 text-amber-600 shadow-inner">
+        <span className="h-6 w-6 animate-spin rounded-full border-2 border-amber-600/25 border-t-amber-600" />
+      </span>
+      <h2 className="mt-5 font-heading text-2xl font-bold tracking-tight text-black">Restoring session</h2>
+      <p className="mt-2 text-sm leading-relaxed text-stone-600">
+        We are preparing your checkout details and saved cart.
+      </p>
+    </section>
+  </div>
 )
 
 const BankAccountCard = ({ account }) => (
