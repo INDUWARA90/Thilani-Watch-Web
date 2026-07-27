@@ -19,10 +19,10 @@ export default function FaqPage() {
         These answers are focused on the live storefront flow, including when the slip uploads and how admins review payment.
       </PublicIntroPanel>
       <FaqAccordion items={faqItems} />
-      <section className="mt-8 rounded-[28px] border border-orange-100 bg-[linear-gradient(135deg,#FFF7ED_0%,#FFE1AD_100%)] p-6 text-[#121212] sm:flex sm:items-center sm:justify-between sm:p-8">
+      <section className="mt-8 rounded-lg border border-white/12 bg-surface p-6 text-white shadow-glowSm sm:flex sm:items-center sm:justify-between sm:p-8">
         <div>
-          <p className="text-xs font-bold uppercase tracking-wide text-[#F59600]">Still unsure?</p>
-          <h2 className="mt-2 text-2xl font-black">Talk to the shop before checkout</h2>
+          <p className="text-xs font-bold uppercase text-white/65">Still unsure?</p>
+          <h2 className="mt-2 font-heading text-2xl font-bold">Talk to the shop before checkout</h2>
         </div>
         <Link className={`${orangeButtonClass} mt-5 sm:mt-0`} to="/contact">
           Contact support <ArrowRight className="h-4 w-4" />

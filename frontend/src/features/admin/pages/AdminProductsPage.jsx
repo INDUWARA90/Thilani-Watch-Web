@@ -31,7 +31,7 @@ export const AdminProductsPage = () => {
   }
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6 p-4 sm:p-6 lg:p-8">
+    <div className="mx-auto min-w-0 max-w-7xl space-y-6">
       {/* Dynamic Alerts Container */}
       {(products.error || products.message) && (
         <div className="space-y-3 transition-all">
@@ -51,21 +51,21 @@ export const AdminProductsPage = () => {
       )}
 
       {/* Main Workspace Frame */}
-      <div className="rounded-2xl border border-slate-200/60 bg-white p-6 shadow-sm space-y-6">
+      <div className="space-y-6 rounded-2xl border border-slate-200/60 bg-white p-4 shadow-sm sm:p-6">
         {/* Header Block */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between pb-2">
-          <div>
+          <div className="min-w-0">
             <div className="inline-flex items-center gap-1.5 rounded-md bg-teal-50 px-2 py-0.5 text-xs font-semibold text-teal-700 ring-1 ring-inset ring-teal-700/10">
               Inventory Control
             </div>
-            <h2 className="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Watch Database</h2>
+            <h2 className="mt-2 break-words text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Watch Database</h2>
             <p className="mt-1 text-sm text-slate-500">
               Update real-time inventory counts and publish states instantly.
             </p>
           </div>
           
           <button
-            className="inline-flex h-11 w-fit cursor-pointer items-center justify-center gap-2 rounded-xl bg-teal-600 px-5 text-sm font-bold text-white shadow-sm transition-all hover:bg-teal-700 active:scale-98 disabled:cursor-not-allowed disabled:opacity-50"
+            className="inline-flex h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-teal-600 px-5 text-sm font-bold text-white shadow-sm transition-all hover:bg-teal-700 active:scale-98 disabled:cursor-not-allowed disabled:opacity-50 sm:w-fit"
             type="button"
             onClick={openCreateForm}
           >
@@ -102,15 +102,15 @@ export const AdminProductsPage = () => {
           aria-label={products.editingWatch ? 'Edit watch' : 'Create watch'}
         >
           {/* Modal Container */}
-          <div className="flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-slate-950/5">
+          <div className="flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-slate-950/5 sm:rounded-3xl">
             
             {/* Modal Header */}
-            <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4.5 bg-slate-50/50">
-              <div>
+            <div className="flex items-center justify-between gap-4 border-b border-slate-100 bg-slate-50/50 px-4 py-4 sm:px-6 sm:py-4.5">
+              <div className="min-w-0">
                 <span className="text-[10px] font-bold uppercase tracking-widest text-teal-600">
                   Specification Editor
                 </span>
-                <h2 className="text-lg font-extrabold text-slate-900 mt-0.5">
+                <h2 className="mt-0.5 break-words text-lg font-extrabold text-slate-900">
                   {products.editingWatch ? 'Edit Watch Details' : 'Catalog New Model'}
                 </h2>
               </div>
@@ -127,7 +127,7 @@ export const AdminProductsPage = () => {
 
             {/* Scrollable Form Viewport */}
             <div className="min-h-0 overflow-y-auto bg-slate-50/30">
-              <div className="p-6">
+              <div className="p-4 sm:p-6">
                 <WatchForm
                   brands={products.brands}
                   categories={products.categories}

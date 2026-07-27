@@ -11,21 +11,22 @@ export const AppLayout = ({ children }) => {
 
   if (isAuthPage) {
     return (
-      <div className="grid min-h-screen w-full overflow-x-hidden px-4 py-8 text-[#121212] sm:px-6 lg:px-8">
+      <div className="grid min-h-screen w-full overflow-x-hidden bg-base px-4 py-8 text-white sm:px-6 lg:px-8">
+        <div className="glow-beam fixed left-1/2 top-20 h-px w-[min(760px,80vw)] -translate-x-1/2 bg-white/70 shadow-glow" />
         <div className="m-auto w-full min-w-0">{children}</div>
       </div>
     )
   }
 
   if (isAdminPage) {
-    return <div className="min-h-screen bg-[#F8FAFC] text-[#121212]">{children}</div>
+    return <div className="min-h-screen bg-base text-white">{children}</div>
   }
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-white text-[#121212]">
+    <div className="min-h-screen overflow-x-hidden bg-base text-white">
       <Header />
-      <div className="mx-auto min-h-screen w-full max-w-[1280px] min-w-0 px-4 py-8 sm:px-6 lg:px-8">
-        <div className="min-w-0 pb-14">{children}</div>
+      <div className="mx-auto min-h-screen w-full min-w-0">
+        <div className="min-w-0">{children}</div>
       </div>
       <Footer />
     </div>

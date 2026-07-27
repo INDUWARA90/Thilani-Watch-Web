@@ -11,35 +11,33 @@ export const MyOrdersPage = () => {
   const { error, isLoading, orders } = useOrdersList()
 
   return (
-    <main className="-mx-4 -mt-8 bg-white sm:-mx-6 lg:-mx-8">
-      {/* Top Profile Banner Section */}
-      <section className="relative overflow-hidden bg-[linear-gradient(135deg,#F49006_0%,#EB960E_100%)] px-4 pb-32 pt-20 text-white sm:px-6 sm:pt-24 lg:px-8">
-        <div className="mx-auto grid max-w-[1200px] gap-10 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-end">
-          <div>
-            <p className="mb-3 inline-flex items-center rounded-full border border-white/35 bg-white/10 px-4 py-1.5 text-xs font-semibold tracking-wider uppercase text-white backdrop-blur-sm">
+    <main className="bg-base text-white">
+      <section className="relative overflow-hidden bg-base px-4 pb-28 pt-20 text-white sm:px-6 sm:pt-24 lg:px-8">
+        <div className="mx-auto grid max-w-[1200px] min-w-0 gap-10 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-end">
+          <div className="min-w-0">
+            <p className="mb-4 inline-flex items-center rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-xs font-semibold uppercase text-white/75 backdrop-blur-sm">
               Account orders
             </p>
-            <h1 className="max-w-3xl text-4xl font-black tracking-tight text-white sm:text-5xl lg:text-6xl">
+            <h1 className="max-w-3xl break-words font-heading text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
               My Orders
             </h1>
-            <p className="mt-4 max-w-xl text-sm font-medium leading-relaxed text-white/90 sm:text-base">
+            <p className="mt-4 max-w-xl text-sm font-medium leading-relaxed text-white/75 sm:text-base">
               Track every Thilani Watch purchase, payment update, and delivery step from one bright, simple account view.
             </p>
           </div>
 
-          {/* Quick Counter Summary Card */}
-          <div className="rounded-2xl border border-white/20 bg-white/10 p-6 text-white shadow-xl backdrop-blur-md">
-            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-white text-[#F49006] shadow-sm">
+          <div className="min-w-0 rounded-lg border border-white/12 bg-surface p-5 text-white shadow-glowSm backdrop-blur-md sm:p-6">
+            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-white text-black shadow-sm">
               <PackageCheck className="h-6 w-6" aria-hidden="true" />
             </div>
-            <p className="text-2xl font-black tracking-tight">
+            <p className="font-heading text-2xl font-bold tracking-tight">
               {isLoading ? 'Checking orders' : `${orders.length} ${orders.length === 1 ? 'order' : 'orders'}`}
             </p>
-            <p className="mt-1 text-xs text-white/80 font-medium">
+            <p className="mt-1 text-xs font-medium text-white/65">
               Your completed checkouts and order details stay ready here.
             </p>
             <Link
-              className="mt-5 inline-flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 text-xs font-semibold text-white no-underline shadow-md transition-all duration-200 hover:bg-slate-800 hover:scale-[1.01] active:scale-[0.99]"
+              className="mt-5 inline-flex h-10 w-full items-center justify-center gap-2 rounded-full bg-white px-4 text-xs font-bold text-black no-underline shadow-md transition hover:scale-[1.01] hover:shadow-glowSm active:scale-[0.99]"
               to="/watches"
             >
               Continue shopping
@@ -48,13 +46,12 @@ export const MyOrdersPage = () => {
           </div>
         </div>
 
-        <WaveDivider />
+        <GlowDivider />
       </section>
 
-      {/* Orders Dynamic List Area */}
-      <section className="relative z-10 mx-auto -mt-10 max-w-[1200px] px-4 pb-24 sm:px-6 lg:px-8">
+      <section className="relative z-10 mx-auto max-w-[1200px] min-w-0 px-4 pb-24 pt-12 sm:px-6 lg:px-8">
         {error && (
-          <div className="mb-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-medium text-red-600 flex items-center gap-2 shadow-sm">
+          <div className="mb-6 flex items-center gap-2 rounded-lg border border-red-400/30 bg-red-500/10 p-4 text-sm font-medium text-red-200 shadow-sm">
             <svg className="h-5 w-5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
             </svg>
@@ -63,23 +60,22 @@ export const MyOrdersPage = () => {
         )}
 
         {isLoading ? (
-          <div className="rounded-2xl border border-slate-100 bg-white p-12 shadow-sm">
+          <div className="rounded-lg border border-white/12 bg-surface p-12 shadow-glowSm">
             <LoadingState label="Loading your orders" variant="reviews" rows={4} />
           </div>
         ) : orders.length === 0 ? (
-          /* Styled Blank State Dashboard */
-          <section className="rounded-2xl border border-slate-150 bg-white p-10 text-center max-w-2xl mx-auto shadow-md">
-            <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-orange-50 text-orange-500 shadow-inner">
+          <section className="mx-auto max-w-2xl rounded-lg border border-white/12 bg-surface p-10 text-center shadow-glowSm">
+            <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-white/10 text-white shadow-inner">
               <ShoppingBag className="h-6 w-6" aria-hidden="true" />
             </div>
-            <h2 className="mb-2 text-2xl font-bold text-slate-800 tracking-tight">
+            <h2 className="mb-2 font-heading text-2xl font-bold tracking-tight text-white">
               No orders yet
             </h2>
-            <p className="mb-6 text-sm text-slate-500 max-w-sm mx-auto leading-relaxed">
+            <p className="mx-auto mb-6 max-w-sm text-sm leading-relaxed text-white/65">
               Your completed checkouts will appear here after you place an order.
             </p>
             <Link
-              className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#F49006] to-[#EB960E] px-8 text-sm font-semibold text-white no-underline shadow-lg shadow-orange-500/10 transition-all duration-200 hover:opacity-95 hover:scale-[1.02] active:scale-[0.98]"
+              className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-white px-8 text-sm font-bold text-black no-underline shadow-lg transition hover:scale-[1.02] hover:shadow-glow active:scale-[0.98]"
               to="/watches"
             >
               Browse watches
@@ -87,7 +83,6 @@ export const MyOrdersPage = () => {
             </Link>
           </section>
         ) : (
-          /* List View Shell */
           <div className="grid gap-4">
             {orders.map((order) => {
               const orderStatus = getOrderStatus(order)
@@ -95,17 +90,17 @@ export const MyOrdersPage = () => {
 
               return (
                 <article
-                  className="group grid gap-6 rounded-2xl border border-slate-100 bg-white p-5 shadow-[0_4px_20px_rgba(0,0,0,0.02)] transition-all duration-200 hover:shadow-[0_10px_30px_rgba(0,0,0,0.06)] hover:border-slate-200/60 sm:p-6 lg:grid-cols-[minmax(0,1fr)_260px]"
+                  className="group grid min-w-0 gap-6 rounded-lg border border-white/12 bg-surface p-5 shadow-[0_18px_50px_rgba(0,0,0,0.22)] transition duration-200 hover:border-white/30 hover:shadow-glowSm sm:p-6 lg:grid-cols-[minmax(0,1fr)_260px]"
                   key={getOrderId(order)}
                 >
                   <div className="grid gap-4">
-                    <div className="flex flex-wrap items-center gap-3">
-                      <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-orange-50 text-[#F49006] transition-colors group-hover:bg-orange-100">
+                    <div className="flex min-w-0 flex-wrap items-center gap-3">
+                      <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-white/10 text-white transition group-hover:bg-white group-hover:text-black">
                         <ReceiptText className="h-5 w-5" aria-hidden="true" />
                       </span>
-                      <div>
-                        <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Order number</p>
-                        <h2 className="text-xl font-bold tracking-tight text-slate-800">
+                      <div className="min-w-0">
+                        <p className="text-xs font-semibold uppercase text-white/75">Order number</p>
+                        <h2 className="break-words font-heading text-xl font-bold tracking-tight text-white">
                           {getOrderNumber(order) || getOrderId(order)}
                         </h2>
                       </div>
@@ -117,13 +112,13 @@ export const MyOrdersPage = () => {
                       {canCancelOrder(order) && <StatusPill label="Cancelable" tone="warning" />}
                     </div>
 
-                    <p className="flex items-center gap-2 text-xs font-medium text-slate-500">
-                      <CalendarDays className="h-4 w-4 text-slate-400" aria-hidden="true" />
+                    <p className="flex items-center gap-2 text-xs font-medium text-white/65">
+                      <CalendarDays className="h-4 w-4 text-white/70" aria-hidden="true" />
                       Created {formatDate(order.createdAt)}
                     </p>
                     {order.wantedDate && (
-                      <p className="flex items-center gap-2 text-xs font-medium text-slate-500">
-                        <CalendarDays className="h-4 w-4 text-slate-400" aria-hidden="true" />
+                      <p className="flex items-center gap-2 text-xs font-medium text-white/65">
+                        <CalendarDays className="h-4 w-4 text-white/70" aria-hidden="true" />
                         Wanted {formatDate(order.wantedDate)}
                       </p>
                     )}
@@ -131,13 +126,13 @@ export const MyOrdersPage = () => {
 
                   <div className="flex flex-col justify-between gap-4 lg:items-end lg:text-right">
                     <div>
-                      <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Total amount</p>
-                      <strong className="text-2xl font-black text-slate-800 tracking-tight">
+                      <p className="text-xs font-semibold uppercase text-white/75">Total amount</p>
+                      <strong className="break-words font-heading text-2xl font-bold tracking-tight text-white">
                         {formatOrderMoney(getOrderTotal(order), order.currency)}
                       </strong>
                     </div>
                     <Link
-                      className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50/50 px-5 text-xs font-semibold text-slate-700 no-underline transition-all duration-200 hover:bg-slate-100 hover:text-slate-900 group-hover:border-slate-300"
+                      className="inline-flex h-10 items-center justify-center gap-2 rounded-full border border-white/15 bg-white/5 px-5 text-xs font-bold text-white no-underline transition hover:border-white/45 hover:shadow-glowSm"
                       to={`/orders/${getOrderId(order)}`}
                     >
                       View details
@@ -154,13 +149,11 @@ export const MyOrdersPage = () => {
   )
 }
 
-const WaveDivider = () => (
-  <svg className="absolute bottom-[-1px] left-0 h-16 w-full text-slate-50" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
-    <path
-      fill="currentColor"
-      d="M0 70L60 62.7C120 55 240 41 360 49.3C480 58 600 88 720 92.7C840 98 960 77 1080 63.3C1200 50 1320 44 1380 41.3L1440 39V120H0V70Z"
-    />
-  </svg>
+const GlowDivider = () => (
+  <div className="pointer-events-none absolute bottom-8 left-1/2 h-24 w-[min(980px,92vw)] -translate-x-1/2" aria-hidden="true">
+    <div className="glow-beam absolute left-0 top-1/2 h-px w-full bg-white/70 shadow-glow" />
+    <div className="glow-beam absolute left-1/2 top-4 h-28 w-[80%] -translate-x-1/2 rounded-[50%] border-t border-white/45" />
+  </div>
 )
 
 const getStatusTone = (value) => {
@@ -173,10 +166,10 @@ const getStatusTone = (value) => {
 }
 
 const toneClasses = {
-  danger: 'border-red-100 bg-red-50 text-red-700',
-  neutral: 'border-slate-100 bg-slate-50 text-slate-600',
-  success: 'border-emerald-100 bg-emerald-50 text-emerald-700',
-  warning: 'border-amber-200/80 bg-amber-50 text-amber-800',
+  danger: 'border-red-400/25 bg-red-500/10 text-red-200',
+  neutral: 'border-white/12 bg-white/5 text-white/70',
+  success: 'border-emerald-300/25 bg-emerald-500/10 text-emerald-200',
+  warning: 'border-white/20 bg-white/10 text-white',
 }
 
 const StatusPill = ({ label, tone = 'neutral' }) => (

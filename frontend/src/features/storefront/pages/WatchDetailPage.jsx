@@ -35,9 +35,9 @@ export const WatchDetailPage = () => {
 
   if (error || !watch) {
     return (
-      <div className="mx-auto mt-12 max-w-xl border border-[#DC3545] bg-red-50 p-4 text-center font-normal text-[#DC3545]">
+      <div className="mx-auto mt-12 max-w-xl rounded-lg border border-red-400/30 bg-red-500/10 p-4 text-center font-normal text-red-200">
         {error || 'Watch not found.'}{' '}
-        <Link className="text-red-900 underline ml-1 hover:text-red-950" to="/watches">
+        <Link className="ml-1 text-white underline hover:text-white/70" to="/watches">
           Back to watches
         </Link>
       </div>
@@ -49,10 +49,9 @@ export const WatchDetailPage = () => {
   const isAvailable = watch.inStock || stockQuantity > 0
 
   return (
-    <main className="mx-auto max-w-7xl min-w-0 overflow-x-hidden px-4 py-8 sm:px-6 lg:px-8">
-      {/* Back Navigation Button */}
+    <main className="mx-auto max-w-[1200px] min-w-0 overflow-x-hidden bg-base px-4 py-10 text-white sm:px-6 lg:px-10">
       <Link 
-        className="group mb-8 inline-flex min-h-11 max-w-full items-center gap-2 rounded-[14px] border border-[#DEE2E6] bg-[rgba(18,18,18,0.04)] px-5 text-sm font-normal text-[#121212] no-underline transition hover:bg-[rgba(18,18,18,0.08)] sm:px-8" 
+        className="group mb-8 inline-flex min-h-11 max-w-full items-center gap-2 rounded-full border border-white/15 bg-white/5 px-5 text-sm font-bold text-white no-underline transition hover:border-white/45 hover:shadow-glowSm sm:px-8" 
         to="/watches"
       >
         <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
@@ -60,16 +59,16 @@ export const WatchDetailPage = () => {
       </Link>
 
       <section className="grid min-w-0 gap-10 lg:grid-cols-2 lg:items-start lg:gap-12">
-        {/* Media Column Gallery */}
         <motion.div 
           initial={{ opacity: 0, x: -15 }} 
           animate={{ opacity: 1, x: 0 }} 
           transition={{ duration: 0.5, ease: 'easeOut' }}
           className="min-w-0 flex flex-col gap-4"
         >
-          <div className="overflow-hidden rounded-[20px] border border-[#DEE2E6] bg-[#F8F9FA] shadow-[13px_14px_12.6px_0_rgba(0,0,0,0.05)]">
+          <div className="relative overflow-hidden rounded-lg border border-white/12 bg-surface shadow-glowSm">
+            <div className="absolute inset-x-12 bottom-10 h-14 rounded-full bg-white/20 blur-2xl" />
             <img 
-              className="aspect-square w-full object-cover transition-transform duration-700 hover:scale-102" 
+              className="relative z-10 aspect-square w-full object-cover transition-transform duration-700 hover:scale-[1.02]" 
               src={detail.selectedImage || '/favicon.svg'} 
               alt={watch.name} 
             />
@@ -78,10 +77,10 @@ export const WatchDetailPage = () => {
             <div className="flex flex-wrap gap-2.5">
               {images.map((image) => (
                 <button 
-                  className={`relative h-16 w-16 cursor-pointer overflow-hidden rounded-[14px] border bg-white p-0 transition-all duration-200 ${
+                  className={`relative h-16 w-16 cursor-pointer overflow-hidden rounded-lg border bg-white/5 p-0 transition-all duration-200 ${
                     detail.selectedImage === image 
-                      ? 'scale-95 border-[#F49006] ring-2 ring-[#F49006]/20' 
-                      : 'border-[#DEE2E6] hover:border-[#A7A7A7]'
+                      ? 'scale-95 border-white ring-2 ring-white/20' 
+                      : 'border-white/12 hover:border-white/45'
                   }`} 
                   key={image} 
                   type="button" 
@@ -94,54 +93,51 @@ export const WatchDetailPage = () => {
           )}
         </motion.div>
 
-        {/* Product Meta Content Info Column */}
         <div className="min-w-0 flex flex-col">
-          <span className="mb-2 text-sm font-normal text-[#F49006]">
+          <span className="mb-3 inline-flex w-fit rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-semibold uppercase text-white/70">
             {getTitle(watch.brand, 'Brand')} &middot; {getTitle(watch.category, 'Category')}
           </span>
           
-          <h1 className="mb-4 break-words text-4xl font-extrabold leading-tight text-[#121212] sm:text-[44px]">
+          <h1 className="mb-4 break-words font-heading text-4xl font-bold leading-tight text-white sm:text-[52px]">
             {watch.name}
           </h1>
 
           <div className="mb-6 flex flex-wrap items-center gap-4">
-            <span className="text-2xl font-bold text-[#121212]">
+            <span className="font-heading text-2xl font-bold text-white">
               {formatMoney(watch.price, watch.currency)}
             </span>
-            <div className="h-4 w-px bg-[#DEE2E6]" />
+            <div className="h-4 w-px bg-white/12" />
             <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-              watch.inStock || watch.stockQuantity > 0 ? 'border border-[#198754] bg-green-50 text-[#198754]' : 'border border-[#DEE2E6] bg-[#F8F9FA] text-[#6C757D]'
+              watch.inStock || watch.stockQuantity > 0 ? 'border border-white/25 bg-white/5 text-white' : 'border border-red-400/30 bg-red-500/10 text-red-200'
             }`}>
               {watch.inStock || watch.stockQuantity > 0 ? `${watch.stockQuantity ?? 'Available'} Available` : 'Out of Stock'}
             </span>
             {watch.ratingAverage && (
-              <span className="inline-flex items-center gap-1 text-sm font-normal text-[#121212]">
-                <Star className="h-4 w-4 fill-[#F49006] text-[#F49006]" /> 
+              <span className="inline-flex items-center gap-1 text-sm font-normal text-white/65">
+                <Star className="h-4 w-4 fill-white text-white" /> 
                 {Number(watch.ratingAverage).toFixed(1)} Rating
               </span>
             )}
           </div>
 
-          <p className="mb-8 text-base leading-7 text-[#212529]">
+          <p className="mb-8 text-base leading-7 text-white/75">
             {watch.shortDescription || watch.description || 'A refined modern classic designed to elevate any collection.'}
           </p>
 
-          {/* Actions Workspace Panel */}
-          <div className="mb-8 rounded-[20px] border border-[#DEE2E6] bg-[#F8F9FA] p-5">
-            {/* Action Messaging */}
+          <div className="mb-8 rounded-lg border border-white/12 bg-surface p-5 shadow-glowSm">
             {(detail.actionMessage || detail.actionError) && (
               <div className={`mb-4 border p-3 text-sm font-normal ${
-                detail.actionError ? 'border-[#DC3545] bg-red-50 text-[#DC3545]' : 'border-[#198754] bg-green-50 text-[#198754]'
+                detail.actionError ? 'border-red-400/30 bg-red-500/10 text-red-200' : 'border-emerald-300/30 bg-emerald-500/10 text-emerald-200'
               }`}>
                 {detail.actionError || detail.actionMessage}
               </div>
             )}
             
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
-              <label className="flex flex-col gap-1.5 text-base font-normal text-[#121212] sm:w-28">
+            <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-end">
+              <label className="flex flex-col gap-1.5 text-base font-normal text-white/65 sm:w-28">
                 Qty
                 <input
-                  className="h-11 min-w-0 border border-[#DEE2E6] bg-white text-center font-normal text-[#121212] outline-none transition focus:border-[#0D6EFD] focus:ring-2 focus:ring-[#0D6EFD]/25"
+                  className="h-11 min-w-0 rounded-lg border border-white/12 bg-black/35 text-center font-normal text-white outline-none transition focus:border-white/45 focus:ring-2 focus:ring-white/10"
                   max={stockQuantity || undefined}
                   min="1"
                   type="number"
@@ -151,7 +147,7 @@ export const WatchDetailPage = () => {
               </label>
 
               <button 
-                className="inline-flex h-11 min-w-0 flex-1 cursor-pointer items-center justify-center gap-2 rounded-[14px] bg-[#121212] px-5 text-sm font-normal text-white transition hover:bg-[#272222] disabled:opacity-40 sm:px-8" 
+                className="inline-flex min-h-11 min-w-0 flex-1 cursor-pointer items-center justify-center gap-2 rounded-full bg-white px-5 text-sm font-bold text-black transition hover:shadow-glow disabled:opacity-40 sm:px-8" 
                 disabled={!isAvailable || detail.isBusy} 
                 type="button" 
                 onClick={detail.handleAddToCart}
@@ -161,25 +157,24 @@ export const WatchDetailPage = () => {
               </button>
 
               <button 
-                className="inline-flex h-11 w-11 cursor-pointer items-center justify-center rounded-[14px] border border-[#DEE2E6] bg-white text-[#121212] transition hover:bg-[rgba(244,144,6,0.1)] hover:text-[#F49006] disabled:opacity-40" 
+                className="inline-flex h-11 w-full cursor-pointer items-center justify-center rounded-full border border-white/15 bg-white/5 text-white transition hover:border-white/45 hover:bg-white hover:text-black disabled:opacity-40 sm:w-11" 
                 disabled={detail.isBusy} 
                 type="button" 
                 onClick={detail.handleWishlist}
               >
-                <Heart className={`h-4 w-4 transition-all ${detail.isWishlisted(detail.watchId) ? 'scale-105 fill-[#F49006] text-[#F49006]' : ''}`} />
+                <Heart className={`h-4 w-4 transition-all ${detail.isWishlisted(detail.watchId) ? 'scale-105 fill-white text-white' : ''}`} />
               </button>
             </div>
           </div>
 
-          {/* Specifications Definition Details List */}
-          <div className="border-t border-[#DEE2E6] pt-6">
-            <h2 className="mb-4 text-xl font-bold text-[#121212]">Specifications</h2>
+          <div className="border-t border-white/10 pt-6">
+            <h2 className="mb-4 font-heading text-xl font-bold text-white">Specifications</h2>
             <dl className="grid gap-x-6 gap-y-3 sm:grid-cols-2">
               {detailFields.map(([label, key]) => (
                 watch[key] ? (
-                  <div className="flex justify-between border-b border-[#DEE2E6] py-2 sm:flex-col sm:gap-0.5 sm:border-none" key={key}>
-                    <dt className="text-sm font-normal text-[#6C757D]">{label}</dt>
-                    <dd className="text-sm font-bold text-[#121212]">{watch[key]}</dd>
+                  <div className="flex min-w-0 flex-col gap-0.5 border-b border-white/10 py-2 min-[420px]:flex-row min-[420px]:justify-between sm:flex-col sm:border-none" key={key}>
+                    <dt className="text-sm font-normal text-white/65">{label}</dt>
+                    <dd className="min-w-0 break-words text-sm font-bold text-white min-[420px]:text-right sm:text-left">{watch[key]}</dd>
                   </div>
                 ) : null
               ))}
@@ -188,8 +183,7 @@ export const WatchDetailPage = () => {
         </div>
       </section>
 
-      {/* Review Integration Section */}
-      <div className="mt-16 border-t border-[#DEE2E6] pt-12">
+      <div className="mt-16 border-t border-white/10 pt-12">
         <ReviewSection onReviewsChanged={detail.refreshWatchSummary} watchId={detail.watchId} />
       </div>
     </main>

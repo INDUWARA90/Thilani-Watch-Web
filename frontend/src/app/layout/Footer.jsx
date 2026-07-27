@@ -39,16 +39,17 @@ const socialLinks = [
 ]
 
 export const Footer = () => (
-  <footer className="mt-20 bg-[#121212] px-4 py-12 text-white sm:px-6 lg:px-10">
+  <footer className="relative bg-base px-4 py-12 text-white sm:px-6 lg:px-10">
+    <div className="glow-beam absolute left-1/2 top-0 h-px w-[min(760px,80vw)] -translate-x-1/2 bg-white/70 shadow-glow" />
     <div className="mx-auto grid max-w-[1200px] gap-10 md:grid-cols-[1.4fr_0.9fr_1.2fr_0.9fr]">
       <div>
         <div className="flex items-center gap-3">
           <img
             alt="Thilani Watch Center logo"
-            className="h-14 w-14 rounded-full bg-black object-cover ring-1 ring-white/15"
+            className="h-14 w-14 rounded-full bg-white object-cover ring-1 ring-white/20"
             src="/logo.jpeg"
           />
-          <span className="text-xl font-extrabold text-white">Thilani Watch Web</span>
+          <span className="font-heading text-xl font-bold text-white">Thilani Watch Web</span>
         </div>
         <p className="mt-4 max-w-sm text-sm leading-6 text-white/75">
           A bright, modern storefront for premium watches, secure shopping, and clear order tracking from discovery to delivery.
@@ -56,7 +57,7 @@ export const Footer = () => (
       </div>
 
       <div>
-        <span className="text-sm font-normal text-white/70">Explore</span>
+        <span className="text-sm font-semibold text-white">Explore</span>
         <nav className="mt-4 grid gap-3">
           <FooterLink to="/watches">All Watches</FooterLink>
           <FooterLink to="/about">About Us</FooterLink>
@@ -69,11 +70,11 @@ export const Footer = () => (
       </div>
 
       <div>
-        <span className="text-sm font-normal text-white/70">Contact Us</span>
+        <span className="text-sm font-semibold text-white">Contact Us</span>
         <div className="mt-4 grid gap-3">
           {contactDetails.map((item) => (
             <FooterExternalLink href={item.href} key={item.label}>
-              <item.icon aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-[#F49006]" />
+              <item.icon aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-white/70" />
               <span>{item.label}</span>
             </FooterExternalLink>
           ))}
@@ -81,18 +82,18 @@ export const Footer = () => (
       </div>
 
       <div>
-        <span className="text-sm font-normal text-white/70">Follow Us</span>
+        <span className="text-sm font-semibold text-white">Follow Us</span>
         <div className="mt-4 grid gap-3">
           {socialLinks.map((item) => (
             <FooterExternalLink href={item.href} key={item.label}>
-              <item.icon aria-hidden="true" className="h-4 w-4 shrink-0 text-[#F49006]" />
+              <item.icon aria-hidden="true" className="h-4 w-4 shrink-0 text-white/70" />
               <span>{item.label}</span>
             </FooterExternalLink>
           ))}
         </div>
       </div>
 
-      <div className="border-t border-white/15 pt-6 text-sm text-white/65 md:col-span-4 md:flex md:items-center md:justify-between">
+      <div className="border-t border-white/10 pt-6 text-sm text-white/65 md:col-span-4 md:flex md:items-center md:justify-between">
         <p>&copy; {new Date().getFullYear()} Thilani Watch Web. All rights reserved.</p>
         <p className="mt-3 md:mt-0">Premium Watch Storefront</p>
       </div>
@@ -101,14 +102,14 @@ export const Footer = () => (
 )
 
 const FooterLink = ({ children, to }) => (
-  <Link className="text-sm text-white no-underline transition hover:text-[#F49006]" to={to}>
+  <Link className="text-sm text-white/75 no-underline transition hover:text-white hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]" to={to}>
     {children}
   </Link>
 )
 
 const FooterExternalLink = ({ children, href }) => (
   <a
-    className="flex items-start gap-2 text-sm text-white no-underline transition hover:text-[#F49006]"
+    className="flex items-start gap-2 text-sm text-white/75 no-underline transition hover:text-white hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]"
     href={href}
     rel="noreferrer"
     target="_blank"

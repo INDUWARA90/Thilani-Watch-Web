@@ -96,16 +96,16 @@ export const ForgotPasswordPage = () => {
   }
 
   return (
-    <section className="mx-auto w-full max-w-[560px] min-w-0 rounded-[24px] border border-[#E5E7EB] bg-white p-5 text-[#121212] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.15)] sm:p-9">
-      <p className="mb-3 text-sm font-medium tracking-wide text-[#6C757D]">Password reset</p>
-      <h1 className="mb-3 text-4xl font-extrabold leading-[1.1] tracking-tight text-[#121212] sm:text-[44px]">
+    <section className="mx-auto w-full max-w-[560px] min-w-0 rounded-lg border border-white/12 bg-surface p-5 text-white shadow-glowSm sm:p-9">
+      <p className="mb-3 inline-flex rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-semibold uppercase text-white/70">Password reset</p>
+      <h1 className="mb-3 font-heading text-4xl font-bold leading-[1.1] tracking-tight text-white sm:text-[44px]">
         Reset password
       </h1>
-      <p className="mb-8 text-base leading-7 text-[#6C757D]">
+      <p className="mb-8 text-base leading-7 text-white/70">
         Request an OTP, verify it, then create a new password.
       </p>
 
-      <div className="mb-6 grid grid-cols-3 gap-2 text-xs font-semibold text-[#6C757D]">
+      <div className="mb-6 grid grid-cols-3 gap-2 text-xs font-semibold text-white/65">
         <StepPill active={step === steps.email} complete={step !== steps.email} label="Email" />
         <StepPill active={step === steps.otp} complete={[steps.password, steps.complete].includes(step)} label="OTP" />
         <StepPill active={[steps.password, steps.complete].includes(step)} complete={step === steps.complete} label="Password" />
@@ -114,24 +114,24 @@ export const ForgotPasswordPage = () => {
       {error && (
         <div
           role="alert"
-          className="mb-5 rounded-[12px] border border-[#DC3545]/40 bg-[#FDECEE] px-4 py-3 text-sm font-medium text-[#DC3545]"
+          className="mb-5 rounded-lg border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm font-medium text-red-200"
         >
           {error}
         </div>
       )}
 
       {message && (
-        <div className="mb-5 rounded-[12px] border border-[#198754]/30 bg-[#EAF7EF] px-4 py-3 text-sm font-medium text-[#146C43]">
+        <div className="mb-5 rounded-lg border border-emerald-300/30 bg-emerald-500/10 px-4 py-3 text-sm font-medium text-emerald-200">
           {message}
         </div>
       )}
 
       {step === steps.email && (
         <form className="grid gap-5" onSubmit={handleForgotPassword} noValidate>
-          <label className="grid gap-2 text-sm font-medium text-[#121212]">
+          <label className="grid gap-2 text-sm font-medium text-white/65">
             Email
             <span className={authInputShellClass}>
-              <Mail className="h-4 w-4 shrink-0 text-[#6C757D]" />
+              <Mail className="h-4 w-4 shrink-0 text-white/70" />
               <input
                 className={authEmbeddedInputClass}
                 name="email"
@@ -149,10 +149,10 @@ export const ForgotPasswordPage = () => {
 
       {step === steps.otp && (
         <form className="grid gap-5" onSubmit={handleVerifyOtp} noValidate>
-          <label className="grid gap-2 text-sm font-medium text-[#121212]">
+          <label className="grid gap-2 text-sm font-medium text-white/65">
             OTP
             <span className={authInputShellClass}>
-              <ShieldCheck className="h-4 w-4 shrink-0 text-[#6C757D]" />
+              <ShieldCheck className="h-4 w-4 shrink-0 text-white/70" />
               <input
                 className={authEmbeddedInputClass}
                 name="otp"
@@ -168,7 +168,7 @@ export const ForgotPasswordPage = () => {
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <SubmitButton isSubmitting={isSubmitting} loadingLabel="Verifying" label="Verify OTP" />
             <button
-              className="inline-flex min-h-11 w-full cursor-pointer items-center justify-center rounded-[14px] border border-[#121212]/15 bg-white px-8 text-sm font-semibold text-[#121212] transition-colors duration-200 hover:bg-[#121212] hover:text-white sm:w-fit"
+              className="inline-flex min-h-11 w-full cursor-pointer items-center justify-center rounded-full border border-white/15 bg-white/5 px-8 text-sm font-bold text-white transition hover:border-white/45 hover:shadow-glowSm sm:w-fit"
               type="button"
               disabled={isSubmitting}
               onClick={() => setStep(steps.email)}
@@ -181,10 +181,10 @@ export const ForgotPasswordPage = () => {
 
       {step === steps.password && (
         <form className="grid gap-5" onSubmit={handleResetPassword} noValidate>
-          <label className="grid gap-2 text-sm font-medium text-[#121212]">
+          <label className="grid gap-2 text-sm font-medium text-white/65">
             New password
             <span className={authInputShellClass}>
-              <LockKeyhole className="h-4 w-4 shrink-0 text-[#6C757D]" />
+              <LockKeyhole className="h-4 w-4 shrink-0 text-white/70" />
               <input
                 className={authEmbeddedInputClass}
                 name="newPassword"
@@ -197,10 +197,10 @@ export const ForgotPasswordPage = () => {
             </span>
           </label>
 
-          <label className="grid gap-2 text-sm font-medium text-[#121212]">
+          <label className="grid gap-2 text-sm font-medium text-white/65">
             Confirm password
             <input
-              className="min-h-[46px] min-w-0 rounded-[12px] border border-[#E5E7EB] bg-[#F9FAFB] px-[15px] text-[15px] text-[#121212] outline-none placeholder:text-[#9CA3AF] transition-colors duration-200 focus:border-[#121212] focus:bg-white"
+              className="min-h-[46px] min-w-0 rounded-lg border border-white/12 bg-black/35 px-[15px] text-[15px] text-white outline-none placeholder:text-white/65 transition focus:border-white/45 focus:ring-2 focus:ring-white/10"
               name="confirmPassword"
               type={showPassword ? 'text' : 'password'}
               placeholder="Re-enter new password"
@@ -215,7 +215,7 @@ export const ForgotPasswordPage = () => {
 
       {step === steps.complete && (
         <button
-          className="inline-flex min-h-11 w-full cursor-pointer items-center justify-center rounded-[14px] bg-[#121212] px-8 text-sm font-semibold text-white transition-colors duration-200 hover:bg-[#272222] sm:w-fit"
+          className="inline-flex min-h-11 w-full cursor-pointer items-center justify-center rounded-full bg-white px-8 text-sm font-bold text-black transition hover:shadow-glow sm:w-fit"
           type="button"
           onClick={() => navigate('/login')}
         >
@@ -223,9 +223,9 @@ export const ForgotPasswordPage = () => {
         </button>
       )}
 
-      <p className="mt-6 text-sm text-[#6C757D]">
+      <p className="mt-6 text-sm text-white/70">
         Remembered your password?{' '}
-        <Link className="font-semibold text-[#121212] no-underline transition-colors duration-200 hover:text-[#6C757D]" to="/login">
+        <Link className="font-semibold text-white no-underline transition hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]" to="/login">
           Log in
         </Link>
       </p>
@@ -237,8 +237,8 @@ const StepPill = ({ active, complete, label }) => (
   <span
     className={`inline-flex min-h-9 items-center justify-center rounded-[12px] border px-3 ${
       active || complete
-        ? 'border-[#121212] bg-[#121212] text-white'
-        : 'border-[#E5E7EB] bg-[#F9FAFB] text-[#6C757D]'
+        ? 'border-white bg-white text-black'
+        : 'border-white/12 bg-white/5 text-white/65'
     }`}
   >
     {label}
@@ -247,7 +247,7 @@ const StepPill = ({ active, complete, label }) => (
 
 const SubmitButton = ({ isSubmitting, loadingLabel, label }) => (
   <button
-    className="mt-1 inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-[14px] bg-[#121212] px-8 text-sm font-semibold text-white transition-colors duration-200 hover:bg-[#272222] disabled:cursor-not-allowed disabled:opacity-60 sm:w-fit"
+    className="mt-1 inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-white px-8 text-sm font-bold text-black transition hover:shadow-glow disabled:cursor-not-allowed disabled:opacity-60 sm:w-fit"
     type="submit"
     disabled={isSubmitting}
   >
@@ -257,7 +257,7 @@ const SubmitButton = ({ isSubmitting, loadingLabel, label }) => (
 
 const PasswordToggle = ({ showPassword, onToggle }) => (
   <button
-    className="cursor-pointer text-[#6C757D] transition-colors duration-200 hover:text-[#121212]"
+    className="cursor-pointer text-white/65 transition hover:text-white"
     type="button"
     aria-label="Toggle password visibility"
     aria-pressed={showPassword}
@@ -268,7 +268,7 @@ const PasswordToggle = ({ showPassword, onToggle }) => (
 )
 
 const authInputShellClass =
-  'flex items-center rounded-[12px] border border-[#E5E7EB] bg-[#F9FAFB] px-[15px] transition-colors duration-200 focus-within:border-[#121212] focus-within:bg-white'
+  'flex items-center rounded-lg border border-white/12 bg-black/35 px-[15px] transition focus-within:border-white/45 focus-within:ring-2 focus-within:ring-white/10'
 
 const authEmbeddedInputClass =
-  'min-h-[46px] min-w-0 flex-1 bg-transparent px-3 text-[15px] text-[#121212] outline-none placeholder:text-[#9CA3AF]'
+  'min-h-[46px] min-w-0 flex-1 bg-transparent px-3 text-[15px] text-white outline-none placeholder:text-white/65'

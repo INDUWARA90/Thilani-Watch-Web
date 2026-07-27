@@ -133,39 +133,38 @@ export const ProfilePage = () => {
   }
 
   return (
-    <main className="mx-auto w-full max-w-7xl grid gap-8 pb-12 animate-fade-in">
-      {/* Page Header */}
-      <section className="relative overflow-hidden rounded-[2rem] border border-slate-100 bg-gradient-to-b from-white to-slate-50/70 p-6 shadow-xl shadow-slate-200/40 sm:p-10">
-        <div className="absolute top-0 left-0 h-1.5 w-full bg-gradient-to-r from-[#F49006] to-amber-500" />
-        <p className="mb-2 text-xs font-bold uppercase tracking-[0.15em] text-[#F49006]">Account settings</p>
-        <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">Profile & Addresses</h1>
-        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-500 sm:text-base">
+    <main className="mx-auto grid w-full min-w-0 max-w-[1200px] animate-fade-in gap-8 bg-base pb-12 text-white">
+      <section className="relative min-w-0 overflow-hidden rounded-lg border border-white/12 bg-surface p-5 shadow-glowSm sm:p-10">
+        <div className="glow-beam absolute left-0 top-0 h-px w-full bg-white/70 shadow-glow" />
+        <p className="mb-2 text-xs font-bold uppercase text-white/65">Account settings</p>
+        <h1 className="break-words font-heading text-3xl font-bold tracking-tight text-white sm:text-4xl">Profile & Addresses</h1>
+        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-white/70 sm:text-base">
           Manage your account contact details, security credentials, and shipping addresses.
         </p>
       </section>
 
       {/* Notifications */}
       {error && (
-        <div className="flex items-center gap-3 rounded-xl border border-red-200 bg-red-50/60 px-4 py-3.5 text-sm font-medium text-red-600 shadow-sm backdrop-blur-sm">
+        <div className="flex items-center gap-3 rounded-lg border border-red-400/30 bg-red-500/10 px-4 py-3.5 text-sm font-medium text-red-200 shadow-sm backdrop-blur-sm">
           <AlertCircle className="h-5 w-5 shrink-0 text-red-500" />
           <span>{error}</span>
         </div>
       )}
       {message && (
-        <div className="flex items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50/60 px-4 py-3.5 text-sm font-medium text-emerald-700 shadow-sm backdrop-blur-sm">
+        <div className="flex items-center gap-3 rounded-lg border border-emerald-300/30 bg-emerald-500/10 px-4 py-3.5 text-sm font-medium text-emerald-200 shadow-sm backdrop-blur-sm">
           <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-500" />
           <span>{message}</span>
         </div>
       )}
 
       {/* Profile Card */}
-      <form className="flex flex-col justify-between rounded-2xl border border-slate-200/70 bg-white p-6 shadow-sm transition-all hover:shadow-md" onSubmit={saveProfile}>
+      <form className="flex min-w-0 flex-col justify-between rounded-lg border border-white/12 bg-surface p-5 shadow-glowSm sm:p-6" onSubmit={saveProfile}>
         <div className="grid gap-5">
-          <div className="flex items-center gap-2.5 pb-2 border-b border-slate-50">
-            <div className="rounded-lg bg-amber-50 p-2 text-[#F49006]">
+          <div className="flex items-center gap-2.5 border-b border-white/10 pb-2">
+            <div className="rounded-lg bg-white/10 p-2 text-white">
               <User className="h-5 w-5" />
             </div>
-            <h2 className="text-lg font-bold text-slate-900">Personal Details</h2>
+            <h2 className="font-heading text-lg font-bold text-white">Personal Details</h2>
           </div>
           <Field label="Full Name" required value={profile.name} onChange={(value) => setProfile((current) => ({ ...current, name: value }))} />
           <Field label="Phone Number" type="tel" value={profile.phone} onChange={(value) => setProfile((current) => ({ ...current, phone: value }))} />
@@ -176,12 +175,12 @@ export const ProfilePage = () => {
       </form>
 
       {/* Address Book Section */}
-      <section className="grid gap-6 rounded-2xl border border-slate-200/70 bg-white p-6 shadow-sm">
-        <div className="flex items-center gap-2.5 pb-3 border-b border-slate-100">
-          <div className="rounded-lg bg-amber-50 p-2 text-[#F49006]">
+      <section className="grid min-w-0 gap-6 rounded-lg border border-white/12 bg-surface p-5 shadow-glowSm sm:p-6">
+        <div className="flex items-center gap-2.5 border-b border-white/10 pb-3">
+          <div className="rounded-lg bg-white/10 p-2 text-white">
             <MapPin className="h-5 w-5" />
           </div>
-          <h2 className="text-lg font-bold text-slate-900">Saved Addresses</h2>
+          <h2 className="font-heading text-lg font-bold text-white">Saved Addresses</h2>
         </div>
 
         {isLoading ? (
@@ -189,29 +188,29 @@ export const ProfilePage = () => {
         ) : (
           <div className="grid gap-4 md:grid-cols-2">
             {addresses.map((address) => (
-              <article className="group relative flex flex-col justify-between rounded-xl border border-slate-200/60 bg-slate-50/40 p-5 transition-all duration-200 hover:border-slate-300 hover:bg-white hover:shadow-md" key={getAddressId(address)}>
+              <article className="group relative flex min-w-0 flex-col justify-between rounded-lg border border-white/12 bg-black/25 p-5 transition duration-200 hover:border-white/30 hover:shadow-glowSm" key={getAddressId(address)}>
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-3">
-                    <span className="inline-flex items-center rounded-md bg-white border border-slate-200 px-2.5 py-1 text-xs font-bold text-slate-800 tracking-wide shadow-2xs">
+                    <span className="inline-flex items-center rounded-md border border-white/12 bg-white/5 px-2.5 py-1 text-xs font-bold text-white shadow-2xs">
                       {address.label || 'Address'}
                     </span>
                     {address.isDefault && (
-                      <span className="inline-flex items-center rounded-full bg-emerald-50 border border-emerald-200/60 px-2.5 py-0.5 text-[11px] font-bold text-emerald-700 tracking-wide">
+                      <span className="inline-flex items-center rounded-full border border-emerald-300/25 bg-emerald-500/10 px-2.5 py-0.5 text-[11px] font-bold text-emerald-200">
                         Default
                       </span>
                     )}
                   </div>
-                  <div className="text-sm leading-relaxed text-slate-600 space-y-0.5">
-                    <p className="font-semibold text-slate-800">{address.fullName}</p>
+                  <div className="min-w-0 space-y-0.5 text-sm leading-relaxed text-white/65">
+                    <p className="font-semibold text-white">{address.fullName}</p>
                     <p>{address.addressLine1}</p>
                     {address.addressLine2 && <p>{address.addressLine2}</p>}
                     <p>{[address.city, address.district, address.postalCode].filter(Boolean).join(', ')}</p>
-                    <p className="text-xs font-medium tracking-wide uppercase text-slate-400 mt-1">{address.country}</p>
-                    <p className="text-slate-500 pt-1 font-mono text-xs">{address.phone}</p>
+                    <p className="mt-1 text-xs font-medium uppercase text-white/70">{address.country}</p>
+                    <p className="pt-1 font-mono text-xs text-white/65">{address.phone}</p>
                   </div>
                 </div>
                 
-                <div className="flex flex-wrap gap-2 mt-5 pt-3 border-t border-slate-100">
+                <div className="mt-5 flex flex-wrap gap-2 border-t border-white/10 pt-3">
                   <button className={secondaryButtonClass} type="button" onClick={() => editAddress(address)}>Edit</button>
                   {!address.isDefault && (
                     <button className={secondaryButtonClass} type="button" onClick={() => setDefaultAddress(address)}>Set Default</button>
@@ -221,27 +220,27 @@ export const ProfilePage = () => {
               </article>
             ))}
             {addresses.length === 0 && (
-              <div className="md:col-span-2 text-center py-8 border border-dashed border-slate-200 rounded-xl bg-slate-50/30">
-                <p className="text-sm text-slate-400 font-medium">No saved dispatch addresses found.</p>
+              <div className="rounded-lg border border-dashed border-white/15 bg-white/[0.03] py-8 text-center md:col-span-2">
+                <p className="text-sm font-medium text-white/65">No saved dispatch addresses found.</p>
               </div>
             )}
           </div>
         )}
 
         {/* Dynamic Address Management Form */}
-        <form className="mt-6 border-t border-slate-100 pt-6 space-y-6" onSubmit={saveAddress}>
+        <form className="mt-6 space-y-6 border-t border-white/10 pt-6" onSubmit={saveAddress}>
           <div className="flex items-center justify-between gap-4">
-            <h3 className="text-base font-bold text-slate-900 inline-flex items-center gap-2">
+            <h3 className="inline-flex items-center gap-2 font-heading text-base font-bold text-white">
               {editingAddressId ? (
                 <>Modify Address Entry</>
               ) : (
-                <><Plus className="h-4 w-4 text-[#F49006]" /> Register New Address</>
+                <><Plus className="h-4 w-4 text-white" /> Register New Address</>
               )}
             </h3>
             {editingAddressId && (
               <button 
                 type="button" 
-                className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-400 hover:text-slate-600 transition-colors"
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-white/65 transition hover:text-white"
                 onClick={() => {
                   setEditingAddressId('')
                   setAddressForm(emptyAddress)
@@ -265,7 +264,7 @@ export const ProfilePage = () => {
             ))}
           </div>
 
-          <div className="flex items-center justify-between gap-4 flex-wrap pt-2">
+          <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
             <label className="inline-flex items-center gap-3 cursor-pointer select-none group">
               <input 
                 checked={addressForm.isDefault} 
@@ -273,7 +272,7 @@ export const ProfilePage = () => {
                 className="h-4 w-4 rounded border-slate-300 text-[#F49006] focus:ring-[#F49006]/20 transition-all cursor-pointer"
                 onChange={(event) => setAddressForm((current) => ({ ...current, isDefault: event.target.checked }))} 
               />
-              <span className="text-sm font-medium text-slate-700 group-hover:text-slate-900 transition-colors">Set as preferred destination</span>
+              <span className="text-sm font-medium text-white/75 transition group-hover:text-white">Set as preferred destination</span>
             </label>
 
             <button className={`${primaryButtonClass} mt-0`} disabled={isSaving} type="submit">
@@ -299,12 +298,12 @@ const addressFields = [
 ]
 
 const Field = ({ label, onChange, required = false, type = 'text', value }) => (
-  <label className="flex flex-col gap-1.5 w-full text-xs font-bold tracking-wide uppercase text-slate-500">
+  <label className="flex w-full flex-col gap-1.5 text-xs font-bold uppercase text-white/65">
     <span>
-      {label} {required && <span className="text-amber-500 font-serif">*</span>}
+      {label} {required && <span className="font-serif text-white">*</span>}
     </span>
     <input 
-      className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3.5 text-sm font-medium tracking-normal text-slate-900 normal-case shadow-2xs outline-none transition-all placeholder:text-slate-400 hover:border-slate-300 focus:border-[#F49006] focus:ring-4 focus:ring-[#F49006]/10" 
+      className="h-11 w-full rounded-lg border border-white/12 bg-black/35 px-3.5 text-sm font-medium tracking-normal text-white normal-case shadow-2xs outline-none transition placeholder:text-white/65 hover:border-white/30 focus:border-white/45 focus:ring-2 focus:ring-white/10" 
       required={required} 
       type={type} 
       value={value} 
@@ -313,8 +312,8 @@ const Field = ({ label, onChange, required = false, type = 'text', value }) => (
   </label>
 )
 
-const primaryButtonClass = 'mt-6 inline-flex h-11 w-full sm:w-fit cursor-pointer items-center justify-center gap-2 rounded-xl bg-slate-900 px-6 text-sm font-semibold text-white transition-all duration-200 hover:bg-[#F49006] hover:shadow-lg hover:shadow-amber-500/10 active:scale-98 disabled:cursor-not-allowed disabled:opacity-50'
-const secondaryButtonClass = 'inline-flex h-9 w-fit cursor-pointer items-center justify-center rounded-lg border border-slate-200 bg-white px-3 text-xs font-bold tracking-wide text-slate-700 shadow-2xs transition-all hover:bg-slate-50 hover:border-slate-300 hover:text-slate-900 active:scale-98'
+const primaryButtonClass = 'mt-6 inline-flex h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-white px-6 text-sm font-bold text-black transition hover:shadow-glowSm active:scale-98 disabled:cursor-not-allowed disabled:opacity-50 sm:w-fit'
+const secondaryButtonClass = 'inline-flex h-9 w-fit cursor-pointer items-center justify-center rounded-full border border-white/15 bg-white/5 px-3 text-xs font-bold text-white/70 shadow-2xs transition hover:border-white/35 hover:text-white active:scale-98'
 
 const normalizeAddresses = (payload) => {
   if (Array.isArray(payload)) return payload

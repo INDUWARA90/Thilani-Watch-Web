@@ -3,7 +3,10 @@ import { HomeCatalogGrid } from '@/features/storefront/components/HomeCatalogGri
 import { HomeCtaSection } from '@/features/storefront/components/HomeCtaSection'
 import { HomeGuideSection } from '@/features/storefront/components/HomeGuideSection'
 import { HomeHero } from '@/features/storefront/components/HomeHero'
+import { HomeInteractiveShowcase } from '@/features/storefront/components/HomeInteractiveShowcase'
+import { HomeKineticExperience } from '@/features/storefront/components/HomeKineticExperience'
 import { HomeTrustStrip } from '@/features/storefront/components/HomeTrustStrip'
+import { HomeWatchConfigurator } from '@/features/storefront/components/HomeWatchConfigurator'
 import { HomeWatchSection } from '@/features/storefront/components/HomeWatchSection'
 import { useStorefrontHome } from '@/features/storefront/hooks/useStorefrontHome'
 import { fallbackBrands, fallbackCategories } from '@/features/storefront/lib/homeContent'
@@ -13,54 +16,63 @@ export const HomePage = () => {
   const { error, home, loading } = useStorefrontHome()
 
   return (
-    <main className="-mx-4 -mt-8 min-h-screen bg-white sm:-mx-6 lg:-mx-8">
-      <HomeHero />
-      <HomeTrustStrip />
+    <main className="min-h-screen bg-base">
 
       {error && (
         <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-10">
-          <div className="rounded-[14px] border border-red-200 bg-red-50 px-4 py-3.5 text-sm font-semibold text-red-600">
+          <div className="rounded-lg border border-red-400/30 bg-red-500/10 px-4 py-3.5 text-sm font-semibold text-red-200">
             {error}
           </div>
         </div>
       )}
 
+
+      <HomeHero />
+      <HomeTrustStrip />
+      <HomeInteractiveShowcase />
+      <HomeKineticExperience home={home} loading={loading} />
+
       <HomeWatchSection
-        eyebrow="Featured"
+        eyebrow="Featured collection"
         isLoading={loading.featured}
-        text="Lead customers into the strongest products first with a focused row of premium picks."
+        text="Discover standout timepieces selected for their refined design, reliable movement, and everyday elegance."
         title="Featured watches"
         watches={home.featured}
       />
+
+
+      <HomeWatchConfigurator />
+
+
       <HomeCatalogGrid
-        eyebrow="Categories"
+        eyebrow="Explore collections"
         fallbackItems={fallbackCategories}
         filterKey="category"
         isLoading={loading.categories}
         items={home.categories}
-        text="Help shoppers start from their preferred use case instead of scanning every watch at once."
+        text="Choose the style that matches your day, from polished dress watches to durable sport and smart designs."
         title="Shop by category"
       />
       <HomeWatchSection
-        eyebrow="Fresh arrivals"
+        eyebrow="Just arrived"
         isLoading={loading.newArrivals}
-        text="Keep the storefront feeling alive with the newest pieces added to the catalog."
+        text="Explore the newest additions to our collection, refreshed with elegant pieces for work, gifting, and daily wear."
         title="New arrivals"
         watches={home.newArrivals}
       />
       <HomeCatalogGrid
-        eyebrow="Brands"
+        eyebrow="Trusted names"
         fallbackItems={fallbackBrands}
         filterKey="brand"
         isLoading={loading.brands}
         items={home.brands}
-        text="Give brand-focused customers a fast route into the collection they already trust."
+        text="Browse respected watch houses known for dependable craftsmanship, timeless styling, and lasting value."
         title="Shop by brand"
       />
       <HomeWatchSection
-        eyebrow="Popular"
+        eyebrow="Customer favorites"
         isLoading={loading.bestSellers}
-        text="Show the watches customers are most likely to compare, save, and buy."
+        text="A refined selection of watches loved for their design, comfort, and easy everyday wear."
         title="Best sellers"
         watches={home.bestSellers}
       />

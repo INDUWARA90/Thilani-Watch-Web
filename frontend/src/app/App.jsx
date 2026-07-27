@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react'
-import { Navigate, Route, Routes } from 'react-router'
+import { AnimatePresence, motion } from 'framer-motion'
+import { Navigate, Route, Routes, useLocation } from 'react-router'
 import { AuthProvider } from '@/features/auth/providers/AuthContext'
 import { RequireAuth } from '@/features/auth/components/RequireAuth'
 import { CommerceProvider } from '@/features/commerce/providers/CommerceProvider'
@@ -42,9 +43,20 @@ const AdminMessagesPage = lazyPage(() => import('@/features/admin/pages/AdminMes
 const AdminCouponsPage = lazyPage(() => import('@/features/admin/pages/AdminCouponsPage'), 'AdminCouponsPage')
 const AdminCustomersPage = lazyPage(() => import('@/features/admin/pages/AdminCustomersPage'), 'AdminCustomersPage')
 
-const AppRoutes = () => (
-  <Suspense fallback={<LoadingState label="Loading page" variant="page" />}>
-    <Routes>
+const AppRoutes = () => {
+  const location = useLocation()
+
+  return (
+    <Suspense fallback={<LoadingState label="Loading page" variant="page" />}>
+      <AnimatePresence mode="wait">
+        <motion.div
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 14 }}
+          initial={{ opacity: 0, y: 14 }}
+          key={location.pathname}
+          transition={{ duration: 0.25, ease: 'easeOut' }}
+        >
+          <Routes location={location}>
       <Route path="/" element={<HomePage />} />
       <Route path="/about" element={<AboutPage />} />
       <Route path="/contact" element={<ContactPage />} />
@@ -80,9 +92,12 @@ const AppRoutes = () => (
         </Route>
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
-  </Suspense>
-)
+          </Routes>
+        </motion.div>
+      </AnimatePresence>
+    </Suspense>
+  )
+}
 
 const App = () => (
   <AuthProvider>

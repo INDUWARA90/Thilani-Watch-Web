@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Eye, Heart, ShoppingBag, Star } from 'lucide-react'
 import { Link, useNavigate } from 'react-router'
@@ -8,6 +8,30 @@ import { useCommerce } from '@/features/commerce/hooks/useCommerce'
 import { formatMoney, getId, getTitle, getWatchImage } from '../lib/storefrontUtils'
 
 const imageFallback = '/favicon.svg'
+
+const useTiltTransform = () => {
+  const ref = useRef(null)
+
+  const handleMouseMove = (event) => {
+    const node = ref.current
+    if (!node) return
+
+    const rect = node.getBoundingClientRect()
+    const x = event.clientX - rect.left
+    const y = event.clientY - rect.top
+    const rotateY = ((x / rect.width) - 0.5) * 14
+    const rotateX = ((0.5 - y / rect.height) * 14)
+    node.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`
+  }
+
+  const handleMouseLeave = () => {
+    if (ref.current) {
+      ref.current.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)'
+    }
+  }
+
+  return { handleMouseLeave, handleMouseMove, ref }
+}
 
 export const WatchCard = ({ watch }) => {
   const { isAuthenticated } = useAuth()
@@ -20,6 +44,7 @@ export const WatchCard = ({ watch }) => {
   const detailPath = `/watches/${watch.slug || getId(watch)}`
   const isAvailable = watch.inStock || watch.stockQuantity > 0
   const isBusy = isPending(watchId)
+  const { handleMouseLeave, handleMouseMove, ref: tiltRef } = useTiltTransform()
 
   const requireLogin = () => {
     navigate('/login', { state: { from: { pathname: detailPath } } })
@@ -61,50 +86,52 @@ export const WatchCard = ({ watch }) => {
 
   return (
     <motion.article
-      className="group relative flex flex-col overflow-hidden rounded-[20px] border border-[#DEE2E6] bg-white p-3 shadow-[13px_14px_12.6px_0_rgba(0,0,0,0.05)] transition hover:shadow-[16px_18px_16px_0_rgba(0,0,0,0.1)]"
+      className="group relative flex min-w-0 flex-col overflow-hidden rounded-lg border border-white/12 bg-surface p-3 shadow-[0_18px_50px_rgba(0,0,0,0.28)] transition hover:border-white/35 hover:shadow-glow"
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-20px' }}
       transition={{ duration: 0.4, ease: 'easeOut' }}
     >
-      {/* Image Container */}
-      <div className="relative aspect-[1/1] overflow-hidden rounded-[20px] bg-[#F8F9FA]">
+      <div
+        className="relative aspect-[1/1] overflow-hidden rounded-md bg-[#111]"
+        onMouseLeave={handleMouseLeave}
+        onMouseMove={handleMouseMove}
+      >
+        <div className="absolute inset-x-8 bottom-6 h-10 rounded-full bg-white/25 blur-2xl transition group-hover:bg-white/35" />
         <Link className="absolute inset-0 block h-full w-full" to={detailPath} aria-label={`View ${watch.name || 'watch'} details`}>
           <img
             alt={watch.name || 'Watch'}
-            className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+            className="h-full w-full object-cover transition-transform duration-200 ease-out will-change-transform"
             loading="lazy"
+            ref={tiltRef}
             src={image || imageFallback}
           />
         </Link>
 
-        {/* Badges */}
         <div className="absolute left-3 top-3 flex flex-col gap-1.5 pointer-events-none">
-          <span className={`rounded-full border px-3 py-1 text-xs font-normal backdrop-blur ${
+          <span className={`rounded-full border px-3 py-1 text-xs font-semibold backdrop-blur ${
             isAvailable 
-              ? 'border-[#198754] bg-green-50 text-[#198754]' 
-              : 'border-[#DC3545] bg-red-50 text-[#DC3545]'
+              ? 'border-white/25 bg-black/35 text-white' 
+              : 'border-red-400/40 bg-red-500/15 text-red-100'
           }`}>
             {isAvailable ? 'In stock' : 'Sold out'}
           </span>
         </div>
 
-        {/* Wishlist Button */}
         <button
-          className="absolute right-3 top-3 z-10 inline-flex h-11 w-11 cursor-pointer items-center justify-center rounded-full bg-white text-[#121212] transition hover:bg-[rgba(244,144,6,0.1)] hover:text-[#F49006] active:scale-95 disabled:opacity-50"
+          className="absolute right-3 top-3 z-10 inline-flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-white/15 bg-black/35 text-white backdrop-blur transition hover:border-white/45 hover:bg-white hover:text-black hover:shadow-glowSm active:scale-95 disabled:opacity-50"
           disabled={isBusy}
           type="button"
           aria-label={isWishlisted(watchId) ? 'Remove from wishlist' : 'Save to wishlist'}
           onClick={handleWishlist}
         >
-          <Heart className={`h-4 w-4 transition-colors ${isWishlisted(watchId) ? 'fill-[#F49006] text-[#F49006]' : 'text-[#121212]'}`} />
+          <Heart className={`h-4 w-4 transition-colors ${isWishlisted(watchId) ? 'fill-white text-white' : 'text-current'}`} />
         </button>
 
-        {/* Desktop Quick-Action Hover Overlay */}
-        <div className="pointer-events-none absolute inset-0 hidden items-end justify-center bg-gradient-to-t from-slate-950/40 via-transparent to-transparent p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100 md:flex">
+        <div className="pointer-events-none absolute inset-0 hidden items-end justify-center bg-gradient-to-t from-black/80 via-black/10 to-transparent p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100 md:flex">
           <div className="pointer-events-auto flex w-full gap-2 transform translate-y-2 transition-transform duration-300 group-hover:translate-y-0">
             <button 
-              className="inline-flex h-11 flex-1 cursor-pointer items-center justify-center gap-2 rounded-[14px] bg-[#121212] text-sm font-normal text-white transition hover:bg-[#272222] disabled:opacity-50" 
+              className="inline-flex h-11 flex-1 cursor-pointer items-center justify-center gap-2 rounded-full bg-white text-sm font-bold text-black transition hover:shadow-glow disabled:opacity-50" 
               disabled={!isAvailable || isBusy} 
               type="button" 
               onClick={handleAddToCart}
@@ -113,7 +140,7 @@ export const WatchCard = ({ watch }) => {
               {isBusy ? 'Adding...' : 'Add to Cart'}
             </button>
             <Link 
-              className="inline-flex h-11 w-11 items-center justify-center rounded-[14px] border border-white bg-white/20 text-white backdrop-blur transition hover:bg-white hover:text-[#121212]" 
+              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white backdrop-blur transition hover:bg-white hover:text-black" 
               to={detailPath}
               title="Quick view"
             >
@@ -123,36 +150,34 @@ export const WatchCard = ({ watch }) => {
         </div>
       </div>
 
-      {/* Product Content Details */}
       <div className="flex flex-1 flex-col p-2 pt-4">
-        <div className="mb-1 flex items-center justify-between text-sm font-normal text-[#6C757D]">
-          <span>{getTitle(watch.brand, 'Brand')}</span>
-          <span className="inline-flex items-center gap-1 text-[#F49006]">
-            <Star className="h-3 w-3 fill-[#F49006] text-[#F49006]" /> 
+        <div className="mb-1 flex min-w-0 items-center justify-between gap-3 text-sm font-medium text-white/65">
+          <span className="min-w-0 truncate">{getTitle(watch.brand, 'Brand')}</span>
+          <span className="inline-flex shrink-0 items-center gap-1 text-white/65">
+            <Star className="h-3 w-3 fill-white text-white" /> 
             {watch.ratingAverage ? Number(watch.ratingAverage).toFixed(1) : 'New'}
           </span>
         </div>
 
-        <h3 className="mb-1 text-xl font-bold leading-snug text-[#121212]">
-          <Link className="text-[#121212] no-underline transition-colors hover:text-[#F49006]" to={detailPath}>
+        <h3 className="mb-1 font-heading text-xl font-bold leading-snug text-white">
+          <Link className="text-white no-underline transition hover:drop-shadow-[0_0_12px_rgba(255,255,255,0.45)]" to={detailPath}>
             {watch.name || 'Untitled watch'}
           </Link>
         </h3>
         
-        <p className="mb-3 line-clamp-1 text-sm text-[#6C757D]">
+        <p className="mb-3 line-clamp-1 text-sm text-white/65">
           {watch.shortDescription || watch.description || 'A refined minimalist timepiece.'}
         </p>
 
-        <div className="mt-auto flex items-center justify-between border-t border-[#DEE2E6] pt-3">
-          <span className="text-xl font-bold text-[#121212]">
+        <div className="mt-auto flex min-w-0 items-center justify-between border-t border-white/10 pt-3">
+          <span className="min-w-0 break-words font-heading text-xl font-bold text-white">
             {formatMoney(watch.price, watch.currency)}
           </span>
         </div>
 
-        {/* Mobile-Only Action Row */}
-        <div className="mt-3 grid gap-2 grid-cols-2 md:hidden">
+        <div className="mt-3 grid grid-cols-1 gap-2 min-[380px]:grid-cols-2 md:hidden">
           <button 
-            className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-[14px] bg-[#121212] text-sm font-normal text-white transition hover:bg-[#272222] disabled:opacity-50" 
+            className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-full bg-white text-sm font-bold text-black transition hover:shadow-glowSm disabled:opacity-50" 
             disabled={!isAvailable || isBusy} 
             type="button" 
             onClick={handleAddToCart}
@@ -160,16 +185,15 @@ export const WatchCard = ({ watch }) => {
             {isBusy ? <ButtonSpinner /> : <ShoppingBag className="h-3.5 w-3.5" />} Add
           </button>
           <Link 
-            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-[14px] border border-[#DEE2E6] bg-[rgba(18,18,18,0.04)] text-sm font-normal text-[#121212] no-underline" 
+            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-white/15 bg-white/5 text-sm font-bold text-white no-underline" 
             to={detailPath}
           >
             <Eye className="h-3.5 w-3.5" /> View
           </Link>
         </div>
 
-        {/* Dynamic Status Feedback */}
         {(message || error) && (
-          <p className={`mt-2 text-center text-[11px] font-medium ${error ? 'text-red-500' : 'text-emerald-600'}`}>
+          <p className={`mt-2 text-center text-[11px] font-medium ${error ? 'text-red-300' : 'text-emerald-300'}`}>
             {error || message}
           </p>
         )}

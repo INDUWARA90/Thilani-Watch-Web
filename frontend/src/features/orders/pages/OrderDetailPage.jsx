@@ -40,10 +40,10 @@ export const OrderDetailPage = () => {
   const paymentSlip = order ? getPaymentSlip(order) : null
 
   return (
-    <main className="mx-auto max-w-[1200px] px-4 py-8 bg-white min-h-screen sm:px-6 lg:px-8">
+    <main className="mx-auto min-h-screen max-w-[1200px] bg-base px-4 py-8 text-white sm:px-6 lg:px-8">
       {/* Back Button Link */}
       <Link 
-        className="mb-6 inline-flex h-10 items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 text-xs font-semibold text-slate-700 no-underline shadow-sm transition-all duration-200 hover:bg-slate-50 hover:text-slate-900" 
+        className="mb-6 inline-flex h-10 items-center gap-2 rounded-full border border-white/15 bg-white/5 px-5 text-xs font-bold text-white no-underline shadow-sm transition hover:border-white/45 hover:shadow-glowSm" 
         to="/orders"
       >
         <ArrowLeft className="h-4 w-4" />
@@ -52,14 +52,14 @@ export const OrderDetailPage = () => {
 
       {/* Modern Alert Notifications */}
       {error && (
-        <div className="mb-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-medium text-red-600 flex items-center gap-2.5 shadow-sm animate-fade-in">
-          <ShieldAlert className="h-5 w-5 shrink-0 text-red-500" />
+        <div className="mb-6 flex animate-fade-in items-center gap-2.5 rounded-lg border border-red-400/30 bg-red-500/10 p-4 text-sm font-medium text-red-200 shadow-sm">
+          <ShieldAlert className="h-5 w-5 shrink-0 text-red-200" />
           {error}
         </div>
       )}
       
       {message && (
-        <div className="mb-6 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm font-medium text-emerald-700 flex items-center gap-2.5 shadow-sm animate-fade-in">
+        <div className="mb-6 flex animate-fade-in items-center gap-2.5 rounded-lg border border-emerald-300/30 bg-emerald-500/10 p-4 text-sm font-medium text-emerald-200 shadow-sm">
           <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-white text-xs font-bold">✓</span>
           {message}
         </div>
@@ -69,20 +69,20 @@ export const OrderDetailPage = () => {
         <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
           <div className="grid gap-6">
             {/* Essential Header Banner Card */}
-            <div className="rounded-2xl border border-slate-100 bg-white p-6 shadow-[0_4px_25px_rgba(0,0,0,0.02)] relative overflow-hidden">
+            <div className="relative overflow-hidden rounded-lg border border-white/12 bg-surface p-6 shadow-glowSm">
               <div className="relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
-                  <p className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-slate-400">Order Ref</p>
-                  <h1 className="text-2xl font-black tracking-tight text-slate-800 sm:text-3xl">
+                  <p className="mb-1.5 text-xs font-semibold uppercase text-white/75">Order Ref</p>
+                  <h1 className="font-heading text-2xl font-bold tracking-tight text-white sm:text-3xl">
                     {getOrderNumber(order) || getOrderId(order)}
                   </h1>
-                  <p className="mt-2 flex items-center gap-2 text-xs font-medium text-slate-500">
-                    <CalendarDays className="h-4 w-4 text-slate-400" />
+                  <p className="mt-2 flex items-center gap-2 text-xs font-medium text-white/65">
+                    <CalendarDays className="h-4 w-4 text-white/70" />
                     Placed on {formatDate(order.createdAt)}
                   </p>
                   {order.wantedDate && (
-                    <p className="mt-2 flex items-center gap-2 text-xs font-medium text-slate-500">
-                      <CalendarDays className="h-4 w-4 text-slate-400" />
+                    <p className="mt-2 flex items-center gap-2 text-xs font-medium text-white/65">
+                      <CalendarDays className="h-4 w-4 text-white/70" />
                       Wanted date {formatDate(order.wantedDate)}
                     </p>
                   )}
@@ -96,9 +96,9 @@ export const OrderDetailPage = () => {
 
               {/* Action Drawer Footer within Header */}
               {canCancelOrder(order) && (
-                <div className="mt-6 border-t border-slate-100 pt-4 flex justify-end">
+                <div className="mt-6 flex justify-end border-t border-white/10 pt-4">
                   <button 
-                    className="inline-flex h-9 items-center gap-2 rounded-xl border border-red-200 bg-red-50/50 px-4 text-xs font-semibold text-red-600 transition-all duration-200 hover:bg-red-50 hover:text-red-700" 
+                    className="inline-flex h-9 items-center gap-2 rounded-full border border-red-400/25 bg-red-500/10 px-4 text-xs font-bold text-red-200 transition hover:bg-red-500/20" 
                     type="button" 
                     onClick={cancelOrder}
                   >
@@ -119,16 +119,16 @@ export const OrderDetailPage = () => {
 
             {/* Return Request Workflow Area */}
             {canRequestReturn(order) && (
-              <form className="rounded-2xl border border-slate-100 bg-white p-6 shadow-[0_4px_20px_rgba(0,0,0,0.02)]" onSubmit={requestReturn}>
+              <form className="rounded-lg border border-white/12 bg-surface p-6 shadow-glowSm" onSubmit={requestReturn}>
                 <div className="mb-4 flex items-center gap-2.5">
-                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-orange-50 text-orange-500">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10 text-white">
                     <RefreshCcw className="h-4 w-4" />
                   </span>
-                  <h2 className="text-lg font-bold text-slate-800 tracking-tight">Request a return</h2>
+                  <h2 className="font-heading text-lg font-bold tracking-tight text-white">Request a return</h2>
                 </div>
                 
                 <div className="grid gap-4">
-                  <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
+                  <label className="grid gap-1.5 text-sm font-semibold text-white/65">
                     Reason for return
                     <input 
                       className={inputClass} 
@@ -139,7 +139,7 @@ export const OrderDetailPage = () => {
                     />
                   </label>
                   
-                  <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
+                  <label className="grid gap-1.5 text-sm font-semibold text-white/65">
                     Additional details
                     <textarea 
                       className={`${inputClass} min-h-[90px] py-2.5 resize-none`} 
@@ -149,7 +149,7 @@ export const OrderDetailPage = () => {
                     />
                   </label>
                   
-                  <button className="mt-2 inline-flex h-11 w-full items-center justify-center rounded-xl bg-slate-900 px-5 text-sm font-semibold text-white transition-all duration-200 hover:bg-slate-800 sm:w-fit" type="submit">
+                  <button className="mt-2 inline-flex h-11 w-full items-center justify-center rounded-full bg-white px-5 text-sm font-bold text-black transition hover:shadow-glowSm sm:w-fit" type="submit">
                     Submit return request
                   </button>
                 </div>
@@ -158,9 +158,9 @@ export const OrderDetailPage = () => {
           </div>
 
           {/* Checkout Right Invoice Sidebar */}
-          <aside className="sticky top-6 h-fit rounded-2xl border border-slate-100 bg-white p-6 shadow-[0_10px_30px_rgba(0,0,0,0.03)]">
-            <h2 className="mb-4 text-lg font-bold text-slate-800 tracking-tight flex items-center gap-2">
-              <ClipboardList className="h-4 w-4 text-slate-400" />
+          <aside className="sticky top-6 h-fit rounded-lg border border-white/12 bg-surface p-6 shadow-glowSm">
+            <h2 className="mb-4 flex items-center gap-2 font-heading text-lg font-bold tracking-tight text-white">
+              <ClipboardList className="h-4 w-4 text-white/75" />
               Summary
             </h2>
             
@@ -170,22 +170,22 @@ export const OrderDetailPage = () => {
               <SummaryRow label="Discount" value={`-${formatOrderMoney(order.discountAmount || order.discount || 0, order.currency)}`} isDiscount />
             </div>
 
-            <div className="my-4 border-t border-slate-100" />
+            <div className="my-4 border-t border-white/10" />
             <SummaryRow isStrong label="Total" value={formatOrderMoney(getOrderTotal(order), order.currency)} />
             
-            <div className="mt-5 flex items-center gap-2 rounded-xl bg-slate-50 px-4 py-3 text-xs font-semibold text-slate-600">
-              <CreditCard className="h-4 w-4 text-slate-400" />
-              <span>Payment method: <span className="text-slate-800 capitalize">{getPaymentMethodLabel(order.paymentMethod)}</span></span>
+            <div className="mt-5 flex items-center gap-2 rounded-lg border border-white/12 bg-white/5 px-4 py-3 text-xs font-semibold text-white/70">
+              <CreditCard className="h-4 w-4 text-white/70" />
+              <span>Payment method: <span className="capitalize text-white">{getPaymentMethodLabel(order.paymentMethod)}</span></span>
             </div>
 
             {paymentSlip && (
-              <a className="mt-3 block overflow-hidden rounded-xl border border-slate-100 bg-slate-50 p-3 text-xs font-semibold text-slate-600 no-underline transition hover:border-orange-200 hover:bg-orange-50/40" href={paymentSlip.url} rel="noreferrer" target="_blank">
-                <span className="mb-2 block text-slate-800">Attached payment slip</span>
+              <a className="mt-3 block overflow-hidden rounded-lg border border-white/12 bg-white/5 p-3 text-xs font-semibold text-white/70 no-underline transition hover:border-white/35 hover:shadow-glowSm" href={paymentSlip.url} rel="noreferrer" target="_blank">
+                <span className="mb-2 block text-white">Attached payment slip</span>
                 {isPaymentSlipImage(paymentSlip) ? (
-                  <img alt="Attached payment slip" className="h-32 w-full rounded-lg border border-slate-100 bg-white object-cover" src={paymentSlip.url} />
+                  <img alt="Attached payment slip" className="h-32 w-full rounded-lg border border-white/12 bg-black/35 object-cover" src={paymentSlip.url} />
                 ) : (
-                  <span className="flex min-h-24 items-center gap-3 rounded-lg border border-slate-100 bg-white p-4 text-slate-700">
-                    <FileText className="h-6 w-6 text-orange-500" />
+                  <span className="flex min-h-24 items-center gap-3 rounded-lg border border-white/12 bg-black/35 p-4 text-white/70">
+                    <FileText className="h-6 w-6 text-white" />
                     <span className="min-w-0 truncate">{paymentSlip.fileName || 'Open attached slip'}</span>
                   </span>
                 )}
@@ -202,23 +202,23 @@ export const OrderDetailPage = () => {
 }
 
 const OrderItemsTable = ({ order }) => (
-  <section className="rounded-2xl border border-slate-100 bg-white p-6 shadow-[0_4px_20px_rgba(0,0,0,0.02)]">
-    <h2 className="mb-4 text-lg font-bold text-slate-800 tracking-tight">Items Ordered</h2>
-    <div className="w-full overflow-x-auto rounded-xl border border-slate-100">
+  <section className="rounded-lg border border-white/12 bg-surface p-6 shadow-glowSm">
+    <h2 className="mb-4 font-heading text-lg font-bold tracking-tight text-white">Items Ordered</h2>
+    <div className="w-full overflow-x-auto rounded-lg border border-white/10">
       <table className="w-full min-w-[600px] border-collapse">
         <thead>
-          <tr className="bg-slate-50/70">
-            <th className="border-b border-slate-100 p-3.5 text-left text-xs font-bold uppercase tracking-wider text-slate-400">Item Name</th>
-            <th className="border-b border-slate-100 p-3.5 text-center text-xs font-bold uppercase tracking-wider text-slate-400 w-24">Qty</th>
-            <th className="border-b border-slate-100 p-3.5 text-right text-xs font-bold uppercase tracking-wider text-slate-400 w-36">Unit Price</th>
+          <tr className="bg-white/[0.04]">
+            <th className="border-b border-white/10 p-3.5 text-left text-xs font-bold uppercase text-white/75">Item Name</th>
+            <th className="w-24 border-b border-white/10 p-3.5 text-center text-xs font-bold uppercase text-white/75">Qty</th>
+            <th className="w-36 border-b border-white/10 p-3.5 text-right text-xs font-bold uppercase text-white/75">Unit Price</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-slate-50">
+        <tbody className="divide-y divide-white/10">
           {(order.items || []).map((item, index) => (
-            <tr key={`${getOrderItemName(item)}-${index}`} className="hover:bg-slate-50/30 transition-colors">
-              <td className="p-3.5 text-sm font-semibold text-slate-700 align-middle">{getOrderItemName(item)}</td>
-              <td className="p-3.5 text-sm font-medium text-slate-600 text-center align-middle">{item.quantity}</td>
-              <td className="p-3.5 text-sm font-bold text-slate-800 text-right align-middle">{formatOrderMoney(getOrderItemPrice(item), order.currency)}</td>
+            <tr key={`${getOrderItemName(item)}-${index}`} className="transition-colors hover:bg-white/[0.03]">
+              <td className="p-3.5 align-middle text-sm font-semibold text-white">{getOrderItemName(item)}</td>
+              <td className="p-3.5 text-center align-middle text-sm font-medium text-white/70">{item.quantity}</td>
+              <td className="p-3.5 text-right align-middle text-sm font-bold text-white">{formatOrderMoney(getOrderItemPrice(item), order.currency)}</td>
             </tr>
           ))}
         </tbody>
@@ -231,18 +231,18 @@ const AddressCard = ({ address, title }) => {
   if (!address) return null
 
   return (
-    <section className="rounded-2xl border border-slate-100 bg-white p-6 shadow-[0_4px_20px_rgba(0,0,0,0.02)] flex flex-col gap-2.5">
-      <h2 className="text-base font-bold text-slate-800 tracking-tight flex items-center gap-2">
-        <MapPin className="h-4 w-4 text-slate-400" />
+    <section className="flex flex-col gap-2.5 rounded-lg border border-white/12 bg-surface p-6 shadow-glowSm">
+      <h2 className="flex items-center gap-2 text-base font-bold tracking-tight text-white">
+        <MapPin className="h-4 w-4 text-white/75" />
         {title}
       </h2>
-      <div className="text-sm font-medium leading-relaxed text-slate-600">
-        <p className="font-semibold text-slate-800">{address.street}</p>
+      <div className="text-sm font-medium leading-relaxed text-white/65">
+        <p className="font-semibold text-white">{address.street}</p>
         <p>{[address.city, address.state, address.zip].filter(Boolean).join(', ')}</p>
-        <p className="tracking-wide uppercase text-xs font-bold text-slate-400 mt-0.5">{address.country}</p>
+        <p className="mt-0.5 text-xs font-bold uppercase text-white/70">{address.country}</p>
         {address.phone && (
-          <p className="mt-2 text-xs border-t border-slate-50 pt-2 text-slate-400">
-            Phone: <span className="text-slate-600 font-semibold">{address.phone}</span>
+          <p className="mt-2 border-t border-white/10 pt-2 text-xs text-white/75">
+            Phone: <span className="font-semibold text-white/65">{address.phone}</span>
           </p>
         )}
       </div>
@@ -259,10 +259,10 @@ const getStatusTone = (value) => {
 }
 
 const toneClasses = {
-  danger: 'border-red-100 bg-red-50 text-red-700',
-  neutral: 'border-slate-100 bg-slate-50 text-slate-600',
-  success: 'border-emerald-100 bg-emerald-50 text-emerald-700',
-  warning: 'border-amber-200/60 bg-amber-50 text-amber-800',
+  danger: 'border-red-400/25 bg-red-500/10 text-red-200',
+  neutral: 'border-white/12 bg-white/5 text-white/70',
+  success: 'border-emerald-300/25 bg-emerald-500/10 text-emerald-200',
+  warning: 'border-white/20 bg-white/10 text-white',
 }
 
 const StatusPill = ({ label, tone = 'success' }) => (
@@ -271,7 +271,7 @@ const StatusPill = ({ label, tone = 'success' }) => (
   </span>
 )
 
-const inputClass = 'min-h-[44px] min-w-0 w-full rounded-xl border border-slate-200 bg-slate-50/30 px-4 py-2.5 text-sm text-slate-800 outline-none transition-all placeholder:text-slate-400 focus:border-orange-400 focus:bg-white focus:ring-4 focus:ring-orange-400/10'
+const inputClass = 'min-h-[44px] min-w-0 w-full rounded-lg border border-white/12 bg-black/35 px-4 py-2.5 text-sm text-white outline-none transition placeholder:text-white/65 focus:border-white/45 focus:ring-2 focus:ring-white/10'
 
 const canRequestReturn = (order) => getOrderStatus(order) === 'delivered' && !order.returnRequest && !order.returnStatus
 
@@ -299,9 +299,9 @@ const ShippingLogistics = ({ order }) => {
   if (!hasShippingLogistics(order)) return null
 
   return (
-    <section className="mt-4 rounded-xl border border-slate-100 bg-slate-50 p-4">
-      <h3 className="mb-3 flex items-center gap-2 text-sm font-bold text-slate-800">
-        <Truck className="h-4 w-4 text-orange-500" />
+    <section className="mt-4 rounded-lg border border-white/12 bg-white/5 p-4">
+      <h3 className="mb-3 flex items-center gap-2 text-sm font-bold text-white">
+        <Truck className="h-4 w-4 text-white/65" />
         Shipping Logistics
       </h3>
       <div className="grid gap-2 text-xs">
@@ -322,9 +322,9 @@ const ReturnsRefunds = ({ order }) => {
   const refund = order.refund || {}
 
   return (
-    <section className="mt-4 rounded-xl border border-slate-100 bg-slate-50 p-4">
-      <h3 className="mb-3 flex items-center gap-2 text-sm font-bold text-slate-800">
-        <RefreshCcw className="h-4 w-4 text-orange-500" />
+    <section className="mt-4 rounded-lg border border-white/12 bg-white/5 p-4">
+      <h3 className="mb-3 flex items-center gap-2 text-sm font-bold text-white">
+        <RefreshCcw className="h-4 w-4 text-white/65" />
         Returns & Refunds
       </h3>
       <div className="grid gap-2 text-xs">
@@ -344,20 +344,20 @@ const ReturnsRefunds = ({ order }) => {
 
 const InfoRow = ({ label, value }) => (
   <div className="flex items-start justify-between gap-3">
-    <span className="shrink-0 font-semibold text-slate-500">{label}</span>
-    <span className="min-w-0 text-right font-bold capitalize text-slate-800">{value}</span>
+    <span className="shrink-0 font-semibold text-white/65">{label}</span>
+    <span className="min-w-0 text-right font-bold capitalize text-white">{value}</span>
   </div>
 )
 
 const SummaryRow = ({ isStrong = false, label, value, isDiscount = false }) => (
   <div className="flex items-center justify-between gap-3">
-    <span className={`${isStrong ? 'text-base font-bold text-slate-800' : 'text-sm font-medium text-slate-500'}`}>{label}</span>
+    <span className={`${isStrong ? 'text-base font-bold text-white' : 'text-sm font-medium text-white/65'}`}>{label}</span>
     <strong className={`${
       isStrong 
-        ? 'text-xl text-[#EB960E] font-black' 
+        ? 'text-xl text-white font-black' 
         : isDiscount 
           ? 'text-sm text-emerald-600 font-semibold' 
-          : 'text-sm text-slate-800 font-semibold'
+          : 'text-sm text-white font-semibold'
     }`}>
       {value}
     </strong>

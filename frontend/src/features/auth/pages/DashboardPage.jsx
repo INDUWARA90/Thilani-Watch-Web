@@ -55,24 +55,24 @@ export const DashboardPage = () => {
   }
 
   return (
-    <section className="mx-auto w-full max-w-7xl rounded-3xl border border-slate-100 bg-gradient-to-b from-white to-slate-50/50 p-6 shadow-xl shadow-slate-200/50 sm:p-10">
+    <section className="mx-auto w-full max-w-[1200px] rounded-lg border border-white/12 bg-surface p-6 text-white shadow-glowSm sm:p-10">
       <div className="mb-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex min-w-0 items-start gap-4 sm:items-center sm:gap-5">
-          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#F49006] to-amber-600 text-lg font-bold text-white shadow-lg shadow-amber-500/20 sm:h-16 sm:w-16 sm:text-xl">
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-lg bg-white text-lg font-bold text-black shadow-lg sm:h-16 sm:w-16 sm:text-xl">
             {initials}
           </div>
 
           <div className="min-w-0">
             <div className="mb-1 flex items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-[#F49006] ring-1 ring-inset ring-amber-500/20">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-semibold text-white/75">
                 {isAdmin ? <ShieldCheck className="h-3.5 w-3.5" /> : <User className="h-3.5 w-3.5" />}
                 {accountLabel}
               </span>
             </div>
-            <h1 className="max-w-full break-words text-2xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+            <h1 className="max-w-full break-words font-heading text-2xl font-bold tracking-tight text-white sm:text-4xl">
               Welcome back, {displayName}
             </h1>
-            <p className="mt-1 max-w-2xl text-sm leading-6 text-slate-500 sm:text-base">
+            <p className="mt-1 max-w-2xl text-sm leading-6 text-white/70 sm:text-base">
               {accountDescription}
             </p>
           </div>
@@ -81,28 +81,28 @@ export const DashboardPage = () => {
         <button
           onClick={handleLogout}
           type="button"
-          className="group inline-flex shrink-0 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition-all duration-300 hover:border-red-200 hover:bg-red-50/40 hover:text-red-600 active:scale-95 focus:outline-none focus:ring-2 focus:ring-red-500/25 whitespace-nowrap"
+          className="group inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-full border border-white/15 bg-white/5 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:border-red-400/35 hover:bg-red-500/10 hover:text-red-200 active:scale-95 focus:outline-none focus:ring-2 focus:ring-white/20"
         >
-          <LogOut className="h-4 w-4 text-slate-400 transition-all duration-300 group-hover:-translate-x-0.5 group-hover:text-red-500" />
+          <LogOut className="h-4 w-4 text-white/65 transition-all duration-300 group-hover:-translate-x-0.5 group-hover:text-red-200" />
           <span>Log Out</span>
         </button>
       </div>
 
-      <div className="mb-8 grid gap-5 rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+      <div className="mb-8 grid gap-5 rounded-lg border border-white/12 bg-black/25 p-5 shadow-sm lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
         <div className="flex min-w-0 items-start gap-4">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-slate-950 text-sm font-bold text-white">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-white text-sm font-bold text-black">
             {initials}
           </div>
           <div className="min-w-0">
-            <p className="mb-1 text-xs font-bold uppercase tracking-[0.16em] text-[#F49006]">Profile overview</p>
-            <h2 className="break-words text-xl font-bold text-slate-950">{displayName}</h2>
-            <div className="mt-3 grid gap-2 text-sm text-slate-600 sm:grid-cols-2">
+            <p className="mb-1 text-xs font-bold uppercase text-white/75">Profile overview</p>
+            <h2 className="break-words font-heading text-xl font-bold text-white">{displayName}</h2>
+            <div className="mt-3 grid gap-2 text-sm text-white/70 sm:grid-cols-2">
               <span className="inline-flex min-w-0 items-center gap-2">
-                <Mail className="h-4 w-4 shrink-0 text-slate-400" />
+                <Mail className="h-4 w-4 shrink-0 text-white/70" />
                 <span className="truncate">{user?.email || 'Email not added'}</span>
               </span>
               <span className="inline-flex min-w-0 items-center gap-2">
-                <Phone className="h-4 w-4 shrink-0 text-slate-400" />
+                <Phone className="h-4 w-4 shrink-0 text-white/70" />
                 <span className="truncate">{user?.phone || 'Phone not added'}</span>
               </span>
             </div>
@@ -111,7 +111,7 @@ export const DashboardPage = () => {
 
         <Link
           to="/profile"
-          className="inline-flex min-h-11 w-fit items-center justify-center gap-2 rounded-xl bg-slate-950 px-5 text-sm font-semibold text-white no-underline transition hover:bg-[#F49006] active:scale-95"
+          className="inline-flex min-h-11 w-fit items-center justify-center gap-2 rounded-full bg-white px-5 text-sm font-bold text-black no-underline transition hover:shadow-glowSm active:scale-95"
         >
           <Edit3 className="h-4 w-4" />
           Edit profile
@@ -122,20 +122,20 @@ export const DashboardPage = () => {
         {items.map((item) => (
           <article
             key={item.title}
-            className="group relative flex min-w-0 flex-col justify-between overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-slate-300 hover:shadow-xl hover:shadow-slate-200/60"
+            className="group relative flex min-w-0 flex-col justify-between overflow-hidden rounded-lg border border-white/12 bg-black/25 p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-white/30 hover:shadow-glowSm"
           >
-            <div className="absolute top-0 left-0 h-1 w-full bg-gradient-to-r from-[#F49006] to-amber-500 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+            <div className="absolute left-0 top-0 h-px w-full bg-white/70 opacity-0 shadow-glow transition-opacity duration-300 group-hover:opacity-100" />
 
             <div>
               <div className="flex items-start justify-between gap-3">
-                <h2 className="min-w-0 break-words text-lg font-bold leading-snug text-slate-900 transition-colors group-hover:text-[#F49006]">
+                <h2 className="min-w-0 break-words font-heading text-lg font-bold leading-snug text-white">
                   {item.title}
                 </h2>
-                <div className="shrink-0 rounded-full bg-slate-100 p-2 text-slate-400 transition-colors group-hover:bg-amber-50 group-hover:text-[#F49006]">
+                <div className="shrink-0 rounded-full bg-white/10 p-2 text-white/65 transition group-hover:bg-white group-hover:text-black">
                   <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </div>
               </div>
-              <p className="mt-3 text-sm leading-relaxed text-slate-600">
+              <p className="mt-3 text-sm leading-relaxed text-white/65">
                 {item.description}
               </p>
             </div>
@@ -143,7 +143,7 @@ export const DashboardPage = () => {
             <div className="mt-6 pt-4">
               <Link
                 to={item.to}
-                className="inline-flex items-center gap-1 text-sm font-semibold text-[#F49006] transition-colors after:absolute after:inset-0 hover:text-amber-600"
+                className="inline-flex items-center gap-1 text-sm font-bold text-white/70 transition after:absolute after:inset-0 hover:text-white"
               >
                 Explore Section
               </Link>

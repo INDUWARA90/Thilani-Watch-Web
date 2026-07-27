@@ -37,12 +37,12 @@ export const RegisterPage = () => {
   }
 
   return (
-    <section className="mx-auto w-full max-w-[560px] min-w-0 rounded-[24px] border border-[#E5E7EB] bg-white p-5 text-[#121212] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.15)] sm:p-9">
-      <p className="mb-3 text-sm font-medium tracking-wide text-[#6C757D]">Create account</p>
-      <h1 className="mb-3 text-4xl font-extrabold leading-[1.1] tracking-tight text-[#121212] sm:text-[44px]">
+    <section className="mx-auto w-full max-w-[560px] min-w-0 rounded-lg border border-white/12 bg-surface p-5 text-white shadow-glowSm sm:p-9">
+      <p className="mb-3 inline-flex rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-semibold uppercase text-white/70">Create account</p>
+      <h1 className="mb-3 font-heading text-4xl font-bold leading-[1.1] tracking-tight text-white sm:text-[44px]">
         Register
       </h1>
-      <p className="mb-8 text-base leading-7 text-[#6C757D]">
+      <p className="mb-8 text-base leading-7 text-white/70">
         Create a customer account with your contact details.
       </p>
 
@@ -50,28 +50,28 @@ export const RegisterPage = () => {
         {error && (
           <div
             role="alert"
-            className="rounded-sm border border-[#DC3545]/40 bg-[#FDECEE] px-4 py-3 text-sm font-medium text-[#DC3545]"
+            className="rounded-lg border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm font-medium text-red-200"
           >
             {error}
           </div>
         )}
 
         <div className="grid gap-4">
-          <label className="grid gap-2 text-sm font-medium text-[#121212]">
+          <label className="grid gap-2 text-sm font-medium text-white/65">
             Name
             <input className={authInputClass} name="name" placeholder="Full name" required />
           </label>
 
-          <label className="grid gap-2 text-sm font-medium text-[#121212]">
+          <label className="grid gap-2 text-sm font-medium text-white/65">
             Email
             <input className={authInputClass} name="email" type="email" placeholder="you@example.com" required />
           </label>
 
-          <label className="grid gap-2 text-sm font-medium text-[#121212]">
+          <label className="grid gap-2 text-sm font-medium text-white/65">
             Password
-            <span className="flex items-center rounded-sm border border-[#E5E7EB] bg-[#F9FAFB] px-[15px] transition-colors duration-200 focus-within:border-[#121212] focus-within:bg-white">
+            <span className="flex items-center rounded-lg border border-white/12 bg-black/35 px-[15px] transition focus-within:border-white/45 focus-within:ring-2 focus-within:ring-white/10">
               <input
-                className="min-h-[46px] min-w-0 flex-1 bg-transparent px-1 text-[15px] text-[#121212] outline-none placeholder:text-[#9CA3AF]"
+                className="min-h-[46px] min-w-0 flex-1 bg-transparent px-1 text-[15px] text-white outline-none placeholder:text-white/65"
                 name="password"
                 type={showPassword ? 'text' : 'password'}
                 placeholder="••••••••"
@@ -79,7 +79,7 @@ export const RegisterPage = () => {
                 required
               />
               <button
-                className="cursor-pointer text-[#6C757D] transition-colors duration-200 hover:text-[#121212]"
+                className="cursor-pointer text-white/65 transition hover:text-white"
                 type="button"
                 aria-label="Toggle password visibility"
                 aria-pressed={showPassword}
@@ -90,14 +90,14 @@ export const RegisterPage = () => {
             </span>
           </label>
 
-          <label className="grid gap-2 text-sm font-medium text-[#121212]">
+          <label className="grid gap-2 text-sm font-medium text-white/65">
             Phone
             <input className={authInputClass} name="phone" type="tel" placeholder="Optional" />
           </label>
         </div>
 
         <button
-          className="mt-1 inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-sm bg-[#121212] px-8 text-sm font-semibold text-white transition-colors duration-200 hover:bg-[#272222] disabled:cursor-not-allowed disabled:opacity-60 sm:w-fit"
+          className="mt-1 inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-white px-8 text-sm font-bold text-black transition hover:shadow-glow disabled:cursor-not-allowed disabled:opacity-60 sm:w-fit"
           type="submit"
           disabled={isSubmitting}
         >
@@ -105,9 +105,9 @@ export const RegisterPage = () => {
         </button>
       </form>
 
-      <p className="mt-6 text-sm text-[#6C757D]">
+      <p className="mt-6 text-sm text-white/70">
         Already registered?{' '}
-        <Link className="font-semibold text-[#121212] no-underline transition-colors duration-200 hover:text-[#6C757D]" to="/login">
+        <Link className="font-semibold text-white no-underline transition hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]" to="/login">
           Log in
         </Link>
       </p>
@@ -116,4 +116,4 @@ export const RegisterPage = () => {
 }
 
 const authInputClass =
-  'min-h-[46px] min-w-0 rounded-sm border border-[#E5E7EB] bg-[#F9FAFB] px-[15px] text-[15px] text-[#121212] outline-none placeholder:text-[#9CA3AF] transition-colors duration-200 focus:border-[#121212] focus:bg-white'
+  'min-h-[46px] min-w-0 rounded-lg border border-white/12 bg-black/35 px-[15px] text-[15px] text-white outline-none placeholder:text-white/65 transition focus:border-white/45 focus:ring-2 focus:ring-white/10'

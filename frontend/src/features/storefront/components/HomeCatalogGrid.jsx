@@ -1,4 +1,5 @@
-import { ArrowUpRight } from 'lucide-react'
+import { ChevronRight } from 'lucide-react'
+import { motion } from 'framer-motion'
 import { Link } from 'react-router'
 import { getCatalogImage, getCatalogValue, getTitle } from '@/features/storefront/lib/storefrontUtils'
 
@@ -6,29 +7,33 @@ export const HomeCatalogGrid = ({ eyebrow, fallbackItems, filterKey, isLoading =
   const visibleItems = items.length > 0 ? items : fallbackItems
 
   return (
-    <section className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6 lg:px-8">
-      {/* Editorial Header - Centered and clean */}
-      <div className="mb-14 text-center max-w-xl mx-auto">
+    <motion.section
+      className="mx-auto max-w-[1200px] px-4 py-14 sm:px-6 lg:px-10"
+      initial={{ opacity: 0, y: 24 }}
+      transition={{ duration: 0.5, ease: 'easeOut' }}
+      viewport={{ once: true, margin: '-80px' }}
+      whileInView={{ opacity: 1, y: 0 }}
+    >
+      <div className="mx-auto mb-10 max-w-xl text-center">
         {eyebrow && (
-          <span className="text-[11px] font-bold tracking-[0.25em] uppercase text-gray-400 block mb-3">
+          <span className="mb-4 inline-flex min-h-8 items-center rounded-full border border-white/15 bg-white/5 px-3 text-xs font-semibold uppercase text-white/70">
             {eyebrow}
           </span>
         )}
-        <h2 className="text-3xl font-light tracking-tight text-[#121212] sm:text-4xl font-serif">
+        <h2 className="font-heading text-4xl font-bold tracking-tight text-white sm:text-5xl">
           {title}
         </h2>
         {text && (
-          <p className="mt-3 text-xs sm:text-sm tracking-wide text-gray-500 font-light leading-relaxed">
+          <p className="mt-3 text-sm leading-7 text-white/70">
             {text}
           </p>
         )}
       </div>
 
-      {/* Main Interactive Row Directory */}
       {isLoading ? (
         <CatalogListSkeleton />
       ) : (
-        <div className="border-t border-gray-200">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {visibleItems.slice(0, 4).map((item, index) => {
             const itemTitle = getTitle(item, item.name)
             const itemValue = getCatalogValue(item) || itemTitle
@@ -36,79 +41,60 @@ export const HomeCatalogGrid = ({ eyebrow, fallbackItems, filterKey, isLoading =
 
             return (
               <Link
-                className="group flex flex-col sm:flex-row sm:items-center justify-between py-8 border-b border-gray-200 transition-all duration-300 no-underline hover:px-4 hover:bg-gray-50/50"
+                className="group relative overflow-hidden rounded-lg border border-transparent px-5 pb-7 pt-4 text-center no-underline transition duration-300 hover:-translate-y-1 hover:border-white/15 hover:bg-white/[0.03] hover:shadow-glowSm"
                 key={itemValue}
                 to={`/watches?${filterKey}=${encodeURIComponent(itemValue)}`}
               >
-                {/* Left Side: Index Number & Title details */}
-                <div className="flex items-center gap-6 sm:gap-10">
-                  <span className="text-xs font-mono text-gray-400 tracking-tighter">
+                <span className="absolute left-5 top-4 font-mono text-xs text-white/25">
                     0{index + 1}
-                  </span>
-                  
-                  {/* Thumbnail Container: Reveals and pops on row hover */}
-                  <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full border border-gray-100 bg-gray-50 shadow-sm transition-all duration-300 group-hover:scale-110 group-hover:border-black">
-                    {image ? (
-                      <img 
-                        alt={itemTitle} 
-                        className="h-full w-full object-cover grayscale-[30%] transition-transform duration-500 group-hover:scale-110 group-hover:grayscale-0" 
-                        src={image} 
-                      />
-                    ) : (
-                      <span className="grid h-full w-full place-items-center bg-gray-900 text-sm font-semibold text-white">
-                        {itemTitle.slice(0, 2).toUpperCase()}
-                      </span>
-                    )}
-                  </div>
+                </span>
 
-                  <div>
-                    <h3 className="text-xl font-medium tracking-tight text-gray-900 group-hover:text-black sm:text-2xl">
-                      {itemTitle}
-                    </h3>
-                    <p className="mt-1 max-w-md text-xs font-light text-gray-500 line-clamp-1">
-                      {item.description || `View curated ${itemTitle} high-grade timepieces.`}
-                    </p>
-                  </div>
+                <div className="relative mx-auto flex h-56 max-w-[220px] items-end justify-center">
+                  <div className="absolute bottom-8 h-12 w-[72%] rounded-full bg-white/12 blur-2xl transition group-hover:bg-white/22" />
+                  <div className="absolute bottom-7 h-px w-[68%] bg-white/25 shadow-glowSm" />
+                  {image ? (
+                    <img
+                      alt={itemTitle}
+                      className="relative z-10 max-h-48 w-auto max-w-full object-contain grayscale transition duration-500 group-hover:scale-105 group-hover:grayscale-0"
+                      src={image}
+                    />
+                  ) : (
+                    <span className="relative z-10 grid h-36 w-36 place-items-center rounded-full border border-white/12 bg-white/5 font-heading text-4xl font-bold text-white/80 shadow-glowSm transition group-hover:border-white/30 group-hover:text-white">
+                      {itemTitle.slice(0, 2).toUpperCase()}
+                    </span>
+                  )}
                 </div>
 
-                {/* Right Side: Sleek directional indicator */}
-                <div className="mt-4 sm:mt-0 flex items-center gap-3 self-end sm:self-center">
-                  <span className="text-xs font-medium uppercase tracking-widest text-gray-400 transition-colors duration-300 group-hover:text-black">
-                    Discover Collection
-                  </span>
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 bg-white transition-all duration-300 group-hover:rotate-45 group-hover:border-black group-hover:bg-black group-hover:text-white text-gray-600">
-                    <ArrowUpRight className="h-4 w-4" />
-                  </div>
-                </div>
+                <h3 className="mt-5 font-heading text-2xl font-bold tracking-tight text-white">
+                  {itemTitle}
+                </h3>
+                <p className="mx-auto mt-3 line-clamp-2 min-h-12 max-w-[230px] text-sm leading-6 text-white/65">
+                  {item.description || `View curated ${itemTitle} high-grade timepieces.`}
+                </p>
+
+                <span className="mt-5 inline-flex items-center justify-center gap-1 text-sm font-bold text-white/65 transition group-hover:text-white group-hover:drop-shadow-[0_0_12px_rgba(255,255,255,0.5)]">
+                  Explore <ChevronRight className="h-4 w-4 transition group-hover:translate-x-1" />
+                </span>
               </Link>
             )
           })}
         </div>
       )}
-    </section>
+    </motion.section>
   )
 }
 
-// Matching List Skeletons 
 const CatalogListSkeleton = () => (
-  <div className="border-t border-gray-100">
+  <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
     {Array.from({ length: 4 }).map((_, index) => (
       <div
-        className="flex items-center justify-between py-8 border-b border-gray-100"
+        className="rounded-lg border border-white/10 px-5 pb-7 pt-4 text-center"
         key={index}
       >
-        <div className="flex items-center gap-6 sm:gap-10 w-full max-w-xl">
-          <div className="h-3 w-4 animate-pulse rounded bg-gray-100" />
-          <div className="h-14 w-14 animate-pulse rounded-full bg-gray-100 shrink-0" />
-          <div className="w-full grid gap-2">
-            <div className="h-5 w-1/3 animate-pulse rounded bg-gray-100" />
-            <div className="h-3 w-3/4 animate-pulse rounded bg-gray-50" />
-          </div>
-        </div>
-        <div className="flex items-center gap-3 shrink-0">
-          <div className="hidden sm:block h-3 w-28 animate-pulse rounded bg-gray-100" />
-          <div className="h-8 w-8 animate-pulse rounded-full bg-gray-100" />
-        </div>
+        <div className="mx-auto h-56 max-w-[220px] animate-pulse rounded bg-white/5" />
+        <div className="mx-auto mt-5 h-7 w-28 animate-pulse rounded bg-white/10" />
+        <div className="mx-auto mt-3 h-4 w-40 animate-pulse rounded bg-white/5" />
+        <div className="mx-auto mt-5 h-5 w-20 animate-pulse rounded bg-white/10" />
       </div>
     ))}
   </div>

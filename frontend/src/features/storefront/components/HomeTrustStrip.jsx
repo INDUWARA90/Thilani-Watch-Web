@@ -1,15 +1,27 @@
-import { trustItems } from '@/features/storefront/lib/homeContent'
+import { motion } from 'framer-motion'
+
+const partners = ['SEIKO', 'CITIZEN', 'CASIO', 'FOSSIL', 'ORIENT', 'TIMEX']
 
 export const HomeTrustStrip = () => (
-  <section className="mx-auto grid max-w-[1200px] gap-4 px-4 py-10 sm:px-6 md:grid-cols-2 lg:grid-cols-4 lg:px-10">
-    {trustItems.map(({ icon: Icon, label, text }) => (
-      <article className="rounded-[16px] border border-[#DEE2E6] bg-white p-5 shadow-[13px_14px_12.6px_0_rgba(0,0,0,0.04)]" key={label}>
-        <span className="grid h-11 w-11 place-items-center rounded-[14px] bg-[#F49006]/10 text-[#F49006]">
-          <Icon className="h-5 w-5" />
-        </span>
-        <h2 className="mt-4 text-lg font-black text-[#121212]">{label}</h2>
-        <p className="mt-2 text-sm leading-6 text-[#6C757D]">{text}</p>
-      </article>
-    ))}
+  <section className="mx-auto max-w-[1200px] px-4 py-12 sm:px-6 lg:px-10">
+    <motion.div
+      className="rounded-lg border border-white/10 bg-white/[0.03] px-5 py-6"
+      initial={{ opacity: 0, y: 18 }}
+      transition={{ duration: 0.5, ease: 'easeOut' }}
+      viewport={{ once: true, margin: '-80px' }}
+      whileInView={{ opacity: 1, y: 0 }}
+    >
+      <p className="mb-5 text-center text-xs font-semibold uppercase text-white/75">Trusted by collectors and everyday wearers</p>
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+        {partners.map((partner) => (
+          <span
+            className="grid min-h-14 place-items-center rounded-md border border-white/10 bg-black/20 px-4 font-heading text-sm font-bold text-white/70 grayscale transition hover:border-white/30 hover:text-white hover:grayscale-0 hover:drop-shadow-[0_0_14px_rgba(255,255,255,0.45)]"
+            key={partner}
+          >
+            {partner}
+          </span>
+        ))}
+      </div>
+    </motion.div>
   </section>
 )
