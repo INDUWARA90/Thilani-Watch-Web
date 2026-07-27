@@ -90,7 +90,7 @@ export const HomeWatchConfigurator = () => {
           <h2 className="mt-4 max-w-2xl break-words font-heading text-3xl font-bold leading-tight text-white drop-shadow-[0_0_18px_rgba(255,255,255,0.24)] sm:text-5xl">
             Choose a finish that matches your style.
           </h2>
-          <p className="mt-4 max-w-xl text-sm font-medium leading-7 text-white/90 sm:text-base">
+          <p className="mt-4 max-w-xl rounded-lg border border-white/12 bg-black/55 px-4 py-3 text-sm font-semibold leading-7 text-white shadow-[0_0_18px_rgba(255,255,255,0.12)] sm:text-base">
             Preview refined steel, silver, and graphite-inspired looks before exploring watches made for formal wear, gifting, and daily use.
           </p>
 
