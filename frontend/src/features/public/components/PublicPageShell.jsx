@@ -1,6 +1,6 @@
 import { Link } from 'react-router'
 
-export const PublicPageShell = ({ children, eyebrow, text, title }) => (
+export const PublicPageShell = ({ children, text, title }) => (
   <main className="min-h-screen bg-base pb-20 text-black">
     {/* Editorial Split Header */}
     <section className="relative overflow-hidden border-b border-primary/10 bg-base px-4 pb-16 pt-12 sm:px-6 sm:pt-16 lg:px-10">

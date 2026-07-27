@@ -21,7 +21,7 @@ export const WatchFilters = ({ brands, categories, filters, setFilters }) => {
   }
 
   return (
-    <div className="rounded-2xl border border-slate-200/60 bg-white p-5 shadow-sm space-y-4">
+    <div className="rounded-2xl border border-black/10 bg-[#FFFEFA] p-5 shadow-sm space-y-4">
       {/* Control Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 text-sm font-bold text-primary">
@@ -46,7 +46,7 @@ export const WatchFilters = ({ brands, categories, filters, setFilters }) => {
         <div className="relative">
           <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-primary" />
           <input
-            className="w-full rounded-xl border border-slate-200 bg-slate-50/40 pl-10 pr-4 py-2.5 text-sm text-primary placeholder:text-primary outline-none transition-all focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent/20"
+            className="w-full rounded-xl border border-black/10 bg-[#FAF9F5]/70 pl-10 pr-4 py-2.5 text-sm text-primary placeholder:text-primary outline-none transition-all focus:border-accent focus:bg-[#FFFEFA] focus:ring-4 focus:ring-accent/20"
             placeholder="Search watches..."
             value={filters.search}
             onChange={(event) => updateFilter('search', event.target.value)}
@@ -56,7 +56,7 @@ export const WatchFilters = ({ brands, categories, filters, setFilters }) => {
         {/* Stock Select */}
         <div className="relative">
           <select 
-            className="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50/40 px-3.5 py-2.5 text-sm text-primary outline-none transition-all focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent/20" 
+            className="w-full appearance-none rounded-xl border border-black/10 bg-[#FAF9F5]/70 px-3.5 py-2.5 text-sm text-primary outline-none transition-all focus:border-accent focus:bg-[#FFFEFA] focus:ring-4 focus:ring-accent/20" 
             value={filters.stock} 
             onChange={(event) => updateFilter('stock', event.target.value)}
           >
@@ -69,7 +69,7 @@ export const WatchFilters = ({ brands, categories, filters, setFilters }) => {
         {/* Brand Select */}
         <div className="relative">
           <select 
-            className="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50/40 px-3.5 py-2.5 text-sm text-primary outline-none transition-all focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent/20" 
+            className="w-full appearance-none rounded-xl border border-black/10 bg-[#FAF9F5]/70 px-3.5 py-2.5 text-sm text-primary outline-none transition-all focus:border-accent focus:bg-[#FFFEFA] focus:ring-4 focus:ring-accent/20" 
             value={filters.brand} 
             onChange={(event) => updateFilter('brand', event.target.value)}
           >
@@ -85,7 +85,7 @@ export const WatchFilters = ({ brands, categories, filters, setFilters }) => {
         {/* Category Select */}
         <div className="relative">
           <select 
-            className="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50/40 px-3.5 py-2.5 text-sm text-primary outline-none transition-all focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent/20" 
+            className="w-full appearance-none rounded-xl border border-black/10 bg-[#FAF9F5]/70 px-3.5 py-2.5 text-sm text-primary outline-none transition-all focus:border-accent focus:bg-[#FFFEFA] focus:ring-4 focus:ring-accent/20" 
             value={filters.category} 
             onChange={(event) => updateFilter('category', event.target.value)}
           >
@@ -101,7 +101,7 @@ export const WatchFilters = ({ brands, categories, filters, setFilters }) => {
         {/* Gender Select */}
         <div className="relative">
           <select
-            className="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50/40 px-3.5 py-2.5 text-sm text-primary outline-none transition-all focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent/20"
+            className="w-full appearance-none rounded-xl border border-black/10 bg-[#FAF9F5]/70 px-3.5 py-2.5 text-sm text-primary outline-none transition-all focus:border-accent focus:bg-[#FFFEFA] focus:ring-4 focus:ring-accent/20"
             value={filters.gender}
             onChange={(event) => updateFilter('gender', event.target.value)}
           >
@@ -115,7 +115,7 @@ export const WatchFilters = ({ brands, categories, filters, setFilters }) => {
         {/* Featured Select */}
         <div className="relative">
           <select 
-            className="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50/40 px-3.5 py-2.5 text-sm text-primary outline-none transition-all focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent/20" 
+            className="w-full appearance-none rounded-xl border border-black/10 bg-[#FAF9F5]/70 px-3.5 py-2.5 text-sm text-primary outline-none transition-all focus:border-accent focus:bg-[#FFFEFA] focus:ring-4 focus:ring-accent/20" 
             value={filters.featured} 
             onChange={(event) => updateFilter('featured', event.target.value)}
           >
@@ -128,7 +128,7 @@ export const WatchFilters = ({ brands, categories, filters, setFilters }) => {
         {/* Published Select */}
         <div className="relative">
           <select 
-            className="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50/40 px-3.5 py-2.5 text-sm text-primary outline-none transition-all focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent/20" 
+            className="w-full appearance-none rounded-xl border border-black/10 bg-[#FAF9F5]/70 px-3.5 py-2.5 text-sm text-primary outline-none transition-all focus:border-accent focus:bg-[#FFFEFA] focus:ring-4 focus:ring-accent/20" 
             value={filters.published} 
             onChange={(event) => updateFilter('published', event.target.value)}
           >
@@ -141,3 +141,5 @@ export const WatchFilters = ({ brands, categories, filters, setFilters }) => {
     </div>
   )
 }
+
+

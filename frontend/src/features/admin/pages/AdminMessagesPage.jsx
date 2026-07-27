@@ -20,7 +20,7 @@ export const AdminMessagesPage = () => {
 
   return (
     <div className="mx-auto grid max-w-[1500px] gap-6">
-      <div className="flex flex-col gap-4 border-b border-slate-100 pb-6 lg:flex-row lg:items-end lg:justify-between">
+      <div className="flex flex-col gap-4 border-b border-black/5 pb-6 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <p className="mb-1 text-xs font-bold uppercase tracking-wider text-accent">Customer Inbox</p>
           <h1 className="m-0 font-heading text-2xl font-black tracking-wide text-primary sm:text-3xl">Contact Messages</h1>
@@ -48,13 +48,13 @@ export const AdminMessagesPage = () => {
       {message && <Notice tone="success">{message}</Notice>}
 
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_430px]">
-        <section className="rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <section className="rounded-2xl border border-black/10 bg-[#FFFEFA] shadow-sm">
           {isLoading ? (
             <div className="p-5">
               <LoadingState label="Loading contact messages" variant="reviews" rows={5} />
             </div>
           ) : (
-            <div className="divide-y divide-slate-100">
+            <div className="divide-y divide-black/5">
               {messages.map((contactMessage) => (
                 <MessageRow
                   contactMessage={contactMessage}
@@ -89,15 +89,15 @@ const MessageRow = ({ contactMessage, isActive, isPending, onOpen }) => {
 
   return (
     <button
-      className={`grid w-full cursor-pointer gap-3 p-4 text-left transition hover:bg-slate-50 sm:grid-cols-[minmax(0,1fr)_auto] ${
-        isActive ? 'bg-accent/10' : 'bg-white'
+      className={`grid w-full cursor-pointer gap-3 p-4 text-left transition hover:bg-[#FAF9F5] sm:grid-cols-[minmax(0,1fr)_auto] ${
+        isActive ? 'bg-accent/10' : 'bg-[#FFFEFA]'
       } ${isPending ? 'opacity-60' : ''}`}
       type="button"
       onClick={() => onOpen(contactMessage)}
     >
       <div className="min-w-0">
         <div className="mb-1 flex flex-wrap items-center gap-2">
-          <span className={`h-2 w-2 rounded-full ${isRead ? 'bg-slate-300' : 'bg-primary'}`} />
+          <span className={`h-2 w-2 rounded-full ${isRead ? 'bg-black/20' : 'bg-primary'}`} />
           <p className="truncate text-sm font-bold text-primary">{contactMessage.subject || 'No subject'}</p>
         </div>
         <p className="truncate text-xs font-semibold text-primary">
@@ -106,7 +106,7 @@ const MessageRow = ({ contactMessage, isActive, isPending, onOpen }) => {
         <p className="mt-2 line-clamp-2 text-sm leading-6 text-primary">{contactMessage.message}</p>
       </div>
       <div className="flex items-center gap-2 sm:flex-col sm:items-end">
-        <span className={`rounded-full border px-2.5 py-1 text-xs font-bold ${isRead ? 'border-slate-200 bg-slate-50 text-primary' : 'border-accent/35 bg-accent/10 text-primary'}`}>
+        <span className={`rounded-full border px-2.5 py-1 text-xs font-bold ${isRead ? 'border-black/10 bg-[#FAF9F5] text-primary' : 'border-accent/35 bg-accent/10 text-primary'}`}>
           {isRead ? 'Read' : 'Unread'}
         </span>
         <span className="text-xs font-medium text-primary">{formatDate(contactMessage.createdAt)}</span>
@@ -118,7 +118,7 @@ const MessageRow = ({ contactMessage, isActive, isPending, onOpen }) => {
 const MessageDetail = ({ contactMessage, isPending, onDelete, onToggleRead }) => {
   if (!contactMessage) {
     return (
-      <aside className="grid min-h-80 place-items-center rounded-2xl border border-dashed border-slate-200 bg-white p-8 text-center text-sm font-medium text-primary">
+      <aside className="grid min-h-80 place-items-center rounded-2xl border border-dashed border-black/10 bg-[#FFFEFA] p-8 text-center text-sm font-medium text-primary">
         Select a contact message to inspect it.
       </aside>
     )
@@ -127,8 +127,8 @@ const MessageDetail = ({ contactMessage, isPending, onDelete, onToggleRead }) =>
   const isRead = readBoolean(contactMessage.isRead)
 
   return (
-    <aside className="sticky top-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-      <div className="mb-5 flex items-start justify-between gap-4 border-b border-slate-100 pb-5">
+    <aside className="sticky top-6 rounded-2xl border border-black/10 bg-[#FFFEFA] p-6 shadow-sm">
+      <div className="mb-5 flex items-start justify-between gap-4 border-b border-black/5 pb-5">
         <div className="min-w-0">
           <p className="mb-2 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-accent">
             <Mail className="h-4 w-4" />
@@ -136,19 +136,19 @@ const MessageDetail = ({ contactMessage, isPending, onDelete, onToggleRead }) =>
           </p>
           <h2 className="font-heading text-xl font-black leading-tight tracking-wide text-primary">{contactMessage.subject || 'No subject'}</h2>
         </div>
-        <span className={`shrink-0 rounded-full border px-2.5 py-1 text-xs font-bold ${isRead ? 'border-slate-200 bg-slate-50 text-primary' : 'border-accent/35 bg-accent/10 text-primary'}`}>
+        <span className={`shrink-0 rounded-full border px-2.5 py-1 text-xs font-bold ${isRead ? 'border-black/10 bg-[#FAF9F5] text-primary' : 'border-accent/35 bg-accent/10 text-primary'}`}>
           {isRead ? 'Read' : 'Unread'}
         </span>
       </div>
 
-      <div className="grid gap-3 rounded-xl bg-slate-50 p-4 text-sm">
+      <div className="grid gap-3 rounded-xl bg-[#FAF9F5] p-4 text-sm">
         <InfoRow label="Name" value={contactMessage.name} />
         <InfoRow label="Email" value={contactMessage.email} />
         <InfoRow label="Phone" value={contactMessage.phone || 'Not provided'} />
         <InfoRow label="Received" value={formatDate(contactMessage.createdAt)} />
       </div>
 
-      <div className="mt-5 rounded-xl border border-slate-100 bg-white p-4">
+      <div className="mt-5 rounded-xl border border-black/5 bg-[#FFFEFA] p-4">
         <p className="mb-2 text-xs font-bold uppercase tracking-wide text-primary">Message</p>
         <p className="whitespace-pre-wrap text-sm leading-7 text-primary">{contactMessage.message}</p>
       </div>
@@ -180,7 +180,9 @@ const Notice = ({ children, tone }) => (
   </div>
 )
 
-const inputClass = 'h-10 w-full rounded-xl border border-slate-200 bg-white pl-9 pr-3 text-sm font-medium text-primary outline-none transition focus:border-primary focus:ring-2 focus:ring-accent/20'
-const selectClass = 'h-10 rounded-xl border border-slate-200 bg-white px-3 text-sm font-medium text-primary outline-none transition focus:border-primary focus:ring-2 focus:ring-accent/20'
-const secondaryButtonClass = 'inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-primary transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60'
+const inputClass = 'h-10 w-full rounded-xl border border-black/10 bg-[#FFFEFA] pl-9 pr-3 text-sm font-medium text-primary outline-none transition focus:border-primary focus:ring-2 focus:ring-accent/20'
+const selectClass = 'h-10 rounded-xl border border-black/10 bg-[#FFFEFA] px-3 text-sm font-medium text-primary outline-none transition focus:border-primary focus:ring-2 focus:ring-accent/20'
+const secondaryButtonClass = 'inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-xl border border-black/10 bg-[#FFFEFA] px-4 text-sm font-semibold text-primary transition hover:bg-[#FAF9F5] disabled:cursor-not-allowed disabled:opacity-60'
 const dangerButtonClass = 'inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 text-sm font-semibold text-red-700 transition hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-60'
+
+

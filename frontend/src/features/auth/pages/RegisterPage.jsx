@@ -37,83 +37,87 @@ export const RegisterPage = () => {
   }
 
   return (
-    <section className="mx-auto w-full max-w-[560px] min-w-0 rounded-lg border border-primary/10 bg-card p-5 text-primary shadow-premiumSm sm:p-9">
-      <p className="mb-3 inline-flex rounded-full border border-primary/10 bg-card px-3 py-1 text-xs font-semibold uppercase text-primary">Create account</p>
-      <h1 className="mb-3 font-heading text-4xl font-bold leading-[1.1] tracking-tight text-primary sm:text-[44px]">
-        Register
-      </h1>
-      <p className="mb-8 text-base leading-7 text-primary">
-        Create a customer account with your contact details.
-      </p>
+    <main className="min-h-screen bg-base flex items-center justify-center px-4 py-16 text-black sm:px-6 lg:px-8">
+      <section className="mx-auto w-full max-w-[540px] min-w-0 rounded-3xl border border-black/10 bg-white p-8 shadow-[0_10px_30px_rgba(0,0,0,0.06)] sm:p-12">
+        <span className="mb-4 inline-flex items-center rounded-full border border-black/10 bg-stone-100 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-black shadow-2xs">
+          Create account
+        </span>
+        <h1 className="mb-3 font-heading text-[38px] font-extrabold tracking-tight leading-[1.05] text-black sm:text-[44px]">
+          Register
+        </h1>
+        <p className="mb-8 text-base font-normal leading-relaxed text-stone-600">
+          Create a customer account with your contact details to begin shopping.
+        </p>
 
-      <form className="grid gap-5" onSubmit={handleSubmit} noValidate>
-        {error && (
-          <div
-            role="alert"
-            className="rounded-lg border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm font-medium text-red-200"
-          >
-            {error}
+        <form className="grid gap-5" onSubmit={handleSubmit} noValidate>
+          {error && (
+            <div
+              role="alert"
+              className="rounded-2xl border border-red-500/20 bg-red-500/10 p-4 text-sm font-medium text-red-700 shadow-sm"
+            >
+              {error}
+            </div>
+          )}
+
+          <div className="grid gap-4">
+            <label className="grid gap-2 text-xs font-bold uppercase tracking-wider text-black">
+              Name 
+              <input className={authInputClass} name="name" placeholder="Full name" required />
+            </label>
+
+            <label className="grid gap-2 text-xs font-bold uppercase tracking-wider text-black">
+              Email 
+              <input className={authInputClass} name="email" type="email" placeholder="you@example.com" required />
+            </label>
+
+            <label className="grid gap-2 text-xs font-bold uppercase tracking-wider text-black">
+              Password
+              <span className="flex items-center rounded-2xl border border-black/15 bg-stone-50/50 px-4 transition focus-within:border-black focus-within:bg-white focus-within:ring-2 focus-within:ring-black/10">
+                <input
+                  className="min-h-[46px] min-w-0 flex-1 bg-transparent py-2.5 text-sm text-black outline-none placeholder:text-stone-400 font-normal normal-case"
+                  name="password"
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="••••••••"
+                  minLength={6}
+                  required
+                />
+                <button
+                  className="cursor-pointer text-stone-500 transition hover:text-black p-1"
+                  type="button"
+                  aria-label="Toggle password visibility"
+                  aria-pressed={showPassword}
+                  onClick={() => setShowPassword((current) => !current)}
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </span>
+            </label>
+
+            <label className="grid gap-2 text-xs font-bold uppercase tracking-wider text-black">
+              Phone (Optional)
+              <input className={authInputClass} name="phone" type="tel" placeholder="+94 77 123 4567" />
+            </label>
           </div>
-        )}
 
-        <div className="grid gap-4">
-          <label className="grid gap-2 text-sm font-medium text-primary">
-            Name
-            <input className={authInputClass} name="name" placeholder="Full name" required />
-          </label>
+          <button
+            className="mt-3 inline-flex h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-black px-8 text-sm font-bold text-white shadow-lg shadow-black/10 transition-all duration-300 hover:bg-stone-800 hover:shadow-xl active:scale-98 disabled:cursor-not-allowed disabled:opacity-60"
+            type="submit"
+            disabled={isSubmitting}
+          >
+            {isSubmitting && <ButtonSpinner />} {isSubmitting ? 'Creating account...' : 'Create account'}
+          </button>
+        </form>
 
-          <label className="grid gap-2 text-sm font-medium text-primary">
-            Email
-            <input className={authInputClass} name="email" type="email" placeholder="you@example.com" required />
-          </label>
-
-          <label className="grid gap-2 text-sm font-medium text-primary">
-            Password
-            <span className="flex items-center rounded-lg border border-primary/10 bg-black/35 px-[15px] transition focus-within:border-primary/10 focus-within:ring-2 focus-within:ring-accent/30">
-              <input
-                className="min-h-[46px] min-w-0 flex-1 bg-transparent px-1 text-[15px] text-primary outline-none placeholder:text-primary"
-                name="password"
-                type={showPassword ? 'text' : 'password'}
-                placeholder="••••••••"
-                minLength={6}
-                required
-              />
-              <button
-                className="cursor-pointer text-primary transition hover:text-accent"
-                type="button"
-                aria-label="Toggle password visibility"
-                aria-pressed={showPassword}
-                onClick={() => setShowPassword((current) => !current)}
-              >
-                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              </button>
-            </span>
-          </label>
-
-          <label className="grid gap-2 text-sm font-medium text-primary">
-            Phone
-            <input className={authInputClass} name="phone" type="tel" placeholder="Optional" />
-          </label>
-        </div>
-
-        <button
-          className="mt-1 inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-white px-8 text-sm font-bold text-black transition hover:shadow-premium disabled:cursor-not-allowed disabled:opacity-60 sm:w-fit"
-          type="submit"
-          disabled={isSubmitting}
-        >
-          {isSubmitting && <ButtonSpinner />} {isSubmitting ? 'Creating account' : 'Create account'}
-        </button>
-      </form>
-
-      <p className="mt-6 text-sm text-primary">
-        Already registered?{' '}
-        <Link className="font-semibold text-primary no-underline transition " to="/login">
-          Log in
-        </Link>
-      </p>
-    </section>
+        <p className="mt-8 text-center text-sm font-medium text-stone-600 border-t border-black/5 pt-6">
+          Already registered?{' '}
+          <Link className="font-bold text-black no-underline transition hover:underline" to="/login">
+            Log in
+          </Link>
+        </p>
+      </section>
+    </main>
   )
 }
 
 const authInputClass =
-  'min-h-[46px] min-w-0 rounded-lg border border-primary/10 bg-black/35 px-[15px] text-[15px] text-primary outline-none placeholder:text-primary transition focus:border-primary/10 focus:ring-2 focus:ring-accent/30'
+  'min-h-[46px] min-w-0 rounded-2xl border border-black/15 bg-stone-50/50 px-4 py-2.5 text-sm font-medium text-black outline-none placeholder:text-stone-400 transition focus:border-black focus:bg-white focus:ring-2 focus:ring-black/10 normal-case'

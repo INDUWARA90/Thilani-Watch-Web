@@ -1,5 +1,21 @@
 import { Link, useParams } from 'react-router'
-import { ArrowLeft, CalendarDays, ClipboardList, CreditCard, FileText, MapPin, RefreshCcw, ShieldAlert, Truck, XCircle } from 'lucide-react'
+import {
+  ArrowLeft,
+  CalendarDays,
+  ClipboardList,
+  CreditCard,
+  FileText,
+  MapPin,
+  PackageCheck,
+  RefreshCcw,
+  ShieldAlert,
+  Truck,
+  XCircle,
+  CheckCircle2,
+  ExternalLink,
+  Sparkles,
+  Clock,
+} from 'lucide-react'
 import { LoadingState } from '@/shared/ui/LoadingState'
 import { usePageTitle } from '@/shared/hooks/usePageTitle'
 import {
@@ -29,9 +45,13 @@ export const OrderDetailPage = () => {
 
   if (isLoading) {
     return (
-      <div className="mx-auto max-w-[1200px] p-6">
-        <LoadingState label="Loading order details" variant="form" />
-      </div>
+      <main className="min-h-screen bg-[#FBFBFA] text-neutral-900 font-sans px-4 py-12 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="rounded-2xl border border-neutral-200 bg-white p-12 shadow-sm">
+            <LoadingState label="Loading order details" variant="form" />
+          </div>
+        </div>
+      </main>
     )
   }
 
@@ -40,185 +60,240 @@ export const OrderDetailPage = () => {
   const paymentSlip = order ? getPaymentSlip(order) : null
 
   return (
-    <main className="mx-auto min-h-screen max-w-[1200px] bg-base px-4 py-8 text-primary sm:px-6 lg:px-8">
-      {/* Back Button Link */}
-      <Link 
-        className="mb-6 inline-flex h-10 items-center gap-2 rounded-full border border-primary/10 bg-card px-5 text-xs font-bold text-primary no-underline shadow-sm transition hover:border-primary/10 hover:shadow-premiumSm" 
-        to="/orders"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        Back to orders
-      </Link>
-
-      {/* Modern Alert Notifications */}
-      {error && (
-        <div className="mb-6 flex animate-fade-in items-center gap-2.5 rounded-lg border border-red-400/30 bg-red-500/10 p-4 text-sm font-medium text-red-200 shadow-sm">
-          <ShieldAlert className="h-5 w-5 shrink-0 text-red-200" />
-          {error}
+    <main className="min-h-screen bg-[#FBFBFA] text-neutral-900 font-sans pb-24 pt-8">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        
+        {/* Navigation & Header Bar */}
+        <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
+          <Link
+            className="group inline-flex h-10 items-center gap-2 rounded-full border border-neutral-200 bg-white px-5 text-xs font-bold text-neutral-700 no-underline shadow-sm transition hover:border-neutral-300 hover:bg-neutral-50 hover:text-neutral-900"
+            to="/orders"
+          >
+            <ArrowLeft className="h-4 w-4 text-neutral-400 transition-transform group-hover:-translate-x-0.5" aria-hidden="true" />
+            Back to Orders
+          </Link>
+          
+          <span className="inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-white px-3.5 py-3 text-xs font-semibold uppercase tracking-widest text-neutral-800 shadow-sm">
+            <Sparkles className="h-3.5 w-3.5 text-amber-600" aria-hidden="true" />
+            Verified Purchase
+          </span>
         </div>
-      )}
-      
-      {message && (
-        <div className="mb-6 flex animate-fade-in items-center gap-2.5 rounded-lg border border-emerald-300/30 bg-emerald-500/10 p-4 text-sm font-medium text-emerald-200 shadow-sm">
-          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-primary text-xs font-bold">✓</span>
-          {message}
-        </div>
-      )}
 
-      {order && (
-        <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
-          <div className="grid gap-6">
-            {/* Essential Header Banner Card */}
-            <div className="relative overflow-hidden rounded-lg border border-primary/10 bg-card p-6 shadow-premiumSm">
-              <div className="relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <div>
-                  <p className="mb-1.5 text-xs font-semibold uppercase text-primary">Order Ref</p>
-                  <h1 className="font-heading text-2xl font-bold tracking-tight text-primary sm:text-3xl">
-                    {getOrderNumber(order) || getOrderId(order)}
-                  </h1>
-                  <p className="mt-2 flex items-center gap-2 text-xs font-medium text-primary">
-                    <CalendarDays className="h-4 w-4 text-primary" />
-                    Placed on {formatDate(order.createdAt)}
-                  </p>
-                  {order.wantedDate && (
-                    <p className="mt-2 flex items-center gap-2 text-xs font-medium text-primary">
-                      <CalendarDays className="h-4 w-4 text-primary" />
-                      Wanted date {formatDate(order.wantedDate)}
+        {/* Notifications & System Banners */}
+        {error && (
+          <div className="mb-6 flex items-center gap-3 rounded-2xl border border-rose-200 bg-rose-50 p-4 text-xs font-semibold text-rose-700 shadow-sm">
+            <ShieldAlert className="h-4 w-4 shrink-0 text-rose-600" aria-hidden="true" />
+            <span>{error}</span>
+          </div>
+        )}
+
+        {message && (
+          <div className="mb-6 flex items-center gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-xs font-semibold text-emerald-700 shadow-sm">
+            <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" aria-hidden="true" />
+            <span>{message}</span>
+          </div>
+        )}
+
+        {order && (
+          <div className="grid gap-8 lg:grid-cols-[1fr_360px]">
+            {/* Main Content Area */}
+            <div className="space-y-6">
+              
+              {/* Primary Order Banner */}
+              <section className="relative overflow-hidden rounded-3xl border border-neutral-200 bg-white p-6 sm:p-8 shadow-sm">
+                <div className="relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+                  <div>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-neutral-400">Order Reference</span>
+                    <h1 className="mt-1 font-heading text-2xl font-extrabold tracking-tight text-neutral-900 sm:text-3xl">
+                      #{getOrderNumber(order) || getOrderId(order)}
+                    </h1>
+
+                    <div className="mt-4 flex flex-wrap items-center gap-4 text-xs text-neutral-600 font-medium">
+                      <span className="flex items-center gap-1.5">
+                        <CalendarDays className="h-3.5 w-3.5 text-neutral-400" aria-hidden="true" />
+                        Placed on {formatDate(order.createdAt)}
+                      </span>
+                      {order.wantedDate && (
+                        <span className="flex items-center gap-1.5">
+                          <Clock className="h-3.5 w-3.5 text-neutral-400" aria-hidden="true" />
+                          Requested by {formatDate(order.wantedDate)}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2 sm:self-start">
+                    <StatusPill label={orderStatus} tone={getStatusTone(orderStatus)} />
+                    <StatusPill label={`Pay: ${paymentStatus}`} tone={getStatusTone(paymentStatus)} />
+                  </div>
+                </div>
+
+                {/* Cancel Action Footer */}
+                {canCancelOrder(order) && (
+                  <div className="relative z-10 mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-neutral-100 pt-4">
+                    <p className="text-xs font-medium text-neutral-500">
+                      Need to modify or drop this order?
                     </p>
-                  )}
-                </div>
-                
-                <div className="flex flex-wrap items-center gap-2 sm:self-start">
-                  <StatusPill label={orderStatus} tone={getStatusTone(orderStatus)} />
-                  <StatusPill label={`Payment: ${paymentStatus}`} tone={getStatusTone(paymentStatus)} />
-                </div>
+                    <button
+                      className="inline-flex h-9 items-center gap-2 rounded-full border border-rose-200 bg-rose-50 px-4 text-xs font-bold text-rose-700 transition hover:bg-rose-100 hover:text-rose-800"
+                      type="button"
+                      onClick={cancelOrder}
+                    >
+                      <XCircle className="h-4 w-4 text-rose-600" aria-hidden="true" />
+                      Cancel Order
+                    </button>
+                  </div>
+                )}
+              </section>
+
+              {/* Items List Table */}
+              <OrderItemsTable order={order} />
+
+              {/* Addresses Grid */}
+              <div className="grid gap-6 sm:grid-cols-2">
+                <AddressCard address={order.shippingAddress} title="Shipping Address" />
+                {order.billingAddress && <AddressCard address={order.billingAddress} title="Billing Address" />}
               </div>
 
-              {/* Action Drawer Footer within Header */}
-              {canCancelOrder(order) && (
-                <div className="mt-6 flex justify-end border-t border-primary/10 pt-4">
-                  <button 
-                    className="inline-flex h-9 items-center gap-2 rounded-full border border-red-400/25 bg-red-500/10 px-4 text-xs font-bold text-red-200 transition hover:bg-red-500/20" 
-                    type="button" 
-                    onClick={cancelOrder}
-                  >
-                    <XCircle className="h-4 w-4" />
-                    Cancel order
-                  </button>
-                </div>
+              {/* Return Workflow Form */}
+              {canRequestReturn(order) && (
+                <section className="rounded-3xl border border-neutral-200 bg-white p-6 sm:p-8 shadow-sm">
+                  <div className="mb-5 flex items-center gap-3">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-neutral-200 bg-neutral-50 text-neutral-900 font-bold shadow-sm">
+                      <RefreshCcw className="h-5 w-5" aria-hidden="true" />
+                    </span>
+                    <div>
+                      <h2 className="font-heading text-lg font-bold tracking-tight text-neutral-900">Request a Return</h2>
+                      <p className="text-xs text-neutral-500">Submit your item return request within the eligible window.</p>
+                    </div>
+                  </div>
+
+                  <form className="space-y-4" onSubmit={requestReturn}>
+                    <div className="space-y-1.5">
+                      <label className="text-[11px] font-bold uppercase tracking-wider text-neutral-400">
+                        Reason for Return
+                      </label>
+                      <input
+                        className={inputClass}
+                        placeholder="e.g., Sizing issue, unexpected defect, wrong variant"
+                        required
+                        value={returnForm.reason}
+                        onChange={(event) => updateReturnField('reason', event.target.value)}
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-[11px] font-bold uppercase tracking-wider text-neutral-400">
+                        Additional Notes
+                      </label>
+                      <textarea
+                        className={`${inputClass} min-h-[100px] py-3 resize-none`}
+                        placeholder="Provide extra details on the condition of the watch and packaging..."
+                        value={returnForm.notes}
+                        onChange={(event) => updateReturnField('notes', event.target.value)}
+                      />
+                    </div>
+
+                    <button
+                      className="inline-flex h-10 items-center justify-center rounded-full bg-black px-6 text-xs font-bold text-white shadow-md transition hover:bg-neutral-800 active:scale-[0.98]"
+                      type="submit"
+                    >
+                      Submit Return Request
+                    </button>
+                  </form>
+                </section>
               )}
             </div>
 
-            {/* Custom Interactive Section Cards */}
-            <OrderItemsTable order={order} />
-            
-            <div className="grid gap-6 sm:grid-cols-2">
-              <AddressCard address={order.shippingAddress} title="Shipping Address" />
-              {order.billingAddress && <AddressCard address={order.billingAddress} title="Billing Address" />}
-            </div>
+            {/* Sidebar Summary Area */}
+            <aside className="space-y-6">
+              <div className="sticky top-6 rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm">
+                <h2 className="mb-5 flex items-center gap-2 font-heading text-lg font-bold tracking-tight text-neutral-900">
+                  <ClipboardList className="h-5 w-5 text-neutral-900" aria-hidden="true" />
+                  Order Summary
+                </h2>
 
-            {/* Return Request Workflow Area */}
-            {canRequestReturn(order) && (
-              <form className="rounded-lg border border-primary/10 bg-card p-6 shadow-premiumSm" onSubmit={requestReturn}>
-                <div className="mb-4 flex items-center gap-2.5">
-                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/5 text-primary">
-                    <RefreshCcw className="h-4 w-4" />
-                  </span>
-                  <h2 className="font-heading text-lg font-bold tracking-tight text-primary">Request a return</h2>
+                <div className="space-y-3">
+                  <SummaryRow label="Subtotal" value={formatOrderMoney(getOrderSubtotal(order), order.currency)} />
+                  <SummaryRow label="Shipping" value={formatOrderMoney(order.shippingFee ?? SHIPPING_FEE, order.currency)} />
+                  <SummaryRow
+                    isDiscount
+                    label="Discount"
+                    value={`-${formatOrderMoney(order.discountAmount || order.discount || 0, order.currency)}`}
+                  />
                 </div>
-                
-                <div className="grid gap-4">
-                  <label className="grid gap-1.5 text-sm font-semibold text-primary">
-                    Reason for return
-                    <input 
-                      className={inputClass} 
-                      placeholder="e.g., Sizing issue, incorrect model variant" 
-                      required 
-                      value={returnForm.reason} 
-                      onChange={(event) => updateReturnField('reason', event.target.value)} 
-                    />
-                  </label>
-                  
-                  <label className="grid gap-1.5 text-sm font-semibold text-primary">
-                    Additional details
-                    <textarea 
-                      className={`${inputClass} min-h-[90px] py-2.5 resize-none`} 
-                      placeholder="Provide additional details regarding the watch's current condition..."
-                      value={returnForm.notes} 
-                      onChange={(event) => updateReturnField('notes', event.target.value)} 
-                    />
-                  </label>
-                  
-                  <button className="mt-2 inline-flex h-11 w-full items-center justify-center rounded-full bg-white px-5 text-sm font-bold text-black transition hover:shadow-premiumSm sm:w-fit" type="submit">
-                    Submit return request
-                  </button>
-                </div>
-              </form>
-            )}
-          </div>
 
-          {/* Checkout Right Invoice Sidebar */}
-          <aside className="sticky top-6 h-fit rounded-lg border border-primary/10 bg-card p-6 shadow-premiumSm">
-            <h2 className="mb-4 flex items-center gap-2 font-heading text-lg font-bold tracking-tight text-primary">
-              <ClipboardList className="h-4 w-4 text-primary" />
-              Summary
-            </h2>
-            
-            <div className="space-y-3.5">
-              <SummaryRow label="Subtotal" value={formatOrderMoney(getOrderSubtotal(order), order.currency)} />
-              <SummaryRow label="Shipping" value={formatOrderMoney(order.shippingFee ?? SHIPPING_FEE, order.currency)} />
-              <SummaryRow label="Discount" value={`-${formatOrderMoney(order.discountAmount || order.discount || 0, order.currency)}`} isDiscount />
-            </div>
+                <div className="my-5 border-t border-neutral-100" />
+                <SummaryRow isStrong label="Total" value={formatOrderMoney(getOrderTotal(order), order.currency)} />
 
-            <div className="my-4 border-t border-primary/10" />
-            <SummaryRow isStrong label="Total" value={formatOrderMoney(getOrderTotal(order), order.currency)} />
-            
-            <div className="mt-5 flex items-center gap-2 rounded-lg border border-primary/10 bg-card px-4 py-3 text-xs font-semibold text-primary">
-              <CreditCard className="h-4 w-4 text-primary" />
-              <span>Payment method: <span className="capitalize text-primary">{getPaymentMethodLabel(order.paymentMethod)}</span></span>
-            </div>
-
-            {paymentSlip && (
-              <a className="mt-3 block overflow-hidden rounded-lg border border-primary/10 bg-card p-3 text-xs font-semibold text-primary no-underline transition hover:border-primary/10 hover:shadow-premiumSm" href={paymentSlip.url} rel="noreferrer" target="_blank">
-                <span className="mb-2 block text-primary">Attached payment slip</span>
-                {isPaymentSlipImage(paymentSlip) ? (
-                  <img alt="Attached payment slip" className="h-32 w-full rounded-lg border border-primary/10 bg-black/35 object-cover" src={paymentSlip.url} />
-                ) : (
-                  <span className="flex min-h-24 items-center gap-3 rounded-lg border border-primary/10 bg-black/35 p-4 text-primary">
-                    <FileText className="h-6 w-6 text-primary" />
-                    <span className="min-w-0 truncate">{paymentSlip.fileName || 'Open attached slip'}</span>
+                {/* Payment Method Badge */}
+                <div className="mt-6 flex items-center gap-3 rounded-2xl border border-neutral-200 bg-neutral-50 p-4 text-xs font-semibold text-neutral-700">
+                  <CreditCard className="h-4 w-4 shrink-0 text-neutral-900" aria-hidden="true" />
+                  <span>
+                    Payment Method:{' '}
+                    <span className="capitalize font-bold text-neutral-900">{getPaymentMethodLabel(order.paymentMethod)}</span>
                   </span>
+                </div>
+
+                {/* Slip Viewer Attachment */}
+                {paymentSlip && (
+                  <a
+                    className="group mt-4 block overflow-hidden rounded-2xl border border-neutral-200 bg-neutral-50 p-3.5 transition hover:border-neutral-300 hover:bg-neutral-100/80"
+                    href={paymentSlip.url}
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    <div className="mb-2 flex items-center justify-between text-xs font-bold text-neutral-900">
+                      <span>Attached Payment Slip</span>
+                      <ExternalLink className="h-3.5 w-3.5 text-neutral-400 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+                    </div>
+
+                    {isPaymentSlipImage(paymentSlip) ? (
+                      <img
+                        alt="Attached payment slip"
+                        className="h-36 w-full rounded-xl border border-neutral-200 object-cover shadow-inner"
+                        src={paymentSlip.url}
+                      />
+                    ) : (
+                      <div className="flex h-20 items-center gap-3 rounded-xl border border-neutral-200 bg-white p-3 text-xs font-medium text-neutral-700">
+                        <FileText className="h-6 w-6 text-neutral-900 shrink-0" aria-hidden="true" />
+                        <span className="min-w-0 truncate">{paymentSlip.fileName || 'View attached document'}</span>
+                      </div>
+                    )}
+                  </a>
                 )}
-              </a>
-            )}
 
-            <ShippingLogistics order={order} />
-            <ReturnsRefunds order={order} />
-          </aside>
-        </section>
-      )}
+                <ShippingLogistics order={order} />
+                <ReturnsRefunds order={order} />
+              </div>
+            </aside>
+          </div>
+        )}
+      </div>
     </main>
   )
 }
 
 const OrderItemsTable = ({ order }) => (
-  <section className="rounded-lg border border-primary/10 bg-card p-6 shadow-premiumSm">
-    <h2 className="mb-4 font-heading text-lg font-bold tracking-tight text-primary">Items Ordered</h2>
-    <div className="w-full overflow-x-auto rounded-lg border border-primary/10">
-      <table className="w-full min-w-[600px] border-collapse">
+  <section className="rounded-3xl border border-neutral-200 bg-white p-6 sm:p-8 shadow-sm">
+    <h2 className="mb-5 font-heading text-lg font-bold tracking-tight text-neutral-900">Items Ordered</h2>
+    <div className="w-full overflow-x-auto rounded-2xl border border-neutral-200 bg-neutral-50">
+      <table className="w-full min-w-[550px] text-left">
         <thead>
-          <tr className="bg-card">
-            <th className="border-b border-primary/10 p-3.5 text-left text-xs font-bold uppercase text-primary">Item Name</th>
-            <th className="w-24 border-b border-primary/10 p-3.5 text-center text-xs font-bold uppercase text-primary">Qty</th>
-            <th className="w-36 border-b border-primary/10 p-3.5 text-right text-xs font-bold uppercase text-primary">Unit Price</th>
+          <tr className="border-b border-neutral-200 bg-neutral-100 text-[10px] font-bold uppercase tracking-wider text-neutral-500">
+            <th className="p-4">Item Name</th>
+            <th className="p-4 text-center">Qty</th>
+            <th className="p-4 text-right">Unit Price</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-primary/10">
+        <tbody className="divide-y divide-neutral-200 text-xs">
           {(order.items || []).map((item, index) => (
-            <tr key={`${getOrderItemName(item)}-${index}`} className="transition-colors hover:bg-accent/[0.03]">
-              <td className="p-3.5 align-middle text-sm font-semibold text-primary">{getOrderItemName(item)}</td>
-              <td className="p-3.5 text-center align-middle text-sm font-medium text-primary">{item.quantity}</td>
-              <td className="p-3.5 text-right align-middle text-sm font-bold text-primary">{formatOrderMoney(getOrderItemPrice(item), order.currency)}</td>
+            <tr className="transition-colors hover:bg-white" key={`${getOrderItemName(item)}-${index}`}>
+              <td className="p-4 font-bold text-neutral-900">{getOrderItemName(item)}</td>
+              <td className="p-4 text-center font-medium text-neutral-500">{item.quantity}</td>
+              <td className="p-4 text-right font-mono font-bold text-neutral-900">
+                {formatOrderMoney(getOrderItemPrice(item), order.currency)}
+              </td>
             </tr>
           ))}
         </tbody>
@@ -231,18 +306,18 @@ const AddressCard = ({ address, title }) => {
   if (!address) return null
 
   return (
-    <section className="flex flex-col gap-2.5 rounded-lg border border-primary/10 bg-card p-6 shadow-premiumSm">
-      <h2 className="flex items-center gap-2 font-heading text-base font-bold tracking-wide text-primary">
-        <MapPin className="h-4 w-4 text-primary" />
-        {title}
-      </h2>
-      <div className="text-sm font-medium leading-relaxed text-primary">
-        <p className="font-semibold text-primary">{address.street}</p>
+    <section className="rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm">
+      <div className="mb-3 flex items-center gap-2">
+        <MapPin className="h-4 w-4 text-neutral-900" aria-hidden="true" />
+        <h2 className="font-heading text-xs font-bold tracking-wider uppercase text-neutral-900">{title}</h2>
+      </div>
+      <div className="space-y-1 text-xs text-neutral-500 font-medium leading-relaxed">
+        <p className="font-bold text-neutral-900">{address.street}</p>
         <p>{[address.city, address.state, address.zip].filter(Boolean).join(', ')}</p>
-        <p className="mt-0.5 text-xs font-bold uppercase text-primary">{address.country}</p>
+        <p className="text-[10px] font-bold uppercase tracking-widest text-neutral-600">{address.country}</p>
         {address.phone && (
-          <p className="mt-2 border-t border-primary/10 pt-2 text-xs text-primary">
-            Phone: <span className="font-semibold text-primary">{address.phone}</span>
+          <p className="mt-3 border-t border-neutral-100 pt-2 text-[11px]">
+            Phone: <span className="font-semibold text-neutral-900">{address.phone}</span>
           </p>
         )}
       </div>
@@ -259,19 +334,20 @@ const getStatusTone = (value) => {
 }
 
 const toneClasses = {
-  danger: 'border-red-400/25 bg-red-500/10 text-red-200',
-  neutral: 'border-primary/10 bg-card text-primary',
-  success: 'border-emerald-300/25 bg-emerald-500/10 text-emerald-200',
-  warning: 'border-primary/10 bg-primary/5 text-primary',
+  danger: 'border-rose-200 bg-rose-50 text-rose-700',
+  neutral: 'border-neutral-200 bg-neutral-50 text-neutral-700',
+  success: 'border-emerald-200 bg-emerald-50 text-emerald-700',
+  warning: 'border-amber-200 bg-amber-50 text-amber-700',
 }
 
-const StatusPill = ({ label, tone = 'success' }) => (
-  <span className={`inline-flex items-center rounded-lg border px-2.5 py-1 text-xs font-semibold capitalize tracking-wide ${toneClasses[tone] || toneClasses.neutral}`}>
+const StatusPill = ({ label, tone = 'neutral' }) => (
+  <span className={`inline-flex items-center rounded-lg border px-3 py-1 text-[11px] font-bold uppercase tracking-wider ${toneClasses[tone] || toneClasses.neutral}`}>
     {label}
   </span>
 )
 
-const inputClass = 'min-h-[44px] min-w-0 w-full rounded-lg border border-primary/10 bg-black/35 px-4 py-2.5 text-sm text-primary outline-none transition placeholder:text-primary focus:border-primary/10 focus:ring-2 focus:ring-accent/30'
+const inputClass =
+  'min-h-[44px] min-w-0 w-full rounded-2xl border border-neutral-200 bg-neutral-50 px-4 py-2.5 text-xs font-medium text-neutral-900 outline-none transition placeholder:text-neutral-400 focus:border-neutral-400 focus:ring-1 focus:ring-neutral-400'
 
 const canRequestReturn = (order) => getOrderStatus(order) === 'delivered' && !order.returnRequest && !order.returnStatus
 
@@ -299,17 +375,17 @@ const ShippingLogistics = ({ order }) => {
   if (!hasShippingLogistics(order)) return null
 
   return (
-    <section className="mt-4 rounded-lg border border-primary/10 bg-card p-4">
-      <h3 className="mb-3 flex items-center gap-2 font-heading text-sm font-bold tracking-wide text-primary">
-        <Truck className="h-4 w-4 text-primary" />
+    <section className="mt-5 rounded-2xl border border-neutral-200 bg-neutral-50 p-4">
+      <h3 className="mb-3 flex items-center gap-2 font-heading text-xs font-bold uppercase tracking-wider text-neutral-900">
+        <Truck className="h-4 w-4 text-neutral-900" aria-hidden="true" />
         Shipping Logistics
       </h3>
-      <div className="grid gap-2 text-xs">
+      <div className="space-y-2 text-xs">
         {order.trackingNumber && <InfoRow label="Tracking" value={order.trackingNumber} />}
         {order.courierName && <InfoRow label="Courier" value={order.courierName} />}
-        {order.estimatedDeliveryDate && <InfoRow label="Estimated delivery" value={formatDate(order.estimatedDeliveryDate)} />}
-        {order.shippedAt && <InfoRow label="Shipped" value={formatDate(order.shippedAt)} />}
-        {order.deliveredAt && <InfoRow label="Delivered" value={formatDate(order.deliveredAt)} />}
+        {order.estimatedDeliveryDate && <InfoRow label="Estimated Delivery" value={formatDate(order.estimatedDeliveryDate)} />}
+        {order.shippedAt && <InfoRow label="Shipped Date" value={formatDate(order.shippedAt)} />}
+        {order.deliveredAt && <InfoRow label="Delivered Date" value={formatDate(order.deliveredAt)} />}
       </div>
     </section>
   )
@@ -322,43 +398,45 @@ const ReturnsRefunds = ({ order }) => {
   const refund = order.refund || {}
 
   return (
-    <section className="mt-4 rounded-lg border border-primary/10 bg-card p-4">
-      <h3 className="mb-3 flex items-center gap-2 font-heading text-sm font-bold tracking-wide text-primary">
-        <RefreshCcw className="h-4 w-4 text-primary" />
+    <section className="mt-5 rounded-2xl border border-neutral-200 bg-neutral-50 p-4">
+      <h3 className="mb-3 flex items-center gap-2 font-heading text-xs font-bold uppercase tracking-wider text-neutral-900">
+        <RefreshCcw className="h-4 w-4 text-neutral-900" aria-hidden="true" />
         Returns & Refunds
       </h3>
-      <div className="grid gap-2 text-xs">
-        {returnRequest.status && returnRequest.status !== 'none' && <InfoRow label="Return status" value={returnRequest.status} />}
+      <div className="space-y-2 text-xs">
+        {returnRequest.status && returnRequest.status !== 'none' && <InfoRow label="Return Status" value={returnRequest.status} />}
         {returnRequest.reason && <InfoRow label="Reason" value={returnRequest.reason} />}
         {returnRequest.notes && <InfoRow label="Notes" value={returnRequest.notes} />}
         {returnRequest.requestedAt && <InfoRow label="Requested" value={formatDate(returnRequest.requestedAt)} />}
         {returnRequest.processedAt && <InfoRow label="Processed" value={formatDate(returnRequest.processedAt)} />}
-        {refund.status && refund.status !== 'none' && <InfoRow label="Refund status" value={refund.status} />}
-        {refund.amount > 0 && <InfoRow label="Refund amount" value={formatOrderMoney(refund.amount, order.currency)} />}
-        {refund.reason && <InfoRow label="Refund reason" value={refund.reason} />}
-        {refund.refundedAt && <InfoRow label="Refunded" value={formatDate(refund.refundedAt)} />}
+        {refund.status && refund.status !== 'none' && <InfoRow label="Refund Status" value={refund.status} />}
+        {refund.amount > 0 && <InfoRow label="Refund Amount" value={formatOrderMoney(refund.amount, order.currency)} />}
+        {refund.reason && <InfoRow label="Refund Reason" value={refund.reason} />}
+        {refund.refundedAt && <InfoRow label="Refunded Date" value={formatDate(refund.refundedAt)} />}
       </div>
     </section>
   )
 }
 
 const InfoRow = ({ label, value }) => (
-  <div className="flex items-start justify-between gap-3">
-    <span className="shrink-0 font-semibold text-primary">{label}</span>
-    <span className="min-w-0 text-right font-bold capitalize text-primary">{value}</span>
+  <div className="flex items-start justify-between gap-3 text-xs">
+    <span className="shrink-0 text-neutral-500 font-medium">{label}</span>
+    <span className="min-w-0 text-right font-bold capitalize text-neutral-900">{value}</span>
   </div>
 )
 
 const SummaryRow = ({ isStrong = false, label, value, isDiscount = false }) => (
-  <div className="flex items-center justify-between gap-3">
-    <span className={`${isStrong ? 'text-base font-bold text-primary' : 'text-sm font-medium text-primary'}`}>{label}</span>
-    <strong className={`${
-      isStrong 
-        ? 'text-xl text-primary font-black' 
-        : isDiscount 
-          ? 'text-sm text-emerald-600 font-semibold' 
-          : 'text-sm text-primary font-semibold'
-    }`}>
+  <div className="flex items-center justify-between gap-3 text-xs">
+    <span className={isStrong ? 'font-bold text-neutral-900' : 'font-medium text-neutral-500'}>{label}</span>
+    <strong
+      className={
+        isStrong
+          ? 'font-mono text-xl font-extrabold text-neutral-900'
+          : isDiscount
+            ? 'font-mono text-emerald-600 font-bold'
+            : 'font-mono font-bold text-neutral-900'
+      }
+    >
       {value}
     </strong>
   </div>

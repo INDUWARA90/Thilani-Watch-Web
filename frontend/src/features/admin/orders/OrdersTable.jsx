@@ -14,14 +14,14 @@ const getStatusStyles = (status) => {
   if (['cancelled', 'failed', 'refunded'].includes(norm)) {
     return 'bg-rose-50 text-rose-700 border-rose-200/60'
   }
-  return 'bg-slate-100 text-primary border-slate-200'
+  return 'bg-black/5 text-primary border-black/10'
 }
 
 export const OrdersTable = ({ orders }) => (
-  <div className="w-full overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
+  <div className="w-full overflow-x-auto rounded-xl border border-black/10 bg-[#FFFEFA] shadow-sm">
     <table className="w-full min-w-[940px] border-collapse text-sm text-primary">
       <thead>
-        <tr className="bg-slate-50/75 border-b border-slate-200">
+        <tr className="bg-[#FAF9F5]/85 border-b border-black/10">
           <th className="p-4 text-left font-semibold text-primary w-[120px]">Order</th>
           <th className="p-4 text-left font-semibold text-primary">Customer</th>
           <th className="p-4 text-right font-semibold text-primary">Total</th>
@@ -32,13 +32,13 @@ export const OrdersTable = ({ orders }) => (
           <th className="p-4 w-[80px]"></th>
         </tr>
       </thead>
-      <tbody className="divide-y divide-slate-100">
+      <tbody className="divide-y divide-black/5">
         {orders.map((order) => {
           const orderId = getId(order)
           return (
             <tr 
               key={orderId} 
-              className="transition-colors hover:bg-slate-50/50 group"
+              className="transition-colors hover:bg-[#FAF9F5]/80 group"
             >
               {/* Order Number / ID */}
               <td className="p-4 text-left align-middle font-sans text-xs font-semibold text-primary">
@@ -107,3 +107,5 @@ export const OrdersTable = ({ orders }) => (
     </table>
   </div>
 )
+
+

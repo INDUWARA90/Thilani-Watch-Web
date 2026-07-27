@@ -1,4 +1,4 @@
-import { Filter, Search, SlidersHorizontal } from 'lucide-react'
+import { Filter, RotateCcw, Search, SlidersHorizontal } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router'
 import { LoadingState } from '@/shared/ui/LoadingState'
@@ -20,7 +20,8 @@ const fieldClass = 'h-11 min-w-0 w-full border border-black/20 bg-white px-3.5 t
 export const WatchListingPage = () => {
   usePageTitle('Shop Watches | Thilani Watch Web')
 
-  const { brands, categories, error, filters, isLoading, pagination, searchValue, setSearchValue, updateFilter, watches } = useWatchListing()
+  const { brands, categories, error, filters, isLoading, pagination, resetFilters, searchValue, setSearchValue, updateFilter, watches } = useWatchListing()
+  const hasActiveFilters = searchValue || filters.brand || filters.category || filters.featured || filters.gender || filters.maxPrice || filters.minPrice || filters.stock || filters.sort !== 'newest'
 
   return (
     <main className="min-h-screen overflow-x-hidden bg-[#FAF9F5] pb-24 text-black">
@@ -83,9 +84,20 @@ export const WatchListingPage = () => {
       <section className="mx-auto grid max-w-7xl min-w-0 gap-10 px-6 py-12 lg:grid-cols-[290px_minmax(0,1fr)] lg:px-12">
         {/* Sticky Filter Sidebar */}
         <aside className="flex h-fit flex-col gap-6 border border-black/10 bg-white p-6 shadow-xl lg:sticky lg:top-28">
-          <div className="flex items-center gap-3 border-b border-black/10 pb-4">
-            <Filter className="h-4 w-4 text-[#F5C518]" />
-            <h2 className="font-serif text-lg font-normal uppercase tracking-wider text-black">Refine Selection</h2>
+          <div className="flex items-center justify-between gap-4 border-b border-black/10 pb-4">
+            <div className="flex min-w-0 items-center gap-3">
+              <Filter className="h-4 w-4 shrink-0 text-[#F5C518]" />
+              <h2 className="min-w-0 font-serif text-lg font-normal uppercase tracking-wider text-black">Refine Selection</h2>
+            </div>
+            <button
+              className="inline-flex shrink-0 items-center justify-center gap-1.5 border border-black/15 bg-transparent px-3 py-2 font-sans text-[10px] font-semibold uppercase tracking-[0.18em] text-black transition-all duration-300 hover:border-[#F5C518] hover:bg-[#F5C518] hover:text-black disabled:cursor-not-allowed disabled:opacity-40"
+              disabled={!hasActiveFilters}
+              type="button"
+              onClick={resetFilters}
+            >
+              <RotateCcw className="h-3.5 w-3.5" />
+              Reset
+            </button>
           </div>
 
           <div className="flex flex-col gap-5">

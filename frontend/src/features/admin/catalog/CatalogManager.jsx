@@ -160,7 +160,7 @@ export const CatalogManager = ({ api, label, plural }) => {
       )}
 
       {/* Main Workspace Frame */}
-      <section className="rounded-2xl border border-slate-200/60 bg-white p-6 shadow-sm space-y-6">
+      <section className="rounded-2xl border border-black/10 bg-[#FFFEFA] p-6 shadow-sm space-y-6">
         {/* Header Block */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between pb-2">
           <div>
@@ -198,16 +198,16 @@ export const CatalogManager = ({ api, label, plural }) => {
       {/* Premium Backdropped Action Drawer (Modal) */}
       {isFormOpen && (
         <div 
-          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 p-4 backdrop-blur-sm transition-all" 
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm transition-all" 
           role="dialog" 
           aria-modal="true" 
           aria-label={editingItem ? `Edit ${label}` : `Create ${label}`}
         >
           {/* Modal Box */}
-          <div className="flex max-h-[90vh] w-full max-w-3xl flex-col overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-slate-950/5">
+          <div className="flex max-h-[90vh] w-full max-w-3xl flex-col overflow-hidden rounded-3xl bg-[#FFFEFA] shadow-2xl ring-1 ring-black/5">
             
             {/* Modal Header */}
-            <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4.5 bg-slate-50/50">
+            <div className="flex items-center justify-between border-b border-black/5 px-6 py-4.5 bg-[#FAF9F5]/75">
               <div>
                 <span className="text-[10px] font-bold uppercase tracking-widest text-accent">
                   {plural} Manager
@@ -217,7 +217,7 @@ export const CatalogManager = ({ api, label, plural }) => {
                 </h2>
               </div>
               <button
-                className="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl border border-slate-200 bg-white text-primary transition-all hover:bg-slate-50 hover:text-primary active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
+                className="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl border border-black/10 bg-[#FFFEFA] text-primary transition-all hover:bg-[#FAF9F5] hover:text-primary active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
                 type="button"
                 aria-label={`Close ${label.toLowerCase()} form`}
                 disabled={isUploadingImage}
@@ -228,7 +228,7 @@ export const CatalogManager = ({ api, label, plural }) => {
             </div>
 
             {/* Scrollable Form Viewport */}
-            <div className="min-h-0 overflow-y-auto bg-slate-50/30">
+            <div className="min-h-0 overflow-y-auto bg-[#FAF9F5]/65">
               <div className="p-6">
                 <CatalogForm
                   editingItem={editingItem}
@@ -248,3 +248,5 @@ export const CatalogManager = ({ api, label, plural }) => {
     </div>
   )
 }
+
+

@@ -45,7 +45,7 @@ export const RequireAdmin = () => {
           </p>
           <div className="flex flex-col gap-2">
             <Link 
-              className="inline-flex h-10 items-center justify-center rounded-full bg-white px-4 text-xs font-bold text-black transition hover:shadow-premiumSm" 
+              className="inline-flex h-10 items-center justify-center rounded-full bg-[#FFFEFA] px-4 text-xs font-bold text-black transition hover:shadow-premiumSm" 
               to="/dashboard"
             >
               Back to Dashboard
@@ -69,7 +69,7 @@ export const AdminLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   return (
-    <section className="grid min-h-screen min-w-0 items-stretch overflow-x-hidden bg-base text-primary lg:grid-cols-[280px_minmax(0,1fr)]">
+    <section className="grid min-h-screen min-w-0 items-stretch overflow-x-hidden bg-base font-medium text-primary lg:grid-cols-[280px_minmax(0,1fr)]">
       <aside className="hidden min-h-screen border-r border-accent/20 bg-[linear-gradient(180deg,#050505_0%,#101010_52%,#050505_100%)] p-6 text-white shadow-[0_0_28px_rgba(214,178,94,0.12)] lg:flex lg:flex-col lg:justify-between">
         <AdminSidebarContent />
       </aside>
@@ -77,7 +77,7 @@ export const AdminLayout = () => {
       <div className="min-w-0 overflow-x-hidden">
         <header className="sticky top-0 z-30 flex items-center justify-between border-b border-white/10 bg-black/70 px-4 py-3 backdrop-blur lg:hidden">
           <button
-            className="inline-flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-white/15 bg-white/5 text-white shadow-sm"
+            className="inline-flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-white/15 bg-[#FFFEFA]/5 text-white shadow-sm"
             type="button"
             aria-label="Open admin navigation"
             onClick={() => setIsSidebarOpen(true)}
@@ -98,7 +98,7 @@ export const AdminLayout = () => {
       {isSidebarOpen && (
         <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true" aria-label="Admin navigation">
           <button
-            className="absolute inset-0 cursor-default bg-slate-950/60 backdrop-blur-sm"
+            className="absolute inset-0 cursor-default bg-black/70 backdrop-blur-sm"
             type="button"
             aria-label="Close admin navigation"
             onClick={() => setIsSidebarOpen(false)}
@@ -106,7 +106,7 @@ export const AdminLayout = () => {
           <aside className="relative flex h-full w-[min(86vw,320px)] flex-col overflow-y-auto border-r border-accent/20 bg-[linear-gradient(180deg,#050505_0%,#101010_52%,#050505_100%)] p-5 text-white shadow-2xl shadow-black/70 sm:p-6">
             <div className="mb-5 flex justify-end">
               <button
-                className="grid h-10 w-10 cursor-pointer place-items-center rounded-xl border border-white/10 bg-white/5 text-white"
+                className="grid h-10 w-10 cursor-pointer place-items-center rounded-xl border border-white/10 bg-[#FFFEFA]/5 text-white"
                 type="button"
                 aria-label="Close admin navigation"
                 onClick={() => setIsSidebarOpen(false)}
@@ -181,3 +181,5 @@ const AdminSidebarContent = ({ onNavigate }) => (
     </div>
   </div>
 )
+
+

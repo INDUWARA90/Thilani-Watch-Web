@@ -42,6 +42,11 @@ export const useWatchListing = () => {
     setSearchParams(next)
   }, [searchParams, setSearchParams])
 
+  const resetFilters = useCallback(() => {
+    setSearchValue('')
+    setSearchParams(new URLSearchParams())
+  }, [setSearchParams])
+
   useEffect(() => {
     let isActive = true
 
@@ -104,6 +109,7 @@ export const useWatchListing = () => {
     isLoading,
     pagination,
     searchValue,
+    resetFilters,
     setSearchValue,
     updateFilter,
     watches,

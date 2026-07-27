@@ -38,8 +38,8 @@ export const AdminReviewsPage = () => {
 
             return (
               <article 
-                className={`flex flex-col sm:flex-row justify-between gap-4 p-4 rounded-xl border bg-white transition-all ${
-                  isApproved ? 'border-slate-200/80' : 'border-amber-200 bg-amber-50/20'
+                className={`flex flex-col sm:flex-row justify-between gap-4 p-4 rounded-xl border bg-[#FFFEFA] transition-all ${
+                  isApproved ? 'border-black/10' : 'border-amber-200 bg-amber-50/20'
                 } ${isPendingThisAction ? 'opacity-60 pointer-events-none' : ''}`} 
                 key={reviewId}
               >
@@ -48,7 +48,7 @@ export const AdminReviewsPage = () => {
                     <span className="font-bold text-primary">
                       {review.title || `Untitled Review`}
                     </span>
-                    <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-slate-100 text-xs font-semibold text-primary">
+                    <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-black/5 text-xs font-semibold text-primary">
                       ★ {review.rating || 0}/5
                     </span>
                   </div>
@@ -56,7 +56,7 @@ export const AdminReviewsPage = () => {
                   <p className="text-primary text-[13px] leading-relaxed m-0">
                     {review.comment || <em className="text-primary">No comment text provided.</em>}
                   </p>
-                  <div className="mt-1.5 inline-flex w-fit items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs font-semibold text-primary">
+                  <div className="mt-1.5 inline-flex w-fit items-center gap-2 rounded-lg border border-black/10 bg-[#FAF9F5] px-2.5 py-1.5 text-xs font-semibold text-primary">
                     <span className="text-primary">Watch:</span>
                     <span className="text-primary">{reviewedWatch}</span>
                   </div>
@@ -67,7 +67,7 @@ export const AdminReviewsPage = () => {
                 </div>
 
                 {/* Control Column */}
-                <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-3 border-t sm:border-t-0 pt-3 sm:pt-0 border-slate-100">
+                <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-3 border-t sm:border-t-0 pt-3 sm:pt-0 border-black/5">
                   <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-bold tracking-wide ${
                     isApproved 
                       ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/60' 
@@ -79,7 +79,7 @@ export const AdminReviewsPage = () => {
                   <button 
                     className={`inline-flex h-8 items-center justify-center rounded-lg border px-3 text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap ${
                       isApproved
-                        ? 'border-slate-200 bg-white text-primary hover:bg-slate-50 hover:text-primary'
+                        ? 'border-black/10 bg-[#FFFEFA] text-primary hover:bg-[#FAF9F5] hover:text-primary'
                         : 'border-amber-200 bg-amber-50 text-amber-900 hover:bg-amber-100/70'
                     }`} 
                     type="button" 
@@ -93,7 +93,7 @@ export const AdminReviewsPage = () => {
           })}
 
           {reviews.length === 0 && (
-            <div className="rounded-xl border border-slate-200 border-dashed p-8 text-center text-primary font-medium">
+            <div className="rounded-xl border border-black/10 border-dashed p-8 text-center text-primary font-medium">
               No product reviews require current moderation.
             </div>
           )}
@@ -111,3 +111,5 @@ const getReviewWatch = (review) => {
 
   return getTitle(watch, 'Untitled watch')
 }
+
+

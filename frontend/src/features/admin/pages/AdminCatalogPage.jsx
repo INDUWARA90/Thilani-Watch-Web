@@ -15,7 +15,7 @@ export const AdminCatalogPage = () => (
       </h1>
     </div>
 
-    <hr className="border-slate-200/60" />
+    <hr className="border-black/10" />
 
     {/* Section Grid Workspace */}
     <div className="space-y-10">
@@ -30,3 +30,5 @@ export const AdminCatalogPage = () => (
     </div>
   </div>
 )
+
+

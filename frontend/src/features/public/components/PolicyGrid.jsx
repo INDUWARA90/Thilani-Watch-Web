@@ -1,6 +1,6 @@
 export const PolicyGrid = ({ items }) => (
   <section className="grid gap-4 sm:grid-cols-1 md:grid-cols-2">
-    {items.map((item, index) => (
+    {items.map((item) => (
       <article
         className="group relative overflow-hidden rounded-xl border border-primary/10 bg-card p-6 shadow-premiumSm transition-all duration-300 hover:-translate-y-1 hover:border-accent/50 hover:shadow-premium"
         key={item.title}

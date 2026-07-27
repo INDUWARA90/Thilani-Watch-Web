@@ -24,7 +24,7 @@ export const CatalogHeader = ({ editingItem, label, onReset, plural }) => (
     {/* Tactile Secondary Reset Action */}
     {editingItem && (
       <button 
-        className="inline-flex h-11 w-fit cursor-pointer items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-bold text-primary shadow-sm transition-all hover:bg-slate-50 hover:text-primary active:scale-98 disabled:cursor-not-allowed disabled:opacity-50" 
+        className="inline-flex h-11 w-fit cursor-pointer items-center justify-center gap-2 rounded-xl border border-black/10 bg-[#FFFEFA] px-4 text-sm font-bold text-primary shadow-sm transition-all hover:bg-[#FAF9F5] hover:text-primary active:scale-98 disabled:cursor-not-allowed disabled:opacity-50" 
         type="button" 
         onClick={onReset}
       >
@@ -34,3 +34,5 @@ export const CatalogHeader = ({ editingItem, label, onReset, plural }) => (
     )}
   </div>
 )
+
+

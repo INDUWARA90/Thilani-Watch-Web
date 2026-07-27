@@ -8,11 +8,11 @@ export const CatalogTable = ({ deleteItem, editItem, isLoading, items, plural })
   }
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-slate-200/60 bg-white shadow-sm">
+    <div className="overflow-hidden rounded-2xl border border-black/10 bg-[#FFFEFA] shadow-sm">
       <div className="w-full overflow-x-auto">
         <table className="w-full min-w-[760px] border-collapse text-left">
           <thead>
-            <tr className="border-b border-slate-100 bg-slate-50/70">
+            <tr className="border-b border-black/5 bg-[#FAF9F5]/85">
               <th className="p-4 text-xs font-bold uppercase tracking-wider text-primary">{plural.slice(0, -1) || 'Item'} details</th>
               <th className="p-4 text-xs font-bold uppercase tracking-wider text-primary">Slug URL</th>
               <th className="p-4 text-xs font-bold uppercase tracking-wider text-primary">
@@ -24,13 +24,13 @@ export const CatalogTable = ({ deleteItem, editItem, isLoading, items, plural })
               <th className="p-4 text-xs font-bold uppercase tracking-wider text-primary text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-black/5">
             {items.map((item) => (
-              <tr key={getId(item)} className="group transition-colors hover:bg-slate-50/50">
+              <tr key={getId(item)} className="group transition-colors hover:bg-[#FAF9F5]/80">
                 {/* Item Details (Thumbnail + Name) */}
                 <td className="p-4">
                   <div className="flex items-center gap-3">
-                    <div className="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-xl border border-slate-100 bg-slate-50">
+                    <div className="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-xl border border-black/5 bg-[#FAF9F5]">
                       {item.imageUrl ? (
                         <img 
                           className="h-full w-full object-cover" 
@@ -51,7 +51,7 @@ export const CatalogTable = ({ deleteItem, editItem, isLoading, items, plural })
 
                 {/* Slug Column */}
                 <td className="p-4">
-                  <span className="font-sans text-xs text-primary bg-slate-100/60 px-2 py-1 rounded-md">
+                  <span className="font-sans text-xs text-primary bg-black/5 px-2 py-1 rounded-md">
                     {item.slug}
                   </span>
                 </td>
@@ -66,7 +66,7 @@ export const CatalogTable = ({ deleteItem, editItem, isLoading, items, plural })
                   <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ring-1 ring-inset ${
                     item.isActive !== false 
                       ? 'bg-emerald-50 text-emerald-700 ring-emerald-600/10' 
-                      : 'bg-slate-50 text-primary ring-slate-500/10'
+                      : 'bg-[#FAF9F5] text-primary ring-black/10'
                   }`}>
                     {item.isActive !== false ? 'Active' : 'Inactive'}
                   </span>
@@ -77,7 +77,7 @@ export const CatalogTable = ({ deleteItem, editItem, isLoading, items, plural })
                   <div className="flex justify-end gap-1.5">
                     {/* Edit Icon */}
                     <button 
-                      className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-slate-200 bg-white text-primary transition-all hover:border-accent/25 hover:bg-accent/10 hover:text-accent active:scale-95" 
+                      className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-black/10 bg-[#FFFEFA] text-primary transition-all hover:border-accent/25 hover:bg-accent/10 hover:text-accent active:scale-95" 
                       title={`Edit ${plural.slice(0, -1)}`}
                       type="button" 
                       onClick={() => editItem(item)}
@@ -87,7 +87,7 @@ export const CatalogTable = ({ deleteItem, editItem, isLoading, items, plural })
 
                     {/* Delete Icon */}
                     <button 
-                      className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-slate-200 bg-white text-primary transition-all hover:border-rose-100 hover:bg-rose-50/40 hover:text-rose-600 active:scale-95" 
+                      className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-black/10 bg-[#FFFEFA] text-primary transition-all hover:border-rose-100 hover:bg-rose-50/40 hover:text-rose-600 active:scale-95" 
                       title={`Delete ${plural.slice(0, -1)}`}
                       type="button" 
                       onClick={() => deleteItem(item)}
@@ -105,7 +105,7 @@ export const CatalogTable = ({ deleteItem, editItem, isLoading, items, plural })
       {/* Styled Empty State */}
       {items.length === 0 && (
         <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
-          <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-100 bg-slate-50 text-primary">
+          <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl border border-black/5 bg-[#FAF9F5] text-primary">
             <Inbox className="h-6 w-6" />
           </div>
           <h3 className="font-heading text-sm font-bold tracking-wide text-primary">No {plural.toLowerCase()} listed</h3>
@@ -117,3 +117,5 @@ export const CatalogTable = ({ deleteItem, editItem, isLoading, items, plural })
     </div>
   )
 }
+
+

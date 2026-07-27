@@ -105,7 +105,7 @@ export const OrderStatusControls = ({ order, onUpdated }) => {
       </div>
 
       {/* Transaction Management Block */}
-      <div className="flex flex-col gap-1.5 border-t border-slate-100 pt-4">
+      <div className="flex flex-col gap-1.5 border-t border-black/5 pt-4">
         <label className="font-semibold text-primary">Transaction ID</label>
         <div className="flex gap-2">
           <input className={controlClass} value={transactionId} onChange={(e) => setTransactionId(e.target.value)} placeholder="e.g. ch_3Mxs2B..." />
@@ -116,7 +116,7 @@ export const OrderStatusControls = ({ order, onUpdated }) => {
       </div>
 
       {/* Shipping Section */}
-      <div className="grid gap-3 border-t border-slate-100 pt-4">
+      <div className="grid gap-3 border-t border-black/5 pt-4">
         <h4 className="text-xs font-semibold uppercase tracking-wider text-primary">Shipping Logistics</h4>
         <div className="grid gap-3 sm:grid-cols-3">
           <div className="flex flex-col gap-1.5">
@@ -138,10 +138,10 @@ export const OrderStatusControls = ({ order, onUpdated }) => {
       </div>
 
       {/* Returns and Refunds Section */}
-      <div className="grid gap-3 border-t border-slate-100 pt-4">
+      <div className="grid gap-3 border-t border-black/5 pt-4">
         <h4 className="text-xs font-semibold uppercase tracking-wider text-primary">Returns & Refunds</h4>
         
-        <div className="grid gap-3 sm:grid-cols-2 bg-slate-50/50 p-3 rounded-lg border border-slate-100">
+        <div className="grid gap-3 sm:grid-cols-2 bg-[#FAF9F5]/75 p-3 rounded-lg border border-black/5">
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-medium text-primary">Return Status</label>
             <select className={controlClass} value={returnAction.status} onChange={(e) => setReturnAction((c) => ({ ...c, status: e.target.value }))}>
@@ -182,10 +182,10 @@ export const OrderStatusControls = ({ order, onUpdated }) => {
 }
 
 // Design Token Layout Classes
-const controlClass = 'w-full min-w-0 rounded-lg border border-slate-200 bg-white px-3 py-2 text-primary placeholder:text-primary outline-none text-sm transition-all focus:border-primary focus:ring-2 focus:ring-accent/20'
+const controlClass = 'w-full min-w-0 rounded-lg border border-black/10 bg-[#FFFEFA] px-3 py-2 text-primary placeholder:text-primary outline-none text-sm transition-all focus:border-primary focus:ring-2 focus:ring-accent/20'
 
 const baseBtnClass = 'inline-flex h-9 items-center justify-center rounded-lg px-4 text-xs font-semibold whitespace-nowrap transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed'
-const secondaryBtnClass = `${baseBtnClass} border border-slate-200 bg-white text-primary hover:bg-slate-50 hover:text-primary shadow-sm`
+const secondaryBtnClass = `${baseBtnClass} border border-black/10 bg-[#FFFEFA] text-primary hover:bg-[#FAF9F5] hover:text-primary shadow-sm`
 const emeraldBtnClass = `${baseBtnClass} border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100/80`
 const roseBtnClass = `${baseBtnClass} border border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100/80`
 
@@ -197,3 +197,4 @@ const toDateInputValue = (value) => {
   if (Number.isNaN(date.getTime())) return ''
   return date.toISOString().slice(0, 10)
 }
+

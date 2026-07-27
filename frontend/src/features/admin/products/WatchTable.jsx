@@ -17,11 +17,11 @@ export const WatchTable = ({ deleteWatch, editWatch, isLoading, quickStock, togg
   }
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-slate-200/60 bg-white shadow-sm">
+    <div className="overflow-hidden rounded-2xl border border-black/10 bg-[#FFFEFA] shadow-sm">
       <div className="w-full overflow-x-auto">
         <table className="w-full min-w-[800px] border-collapse text-left">
           <thead>
-            <tr className="border-b border-slate-100 bg-slate-50/70">
+            <tr className="border-b border-black/5 bg-[#FAF9F5]/85">
               <th className="p-4 text-xs font-bold uppercase tracking-wider text-primary">Watch Details</th>
               <th className="p-4 text-xs font-bold uppercase tracking-wider text-primary">Brand</th>
               <th className="p-4 text-xs font-bold uppercase tracking-wider text-primary">Category</th>
@@ -30,17 +30,17 @@ export const WatchTable = ({ deleteWatch, editWatch, isLoading, quickStock, togg
               <th className="p-4 text-xs font-bold uppercase tracking-wider text-primary text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-black/5">
             {watches.map((watch) => {
               const imageSrc = getWatchImage(watch)
               const isOutOfStock = (watch.stockQuantity ?? 0) === 0
 
               return (
-                <tr key={getId(watch)} className="group transition-colors hover:bg-slate-50/50">
+                <tr key={getId(watch)} className="group transition-colors hover:bg-[#FAF9F5]/80">
                   {/* Watch details & Thumbnail */}
                   <td className="p-4">
                     <div className="flex items-center gap-3">
-                      <div className="relative flex h-11 w-11 shrink-0 overflow-hidden rounded-xl border border-slate-100 bg-slate-50">
+                      <div className="relative flex h-11 w-11 shrink-0 overflow-hidden rounded-xl border border-black/5 bg-[#FAF9F5]">
                         {imageSrc ? (
                           <img
                             className="h-full w-full object-cover"
@@ -78,7 +78,7 @@ export const WatchTable = ({ deleteWatch, editWatch, isLoading, quickStock, togg
                       <input
                         className={`max-w-[76px] rounded-xl border px-2.5 py-1.5 text-center text-sm font-semibold outline-none transition-all focus:ring-4 ${isOutOfStock
                             ? 'border-rose-200 bg-rose-50/30 text-rose-800 focus:border-rose-500 focus:ring-rose-500/10'
-                            : 'border-slate-200 bg-white text-primary focus:border-accent focus:ring-accent/20'
+                            : 'border-black/10 bg-[#FFFEFA] text-primary focus:border-accent focus:ring-accent/20'
                           }`}
                         defaultValue={watch.stockQuantity ?? 0}
                         min="0"
@@ -97,7 +97,7 @@ export const WatchTable = ({ deleteWatch, editWatch, isLoading, quickStock, togg
                   <td className="p-4">
                     <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ring-1 ring-inset ${watch.isPublished
                         ? 'bg-emerald-50 text-emerald-700 ring-emerald-600/10'
-                        : 'bg-slate-50 text-primary ring-slate-500/10'
+                        : 'bg-[#FAF9F5] text-primary ring-black/10'
                       }`}>
                       {watch.isPublished ? 'Published' : 'Draft'}
                     </span>
@@ -109,8 +109,8 @@ export const WatchTable = ({ deleteWatch, editWatch, isLoading, quickStock, togg
                       {/* Toggle Publish Icon */}
                       <button
                         className={`inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border transition-all active:scale-95 ${watch.isPublished
-                            ? 'border-slate-200 bg-white text-primary hover:text-amber-600 hover:border-amber-100 hover:bg-amber-50/30'
-                            : 'border-slate-200 bg-white text-primary hover:text-emerald-600 hover:border-emerald-100 hover:bg-emerald-50/30'
+                            ? 'border-black/10 bg-[#FFFEFA] text-primary hover:text-amber-600 hover:border-amber-100 hover:bg-amber-50/30'
+                            : 'border-black/10 bg-[#FFFEFA] text-primary hover:text-emerald-600 hover:border-emerald-100 hover:bg-emerald-50/30'
                           }`}
                         title={watch.isPublished ? 'Unpublish Product' : 'Publish Product'}
                         type="button"
@@ -121,7 +121,7 @@ export const WatchTable = ({ deleteWatch, editWatch, isLoading, quickStock, togg
 
                       {/* Edit Icon */}
                       <button
-                        className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-slate-200 bg-white text-primary transition-all hover:border-accent/25 hover:bg-accent/10 hover:text-accent active:scale-95"
+                        className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-black/10 bg-[#FFFEFA] text-primary transition-all hover:border-accent/25 hover:bg-accent/10 hover:text-accent active:scale-95"
                         title="Edit Product"
                         type="button"
                         onClick={() => editWatch(watch)}
@@ -131,7 +131,7 @@ export const WatchTable = ({ deleteWatch, editWatch, isLoading, quickStock, togg
 
                       {/* Delete Icon */}
                       <button
-                        className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-slate-200 bg-white text-primary transition-all hover:border-rose-100 hover:bg-rose-50/40 hover:text-rose-600 active:scale-95"
+                        className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-black/10 bg-[#FFFEFA] text-primary transition-all hover:border-rose-100 hover:bg-rose-50/40 hover:text-rose-600 active:scale-95"
                         title="Delete Product"
                         type="button"
                         onClick={() => deleteWatch(watch)}
@@ -150,7 +150,7 @@ export const WatchTable = ({ deleteWatch, editWatch, isLoading, quickStock, togg
       {/* Structured Empty State */}
       {watches.length === 0 && (
         <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
-          <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-100 bg-slate-50 text-primary">
+          <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl border border-black/5 bg-[#FAF9F5] text-primary">
             <Inbox className="h-6 w-6" />
           </div>
           <h3 className="font-heading text-sm font-bold tracking-wide text-primary">No products found</h3>
@@ -162,3 +162,5 @@ export const WatchTable = ({ deleteWatch, editWatch, isLoading, quickStock, togg
     </div>
   )
 }
+
+

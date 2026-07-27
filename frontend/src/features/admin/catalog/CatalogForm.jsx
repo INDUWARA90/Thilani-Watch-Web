@@ -21,7 +21,7 @@ export const CatalogForm = ({ editingItem, form, isUploadingImage, label, setFor
         <label className="flex flex-col gap-1.5 text-xs font-bold uppercase tracking-wider text-primary">
           Name
           <input
-            className="w-full rounded-xl border border-slate-200 bg-slate-50/30 px-3.5 py-2.5 text-sm text-primary outline-none transition-all placeholder:text-primary focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent/20"
+            className="w-full rounded-xl border border-black/10 bg-[#FAF9F5]/65 px-3.5 py-2.5 text-sm text-primary outline-none transition-all placeholder:text-primary focus:border-accent focus:bg-[#FFFEFA] focus:ring-4 focus:ring-accent/20"
             name="name"
             placeholder="e.g. Chronograph Classic"
             onBlur={() => !form.slug && setForm((current) => ({ ...current, slug: toSlug(current.name) }))}
@@ -34,7 +34,7 @@ export const CatalogForm = ({ editingItem, form, isUploadingImage, label, setFor
         <label className="flex flex-col gap-1.5 text-xs font-bold uppercase tracking-wider text-primary">
           Slug (Auto-generated)
           <input 
-            className="w-full rounded-xl border border-slate-200 bg-slate-50/30 px-3.5 py-2.5 font-sans text-sm text-primary outline-none transition-all focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent/20" 
+            className="w-full rounded-xl border border-black/10 bg-[#FAF9F5]/65 px-3.5 py-2.5 font-sans text-sm text-primary outline-none transition-all focus:border-accent focus:bg-[#FFFEFA] focus:ring-4 focus:ring-accent/20" 
             name="slug" 
             placeholder="chronograph-classic"
             onChange={updateForm} 
@@ -46,7 +46,7 @@ export const CatalogForm = ({ editingItem, form, isUploadingImage, label, setFor
         <label className="flex flex-col gap-1.5 text-xs font-bold uppercase tracking-wider text-primary">
           Image URL (Direct Link)
           <input 
-            className="w-full rounded-xl border border-slate-200 bg-slate-50/30 px-3.5 py-2.5 text-sm text-primary outline-none transition-all placeholder:text-primary focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent/20" 
+            className="w-full rounded-xl border border-black/10 bg-[#FAF9F5]/65 px-3.5 py-2.5 text-sm text-primary outline-none transition-all placeholder:text-primary focus:border-accent focus:bg-[#FFFEFA] focus:ring-4 focus:ring-accent/20" 
             name="imageUrl" 
             placeholder="https://res.cloudinary.com/..."
             onChange={updateForm} 
@@ -57,7 +57,7 @@ export const CatalogForm = ({ editingItem, form, isUploadingImage, label, setFor
         <label className="flex flex-col gap-1.5 text-xs font-bold uppercase tracking-wider text-primary">
           Sort Order
           <input 
-            className="w-full rounded-xl border border-slate-200 bg-slate-50/30 px-3.5 py-2.5 text-sm text-primary outline-none transition-all focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent/20" 
+            className="w-full rounded-xl border border-black/10 bg-[#FAF9F5]/65 px-3.5 py-2.5 text-sm text-primary outline-none transition-all focus:border-accent focus:bg-[#FFFEFA] focus:ring-4 focus:ring-accent/20" 
             min="0" 
             name="sortOrder" 
             onChange={updateForm} 
@@ -68,7 +68,7 @@ export const CatalogForm = ({ editingItem, form, isUploadingImage, label, setFor
       </div>
 
       {/* Asset Manager Section */}
-      <div className="rounded-2xl border border-slate-200/70 bg-slate-50/50 p-5 space-y-4">
+      <div className="rounded-2xl border border-black/10 bg-[#FAF9F5]/75 p-5 space-y-4">
         <div>
           <h3 className="flex items-center gap-1.5 font-heading text-sm font-bold tracking-wide text-primary">
             <ImageIcon className="h-4 w-4 text-primary" />
@@ -83,8 +83,8 @@ export const CatalogForm = ({ editingItem, form, isUploadingImage, label, setFor
         <div className="relative">
           <label className={`flex flex-col items-center justify-center rounded-xl border border-dashed p-6 text-center transition-all cursor-pointer ${
             isUploadingImage 
-              ? 'border-slate-200 bg-slate-100/50 pointer-events-none' 
-              : 'border-slate-300 hover:border-accent hover:bg-accent/10'
+              ? 'border-black/10 bg-black/5 pointer-events-none' 
+              : 'border-black/15 hover:border-accent hover:bg-accent/10'
           }`}>
             <input 
               className="absolute inset-0 opacity-0 cursor-pointer" 
@@ -110,9 +110,9 @@ export const CatalogForm = ({ editingItem, form, isUploadingImage, label, setFor
 
         {/* Active Upload Preview */}
         {form.imageUrl && (
-          <div className="flex items-center gap-4 rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
+          <div className="flex items-center gap-4 rounded-xl border border-black/10 bg-[#FFFEFA] p-3 shadow-sm">
             <img 
-              className="h-14 w-14 rounded-lg bg-slate-50 object-cover border border-slate-100" 
+              className="h-14 w-14 rounded-lg bg-[#FAF9F5] object-cover border border-black/5" 
               src={form.imageUrl} 
               alt={`${label} preview`} 
             />
@@ -136,7 +136,7 @@ export const CatalogForm = ({ editingItem, form, isUploadingImage, label, setFor
       <label className="flex flex-col gap-1.5 text-xs font-bold uppercase tracking-wider text-primary">
         Description
         <textarea 
-          className="w-full rounded-xl border border-slate-200 bg-slate-50/30 px-3.5 py-2.5 text-sm text-primary outline-none transition-all placeholder:text-primary focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent/20" 
+          className="w-full rounded-xl border border-black/10 bg-[#FAF9F5]/65 px-3.5 py-2.5 text-sm text-primary outline-none transition-all placeholder:text-primary focus:border-accent focus:bg-[#FFFEFA] focus:ring-4 focus:ring-accent/20" 
           name="description" 
           placeholder={`Describe this ${label.toLowerCase()}...`}
           onChange={updateForm} 
@@ -149,7 +149,7 @@ export const CatalogForm = ({ editingItem, form, isUploadingImage, label, setFor
       <div className="flex flex-col gap-5 pt-2 sm:flex-row sm:items-center sm:justify-between">
         <label className="inline-flex items-center gap-2.5 cursor-pointer select-none">
           <input 
-            className="h-4.5 w-4.5 rounded border-slate-300 text-accent focus:ring-accent/20 focus:ring-offset-0 focus:ring-4 transition-all" 
+            className="h-4.5 w-4.5 rounded border-black/15 text-accent focus:ring-accent/20 focus:ring-offset-0 focus:ring-4 transition-all" 
             checked={form.isActive} 
             name="isActive" 
             onChange={updateForm} 
@@ -169,3 +169,5 @@ export const CatalogForm = ({ editingItem, form, isUploadingImage, label, setFor
     </form>
   )
 }
+
+

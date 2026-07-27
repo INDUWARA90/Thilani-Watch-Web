@@ -51,7 +51,7 @@ export const AdminProductsPage = () => {
       )}
 
       {/* Main Workspace Frame */}
-      <div className="space-y-6 rounded-2xl border border-slate-200/60 bg-white p-4 shadow-sm sm:p-6">
+      <div className="space-y-6 rounded-2xl border border-black/10 bg-[#FFFEFA] p-4 shadow-sm sm:p-6">
         {/* Header Block */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between pb-2">
           <div className="min-w-0">
@@ -96,16 +96,16 @@ export const AdminProductsPage = () => {
       {/* Premium Backdropped Action Drawer (Modal) */}
       {isFormOpen && (
         <div 
-          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 p-4 backdrop-blur-sm transition-all" 
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm transition-all" 
           role="dialog" 
           aria-modal="true" 
           aria-label={products.editingWatch ? 'Edit watch' : 'Create watch'}
         >
           {/* Modal Container */}
-          <div className="flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-slate-950/5 sm:rounded-3xl">
+          <div className="flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl bg-[#FFFEFA] shadow-2xl ring-1 ring-black/5 sm:rounded-3xl">
             
             {/* Modal Header */}
-            <div className="flex items-center justify-between gap-4 border-b border-slate-100 bg-slate-50/50 px-4 py-4 sm:px-6 sm:py-4.5">
+            <div className="flex items-center justify-between gap-4 border-b border-black/5 bg-[#FAF9F5]/75 px-4 py-4 sm:px-6 sm:py-4.5">
               <div className="min-w-0">
                 <span className="text-[10px] font-bold uppercase tracking-widest text-accent">
                   Specification Editor
@@ -115,7 +115,7 @@ export const AdminProductsPage = () => {
                 </h2>
               </div>
               <button
-                className="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl border border-slate-200 bg-white text-primary transition-all hover:bg-slate-50 hover:text-primary active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
+                className="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl border border-black/10 bg-[#FFFEFA] text-primary transition-all hover:bg-[#FAF9F5] hover:text-primary active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
                 type="button"
                 aria-label="Close form panel"
                 disabled={products.isSaving}
@@ -126,7 +126,7 @@ export const AdminProductsPage = () => {
             </div>
 
             {/* Scrollable Form Viewport */}
-            <div className="min-h-0 overflow-y-auto bg-slate-50/30">
+            <div className="min-h-0 overflow-y-auto bg-[#FAF9F5]/65">
               <div className="p-4 sm:p-6">
                 <WatchForm
                   brands={products.brands}
@@ -149,3 +149,5 @@ export const AdminProductsPage = () => {
     </div>
   )
 }
+
+

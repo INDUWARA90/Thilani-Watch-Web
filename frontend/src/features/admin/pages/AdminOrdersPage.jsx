@@ -31,7 +31,7 @@ export const AdminOrdersPage = () => {
 
       {/* Content Area */}
       {isLoading ? (
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-xl border border-black/10 bg-[#FFFEFA] p-6 shadow-sm">
           <LoadingState label="Loading customer orders..." variant="table" rows={6} />
         </div>
       ) : (
@@ -91,3 +91,5 @@ export const AdminOrderDetailPage = () => {
     </div>
   )
 }
+
+

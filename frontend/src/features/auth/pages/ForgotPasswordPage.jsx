@@ -96,149 +96,153 @@ export const ForgotPasswordPage = () => {
   }
 
   return (
-    <section className="mx-auto w-full max-w-[560px] min-w-0 rounded-lg border border-primary/10 bg-card p-5 text-primary shadow-premiumSm sm:p-9">
-      <p className="mb-3 inline-flex rounded-full border border-primary/10 bg-card px-3 py-1 text-xs font-semibold uppercase text-primary">Password reset</p>
-      <h1 className="mb-3 font-heading text-4xl font-bold leading-[1.1] tracking-tight text-primary sm:text-[44px]">
-        Reset password
-      </h1>
-      <p className="mb-8 text-base leading-7 text-primary">
-        Request an OTP, verify it, then create a new password.
-      </p>
+    <main className="min-h-screen bg-base flex items-center justify-center px-4 py-16 text-black sm:px-6 lg:px-8">
+      <section className="mx-auto w-full max-w-[540px] min-w-0 rounded-3xl border border-black/10 bg-white p-8 shadow-[0_10px_30px_rgba(0,0,0,0.06)] sm:p-12">
+        <span className="mb-4 inline-flex items-center rounded-full border border-black/10 bg-stone-100 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-black shadow-2xs">
+          Password reset
+        </span>
+        <h1 className="mb-3 font-heading text-[38px] font-extrabold tracking-tight leading-[1.05] text-black sm:text-[44px]">
+          Reset password
+        </h1>
+        <p className="mb-8 text-base font-normal leading-relaxed text-stone-600">
+          Request an OTP, verify it, then create a new password.
+        </p>
 
-      <div className="mb-6 grid grid-cols-3 gap-2 text-xs font-semibold text-primary">
-        <StepPill active={step === steps.email} complete={step !== steps.email} label="Email" />
-        <StepPill active={step === steps.otp} complete={[steps.password, steps.complete].includes(step)} label="OTP" />
-        <StepPill active={[steps.password, steps.complete].includes(step)} complete={step === steps.complete} label="Password" />
-      </div>
-
-      {error && (
-        <div
-          role="alert"
-          className="mb-5 rounded-lg border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm font-medium text-red-200"
-        >
-          {error}
+        <div className="mb-6 grid grid-cols-3 gap-2 text-xs font-bold uppercase tracking-wider">
+          <StepPill active={step === steps.email} complete={step !== steps.email} label="Email" />
+          <StepPill active={step === steps.otp} complete={[steps.password, steps.complete].includes(step)} label="OTP" />
+          <StepPill active={[steps.password, steps.complete].includes(step)} complete={step === steps.complete} label="Password" />
         </div>
-      )}
 
-      {message && (
-        <div className="mb-5 rounded-lg border border-emerald-300/30 bg-emerald-500/10 px-4 py-3 text-sm font-medium text-emerald-200">
-          {message}
-        </div>
-      )}
-
-      {step === steps.email && (
-        <form className="grid gap-5" onSubmit={handleForgotPassword} noValidate>
-          <label className="grid gap-2 text-sm font-medium text-primary">
-            Email
-            <span className={authInputShellClass}>
-              <Mail className="h-4 w-4 shrink-0 text-primary" />
-              <input
-                className={authEmbeddedInputClass}
-                name="email"
-                type="email"
-                placeholder="you@example.com"
-                defaultValue={email}
-                required
-              />
-            </span>
-          </label>
-
-          <SubmitButton isSubmitting={isSubmitting} loadingLabel="Sending OTP" label="Send OTP" />
-        </form>
-      )}
-
-      {step === steps.otp && (
-        <form className="grid gap-5" onSubmit={handleVerifyOtp} noValidate>
-          <label className="grid gap-2 text-sm font-medium text-primary">
-            OTP
-            <span className={authInputShellClass}>
-              <ShieldCheck className="h-4 w-4 shrink-0 text-primary" />
-              <input
-                className={authEmbeddedInputClass}
-                name="otp"
-                inputMode="numeric"
-                pattern="[0-9]{6}"
-                maxLength={6}
-                placeholder="6-digit code"
-                required
-              />
-            </span>
-          </label>
-
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-            <SubmitButton isSubmitting={isSubmitting} loadingLabel="Verifying" label="Verify OTP" />
-            <button
-              className="inline-flex min-h-11 w-full cursor-pointer items-center justify-center rounded-full border border-primary/10 bg-card px-8 text-sm font-bold text-primary transition hover:border-primary/10 hover:shadow-premiumSm sm:w-fit"
-              type="button"
-              disabled={isSubmitting}
-              onClick={() => setStep(steps.email)}
-            >
-              Change email
-            </button>
+        {error && (
+          <div
+            role="alert"
+            className="mb-5 rounded-2xl border border-red-500/20 bg-red-500/10 p-4 text-sm font-medium text-red-700 shadow-sm"
+          >
+            {error}
           </div>
-        </form>
-      )}
+        )}
 
-      {step === steps.password && (
-        <form className="grid gap-5" onSubmit={handleResetPassword} noValidate>
-          <label className="grid gap-2 text-sm font-medium text-primary">
-            New password
-            <span className={authInputShellClass}>
-              <LockKeyhole className="h-4 w-4 shrink-0 text-primary" />
+        {message && (
+          <div className="mb-5 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-4 text-sm font-medium text-emerald-800 shadow-sm">
+            {message}
+          </div>
+        )}
+
+        {step === steps.email && (
+          <form className="grid gap-5" onSubmit={handleForgotPassword} noValidate>
+            <label className="grid gap-2 text-xs font-bold uppercase tracking-wider text-black">
+              Email
+              <span className={authInputShellClass}>
+                <Mail className="h-4 w-4 shrink-0 text-stone-400" />
+                <input
+                  className={authEmbeddedInputClass}
+                  name="email"
+                  type="email"
+                  placeholder="you@example.com"
+                  defaultValue={email}
+                  required
+                />
+              </span>
+            </label>
+
+            <SubmitButton isSubmitting={isSubmitting} loadingLabel="Sending OTP..." label="Send OTP" />
+          </form>
+        )}
+
+        {step === steps.otp && (
+          <form className="grid gap-5" onSubmit={handleVerifyOtp} noValidate>
+            <label className="grid gap-2 text-xs font-bold uppercase tracking-wider text-black">
+              OTP
+              <span className={authInputShellClass}>
+                <ShieldCheck className="h-4 w-4 shrink-0 text-stone-400" />
+                <input
+                  className={authEmbeddedInputClass}
+                  name="otp"
+                  inputMode="numeric"
+                  pattern="[0-9]{6}"
+                  maxLength={6}
+                  placeholder="6-digit code"
+                  required
+                />
+              </span>
+            </label>
+
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+              <SubmitButton isSubmitting={isSubmitting} loadingLabel="Verifying..." label="Verify OTP" />
+              <button
+                className="inline-flex h-12 w-full cursor-pointer items-center justify-center rounded-full border border-black/15 bg-white px-8 text-sm font-bold text-black transition-all hover:bg-stone-50 hover:border-black/30 active:scale-95 shadow-2xs sm:w-fit"
+                type="button"
+                disabled={isSubmitting}
+                onClick={() => setStep(steps.email)}
+              >
+                Change email
+              </button>
+            </div>
+          </form>
+        )}
+
+        {step === steps.password && (
+          <form className="grid gap-5" onSubmit={handleResetPassword} noValidate>
+            <label className="grid gap-2 text-xs font-bold uppercase tracking-wider text-black">
+              New password
+              <span className={authInputShellClass}>
+                <LockKeyhole className="h-4 w-4 shrink-0 text-stone-400" />
+                <input
+                  className={authEmbeddedInputClass}
+                  name="newPassword"
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="Minimum 8 characters"
+                  minLength={8}
+                  required
+                />
+                <PasswordToggle showPassword={showPassword} onToggle={() => setShowPassword((current) => !current)} />
+              </span>
+            </label>
+
+            <label className="grid gap-2 text-xs font-bold uppercase tracking-wider text-black">
+              Confirm password
               <input
-                className={authEmbeddedInputClass}
-                name="newPassword"
+                className={authInputClass}
+                name="confirmPassword"
                 type={showPassword ? 'text' : 'password'}
-                placeholder="Minimum 8 characters"
+                placeholder="Re-enter new password"
                 minLength={8}
                 required
               />
-              <PasswordToggle showPassword={showPassword} onToggle={() => setShowPassword((current) => !current)} />
-            </span>
-          </label>
+            </label>
 
-          <label className="grid gap-2 text-sm font-medium text-primary">
-            Confirm password
-            <input
-              className="min-h-[46px] min-w-0 rounded-lg border border-primary/10 bg-black/35 px-[15px] text-[15px] text-primary outline-none placeholder:text-primary transition focus:border-primary/10 focus:ring-2 focus:ring-accent/30"
-              name="confirmPassword"
-              type={showPassword ? 'text' : 'password'}
-              placeholder="Re-enter new password"
-              minLength={8}
-              required
-            />
-          </label>
+            <SubmitButton isSubmitting={isSubmitting} loadingLabel="Resetting..." label="Reset password" />
+          </form>
+        )}
 
-          <SubmitButton isSubmitting={isSubmitting} loadingLabel="Resetting" label="Reset password" />
-        </form>
-      )}
+        {step === steps.complete && (
+          <button
+            className="inline-flex h-12 w-full cursor-pointer items-center justify-center rounded-full bg-black px-8 text-sm font-bold text-white shadow-lg shadow-black/10 transition-all duration-300 hover:bg-stone-800 hover:shadow-xl active:scale-98 sm:w-fit"
+            type="button"
+            onClick={() => navigate('/login')}
+          >
+            Back to login
+          </button>
+        )}
 
-      {step === steps.complete && (
-        <button
-          className="inline-flex min-h-11 w-full cursor-pointer items-center justify-center rounded-full bg-white px-8 text-sm font-bold text-black transition hover:shadow-premium sm:w-fit"
-          type="button"
-          onClick={() => navigate('/login')}
-        >
-          Back to login
-        </button>
-      )}
-
-      <p className="mt-6 text-sm text-primary">
-        Remembered your password?{' '}
-        <Link className="font-semibold text-primary no-underline transition " to="/login">
-          Log in
-        </Link>
-      </p>
-    </section>
+        <p className="mt-8 text-center text-sm font-medium text-stone-600 border-t border-black/5 pt-6">
+          Remembered your password?{' '}
+          <Link className="font-bold text-black no-underline transition hover:underline" to="/login">
+            Log in
+          </Link>
+        </p>
+      </section>
+    </main>
   )
 }
 
 const StepPill = ({ active, complete, label }) => (
   <span
-    className={`inline-flex min-h-9 items-center justify-center rounded-[12px] border px-3 ${
+    className={`inline-flex min-h-9 items-center justify-center rounded-full border px-4 transition-all ${
       active || complete
-        ? 'border-white bg-white text-black'
-        : 'border-primary/10 bg-card text-primary'
+        ? 'border-black bg-black text-white font-bold shadow-xs'
+        : 'border-black/15 bg-stone-50 text-stone-400 font-medium'
     }`}
   >
     {label}
@@ -247,7 +251,7 @@ const StepPill = ({ active, complete, label }) => (
 
 const SubmitButton = ({ isSubmitting, loadingLabel, label }) => (
   <button
-    className="mt-1 inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-white px-8 text-sm font-bold text-black transition hover:shadow-premium disabled:cursor-not-allowed disabled:opacity-60 sm:w-fit"
+    className="mt-2 inline-flex h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-black px-8 text-sm font-bold text-white shadow-lg shadow-black/10 transition-all duration-300 hover:bg-stone-800 hover:shadow-xl active:scale-98 disabled:cursor-not-allowed disabled:opacity-60 sm:w-fit"
     type="submit"
     disabled={isSubmitting}
   >
@@ -257,7 +261,7 @@ const SubmitButton = ({ isSubmitting, loadingLabel, label }) => (
 
 const PasswordToggle = ({ showPassword, onToggle }) => (
   <button
-    className="cursor-pointer text-primary transition hover:text-accent"
+    className="cursor-pointer text-stone-500 transition hover:text-black p-1"
     type="button"
     aria-label="Toggle password visibility"
     aria-pressed={showPassword}
@@ -268,7 +272,10 @@ const PasswordToggle = ({ showPassword, onToggle }) => (
 )
 
 const authInputShellClass =
-  'flex items-center rounded-lg border border-primary/10 bg-black/35 px-[15px] transition focus-within:border-primary/10 focus-within:ring-2 focus-within:ring-accent/30'
+  'flex items-center rounded-2xl border border-black/15 bg-stone-50/50 px-4 transition focus-within:border-black focus-within:bg-white focus-within:ring-2 focus-within:ring-black/10'
 
 const authEmbeddedInputClass =
-  'min-h-[46px] min-w-0 flex-1 bg-transparent px-3 text-[15px] text-primary outline-none placeholder:text-primary'
+  'min-h-[46px] min-w-0 flex-1 bg-transparent px-3 text-sm text-black outline-none placeholder:text-stone-400 font-normal normal-case'
+
+const authInputClass =
+  'min-h-[46px] min-w-0 rounded-2xl border border-black/15 bg-stone-50/50 px-4 py-2.5 text-sm font-medium text-black outline-none placeholder:text-stone-400 transition focus:border-black focus:bg-white focus:ring-2 focus:ring-black/10 normal-case'

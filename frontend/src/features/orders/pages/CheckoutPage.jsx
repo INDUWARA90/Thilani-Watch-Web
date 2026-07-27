@@ -1,5 +1,5 @@
 import { Link } from 'react-router'
-import { AlertCircle, CalendarDays, FileText, ImagePlus, Trash2, Upload } from 'lucide-react'
+import { AlertCircle, CalendarDays, FileText, ImagePlus, Trash2, Upload, ShieldCheck, ArrowRight, CheckCircle2, Lock } from 'lucide-react'
 import { ButtonSpinner, LoadingState } from '@/shared/ui/LoadingState'
 import { usePageTitle } from '@/shared/hooks/usePageTitle'
 import { formatMoney } from '@/features/storefront/lib/storefrontUtils'
@@ -7,12 +7,12 @@ import { SRI_LANKA_PROVINCES } from '@/features/orders/lib/orderUtils'
 import { useCheckoutPage } from '@/features/orders/hooks/useCheckoutPage'
 
 const addressFields = [
-  ['street', 'Street'],
+  ['street', 'Street Address'],
   ['city', 'City'],
   ['state', 'Province'],
   ['zip', 'ZIP / Postal code'],
   ['country', 'Country'],
-  ['phone', 'Phone'],
+  ['phone', 'Phone Number'],
 ]
 
 const bankAccounts = [
@@ -39,69 +39,92 @@ export const CheckoutPage = () => {
   }
 
   return (
-    <main className="bg-base text-primary">
+    <main className="min-h-screen bg-base pb-24 text-black">
+      {/* Required Payment Slip Modal */}
       {checkout.isPaymentSlipPopupOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4 backdrop-blur-sm">
-          <div className="w-full max-w-sm rounded-lg border border-primary/10 bg-card p-6 text-center shadow-premiumSm">
-            <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/5 text-primary">
-              <AlertCircle className="h-6 w-6" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4 backdrop-blur-md transition-all">
+          <div className="w-full max-w-md rounded-3xl border border-black/10 bg-white p-8 text-center shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+            <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-amber-500/10 text-amber-600 shadow-inner">
+              <AlertCircle className="h-8 w-8" />
             </span>
-            <h2 className="mt-4 font-heading text-lg font-bold text-primary">Bank slip required</h2>
-            <p className="mt-2 text-sm leading-6 text-primary">
-              Please upload your bank transfer payment slip before placing the order.
+            <h2 className="mt-5 font-heading text-2xl font-bold tracking-tight text-black">Bank slip required</h2>
+            <p className="mt-3 text-sm leading-relaxed text-stone-600">
+              Please upload your bank transfer payment slip before placing your order to ensure fast verification.
             </p>
             <button
-              className="mt-5 inline-flex h-11 w-full cursor-pointer items-center justify-center rounded-full bg-white px-5 text-sm font-bold text-black transition hover:shadow-premiumSm"
+              className="mt-6 inline-flex h-12 w-full cursor-pointer items-center justify-center rounded-full bg-black px-6 text-sm font-bold text-white shadow-lg transition-all hover:bg-stone-800 active:scale-98"
               type="button"
               onClick={() => checkout.setIsPaymentSlipPopupOpen(false)}
             >
-              OK
+              Got it
             </button>
           </div>
         </div>
       )}
-      <section className="relative z-10 mx-auto max-w-[1200px] min-w-0 px-4 pb-24 pt-12 sm:px-6 sm:pt-16 lg:px-10 lg:pt-20">
-        <div className="mb-10">
-          <p className="mb-4 inline-flex rounded-full border border-primary/10 bg-card px-4 py-1.5 text-xs font-semibold uppercase text-primary">Secure checkout</p>
-          <h1 className="break-words font-heading text-4xl font-bold text-primary sm:text-5xl">Complete your order</h1>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-primary">Confirm delivery details, attach your bank transfer slip, and place the order for review.</p>
+
+      {/* Hero Section */}
+      <section className="relative overflow-hidden bg-gradient-to-b from-stone-100/80 via-base to-base px-4 pb-16 pt-16 sm:px-6 sm:pt-20 lg:px-10 border-b border-black/5">
+        <div className="absolute inset-0 pointer-events-none opacity-40">
+          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[350px] w-[700px] rounded-full bg-gradient-to-tr from-amber-200/20 via-orange-100/10 to-transparent blur-3xl" />
         </div>
+
+        <div className="relative z-10 mx-auto max-w-[1200px] min-w-0">
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/85 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-black shadow-sm backdrop-blur-md">
+            <Lock className="h-3.5 w-3.5 text-amber-600" />
+            Secure Checkout
+          </div>
+          <h1 className="break-words font-heading text-[42px] font-extrabold tracking-tight leading-[1.05] text-black sm:text-[60px] lg:text-[76px]">
+            Complete your order
+          </h1>
+          <p className="mt-4 max-w-2xl text-base font-normal leading-relaxed text-stone-600 sm:text-lg">
+            Confirm your delivery details, attach your bank transfer receipt, and place your order securely for expert review.
+          </p>
+        </div>
+      </section>
+
+      {/* Main Content */}
+      <section className="mx-auto max-w-[1200px] px-4 pt-12 sm:px-6 lg:px-10">
         {checkout.error && (
-          <div className="mb-6 flex animate-fade-in items-center gap-2 rounded-lg border border-red-400/30 bg-red-500/10 p-4 text-sm font-medium text-red-200 shadow-sm">
-            <svg className="h-5 w-5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-            </svg>
-            {checkout.error}
+          <div className="mb-8 flex items-center gap-3 rounded-2xl border border-red-500/20 bg-red-500/10 p-5 text-sm font-medium text-red-700 shadow-sm backdrop-blur-sm">
+            <AlertCircle className="h-5 w-5 shrink-0 text-red-600" />
+            <span>{checkout.error}</span>
           </div>
         )}
 
         {checkout.isLoading ? (
-          <div className="rounded-lg border border-primary/10 bg-card p-12 shadow-premiumSm">
-            <LoadingState label="Preparing checkout" variant="form" />
+          <div className="py-12">
+            <LoadingState label="Preparing checkout details" variant="form" />
           </div>
         ) : checkout.cart.items.length === 0 ? (
-          <section className="mx-auto max-w-xl rounded-lg border border-primary/10 bg-card p-8 text-center shadow-premiumSm">
-            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/5 text-primary">
-              <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+          <section className="mx-auto my-12 max-w-xl rounded-3xl border border-dashed border-black/15 bg-white/60 p-8 text-center shadow-xl shadow-black/[0.02] backdrop-blur-md sm:p-14">
+            <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-black/5 shadow-inner">
+              <svg className="h-9 w-9 text-stone-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
               </svg>
             </div>
-            <h2 className="mb-2 font-heading text-xl font-bold text-primary">Your cart is empty</h2>
-            <p className="mb-6 text-primary">Add some high-quality watches to your cart before proceeding to checkout.</p>
-            <Link className="inline-flex h-11 items-center justify-center rounded-full bg-white px-8 text-sm font-bold text-black no-underline shadow-md transition hover:scale-[1.02] hover:shadow-premium active:scale-[0.98]" to="/watches">
+            <h2 className="mb-3 font-heading text-2xl font-bold tracking-tight text-black">Your cart is empty</h2>
+            <p className="mx-auto mb-8 max-w-sm text-sm leading-relaxed text-stone-600">
+              Add some high-quality watches to your cart before proceeding to complete your secure checkout.
+            </p>
+            <Link
+              className="inline-flex h-12 w-fit items-center justify-center rounded-full bg-black px-8 text-sm font-bold text-white shadow-lg transition-all duration-300 hover:bg-stone-800 hover:shadow-xl active:scale-98"
+              to="/watches"
+            >
               Browse watches
             </Link>
           </section>
         ) : (
-          <form className="grid min-w-0 gap-8 lg:grid-cols-[minmax(0,1fr)_360px]" onSubmit={checkout.handleSubmit}>
+          <form className="grid min-w-0 gap-8 lg:grid-cols-[minmax(0,1fr)_400px]" onSubmit={checkout.handleSubmit}>
             <div className="grid gap-6">
+              {/* Shipping Address */}
               <AddressForm address={checkout.shippingAddress} legend="Shipping Address" setAddress={checkout.setShippingAddress} updateAddress={checkout.updateAddress} />
 
-              <section className="rounded-lg border border-primary/10 bg-card p-5 shadow-premiumSm">
-                <label className="flex cursor-pointer items-center gap-3 text-sm font-semibold text-primary">
+              {/* Billing Toggle */}
+              <section className="rounded-3xl border border-black/10 bg-white p-6 shadow-[0_10px_30px_rgba(0,0,0,0.04)] transition hover:border-black/20">
+                <label className="flex cursor-pointer items-center gap-3.5 text-sm font-bold text-black select-none">
                   <input
                     checked={checkout.useShippingAsBilling}
-                    className="h-5 w-5 rounded border-primary/10 bg-black/35 text-primary focus:ring-accent/30 focus:ring-offset-0"
+                    className="h-5 w-5 rounded-md border-black/20 bg-stone-50 text-black accent-black focus:ring-2 focus:ring-black/10"
                     type="checkbox"
                     onChange={(event) => checkout.setUseShippingAsBilling(event.target.checked)}
                   />
@@ -109,14 +132,18 @@ export const CheckoutPage = () => {
                 </label>
               </section>
 
-              {!checkout.useShippingAsBilling && <AddressForm address={checkout.billingAddress} legend="Billing Address" setAddress={checkout.setBillingAddress} updateAddress={checkout.updateAddress} />}
+              {/* Billing Address (if separate) */}
+              {!checkout.useShippingAsBilling && (
+                <AddressForm address={checkout.billingAddress} legend="Billing Address" setAddress={checkout.setBillingAddress} updateAddress={checkout.updateAddress} />
+              )}
 
-              <section className="rounded-lg border border-primary/10 bg-card p-6 shadow-premiumSm">
-                <label className="grid gap-2 text-sm font-semibold text-primary">
+              {/* Wanted Date */}
+              <section className="rounded-3xl border border-black/10 bg-white p-6 shadow-[0_10px_30px_rgba(0,0,0,0.04)]">
+                <label className="grid gap-2.5 text-sm font-bold text-black">
                   <span className="flex items-center gap-2">
-                    <CalendarDays className="h-4 w-4 text-primary" />
-                    Wanted date
-                    <span className="text-xs font-medium text-primary">Optional</span>
+                    <CalendarDays className="h-4 w-4 text-amber-600" />
+                    Wanted delivery date
+                    <span className="rounded-full bg-stone-100 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-stone-500">Optional</span>
                   </span>
                   <input
                     className={inputClass}
@@ -128,94 +155,139 @@ export const CheckoutPage = () => {
                 </label>
               </section>
 
-              <section className="rounded-lg border border-primary/10 bg-card p-6 shadow-premiumSm">
-                <h2 className="mb-4 font-heading text-lg font-bold text-primary">Payment</h2>
-                <div className="rounded-lg border border-primary/10 bg-black/25 p-4">
-                  <div className="mb-4 flex items-start gap-3">
-                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/5 text-primary shadow-sm">
+              {/* Payment & Bank Transfer Slips */}
+              <section className="rounded-3xl border border-black/10 bg-white p-6 sm:p-8 shadow-[0_10px_30px_rgba(0,0,0,0.04)]">
+                <div className="flex items-center justify-between mb-6 pb-4 border-b border-black/10">
+                  <h2 className="font-heading text-xl font-bold tracking-tight text-black">Payment Information</h2>
+                  <span className="rounded-full bg-amber-50 px-3 py-1 text-xs font-bold uppercase tracking-wider text-amber-700 border border-amber-200/60">Bank Transfer Only</span>
+                </div>
+
+                <div className="rounded-2xl border border-black/10 bg-stone-50/70 p-5 mb-6">
+                  <div className="mb-4 flex items-start gap-3.5">
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-black text-white shadow-sm">
                       <Upload className="h-4 w-4" />
                     </span>
                     <div>
-                      <p className="text-sm font-bold text-primary">Bank transfer payment slip</p>
-                      <p className="mt-1 text-xs font-medium leading-5 text-primary">
-                        Upload your payment slip file. Cash on delivery is no longer available.
+                      <p className="text-sm font-bold text-black">Direct Bank Transfer Instructions</p>
+                      <p className="mt-1 text-xs font-medium leading-relaxed text-stone-600">
+                        Please transfer the total amount to one of the accounts below, then attach your bank payment slip. Cash on delivery is unavailable.
                       </p>
                     </div>
                   </div>
 
-                  <div className="mb-4 grid min-w-0 gap-3 sm:grid-cols-2">
+                  <div className="grid min-w-0 gap-4 sm:grid-cols-2 mb-6">
                     {bankAccounts.map((account) => (
                       <BankAccountCard account={account} key={`${account.bank}-${account.accountNumber}`} />
                     ))}
                   </div>
 
                   {checkout.paymentSlipFile ? (
-                    <div className="grid min-w-0 gap-3 rounded-lg border border-primary/10 bg-black/35 p-3 sm:grid-cols-[96px_minmax(0,1fr)]">
+                    <div className="grid min-w-0 gap-4 rounded-2xl border border-black/15 bg-white p-4 sm:grid-cols-[100px_minmax(0,1fr)] items-center shadow-sm">
                       {checkout.paymentSlipPreview ? (
-                        <img alt="Payment slip preview" className="h-24 w-24 rounded-lg border border-primary/10 bg-black/35 object-cover" src={checkout.paymentSlipPreview} />
+                        <img alt="Payment slip preview" className="h-24 w-24 rounded-xl border border-black/10 object-cover bg-stone-100" src={checkout.paymentSlipPreview} />
                       ) : (
-                        <span className="flex h-24 w-24 items-center justify-center rounded-lg border border-primary/10 bg-black/35 text-primary">
+                        <span className="flex h-24 w-24 items-center justify-center rounded-xl border border-black/10 bg-stone-100 text-stone-700">
                           <FileText className="h-8 w-8" />
                         </span>
                       )}
                       <div className="flex min-w-0 flex-col justify-between gap-3">
                         <div>
-                          <p className="truncate text-sm font-semibold text-primary">{checkout.paymentSlipFile?.name}</p>
-                          <p className="mt-1 text-xs text-primary">This file will be uploaded securely before the order is created.</p>
+                          <p className="truncate text-sm font-bold text-black">{checkout.paymentSlipFile?.name}</p>
+                          <p className="mt-1 text-xs text-stone-500">Ready to upload securely with your order.</p>
                         </div>
-                        <button className="inline-flex h-9 w-fit cursor-pointer items-center justify-center gap-2 rounded-full border border-red-400/25 bg-red-500/10 px-3 text-xs font-bold text-red-200 transition hover:bg-red-500/20" type="button" onClick={checkout.removePaymentSlipFile}>
+                        <button
+                          className="inline-flex h-9 w-fit cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-red-500/20 bg-red-500/5 px-3.5 text-xs font-bold text-red-600 transition-all hover:bg-red-500 hover:text-white active:scale-95"
+                          type="button"
+                          onClick={checkout.removePaymentSlipFile}
+                        >
                           <Trash2 className="h-3.5 w-3.5" />
                           Remove slip
                         </button>
                       </div>
                     </div>
                   ) : (
-                    <label className="flex cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-primary/10 bg-card px-4 py-6 text-center transition hover:border-primary/10 hover:shadow-premiumSm">
-                      <ImagePlus className="mb-2 h-7 w-7 text-primary" />
-                      <span className="text-sm font-bold text-primary">Attach payment slip</span>
-                      <span className="mt-1 text-xs font-medium text-primary">Any file type up to 5MB</span>
+                    <label className="flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-black/15 bg-white px-4 py-8 text-center transition-all hover:border-black/30 hover:bg-stone-50/50">
+                      <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-stone-100 text-stone-700 shadow-inner">
+                        <ImagePlus className="h-6 w-6" />
+                      </div>
+                      <span className="text-sm font-bold text-black">Click to attach payment slip</span>
+                      <span className="mt-1 text-xs text-stone-500">Supports images or documents up to 5MB</span>
                       <input className="hidden" type="file" onChange={handlePaymentSlipChange} />
                     </label>
                   )}
                 </div>
               </section>
 
-              <section className="grid gap-6 rounded-lg border border-primary/10 bg-card p-6 shadow-premiumSm sm:grid-cols-2">
-                <div className="flex flex-col justify-between gap-3 text-sm font-normal text-primary">
-                  <label className="grid gap-2 font-semibold">
+              {/* Coupon & Notes */}
+              <section className="grid gap-6 rounded-3xl border border-black/10 bg-white p-6 sm:p-8 shadow-[0_10px_30px_rgba(0,0,0,0.04)] sm:grid-cols-2">
+                <div className="flex flex-col justify-between gap-3.5">
+                  <label className="grid gap-2 text-sm font-bold text-black">
                     Coupon code
-                    <input className={inputClass} placeholder="e.g., WELCOME10" value={checkout.couponCode} onChange={(event) => checkout.updateCouponCode(event.target.value)} />
+                    <input
+                      className={inputClass}
+                      placeholder="e.g., WELCOME10"
+                      value={checkout.couponCode}
+                      onChange={(event) => checkout.updateCouponCode(event.target.value)}
+                    />
                   </label>
-                  <button className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-full bg-white px-5 text-sm font-bold text-black transition hover:shadow-premiumSm disabled:cursor-not-allowed disabled:opacity-60" disabled={checkout.isValidatingCoupon} type="button" onClick={checkout.handleValidateCoupon}>
-                    {checkout.isValidatingCoupon && <ButtonSpinner />} {checkout.isValidatingCoupon ? 'Checking' : 'Validate coupon'}
+                  <button
+                    className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-2xl bg-black px-6 text-sm font-bold text-white shadow-md transition-all hover:bg-stone-800 active:scale-98 disabled:cursor-not-allowed disabled:opacity-60"
+                    disabled={checkout.isValidatingCoupon}
+                    type="button"
+                    onClick={checkout.handleValidateCoupon}
+                  >
+                    {checkout.isValidatingCoupon && <ButtonSpinner />}
+                    {checkout.isValidatingCoupon ? 'Checking code...' : 'Apply coupon'}
                   </button>
                   {checkout.couponMessage && (
-                    <p className="m-0 w-fit rounded-lg border border-primary/10 bg-card px-3 py-1.5 text-xs font-semibold text-primary">
+                    <p className="m-0 w-fit rounded-xl border border-emerald-500/20 bg-emerald-50 px-3.5 py-2 text-xs font-bold text-emerald-800 flex items-center gap-1.5">
+                      <CheckCircle2 className="h-4 w-4 text-emerald-600" />
                       {checkout.couponMessage}
                     </p>
                   )}
                 </div>
-                <label className="grid gap-2 text-sm font-semibold text-primary">
-                  Order Notes
-                  <textarea className={`${inputClass} h-[115px] resize-none`} placeholder="Notes about your order, e.g. special delivery instructions." value={checkout.notes} onChange={(event) => checkout.setNotes(event.target.value)} />
+
+                <label className="grid gap-2 text-sm font-bold text-black">
+                  Order notes
+                  <textarea
+                    className={`${inputClass} h-[118px] resize-none`}
+                    placeholder="Notes about your order, e.g. special delivery instructions."
+                    value={checkout.notes}
+                    onChange={(event) => checkout.setNotes(event.target.value)}
+                  />
                 </label>
               </section>
             </div>
 
-            <aside className="h-fit rounded-lg border border-primary/10 bg-card p-5 shadow-premiumSm sm:p-6 lg:sticky lg:top-6">
-              <h2 className="mb-5 font-heading text-lg font-bold tracking-tight text-primary">Order Summary</h2>
+            {/* Sidebar Summary */}
+            <aside className="h-fit rounded-3xl border border-black/10 bg-white p-6 sm:p-8 shadow-[0_10px_30px_rgba(0,0,0,0.06)] lg:sticky lg:top-28">
+              <h2 className="mb-6 font-heading text-xl font-bold tracking-tight text-black border-b border-black/10 pb-4">
+                Order Summary
+              </h2>
 
-              <div className="space-y-4">
+              <div className="space-y-4 mb-6">
                 <SummaryRow label="Subtotal" value={formatMoney(checkout.cart.subtotal, checkout.cart.currency || 'LKR')} />
                 <SummaryRow label="Shipping" value={formatMoney(checkout.shippingFee, checkout.cart.currency || 'LKR')} />
                 <SummaryRow isDiscount label="Discount" value={`-${formatMoney(checkout.discount, checkout.cart.currency || 'LKR')}`} />
               </div>
 
-              <div className="my-5 border-t border-primary/10" />
-              <SummaryRow isStrong label="Total" value={formatMoney(checkout.total, checkout.cart.currency || 'LKR')} />
+              <div className="my-6 border-t border-black/10 pt-4">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-black text-base">Total Amount</span>
+                  <strong className="font-heading text-2xl font-extrabold text-black font-mono">
+                    {formatMoney(checkout.total, checkout.cart.currency || 'LKR')}
+                  </strong>
+                </div>
+              </div>
 
-              <button className="mt-6 inline-flex h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-white px-8 text-sm font-bold text-black shadow-lg transition hover:scale-[1.01] hover:shadow-premium active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60" disabled={checkout.isSubmitting} type="submit">
-                {checkout.isSubmitting && <ButtonSpinner />} {checkout.isSubmitting ? 'Processing order' : 'Place order'}
+              <button
+                className="mt-2 inline-flex h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-black px-8 text-sm font-bold text-white shadow-lg shadow-black/10 transition-all duration-300 hover:bg-stone-800 hover:shadow-xl active:scale-98 disabled:cursor-not-allowed disabled:opacity-60"
+                disabled={checkout.isSubmitting}
+                type="submit"
+              >
+                {checkout.isSubmitting && <ButtonSpinner />}
+                {checkout.isSubmitting ? 'Processing order...' : 'Place order'}
+                <ArrowRight className="h-4 w-4" />
               </button>
             </aside>
           </form>
@@ -225,24 +297,34 @@ export const CheckoutPage = () => {
   )
 }
 
-const inputClass = 'min-h-[45px] min-w-0 w-full rounded-lg border border-primary/10 bg-black/35 px-4 py-2.5 text-sm text-primary outline-none transition placeholder:text-primary focus:border-primary/10 focus:ring-2 focus:ring-accent/30'
+const inputClass = 'min-h-[46px] min-w-0 w-full rounded-2xl border border-black/15 bg-stone-50/50 px-4 py-2.5 text-sm font-medium text-black outline-none transition focus:border-black focus:bg-white focus:ring-2 focus:ring-black/10 placeholder:text-stone-400'
 
 const AddressForm = ({ address, legend, setAddress, updateAddress }) => (
-  <fieldset className="grid min-w-0 gap-5 rounded-lg border border-primary/10 bg-card p-5 shadow-premiumSm sm:p-6">
-    <legend className="px-2 font-heading text-lg font-bold text-primary">{legend}</legend>
-    <div className="grid gap-5 sm:grid-cols-2">
+  <fieldset className="grid min-w-0 gap-6 rounded-3xl border border-black/10 bg-white p-6 sm:p-8 shadow-[0_10px_30px_rgba(0,0,0,0.04)]">
+    <legend className="px-2 font-heading text-xl font-bold tracking-tight text-black">{legend}</legend>
+    <div className="grid gap-5 sm:grid-cols-2 pt-2">
       {addressFields.map(([name, label]) => (
-        <label className="grid gap-1.5 text-sm font-semibold text-primary" key={name}>
+        <label className="grid gap-2 text-sm font-bold text-black" key={name}>
           {label}
           {name === 'state' ? (
-            <select className={inputClass} required value={address[name]} onChange={(event) => updateAddress(setAddress, name, event.target.value)}>
+            <select
+              className={inputClass}
+              required
+              value={address[name]}
+              onChange={(event) => updateAddress(setAddress, name, event.target.value)}
+            >
               <option value="" disabled>Select province</option>
               {SRI_LANKA_PROVINCES.map((province) => (
                 <option key={province} value={province}>{province}</option>
               ))}
             </select>
           ) : (
-            <input className={inputClass} required value={address[name]} onChange={(event) => updateAddress(setAddress, name, event.target.value)} />
+            <input
+              className={inputClass}
+              required
+              value={address[name]}
+              onChange={(event) => updateAddress(setAddress, name, event.target.value)}
+            />
           )}
         </label>
       ))}
@@ -251,17 +333,17 @@ const AddressForm = ({ address, legend, setAddress, updateAddress }) => (
 )
 
 const BankAccountCard = ({ account }) => (
-  <article className="min-w-0 rounded-lg border border-primary/10 bg-card p-4 shadow-sm">
-    <p className="text-xs font-bold uppercase text-primary">{account.bank}</p>
-    <p className="mt-3 break-words font-sans text-base font-black tracking-wide text-primary sm:text-lg">{account.accountNumber}</p>
-    <p className="mt-2 text-sm font-semibold text-primary">{account.accountName}</p>
+  <article className="min-w-0 rounded-2xl border border-black/10 bg-white p-4.5 shadow-sm transition hover:border-black/25">
+    <p className="text-[11px] font-bold uppercase tracking-wider text-amber-600">{account.bank}</p>
+    <p className="mt-2 break-words font-mono text-base font-extrabold tracking-wide text-black">{account.accountNumber}</p>
+    <p className="mt-1 text-xs font-semibold text-stone-600">{account.accountName}</p>
   </article>
 )
 
 const SummaryRow = ({ isStrong = false, label, value, isDiscount = false }) => (
-  <div className="flex min-w-0 items-center justify-between gap-3">
-    <span className={`${isStrong ? 'text-base font-bold text-primary' : 'text-sm font-medium text-primary'}`}>{label}</span>
-    <strong className={`min-w-0 break-words text-right ${isStrong ? 'text-xl text-primary' : isDiscount ? 'text-sm font-semibold text-emerald-200' : 'text-sm font-semibold text-primary'}`}>
+  <div className="flex min-w-0 items-center justify-between gap-3 text-sm">
+    <span className={isStrong ? 'font-bold text-black' : 'font-medium text-stone-600'}>{label}</span>
+    <strong className={`min-w-0 break-words text-right font-mono ${isStrong ? 'text-lg text-black' : isDiscount ? 'font-bold text-emerald-600' : 'font-bold text-black'}`}>
       {value}
     </strong>
   </div>

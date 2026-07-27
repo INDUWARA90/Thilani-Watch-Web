@@ -144,12 +144,12 @@ export const AdminOverviewPage = () => {
             const CardIcon = card.icon
             return (
               <Link 
-                className="group relative flex min-w-0 flex-col justify-between rounded-2xl border border-slate-200/60 bg-white p-5 text-primary shadow-sm no-underline transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-md" 
+                className="group relative flex min-w-0 flex-col justify-between rounded-2xl border border-black/10 bg-[#FFFEFA] p-5 text-primary shadow-sm no-underline transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-md" 
                 key={card.title} 
                 to={card.to}
               >
                 <div>
-                  <div className="mb-4 flex h-9 w-9 items-center justify-center rounded-xl border border-slate-100 bg-slate-50 text-primary transition-colors group-hover:bg-accent/10 group-hover:text-accent">
+                  <div className="mb-4 flex h-9 w-9 items-center justify-center rounded-xl border border-black/5 bg-[#FAF9F5] text-primary transition-colors group-hover:bg-accent/10 group-hover:text-accent">
                     <CardIcon className="h-4 w-4" />
                   </div>
                   <h3 className="mb-1 break-words font-heading text-base font-bold tracking-wide text-primary transition-colors group-hover:text-primary">{card.title}</h3>
@@ -169,11 +169,11 @@ export const AdminOverviewPage = () => {
 }
 
 const MetricCard = ({ label, value, icon: Icon }) => (
-  <section className="relative min-w-0 overflow-hidden rounded-2xl border border-slate-200/60 bg-white p-5 shadow-sm transition-all hover:shadow-md">
+  <section className="relative min-w-0 overflow-hidden rounded-2xl border border-black/10 bg-[#FFFEFA] p-5 shadow-sm transition-all hover:shadow-md">
     <div className="flex items-center justify-between">
       <p className="text-xs font-medium uppercase tracking-wider text-primary">{label}</p>
       {Icon && (
-        <div className="rounded-lg bg-slate-50 p-2 text-primary border border-slate-100">
+        <div className="rounded-lg bg-[#FAF9F5] p-2 text-primary border border-black/5">
           <Icon className="h-4 w-4" />
         </div>
       )}
@@ -183,3 +183,5 @@ const MetricCard = ({ label, value, icon: Icon }) => (
     </div>
   </section>
 )
+
+
