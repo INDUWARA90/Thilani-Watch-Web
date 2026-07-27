@@ -9,7 +9,7 @@ export const AdminReviewsPage = () => {
     <div className="w-full flex flex-col text-sm">
       {/* Header Area */}
       <div className="mb-6">
-        <p className="mb-1 text-xs font-bold uppercase tracking-wider text-teal-600">Moderation Desk</p>
+        <p className="mb-1 text-xs font-bold uppercase tracking-wider text-accent">Moderation Desk</p>
         <h2 className="m-0 font-heading text-2xl font-bold tracking-wide text-primary">Customer Reviews</h2>
       </div>
 
@@ -53,16 +53,16 @@ export const AdminReviewsPage = () => {
                     </span>
                   </div>
                   
-                  <p className="text-primary/75 text-[13px] leading-relaxed m-0">
-                    {review.comment || <em className="text-primary/45">No comment text provided.</em>}
+                  <p className="text-primary text-[13px] leading-relaxed m-0">
+                    {review.comment || <em className="text-primary">No comment text provided.</em>}
                   </p>
-                  <div className="mt-1.5 inline-flex w-fit items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs font-semibold text-primary/75">
-                    <span className="text-primary/45">Watch:</span>
+                  <div className="mt-1.5 inline-flex w-fit items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs font-semibold text-primary">
+                    <span className="text-primary">Watch:</span>
                     <span className="text-primary">{reviewedWatch}</span>
                   </div>
                   
-                  <span className="text-xs text-primary/45 mt-0.5">
-                    By <span className="font-medium text-primary/60">{getTitle(review.user, 'Customer')}</span> • {formatDate(review.createdAt)}
+                  <span className="text-xs text-primary mt-0.5">
+                    By <span className="font-medium text-primary">{getTitle(review.user, 'Customer')}</span> • {formatDate(review.createdAt)}
                   </span>
                 </div>
 
@@ -93,7 +93,7 @@ export const AdminReviewsPage = () => {
           })}
 
           {reviews.length === 0 && (
-            <div className="rounded-xl border border-slate-200 border-dashed p-8 text-center text-primary/45 font-medium">
+            <div className="rounded-xl border border-slate-200 border-dashed p-8 text-center text-primary font-medium">
               No product reviews require current moderation.
             </div>
           )}

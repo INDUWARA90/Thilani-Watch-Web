@@ -22,13 +22,13 @@ export const OrderConfirmationPage = () => {
             <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-lg bg-primary/5 ring-1 ring-accent/30">
               <CheckCircle2 className="h-9 w-9" aria-hidden="true" />
             </div>
-            <p className="mb-4 inline-flex min-h-10 items-center rounded-full border border-primary/10 bg-card px-4 text-sm font-semibold text-primary/75">
+            <p className="mb-4 inline-flex min-h-10 items-center rounded-full border border-primary/10 bg-card px-4 text-sm font-semibold text-primary">
               Order placed successfully
             </p>
             <h1 className="max-w-2xl font-heading text-[40px] font-bold leading-[1.05] text-primary sm:text-[54px]">
               Thank you for your order
             </h1>
-            <p className="mt-5 max-w-2xl text-base leading-7 text-primary/75 sm:text-lg">
+            <p className="mt-5 max-w-2xl text-base leading-7 text-primary sm:text-lg">
               Your order has been received and is now marked as {orderStatus}.
             </p>
           </div>
@@ -95,7 +95,7 @@ export const OrderConfirmationPage = () => {
 
 const OrderMeta = ({ label, value }) => (
   <div className="min-w-0">
-    <p className="mb-1 text-xs font-bold uppercase text-primary/75">{label}</p>
+    <p className="mb-1 text-xs font-bold uppercase text-primary">{label}</p>
     <p className="truncate text-base font-bold text-primary">{value}</p>
   </div>
 )
@@ -106,7 +106,7 @@ const InfoTile = ({ icon: Icon, text, title }) => (
       <Icon className="h-5 w-5" aria-hidden="true" />
     </div>
     <h2 className="font-heading text-base font-bold tracking-wide text-primary">{title}</h2>
-    <p className="mt-2 text-sm leading-6 text-primary/75">{text}</p>
+    <p className="mt-2 text-sm leading-6 text-primary">{text}</p>
   </article>
 )
 
@@ -117,7 +117,7 @@ const NextStep = ({ step, text, title }) => (
     </span>
     <div>
       <p className="font-semibold text-primary">{title}</p>
-      <p className="text-sm leading-6 text-primary/75">{text}</p>
+      <p className="text-sm leading-6 text-primary">{text}</p>
     </div>
   </div>
 )

@@ -19,7 +19,7 @@ export const HomeCtaSection = () => (
       whileInView={{ opacity: 1, y: 0 }}
     >
       <div>
- <p className="inline-flex min-h-8 items-center border-b border-accent/60 px-0 pb-2 text-xs font-bold uppercase tracking-[0.24em] text-primary/70">Collection insight</p>
+ <p className="inline-flex min-h-8 items-center border-b border-accent/60 px-0 pb-2 text-xs font-bold uppercase tracking-[0.24em] text-primary">Collection insight</p>
  <div className="mt-5 h-px w-20 bg-accent" aria-hidden="true" />
  <h2 className="mt-5 max-w-2xl font-heading text-4xl font-bold leading-none tracking-wide text-primary sm:text-6xl">
           Find the timepiece that fits your life.
@@ -30,7 +30,7 @@ export const HomeCtaSection = () => (
  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-md border border-primary/10 bg-primary text-accent">
                 <Icon className="h-4 w-4" />
               </span>
- <p className="text-sm leading-6 text-primary/75">
+ <p className="text-sm leading-6 text-primary">
  <span className="font-semibold text-primary">{title}.</span> {text}
               </p>
             </div>
@@ -49,7 +49,7 @@ export const HomeCtaSection = () => (
       <div className="rounded-lg border border-accent/25 bg-[linear-gradient(180deg,#ffffff_0%,#F8FAFC_100%)] p-6 shadow-goldHairline">
         <div className="flex items-center justify-between border-b border-primary/10 pb-4">
           <div>
-            <p className="text-xs font-semibold uppercase text-primary/75">Comparison</p>
+            <p className="text-xs font-semibold uppercase text-primary">Comparison</p>
             <h3 className="mt-1 font-heading text-2xl font-bold text-primary">Popular movement mix</h3>
           </div>
           <span className="rounded-full border border-accent/60 bg-accent/15 px-3 py-1 text-xs font-semibold text-primary">Live catalog</span>
@@ -59,7 +59,7 @@ export const HomeCtaSection = () => (
             <div key={bar.label}>
               <div className="mb-2 flex items-center justify-between text-sm">
                 <span className="font-semibold text-primary">{bar.label}</span>
-                <span className="text-primary/75">{bar.value}%</span>
+                <span className="text-primary">{bar.value}%</span>
               </div>
               <div className="h-3 overflow-hidden rounded-full bg-primary/10">
                 <motion.div

@@ -38,14 +38,14 @@ export const HomeInteractiveShowcase = () => {
           viewport={{ once: true, margin: '-90px' }}
           whileInView={{ opacity: 1, y: 0 }}
         >
-          <p className="inline-flex min-h-8 items-center border-b border-accent/60 px-0 pb-2 text-xs font-bold uppercase tracking-[0.24em] text-primary/70">
+          <p className="inline-flex min-h-8 items-center border-b border-accent/60 px-0 pb-2 text-xs font-bold uppercase tracking-[0.24em] text-primary">
             Signature showcase
           </p>
           <div className="mt-5 h-px w-20 bg-accent" aria-hidden="true" />
           <h2 className="mt-5 max-w-2xl font-heading text-4xl font-bold leading-none tracking-wide text-primary sm:text-6xl">
             See the shine, depth, and detail up close.
           </h2>
-          <p className="mt-4 max-w-xl text-sm leading-7 text-primary/75 sm:text-base">
+          <p className="mt-4 max-w-xl text-sm leading-7 text-black">
             Move across the dial to experience polished metal, layered glass, and soft silver highlights inspired by premium watch craftsmanship.
           </p>
 
@@ -61,7 +61,7 @@ export const HomeInteractiveShowcase = () => {
                 whileInView={{ opacity: 1, y: 0 }}
               >
                 <Icon className="h-5 w-5 text-accent" />
-                <span className="mt-4 block text-xs font-semibold uppercase text-primary/75">{label}</span>
+                <span className="mt-4 block text-xs font-semibold uppercase text-primary">{label}</span>
                 <strong className="mt-1 block font-heading text-xl text-primary">{value}</strong>
               </motion.div>
             ))}

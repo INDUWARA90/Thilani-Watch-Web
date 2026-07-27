@@ -49,13 +49,13 @@ export const CartPage = () => {
       <section className="relative overflow-hidden bg-base px-4 pb-28 pt-20 text-primary sm:px-6 sm:pt-24 lg:px-10">
         <div className="relative z-10 mx-auto flex max-w-[1200px] min-w-0 flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <div className="max-w-xl min-w-0">
-            <p className="mb-4 inline-flex min-h-9 items-center rounded-full border border-primary/10 bg-card px-4 text-xs font-semibold uppercase text-primary/75 backdrop-blur-sm">
+            <p className="mb-4 inline-flex min-h-9 items-center rounded-full border border-primary/10 bg-card px-4 text-xs font-semibold uppercase text-primary backdrop-blur-sm">
               Shopping cart
             </p>
             <h1 className="break-words font-heading text-[40px] font-bold leading-[1.05] text-primary sm:text-[56px] lg:text-[72px]">
               Your Cart
             </h1>
-            <p className="mt-4 text-sm font-normal leading-relaxed text-primary/75 sm:text-base">
+            <p className="mt-4 text-sm font-normal leading-relaxed text-primary sm:text-base">
               Review your selected timepieces, adjust quantities, or proceed to secure checkout to make them yours.
             </p>
           </div>
@@ -81,7 +81,7 @@ export const CartPage = () => {
               <ShoppingBag className="h-8 w-8 text-primary" />
             </div>
             <h2 className="mb-2 font-heading text-2xl font-bold text-primary">Your cart is empty</h2>
-            <p className="mx-auto mb-6 max-w-sm text-primary/75">Add a premium watch from our storefront collection to get started with checkout.</p>
+            <p className="mx-auto mb-6 max-w-sm text-primary">Add a premium watch from our storefront collection to get started with checkout.</p>
             <Link className="inline-flex min-h-11 w-fit items-center justify-center rounded-full bg-white px-8 text-sm font-bold text-black no-underline transition hover:shadow-premium" to="/watches">
               Browse watches
             </Link>
@@ -97,7 +97,7 @@ export const CartPage = () => {
             <aside className="h-fit rounded-lg border border-primary/10 bg-card p-6 shadow-premiumSm lg:sticky lg:top-28">
               <h2 className="mb-5 border-b border-primary/10 pb-4 font-heading text-xl font-bold text-primary">Order Summary</h2>
               <div className="mb-6 flex items-center justify-between gap-3 text-lg">
-                <span className="font-normal text-primary/75">Subtotal</span>
+                <span className="font-normal text-primary">Subtotal</span>
                 <strong className="font-heading text-xl font-bold text-primary">{formatMoney(cart.subtotal, cart.currency || 'LKR')}</strong>
               </div>
               <div className="flex flex-col gap-3">
@@ -108,7 +108,7 @@ export const CartPage = () => {
                   Clear cart
                 </button>
               </div>
-              <p className="mt-5 text-center text-xs text-primary/75">Shipping & taxes calculated during checkout.</p>
+              <p className="mt-5 text-center text-xs text-primary">Shipping & taxes calculated during checkout.</p>
             </aside>
           </section>
         )}
@@ -129,7 +129,7 @@ const CartItem = ({ item, onQuantityChange, onRemove }) => {
 
       <div className="flex min-w-0 flex-1 flex-col justify-between py-1">
         <div>
-          <p className="mb-1 text-xs font-semibold uppercase text-primary/75">{getTitle(watch.brand, 'Brand')}</p>
+          <p className="mb-1 text-xs font-semibold uppercase text-primary">{getTitle(watch.brand, 'Brand')}</p>
           <h2 className="mb-2 font-heading text-xl font-bold leading-snug text-primary">
             <Link className="text-primary no-underline transition " to={`/watches/${watch.slug || getCartItemWatchId(item)}`}>
               {watch.name || 'Untitled watch'}
@@ -137,7 +137,7 @@ const CartItem = ({ item, onQuantityChange, onRemove }) => {
           </h2>
         </div>
 
-        <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-sm text-primary/75">
+        <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-sm text-primary">
           <p>Unit Price: <span className="font-medium text-primary">{formatMoney(item.priceAtTime ?? watch.price, watch.currency)}</span></p>
           <p className={`font-medium ${stockQuantity > 0 ? 'text-emerald-200' : 'text-red-200'}`}>
             {stockQuantity > 0 ? `${stockQuantity} in stock` : 'Out of stock'}
@@ -146,7 +146,7 @@ const CartItem = ({ item, onQuantityChange, onRemove }) => {
       </div>
 
       <div className="flex shrink-0 flex-col gap-3 border-t border-primary/10 pt-4 min-[420px]:flex-row min-[420px]:items-end min-[420px]:justify-between sm:flex-col sm:items-end sm:justify-start sm:border-t-0 sm:pt-0">
-        <label className="flex items-center justify-between gap-3 text-sm font-medium text-primary/75 min-[420px]:justify-start sm:flex-col sm:items-end sm:gap-1.5">
+        <label className="flex items-center justify-between gap-3 text-sm font-medium text-primary min-[420px]:justify-start sm:flex-col sm:items-end sm:gap-1.5">
           <span>Quantity</span>
           <input
             className="h-10 w-20 rounded-lg border border-primary/10 bg-black/35 px-3 text-center font-semibold text-primary outline-none transition focus:border-primary/10 focus:ring-2 focus:ring-accent/30"

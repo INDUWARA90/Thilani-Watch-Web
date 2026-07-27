@@ -95,11 +95,11 @@ export const AdminOverviewPage = () => {
     <div className="mx-auto min-w-0 max-w-7xl space-y-8">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">
-          <div className="inline-flex items-center gap-1.5 rounded-md bg-teal-50 px-2 py-0.5 text-xs font-semibold text-teal-700 ring-1 ring-inset ring-teal-700/10">
+          <div className="inline-flex items-center gap-1.5 rounded-md bg-accent/10 px-2 py-0.5 text-xs font-semibold text-primary ring-1 ring-inset ring-accent/20">
             Control Center
           </div>
           <h2 className="mt-2 break-words font-heading text-2xl font-bold tracking-wide text-primary sm:text-3xl">Admin Operations</h2>
-          <p className="text-sm text-primary/60">Real-time overview of your luxury marketplace operations.</p>
+          <p className="text-sm text-primary">Real-time overview of your luxury marketplace operations.</p>
         </div>
       </div>
 
@@ -138,24 +138,24 @@ export const AdminOverviewPage = () => {
       )}
 
       <div>
-        <h4 className="mb-4 text-xs font-semibold uppercase tracking-wider text-primary/45">Management Modules</h4>
+        <h4 className="mb-4 text-xs font-semibold uppercase tracking-wider text-primary">Management Modules</h4>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {overviewCards.map((card) => {
             const CardIcon = card.icon
             return (
               <Link 
-                className="group relative flex min-w-0 flex-col justify-between rounded-2xl border border-slate-200/60 bg-white p-5 text-primary shadow-sm no-underline transition-all duration-200 hover:-translate-y-0.5 hover:border-teal-500/30 hover:shadow-md" 
+                className="group relative flex min-w-0 flex-col justify-between rounded-2xl border border-slate-200/60 bg-white p-5 text-primary shadow-sm no-underline transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-md" 
                 key={card.title} 
                 to={card.to}
               >
                 <div>
-                  <div className="mb-4 flex h-9 w-9 items-center justify-center rounded-xl border border-slate-100 bg-slate-50 text-primary/75 transition-colors group-hover:bg-teal-50 group-hover:text-teal-600">
+                  <div className="mb-4 flex h-9 w-9 items-center justify-center rounded-xl border border-slate-100 bg-slate-50 text-primary transition-colors group-hover:bg-accent/10 group-hover:text-accent">
                     <CardIcon className="h-4 w-4" />
                   </div>
-                  <h3 className="mb-1 break-words font-heading text-base font-bold tracking-wide text-primary transition-colors group-hover:text-teal-700">{card.title}</h3>
-                  <p className="text-xs leading-relaxed text-primary/60">{card.text}</p>
+                  <h3 className="mb-1 break-words font-heading text-base font-bold tracking-wide text-primary transition-colors group-hover:text-primary">{card.title}</h3>
+                  <p className="text-xs leading-relaxed text-primary">{card.text}</p>
                 </div>
-                <div className="mt-4 flex items-center gap-1 text-xs font-semibold text-teal-600 opacity-0 transition-all duration-200 group-hover:opacity-100">
+                <div className="mt-4 flex items-center gap-1 text-xs font-semibold text-accent opacity-0 transition-all duration-200 group-hover:opacity-100">
                   <span>Manage</span>
                   <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </div>
@@ -171,9 +171,9 @@ export const AdminOverviewPage = () => {
 const MetricCard = ({ label, value, icon: Icon }) => (
   <section className="relative min-w-0 overflow-hidden rounded-2xl border border-slate-200/60 bg-white p-5 shadow-sm transition-all hover:shadow-md">
     <div className="flex items-center justify-between">
-      <p className="text-xs font-medium uppercase tracking-wider text-primary/45">{label}</p>
+      <p className="text-xs font-medium uppercase tracking-wider text-primary">{label}</p>
       {Icon && (
-        <div className="rounded-lg bg-slate-50 p-2 text-primary/45 border border-slate-100">
+        <div className="rounded-lg bg-slate-50 p-2 text-primary border border-slate-100">
           <Icon className="h-4 w-4" />
         </div>
       )}

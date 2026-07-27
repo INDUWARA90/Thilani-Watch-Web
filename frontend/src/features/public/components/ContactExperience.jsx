@@ -167,7 +167,7 @@ const SuccessToast = ({ message, onClose }) => {
           <p className="text-sm font-semibold text-primary">Message sent</p>
           <p className="mt-1 text-xs leading-5 text-primary">{message}</p>
         </div>
-        <button className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-primary/60 transition duration-200 hover:bg-accent hover:text-primary" type="button" onClick={onClose} aria-label="Close message">
+        <button className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-primary transition duration-200 hover:bg-accent hover:text-primary" type="button" onClick={onClose} aria-label="Close message">
           <X className="h-4 w-4" />
         </button>
       </div>
@@ -179,7 +179,7 @@ const MapCard = ({ address }) => (
   <div className="overflow-hidden rounded-lg border border-primary/10 bg-card shadow-premiumSm">
     <div className="flex items-center justify-between gap-4 border-b border-primary/10 bg-card px-5 py-4">
       <div className="min-w-0">
-        <p className="text-[11px] font-bold uppercase text-primary/60">Store Location</p>
+        <p className="text-[11px] font-bold uppercase text-primary">Store Location</p>
         <h3 className="truncate font-heading text-base font-semibold tracking-wide text-primary">Thilani Watch Centre</h3>
       </div>
       <a
@@ -233,7 +233,7 @@ const ShowroomCard = ({ address, email, phones, social }) => {
         />
       </div>
 
-      <p className="mt-7 text-[11px] font-semibold uppercase text-primary/60">Follow Us</p>
+      <p className="mt-7 text-[11px] font-semibold uppercase text-primary">Follow Us</p>
       <div className="mt-3 flex flex-wrap gap-3">
         {social.map((item) => (
           <a
@@ -274,4 +274,4 @@ const ContactLine = ({ href, icon: Icon, label, text }) => {
   )
 }
 
-const fieldClass = 'min-h-[40px] w-full rounded-lg border border-primary/15 bg-base px-4 text-sm font-medium text-primary outline-none transition duration-200 placeholder:text-primary/60 focus:border-accent focus:ring-2 focus:ring-accent/35'
+const fieldClass = 'min-h-[40px] w-full rounded-lg border border-primary/15 bg-base px-4 text-sm font-medium text-primary outline-none transition duration-200 placeholder:text-primary focus:border-accent focus:ring-2 focus:ring-accent/35'

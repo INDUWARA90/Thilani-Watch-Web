@@ -9,7 +9,7 @@ export const AboutBrandSection = () => (
           <img className="h-20 w-20 rounded-full bg-white object-cover ring-4 ring-white/10" src="/logo.jpeg" alt="Thilani Watch Center logo" />
           <div>
             <p className="font-heading text-3xl font-bold text-primary">Thilani</p>
-            <p className="text-lg font-semibold text-primary/75">Watch Center</p>
+            <p className="text-lg font-semibold text-primary">Watch Center</p>
           </div>
         </div>
         <h2 className="max-w-2xl font-heading text-3xl font-bold leading-tight text-primary sm:text-4xl">A local watch store experience built for confident online buying.</h2>

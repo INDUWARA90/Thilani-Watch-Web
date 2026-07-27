@@ -38,10 +38,23 @@ const socialLinks = [
   },
 ]
 
+const shopLinks = [
+  { label: 'All Watches', to: '/watches' },
+  { label: 'Shopping Cart', to: '/cart' },
+  { label: 'Wishlist', to: '/wishlist' },
+]
+
+const companyLinks = [
+  { label: 'About Us', to: '/about' },
+  { label: 'Contact Us', to: '/contact' },
+  { label: 'FAQ', to: '/faq' },
+  { label: 'Policy', to: '/policy' },
+]
+
 export const Footer = () => (
   <footer className="relative bg-[linear-gradient(180deg,#050505_0%,#000000_100%)] px-4 py-16 text-white sm:px-6 sm:py-20 lg:px-10">
     <div className="absolute left-1/2 top-0 h-px w-[min(920px,86vw)] -translate-x-1/2 bg-accent/55" />
-    <div className="mx-auto grid max-w-[1200px] gap-12 md:grid-cols-[1.45fr_0.85fr_1.15fr_0.85fr]">
+    <div className="mx-auto grid max-w-[1200px] gap-10 md:grid-cols-[1.35fr_0.8fr_0.8fr_1.1fr_0.75fr] lg:gap-12">
       <div className="max-w-sm">
         <div className="flex items-center gap-3">
           <img
@@ -56,22 +69,27 @@ export const Footer = () => (
         </p>
       </div>
 
-      <div>
-        <span className="text-xs font-bold uppercase tracking-[0.22em] text-accent">Explore</span>
-        <nav className="mt-5 grid gap-3">
-          <FooterLink to="/watches">All Watches</FooterLink>
-          <FooterLink to="/about">About Us</FooterLink>
-          <FooterLink to="/contact">Contact Us</FooterLink>
-          <FooterLink to="/faq">FAQ</FooterLink>
-          <FooterLink to="/policy">Policy</FooterLink>
-          <FooterLink to="/cart">Shopping Cart</FooterLink>
-          <FooterLink to="/wishlist">Wishlist</FooterLink>
+      <div className="border-t border-white/10 pt-6 md:border-l md:border-t-0 md:pl-7 md:pt-0">
+        <span className="text-xs font-bold uppercase tracking-[0.22em] text-accent">Shop</span>
+        <nav className="mt-5 grid divide-y divide-white/10">
+          {shopLinks.map((item) => (
+            <FooterLink key={item.to} to={item.to}>{item.label}</FooterLink>
+          ))}
         </nav>
       </div>
 
-      <div>
+      <div className="border-t border-white/10 pt-6 md:border-l md:border-t-0 md:pl-7 md:pt-0">
+        <span className="text-xs font-bold uppercase tracking-[0.22em] text-accent">Company</span>
+        <nav className="mt-5 grid divide-y divide-white/10">
+          {companyLinks.map((item) => (
+            <FooterLink key={item.to} to={item.to}>{item.label}</FooterLink>
+          ))}
+        </nav>
+      </div>
+
+      <div className="border-t border-white/10 pt-6 md:border-l md:border-t-0 md:pl-7 md:pt-0">
         <span className="text-xs font-bold uppercase tracking-[0.22em] text-accent">Contact Us</span>
-        <div className="mt-5 grid gap-3">
+        <div className="mt-5 grid divide-y divide-white/10">
           {contactDetails.map((item) => (
             <FooterExternalLink href={item.href} key={item.label}>
               <item.icon aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-accent/75" />
@@ -81,9 +99,9 @@ export const Footer = () => (
         </div>
       </div>
 
-      <div>
+      <div className="border-t border-white/10 pt-6 md:border-l md:border-t-0 md:pl-7 md:pt-0">
         <span className="text-xs font-bold uppercase tracking-[0.22em] text-accent">Follow Us</span>
-        <div className="mt-5 grid gap-3">
+        <div className="mt-5 grid divide-y divide-white/10">
           {socialLinks.map((item) => (
             <FooterExternalLink href={item.href} key={item.label}>
               <item.icon aria-hidden="true" className="h-4 w-4 shrink-0 text-accent/75" />
@@ -93,7 +111,7 @@ export const Footer = () => (
         </div>
       </div>
 
-      <div className="border-t border-white/10 pt-7 text-xs font-semibold uppercase tracking-[0.18em] text-white/45 md:col-span-4 md:flex md:items-center md:justify-between">
+      <div className="border-t border-white/10 pt-7 text-xs font-semibold uppercase tracking-[0.18em] text-white/45 md:col-span-5 md:flex md:items-center md:justify-between">
         <p>&copy; {new Date().getFullYear()} Thilani Watch Web. All rights reserved.</p>
         <p className="mt-3 md:mt-0">Premium Watch Storefront</p>
       </div>
@@ -102,14 +120,14 @@ export const Footer = () => (
 )
 
 const FooterLink = ({ children, to }) => (
-  <Link className="text-sm text-white/64 no-underline transition duration-300 hover:translate-x-1 hover:text-accent focus:outline-none focus:ring-2 focus:ring-accent" to={to}>
+  <Link className="py-2.5 text-sm text-white/64 no-underline transition duration-300 hover:translate-x-1 hover:text-accent focus:outline-none focus:ring-2 focus:ring-accent" to={to}>
     {children}
   </Link>
 )
 
 const FooterExternalLink = ({ children, href }) => (
   <a
-    className="flex items-start gap-2 text-sm leading-6 text-white/64 no-underline transition duration-300 hover:translate-x-1 hover:text-accent focus:outline-none focus:ring-2 focus:ring-accent"
+    className="flex items-start gap-2 py-2.5 text-sm leading-6 text-white/64 no-underline transition duration-300 hover:translate-x-1 hover:text-accent focus:outline-none focus:ring-2 focus:ring-accent"
     href={href}
     rel="noreferrer"
     target="_blank"

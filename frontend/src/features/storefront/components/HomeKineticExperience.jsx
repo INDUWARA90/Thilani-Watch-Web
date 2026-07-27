@@ -112,14 +112,14 @@ export const HomeKineticExperience = ({ home = {}, loading = {} }) => {
       >
         <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
           <motion.div variants={variants}>
-            <p className="inline-flex min-h-8 items-center border-b border-accent/60 px-0 pb-2 text-xs font-bold uppercase tracking-[0.24em] text-primary/70">
+            <p className="inline-flex min-h-8 items-center border-b border-accent/60 px-0 pb-2 text-xs font-bold uppercase tracking-[0.24em] text-primary">
               Live shopping experience
             </p>
             <div className="mt-5 h-px w-20 bg-accent" aria-hidden="true" />
             <h2 className="mt-5 max-w-2xl font-heading text-4xl font-bold leading-none tracking-wide text-primary sm:text-6xl">
               Discover what is live in the collection now.
             </h2>
-            <p className="mt-4 max-w-xl text-sm leading-7 text-primary/75 sm:text-base">
+            <p className="mt-4 max-w-xl text-sm leading-7 text-black">
               Featured watches, new arrivals, brands, and categories update here from the same catalog data used across the shop.
             </p>
           </motion.div>
@@ -134,7 +134,7 @@ export const HomeKineticExperience = ({ home = {}, loading = {} }) => {
               >
                 <div className="kinetic-scan absolute inset-0" />
                 <span className="font-heading text-3xl font-bold text-primary">{step.loading ? '--' : step.value}</span>
-                <span className="mt-5 block text-xs font-semibold uppercase text-primary/75">{step.label}</span>
+                <span className="mt-5 block text-xs font-semibold uppercase text-primary">{step.label}</span>
               </motion.div>
             ))}
           </motion.div>
@@ -188,7 +188,7 @@ export const HomeKineticExperience = ({ home = {}, loading = {} }) => {
           >
                         <div className="depth-card depth-card-one absolute left-3 top-10 h-36 w-[min(192px,58vw)] rounded-lg border border-primary/10 bg-base p-4 shadow-premiumSm sm:left-8 sm:h-40 sm:w-56">
               <Sparkles className="h-5 w-5 text-accent" />
-              <p className="mt-14 text-xs font-semibold uppercase text-primary/75">
+              <p className="mt-14 text-xs font-semibold uppercase text-primary">
                 {loading.newArrivals ? 'Loading arrivals' : `${getCount(home.newArrivals)} new arrivals`}
               </p>
             </div>
@@ -200,7 +200,7 @@ export const HomeKineticExperience = ({ home = {}, loading = {} }) => {
             </div>
             <div className="depth-card depth-card-three absolute bottom-10 left-1/2 h-36 w-[min(224px,72vw)] -translate-x-1/2 rounded-lg border border-primary/10 bg-base p-4 shadow-premium backdrop-blur-sm sm:h-40 sm:w-60">
               <span className="block font-heading text-4xl font-bold text-primary">{loading.featured ? '--' : getCount(home.featured)}</span>
-              <p className="mt-8 text-xs font-semibold uppercase text-primary/75">Featured live now</p>
+              <p className="mt-8 text-xs font-semibold uppercase text-primary">Featured live now</p>
             </div>
           </motion.div>
         </div>

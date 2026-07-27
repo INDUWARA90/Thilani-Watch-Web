@@ -40,7 +40,7 @@ export const RequireAdmin = () => {
           </div>
           <p className="mb-2 text-xs font-bold uppercase text-red-600">Access Denied</p>
           <h1 className="mb-3 font-heading text-2xl font-bold tracking-tight text-primary">Admin Area Required</h1>
-          <p className="mb-6 text-sm leading-relaxed text-primary/75">
+          <p className="mb-6 text-sm leading-relaxed text-primary">
             Your current account credentials do not possess the structural permissions to modify administrative store data.
           </p>
           <div className="flex flex-col gap-2">

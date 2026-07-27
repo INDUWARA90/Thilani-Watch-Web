@@ -19,9 +19,16 @@ export default {
         imageLift: '0 26px 52px rgba(0,0,0,0.22)',
         goldHairline: '0 0 0 1px rgba(245,197,24,0.18), 0 18px 45px rgba(0,0,0,0.14)',
       },
+      borderRadius: {
+        luxe: '0.5rem',
+        control: '999px',
+      },
       fontFamily: {
         heading: ['"Cormorant Garamond"', '"Playfair Display"', 'serif'],
         sans: ['Inter', 'system-ui', 'sans-serif'],
+      },
+      transitionDuration: {
+        luxe: '250ms',
       },
     },
   },

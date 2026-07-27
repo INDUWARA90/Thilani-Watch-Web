@@ -150,9 +150,9 @@ export const WatchCard = ({ watch }) => {
       </div>
 
       <div className="flex flex-1 flex-col p-2 pt-4">
-        <div className="mb-2 flex min-w-0 items-center justify-between gap-3 text-xs font-bold uppercase tracking-[0.16em] text-primary/60">
+        <div className="mb-2 flex min-w-0 items-center justify-between gap-3 text-xs font-bold uppercase tracking-[0.16em] text-primary">
           <span className="min-w-0 truncate">{getTitle(watch.brand, 'Brand')}</span>
-          <span className="inline-flex shrink-0 items-center gap-1 text-primary/75">
+          <span className="inline-flex shrink-0 items-center gap-1 text-primary">
             <Star className="h-3 w-3 fill-accent text-accent" /> 
             {watch.ratingAverage ? Number(watch.ratingAverage).toFixed(1) : 'New'}
           </span>
@@ -164,7 +164,7 @@ export const WatchCard = ({ watch }) => {
           </Link>
         </h3>
         
-        <p className="mb-3 line-clamp-1 text-xs leading-5 text-primary/62">
+        <p className="mb-3 line-clamp-1 text-xs leading-5 text-primary">
           {watch.shortDescription || watch.description || 'A refined minimalist timepiece.'}
         </p>
 

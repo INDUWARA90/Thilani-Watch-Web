@@ -13,15 +13,15 @@ export const CatalogTable = ({ deleteItem, editItem, isLoading, items, plural })
         <table className="w-full min-w-[760px] border-collapse text-left">
           <thead>
             <tr className="border-b border-slate-100 bg-slate-50/70">
-              <th className="p-4 text-xs font-bold uppercase tracking-wider text-primary/60">{plural.slice(0, -1) || 'Item'} details</th>
-              <th className="p-4 text-xs font-bold uppercase tracking-wider text-primary/60">Slug URL</th>
-              <th className="p-4 text-xs font-bold uppercase tracking-wider text-primary/60">
+              <th className="p-4 text-xs font-bold uppercase tracking-wider text-primary">{plural.slice(0, -1) || 'Item'} details</th>
+              <th className="p-4 text-xs font-bold uppercase tracking-wider text-primary">Slug URL</th>
+              <th className="p-4 text-xs font-bold uppercase tracking-wider text-primary">
                 <span className="flex items-center gap-1">
                   <ArrowUpDown className="h-3.5 w-3.5" /> Sort Priority
                 </span>
               </th>
-              <th className="p-4 text-xs font-bold uppercase tracking-wider text-primary/60">Status</th>
-              <th className="p-4 text-xs font-bold uppercase tracking-wider text-primary/60 text-right">Actions</th>
+              <th className="p-4 text-xs font-bold uppercase tracking-wider text-primary">Status</th>
+              <th className="p-4 text-xs font-bold uppercase tracking-wider text-primary text-right">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
@@ -38,7 +38,7 @@ export const CatalogTable = ({ deleteItem, editItem, isLoading, items, plural })
                           alt={item.name} 
                         />
                       ) : (
-                        <ImageIcon className="m-auto h-4.5 w-4.5 text-primary/45" />
+                        <ImageIcon className="m-auto h-4.5 w-4.5 text-primary" />
                       )}
                     </div>
                     <div className="min-w-0">
@@ -51,13 +51,13 @@ export const CatalogTable = ({ deleteItem, editItem, isLoading, items, plural })
 
                 {/* Slug Column */}
                 <td className="p-4">
-                  <span className="font-sans text-xs text-primary/60 bg-slate-100/60 px-2 py-1 rounded-md">
+                  <span className="font-sans text-xs text-primary bg-slate-100/60 px-2 py-1 rounded-md">
                     {item.slug}
                   </span>
                 </td>
 
                 {/* Sort Order */}
-                <td className="p-4 text-sm font-semibold text-primary/75">
+                <td className="p-4 text-sm font-semibold text-primary">
                   {item.sortOrder ?? 0}
                 </td>
 
@@ -66,7 +66,7 @@ export const CatalogTable = ({ deleteItem, editItem, isLoading, items, plural })
                   <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ring-1 ring-inset ${
                     item.isActive !== false 
                       ? 'bg-emerald-50 text-emerald-700 ring-emerald-600/10' 
-                      : 'bg-slate-50 text-primary/60 ring-slate-500/10'
+                      : 'bg-slate-50 text-primary ring-slate-500/10'
                   }`}>
                     {item.isActive !== false ? 'Active' : 'Inactive'}
                   </span>
@@ -77,7 +77,7 @@ export const CatalogTable = ({ deleteItem, editItem, isLoading, items, plural })
                   <div className="flex justify-end gap-1.5">
                     {/* Edit Icon */}
                     <button 
-                      className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-slate-200 bg-white text-primary/45 transition-all hover:border-teal-100 hover:bg-teal-50/30 hover:text-teal-600 active:scale-95" 
+                      className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-slate-200 bg-white text-primary transition-all hover:border-accent/25 hover:bg-accent/10 hover:text-accent active:scale-95" 
                       title={`Edit ${plural.slice(0, -1)}`}
                       type="button" 
                       onClick={() => editItem(item)}
@@ -87,7 +87,7 @@ export const CatalogTable = ({ deleteItem, editItem, isLoading, items, plural })
 
                     {/* Delete Icon */}
                     <button 
-                      className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-slate-200 bg-white text-primary/45 transition-all hover:border-rose-100 hover:bg-rose-50/40 hover:text-rose-600 active:scale-95" 
+                      className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-slate-200 bg-white text-primary transition-all hover:border-rose-100 hover:bg-rose-50/40 hover:text-rose-600 active:scale-95" 
                       title={`Delete ${plural.slice(0, -1)}`}
                       type="button" 
                       onClick={() => deleteItem(item)}
@@ -105,11 +105,11 @@ export const CatalogTable = ({ deleteItem, editItem, isLoading, items, plural })
       {/* Styled Empty State */}
       {items.length === 0 && (
         <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
-          <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-100 bg-slate-50 text-primary/45">
+          <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-100 bg-slate-50 text-primary">
             <Inbox className="h-6 w-6" />
           </div>
           <h3 className="font-heading text-sm font-bold tracking-wide text-primary">No {plural.toLowerCase()} listed</h3>
-          <p className="mt-1 text-xs text-primary/45 max-w-xs">
+          <p className="mt-1 text-xs text-primary max-w-xs">
             There are currently no items configured in this catalog. Click "Create" above to start adding assets.
           </p>
         </div>

@@ -11,7 +11,7 @@ export const HomeTrustStrip = () => (
       viewport={{ once: true, margin: '-80px' }}
       whileInView={{ opacity: 1, y: 0 }}
     >
- <p className="mb-6 text-center text-xs font-bold uppercase tracking-[0.22em] text-primary/70">Trusted by collectors and everyday wearers</p>
+ <p className="mb-6 text-center text-xs font-bold uppercase tracking-[0.22em] text-primary">Trusted by collectors and everyday wearers</p>
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
         {partners.map((partner) => (
           <span

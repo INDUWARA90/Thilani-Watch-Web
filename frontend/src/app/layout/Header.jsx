@@ -29,8 +29,8 @@ export const Header = () => {
       className={[
         'fixed inset-x-0 top-0 z-40 border-b transition-all duration-500',
         isScrolled || isMenuOpen
-          ? 'border-accent/30 bg-primary/95 shadow-premium backdrop-blur-xl'
-          : 'border-white/10 bg-transparent backdrop-blur-[2px]',
+          ? 'border-accent/30 bg-primary shadow-premium'
+          : 'border-white/10 bg-primary',
       ]
         .filter(Boolean)
         .join(' ')}
@@ -189,18 +189,18 @@ const AccountLink = ({ initial, label }) => (
     aria-label="Dashboard"
     className={({ isActive }) =>
       [
-        'hidden h-12 items-center gap-2 rounded-[14px] border px-2.5 pr-4 text-sm font-semibold no-underline transition sm:inline-flex',
+        'hidden h-12 items-center gap-2 rounded-full border px-2 pr-4 text-xs font-bold uppercase tracking-[0.14em] no-underline transition duration-300 sm:inline-flex',
         isActive
-          ? 'border-accent bg-accent text-primary shadow-premiumSm'
-          : 'border-white/15 bg-white/5 text-white/75 hover:border-accent hover:bg-accent hover:text-primary',
+          ? 'border-accent bg-white/5 text-white shadow-goldHairline'
+          : 'border-white/15 bg-white/5 text-white/75 hover:border-accent hover:text-white hover:shadow-goldHairline',
       ]
         .filter(Boolean)
         .join(' ')
     }
   >
-    <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-accent text-xs font-bold uppercase text-primary">
+    <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full border border-accent bg-accent text-xs font-black uppercase text-primary shadow-premiumSm">
       {initial || <User className="h-4 w-4" />}
     </span>
-    <span className="leading-none">{label}</span>
+    <span className="leading-none text-current">{label}</span>
   </NavLink>
 )

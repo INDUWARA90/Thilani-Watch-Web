@@ -72,17 +72,17 @@ export const OrderDetailPage = () => {
             <div className="relative overflow-hidden rounded-lg border border-primary/10 bg-card p-6 shadow-premiumSm">
               <div className="relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
-                  <p className="mb-1.5 text-xs font-semibold uppercase text-primary/75">Order Ref</p>
+                  <p className="mb-1.5 text-xs font-semibold uppercase text-primary">Order Ref</p>
                   <h1 className="font-heading text-2xl font-bold tracking-tight text-primary sm:text-3xl">
                     {getOrderNumber(order) || getOrderId(order)}
                   </h1>
-                  <p className="mt-2 flex items-center gap-2 text-xs font-medium text-primary/75">
-                    <CalendarDays className="h-4 w-4 text-primary/75" />
+                  <p className="mt-2 flex items-center gap-2 text-xs font-medium text-primary">
+                    <CalendarDays className="h-4 w-4 text-primary" />
                     Placed on {formatDate(order.createdAt)}
                   </p>
                   {order.wantedDate && (
-                    <p className="mt-2 flex items-center gap-2 text-xs font-medium text-primary/75">
-                      <CalendarDays className="h-4 w-4 text-primary/75" />
+                    <p className="mt-2 flex items-center gap-2 text-xs font-medium text-primary">
+                      <CalendarDays className="h-4 w-4 text-primary" />
                       Wanted date {formatDate(order.wantedDate)}
                     </p>
                   )}
@@ -128,7 +128,7 @@ export const OrderDetailPage = () => {
                 </div>
                 
                 <div className="grid gap-4">
-                  <label className="grid gap-1.5 text-sm font-semibold text-primary/75">
+                  <label className="grid gap-1.5 text-sm font-semibold text-primary">
                     Reason for return
                     <input 
                       className={inputClass} 
@@ -139,7 +139,7 @@ export const OrderDetailPage = () => {
                     />
                   </label>
                   
-                  <label className="grid gap-1.5 text-sm font-semibold text-primary/75">
+                  <label className="grid gap-1.5 text-sm font-semibold text-primary">
                     Additional details
                     <textarea 
                       className={`${inputClass} min-h-[90px] py-2.5 resize-none`} 
@@ -160,7 +160,7 @@ export const OrderDetailPage = () => {
           {/* Checkout Right Invoice Sidebar */}
           <aside className="sticky top-6 h-fit rounded-lg border border-primary/10 bg-card p-6 shadow-premiumSm">
             <h2 className="mb-4 flex items-center gap-2 font-heading text-lg font-bold tracking-tight text-primary">
-              <ClipboardList className="h-4 w-4 text-primary/75" />
+              <ClipboardList className="h-4 w-4 text-primary" />
               Summary
             </h2>
             
@@ -173,18 +173,18 @@ export const OrderDetailPage = () => {
             <div className="my-4 border-t border-primary/10" />
             <SummaryRow isStrong label="Total" value={formatOrderMoney(getOrderTotal(order), order.currency)} />
             
-            <div className="mt-5 flex items-center gap-2 rounded-lg border border-primary/10 bg-card px-4 py-3 text-xs font-semibold text-primary/75">
-              <CreditCard className="h-4 w-4 text-primary/75" />
+            <div className="mt-5 flex items-center gap-2 rounded-lg border border-primary/10 bg-card px-4 py-3 text-xs font-semibold text-primary">
+              <CreditCard className="h-4 w-4 text-primary" />
               <span>Payment method: <span className="capitalize text-primary">{getPaymentMethodLabel(order.paymentMethod)}</span></span>
             </div>
 
             {paymentSlip && (
-              <a className="mt-3 block overflow-hidden rounded-lg border border-primary/10 bg-card p-3 text-xs font-semibold text-primary/75 no-underline transition hover:border-primary/10 hover:shadow-premiumSm" href={paymentSlip.url} rel="noreferrer" target="_blank">
+              <a className="mt-3 block overflow-hidden rounded-lg border border-primary/10 bg-card p-3 text-xs font-semibold text-primary no-underline transition hover:border-primary/10 hover:shadow-premiumSm" href={paymentSlip.url} rel="noreferrer" target="_blank">
                 <span className="mb-2 block text-primary">Attached payment slip</span>
                 {isPaymentSlipImage(paymentSlip) ? (
                   <img alt="Attached payment slip" className="h-32 w-full rounded-lg border border-primary/10 bg-black/35 object-cover" src={paymentSlip.url} />
                 ) : (
-                  <span className="flex min-h-24 items-center gap-3 rounded-lg border border-primary/10 bg-black/35 p-4 text-primary/75">
+                  <span className="flex min-h-24 items-center gap-3 rounded-lg border border-primary/10 bg-black/35 p-4 text-primary">
                     <FileText className="h-6 w-6 text-primary" />
                     <span className="min-w-0 truncate">{paymentSlip.fileName || 'Open attached slip'}</span>
                   </span>
@@ -208,16 +208,16 @@ const OrderItemsTable = ({ order }) => (
       <table className="w-full min-w-[600px] border-collapse">
         <thead>
           <tr className="bg-card">
-            <th className="border-b border-primary/10 p-3.5 text-left text-xs font-bold uppercase text-primary/75">Item Name</th>
-            <th className="w-24 border-b border-primary/10 p-3.5 text-center text-xs font-bold uppercase text-primary/75">Qty</th>
-            <th className="w-36 border-b border-primary/10 p-3.5 text-right text-xs font-bold uppercase text-primary/75">Unit Price</th>
+            <th className="border-b border-primary/10 p-3.5 text-left text-xs font-bold uppercase text-primary">Item Name</th>
+            <th className="w-24 border-b border-primary/10 p-3.5 text-center text-xs font-bold uppercase text-primary">Qty</th>
+            <th className="w-36 border-b border-primary/10 p-3.5 text-right text-xs font-bold uppercase text-primary">Unit Price</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-primary/10">
           {(order.items || []).map((item, index) => (
             <tr key={`${getOrderItemName(item)}-${index}`} className="transition-colors hover:bg-accent/[0.03]">
               <td className="p-3.5 align-middle text-sm font-semibold text-primary">{getOrderItemName(item)}</td>
-              <td className="p-3.5 text-center align-middle text-sm font-medium text-primary/75">{item.quantity}</td>
+              <td className="p-3.5 text-center align-middle text-sm font-medium text-primary">{item.quantity}</td>
               <td className="p-3.5 text-right align-middle text-sm font-bold text-primary">{formatOrderMoney(getOrderItemPrice(item), order.currency)}</td>
             </tr>
           ))}
@@ -233,16 +233,16 @@ const AddressCard = ({ address, title }) => {
   return (
     <section className="flex flex-col gap-2.5 rounded-lg border border-primary/10 bg-card p-6 shadow-premiumSm">
       <h2 className="flex items-center gap-2 font-heading text-base font-bold tracking-wide text-primary">
-        <MapPin className="h-4 w-4 text-primary/75" />
+        <MapPin className="h-4 w-4 text-primary" />
         {title}
       </h2>
-      <div className="text-sm font-medium leading-relaxed text-primary/75">
+      <div className="text-sm font-medium leading-relaxed text-primary">
         <p className="font-semibold text-primary">{address.street}</p>
         <p>{[address.city, address.state, address.zip].filter(Boolean).join(', ')}</p>
-        <p className="mt-0.5 text-xs font-bold uppercase text-primary/75">{address.country}</p>
+        <p className="mt-0.5 text-xs font-bold uppercase text-primary">{address.country}</p>
         {address.phone && (
-          <p className="mt-2 border-t border-primary/10 pt-2 text-xs text-primary/75">
-            Phone: <span className="font-semibold text-primary/75">{address.phone}</span>
+          <p className="mt-2 border-t border-primary/10 pt-2 text-xs text-primary">
+            Phone: <span className="font-semibold text-primary">{address.phone}</span>
           </p>
         )}
       </div>
@@ -260,7 +260,7 @@ const getStatusTone = (value) => {
 
 const toneClasses = {
   danger: 'border-red-400/25 bg-red-500/10 text-red-200',
-  neutral: 'border-primary/10 bg-card text-primary/75',
+  neutral: 'border-primary/10 bg-card text-primary',
   success: 'border-emerald-300/25 bg-emerald-500/10 text-emerald-200',
   warning: 'border-primary/10 bg-primary/5 text-primary',
 }
@@ -271,7 +271,7 @@ const StatusPill = ({ label, tone = 'success' }) => (
   </span>
 )
 
-const inputClass = 'min-h-[44px] min-w-0 w-full rounded-lg border border-primary/10 bg-black/35 px-4 py-2.5 text-sm text-primary outline-none transition placeholder:text-primary/60 focus:border-primary/10 focus:ring-2 focus:ring-accent/30'
+const inputClass = 'min-h-[44px] min-w-0 w-full rounded-lg border border-primary/10 bg-black/35 px-4 py-2.5 text-sm text-primary outline-none transition placeholder:text-primary focus:border-primary/10 focus:ring-2 focus:ring-accent/30'
 
 const canRequestReturn = (order) => getOrderStatus(order) === 'delivered' && !order.returnRequest && !order.returnStatus
 
@@ -301,7 +301,7 @@ const ShippingLogistics = ({ order }) => {
   return (
     <section className="mt-4 rounded-lg border border-primary/10 bg-card p-4">
       <h3 className="mb-3 flex items-center gap-2 font-heading text-sm font-bold tracking-wide text-primary">
-        <Truck className="h-4 w-4 text-primary/75" />
+        <Truck className="h-4 w-4 text-primary" />
         Shipping Logistics
       </h3>
       <div className="grid gap-2 text-xs">
@@ -324,7 +324,7 @@ const ReturnsRefunds = ({ order }) => {
   return (
     <section className="mt-4 rounded-lg border border-primary/10 bg-card p-4">
       <h3 className="mb-3 flex items-center gap-2 font-heading text-sm font-bold tracking-wide text-primary">
-        <RefreshCcw className="h-4 w-4 text-primary/75" />
+        <RefreshCcw className="h-4 w-4 text-primary" />
         Returns & Refunds
       </h3>
       <div className="grid gap-2 text-xs">
@@ -344,14 +344,14 @@ const ReturnsRefunds = ({ order }) => {
 
 const InfoRow = ({ label, value }) => (
   <div className="flex items-start justify-between gap-3">
-    <span className="shrink-0 font-semibold text-primary/75">{label}</span>
+    <span className="shrink-0 font-semibold text-primary">{label}</span>
     <span className="min-w-0 text-right font-bold capitalize text-primary">{value}</span>
   </div>
 )
 
 const SummaryRow = ({ isStrong = false, label, value, isDiscount = false }) => (
   <div className="flex items-center justify-between gap-3">
-    <span className={`${isStrong ? 'text-base font-bold text-primary' : 'text-sm font-medium text-primary/75'}`}>{label}</span>
+    <span className={`${isStrong ? 'text-base font-bold text-primary' : 'text-sm font-medium text-primary'}`}>{label}</span>
     <strong className={`${
       isStrong 
         ? 'text-xl text-primary font-black' 

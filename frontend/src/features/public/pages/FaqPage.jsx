@@ -21,7 +21,7 @@ export default function FaqPage() {
       <FaqAccordion items={faqItems} />
       <section className="mt-8 rounded-lg border border-primary/10 bg-card p-6 text-primary shadow-premiumSm sm:flex sm:items-center sm:justify-between sm:p-8">
         <div>
-          <p className="text-xs font-bold uppercase text-primary/60">Still unsure?</p>
+          <p className="text-xs font-bold uppercase text-primary">Still unsure?</p>
           <h2 className="mt-2 font-heading text-2xl font-bold">Talk to the shop before checkout</h2>
         </div>
         <Link className={`${orangeButtonClass} mt-5 sm:mt-0`} to="/contact">

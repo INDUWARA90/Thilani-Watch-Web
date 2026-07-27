@@ -164,19 +164,19 @@ export const CatalogManager = ({ api, label, plural }) => {
         {/* Header Block */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between pb-2">
           <div>
-            <span className="inline-flex items-center gap-1.5 rounded-md bg-teal-50 px-2.5 py-0.5 text-xs font-semibold text-teal-700 ring-1 ring-inset ring-teal-700/10">
+            <span className="inline-flex items-center gap-1.5 rounded-md bg-accent/10 px-2.5 py-0.5 text-xs font-semibold text-primary ring-1 ring-inset ring-accent/20">
               {plural} Catalog
             </span>
             <h2 className="mt-2 font-heading text-2xl font-bold tracking-wide text-primary sm:text-3xl">
               {plural} Directory
             </h2>
-            <p className="mt-1 text-sm text-primary/60">
+            <p className="mt-1 text-sm text-primary">
               Create, edit, and organize {plural.toLowerCase()} using the database controls below.
             </p>
           </div>
           
           <button
-            className="inline-flex h-11 w-fit cursor-pointer items-center justify-center gap-2 rounded-xl bg-teal-600 px-5 text-sm font-bold text-white shadow-sm transition-all hover:bg-teal-700 active:scale-98 disabled:cursor-not-allowed disabled:opacity-50"
+            className="inline-flex h-11 w-fit cursor-pointer items-center justify-center gap-2 rounded-xl bg-primary px-5 text-sm font-bold text-white shadow-sm transition-all hover:bg-primary active:scale-98 disabled:cursor-not-allowed disabled:opacity-50"
             type="button"
             onClick={openCreateForm}
           >
@@ -209,7 +209,7 @@ export const CatalogManager = ({ api, label, plural }) => {
             {/* Modal Header */}
             <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4.5 bg-slate-50/50">
               <div>
-                <span className="text-[10px] font-bold uppercase tracking-widest text-teal-600">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-accent">
                   {plural} Manager
                 </span>
                 <h2 className="mt-0.5 font-heading text-lg font-extrabold tracking-wide text-primary">
@@ -217,7 +217,7 @@ export const CatalogManager = ({ api, label, plural }) => {
                 </h2>
               </div>
               <button
-                className="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl border border-slate-200 bg-white text-primary/45 transition-all hover:bg-slate-50 hover:text-primary/75 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
+                className="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl border border-slate-200 bg-white text-primary transition-all hover:bg-slate-50 hover:text-primary active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
                 type="button"
                 aria-label={`Close ${label.toLowerCase()} form`}
                 disabled={isUploadingImage}

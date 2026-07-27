@@ -10,10 +10,10 @@ export const HomeGuideSection = () => (
       whileInView={{ opacity: 1, y: 0 }}
     >
       <div className="mx-auto max-w-2xl text-center">
- <p className="inline-flex min-h-8 items-center border-b border-accent/60 px-0 pb-2 text-xs font-bold uppercase tracking-[0.24em] text-primary/70">Buying guide</p>
+ <p className="inline-flex min-h-8 items-center border-b border-accent/60 px-0 pb-2 text-xs font-bold uppercase tracking-[0.24em] text-black">Buying guide</p>
  <div className="mx-auto mt-5 h-px w-20 bg-accent" aria-hidden="true" />
- <h2 className="mt-5 font-heading text-4xl font-bold leading-none tracking-wide text-primary sm:text-6xl">Choose with confidence</h2>
- <p className="mt-3 text-sm leading-7 text-primary/75 sm:text-base">
+ <h2 className="mt-5 font-heading text-4xl font-bold leading-none tracking-wide text-black sm:text-6xl">Choose with confidence</h2>
+ <p className="mt-3 text-sm leading-7 text-black">
           Find the right movement, size, finish, and strap for the way you wear your watch every day.
         </p>
       </div>
@@ -25,11 +25,11 @@ export const HomeGuideSection = () => (
             key={title}
             whileHover={{ y: -4 }}
           >
- <span className="grid h-12 w-12 place-items-center rounded-md border border-accent/35 bg-primary text-accent transition duration-200 group-hover:border-accent group-hover:bg-accent group-hover:text-primary">
+ <span className="grid h-12 w-12 place-items-center rounded-md border border-accent/35 bg-primary text-accent transition duration-200 group-hover:border-accent group-hover:bg-accent group-hover:text-black">
               <Icon className="h-5 w-5" />
             </span>
- <h3 className="mt-6 font-heading text-2xl font-bold tracking-wide text-primary">{title}</h3>
- <p className="mt-2 text-sm leading-6 text-primary/75">{text}</p>
+ <h3 className="mt-6 font-heading text-2xl font-bold tracking-wide text-black">{title}</h3>
+ <p className="mt-2 text-sm leading-6 text-black">{text}</p>
           </motion.article>
         ))}
       </div>

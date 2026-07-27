@@ -25,13 +25,13 @@ export const WishlistPage = () => {
       <section className="relative overflow-hidden bg-base px-4 pb-28 pt-20 text-primary sm:px-6 sm:pt-24 lg:px-10">
         <div className="relative z-10 mx-auto flex max-w-[1200px] min-w-0 flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <div className="max-w-xl min-w-0">
-            <p className="mb-4 inline-flex min-h-9 items-center rounded-full border border-primary/10 bg-card px-4 text-xs font-semibold uppercase text-primary/75 backdrop-blur-sm">
+            <p className="mb-4 inline-flex min-h-9 items-center rounded-full border border-primary/10 bg-card px-4 text-xs font-semibold uppercase text-primary backdrop-blur-sm">
               Saved watches
             </p>
             <h1 className="break-words font-heading text-[40px] font-bold leading-[1.05] text-primary sm:text-[56px] lg:text-[72px]">
               Wishlist
             </h1>
-            <p className="mt-4 text-sm font-normal leading-relaxed text-primary/75 sm:text-base">
+            <p className="mt-4 text-sm font-normal leading-relaxed text-primary sm:text-base">
               Keep track of your favorite luxury items and curated picks. Monitor their status or add them to your cart.
             </p>
           </div>
@@ -56,7 +56,7 @@ export const WishlistPage = () => {
               <Heart className="h-8 w-8 text-primary" />
             </div>
             <h2 className="mb-2 font-heading text-2xl font-bold text-primary">No saved watches yet</h2>
-            <p className="mx-auto mb-6 max-w-sm text-primary/75">Save favorite timepieces from listing or detail pages to review them here anytime.</p>
+            <p className="mx-auto mb-6 max-w-sm text-primary">Save favorite timepieces from listing or detail pages to review them here anytime.</p>
             <button className="inline-flex min-h-11 w-fit cursor-pointer items-center justify-center rounded-full bg-white px-8 text-sm font-bold text-black transition hover:shadow-premium active:scale-98" type="button" onClick={() => navigate('/watches')}>
               Browse watches
             </button>

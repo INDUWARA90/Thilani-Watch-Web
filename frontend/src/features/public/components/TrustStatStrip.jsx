@@ -7,7 +7,7 @@ export const TrustStatStrip = ({ stats }) => (
         </span>
         <div className="min-w-0">
           <p className="font-heading text-2xl font-bold text-primary">{item.value}</p>
-          <p className="text-xs font-semibold uppercase text-primary/75">{item.label}</p>
+          <p className="text-xs font-semibold uppercase text-primary">{item.label}</p>
         </div>
       </article>
     ))}

@@ -19,7 +19,7 @@ export const LoadingState = ({ label = 'Loading', variant = 'panel', rows = 3 })
           <LoaderCircle className="h-5 w-5 animate-spin" aria-hidden="true" />
         </span>
         <div>
-          <p className="text-xs font-medium text-primary/75">Please wait</p>
+          <p className="text-xs font-medium text-primary">Please wait</p>
           <p className="font-bold tracking-tight text-primary">{label}</p>
         </div>
       </div>

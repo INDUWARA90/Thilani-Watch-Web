@@ -22,7 +22,7 @@ export const AdminCustomersPage = () => {
       {/* Header & Search Bar */}
       <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-slate-100 pb-6">
         <div>
-          <p className="mb-1 text-xs font-bold uppercase tracking-wider text-teal-600">Admin Dashboard</p>
+          <p className="mb-1 text-xs font-bold uppercase tracking-wider text-accent">Admin Dashboard</p>
           <h1 className="m-0 font-heading text-2xl font-black tracking-wide text-primary sm:text-3xl">Customer Management</h1>
         </div>
         <form className="flex w-full max-w-md gap-2" onSubmit={handleSearch}>
@@ -57,7 +57,7 @@ export const AdminCustomersPage = () => {
                 <thead>
                   <tr className="bg-slate-50/70 border-b border-slate-200">
                     {['Customer info', 'Phone number', 'Account status', 'Registration', 'Actions'].map((heading) => (
-                      <th className="p-4 text-xs font-bold uppercase tracking-wider text-primary/60" key={heading}>{heading}</th>
+                      <th className="p-4 text-xs font-bold uppercase tracking-wider text-primary" key={heading}>{heading}</th>
                     ))}
                   </tr>
                 </thead>
@@ -71,36 +71,36 @@ export const AdminCustomersPage = () => {
                     return (
                       <tr 
                         key={customerId} 
-                        className={`transition-colors duration-150 group hover:bg-slate-50/40 ${isCurrentSelection ? 'bg-teal-50/30 hover:bg-teal-50/40' : ''}`}
+                        className={`transition-colors duration-150 group hover:bg-slate-50/40 ${isCurrentSelection ? 'bg-accent/10 hover:bg-accent/10' : ''}`}
                       >
                         <td className="p-4">
                           <div className="flex flex-col">
-                            <span className="font-semibold text-primary group-hover:text-teal-700 transition-colors">
+                            <span className="font-semibold text-primary group-hover:text-primary transition-colors">
                               {getTitle(customer, 'Customer')}
                             </span>
-                            <span className="text-xs text-primary/45 font-sans mt-0.5">{customer.email}</span>
+                            <span className="text-xs text-primary font-sans mt-0.5">{customer.email}</span>
                           </div>
                         </td>
-                        <td className="p-4 text-sm text-primary/75 font-medium">
-                          {customer.phone || <span className="text-primary/35 italic text-xs">Not configured</span>}
+                        <td className="p-4 text-sm text-primary font-medium">
+                          {customer.phone || <span className="text-primary italic text-xs">Not configured</span>}
                         </td>
                         <td className="p-4">
                           <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ${
                             isActive 
                               ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/10' 
-                              : 'bg-slate-100 text-primary/75'
+                              : 'bg-slate-100 text-primary'
                           }`}>
                             <span className={`h-1.5 w-1.5 rounded-full ${isActive ? 'bg-emerald-500' : 'bg-slate-400'}`} />
                             {isActive ? 'Active' : 'Inactive'}
                           </span>
                         </td>
-                        <td className="p-4 text-sm text-primary/60">
+                        <td className="p-4 text-sm text-primary">
                           {formatDate(customer.createdAt)}
                         </td>
                         <td className="p-4">
                           <div className="flex items-center gap-2">
                             <button 
-                              className={`${smallButtonClass} ${isCurrentSelection ? 'border-teal-600 bg-teal-50/50 text-teal-700' : ''}`} 
+                              className={`${smallButtonClass} ${isCurrentSelection ? 'border-primary bg-accent/10/50 text-primary' : ''}`} 
                               disabled={isPending} 
                               type="button" 
                               onClick={() => openCustomer(customer)}
@@ -122,7 +122,7 @@ export const AdminCustomersPage = () => {
                   })}
                   {customers.length === 0 && (
                     <tr>
-                      <td className="p-8 text-center text-sm text-primary/45" colSpan={5}>
+                      <td className="p-8 text-center text-sm text-primary" colSpan={5}>
                         No records match the requested parameters.
                       </td>
                     </tr>
@@ -139,20 +139,20 @@ export const AdminCustomersPage = () => {
             <div className="space-y-6">
               <div className="border-b border-slate-100 pb-4">
                 <div className="flex items-center justify-between gap-2 mb-2">
-                  <span className="text-xs font-bold uppercase tracking-wider text-teal-600">Selected Profile</span>
+                  <span className="text-xs font-bold uppercase tracking-wider text-accent">Selected Profile</span>
                   <span className={`h-2.5 w-2.5 rounded-full ${selectedCustomer.isActive !== false ? 'bg-emerald-500' : 'bg-slate-300'}`} />
                 </div>
                 <h3 className="font-heading text-xl font-bold tracking-wide text-primary">{getTitle(selectedCustomer, 'Customer')}</h3>
-                <p className="text-xs font-sans text-primary/45 truncate mt-0.5">{selectedCustomer.email}</p>
+                <p className="text-xs font-sans text-primary truncate mt-0.5">{selectedCustomer.email}</p>
               </div>
 
               <div className="grid grid-cols-2 gap-4 rounded-xl bg-slate-50 p-4 text-xs">
                 <div>
-                  <span className="block font-medium text-primary/45 mb-0.5">Contact Phone</span>
+                  <span className="block font-medium text-primary mb-0.5">Contact Phone</span>
                   <span className="font-semibold text-primary break-words">{selectedCustomer.phone || '—'}</span>
                 </div>
                 <div>
-                  <span className="block font-medium text-primary/45 mb-0.5">Registration</span>
+                  <span className="block font-medium text-primary mb-0.5">Registration</span>
                   <span className="font-semibold text-primary">{formatDate(selectedCustomer.createdAt)}</span>
                 </div>
               </div>
@@ -160,7 +160,7 @@ export const AdminCustomersPage = () => {
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <h4 className="text-sm font-bold text-primary uppercase tracking-wide">Recent Invoices</h4>
-                  <span className="rounded-md bg-slate-100 px-2 py-0.5 text-xs font-bold text-primary/75">
+                  <span className="rounded-md bg-slate-100 px-2 py-0.5 text-xs font-bold text-primary">
                     {customerOrders.length}
                   </span>
                 </div>
@@ -172,7 +172,7 @@ export const AdminCustomersPage = () => {
                     return (
                       <div className="group/order rounded-xl border border-slate-100 bg-white p-3.5 shadow-sm hover:border-slate-200 transition-all duration-150" key={getId(order)}>
                         <div className="flex items-center justify-between gap-3 mb-1.5">
-                          <span className="font-sans text-xs font-bold text-primary group-hover/order:text-teal-700 transition-colors">
+                          <span className="font-sans text-xs font-bold text-primary group-hover/order:text-primary transition-colors">
                             #{order.orderNumber || getId(order).substring(0, 8)}
                           </span>
                           <span className={`rounded px-1.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wide ${
@@ -189,7 +189,7 @@ export const AdminCustomersPage = () => {
                   })}
                   {customerOrders.length === 0 && (
                     <div className="text-center py-8 rounded-xl border border-dashed border-slate-200 bg-slate-50/50">
-                      <p className="text-xs text-primary/45 italic">No historical transactions recorded.</p>
+                      <p className="text-xs text-primary italic">No historical transactions recorded.</p>
                     </div>
                   )}
                 </div>
@@ -197,8 +197,8 @@ export const AdminCustomersPage = () => {
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center text-center py-16 px-4 border-2 border-dashed border-slate-100 rounded-xl">
-              <div className="h-10 w-10 rounded-full bg-slate-50 flex items-center justify-center text-primary/45 mb-3 font-bold text-lg">i</div>
-              <p className="text-sm text-primary/45 max-w-[200px]">Select a client transaction row to inspect historical metrics.</p>
+              <div className="h-10 w-10 rounded-full bg-slate-50 flex items-center justify-center text-primary mb-3 font-bold text-lg">i</div>
+              <p className="text-sm text-primary max-w-[200px]">Select a client transaction row to inspect historical metrics.</p>
             </div>
           )}
         </aside>
@@ -208,7 +208,7 @@ export const AdminCustomersPage = () => {
 }
 
 // Layout configuration tokens
-const inputClass = 'w-full h-10 rounded-xl border border-slate-200 bg-white pl-4 pr-3 text-sm text-primary shadow-sm placeholder:text-primary/45 outline-none transition-all focus:border-teal-600 focus:ring-2 focus:ring-teal-600/10'
+const inputClass = 'w-full h-10 rounded-xl border border-slate-200 bg-white pl-4 pr-3 text-sm text-primary shadow-sm placeholder:text-primary outline-none transition-all focus:border-primary focus:ring-2 focus:ring-accent/20'
 const primaryButtonClass = 'inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-slate-950 px-5 text-sm font-semibold text-white shadow-sm hover:bg-slate-800 transition-colors shrink-0'
 const smallButtonClass = 'inline-flex h-8 min-w-[64px] cursor-pointer items-center justify-center rounded-lg border border-slate-200 bg-white px-3 text-xs font-semibold text-primary shadow-sm hover:bg-slate-50 hover:text-primary disabled:cursor-not-allowed disabled:opacity-50 transition-all'
-const actionButtonClass = 'inline-flex h-8 cursor-pointer items-center justify-center rounded-lg px-2.5 text-xs font-medium text-primary/60 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 transition-all'
+const actionButtonClass = 'inline-flex h-8 cursor-pointer items-center justify-center rounded-lg px-2.5 text-xs font-medium text-primary hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 transition-all'

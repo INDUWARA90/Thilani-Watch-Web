@@ -5,7 +5,7 @@ export const PublicPageShell = ({ children, eyebrow, text, title }) => (
     <section className="relative overflow-hidden bg-base px-4 pb-28 pt-20 text-primary sm:px-6 sm:pt-24 lg:px-10">
       <div className="relative mx-auto grid max-w-[1200px] min-w-0 gap-8 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-center">
         <div className="min-w-0">
-          <p className="mb-4 inline-flex min-h-9 items-center rounded-full border border-primary/15 bg-card px-4 text-xs font-semibold uppercase text-primary/70 shadow-premiumSm">{eyebrow}</p>
+          <p className="mb-4 inline-flex min-h-9 items-center rounded-full border border-primary/15 bg-card px-4 text-xs font-semibold uppercase text-primary shadow-premiumSm">{eyebrow}</p>
           <h1 className="max-w-4xl break-words font-heading text-[40px] font-bold leading-[1.05] text-primary sm:text-[58px]">{title}</h1>
           <p className="mt-5 max-w-2xl text-base leading-7 text-primary">{text}</p>
           <div className="mt-7 grid gap-3 min-[420px]:flex min-[420px]:flex-wrap">

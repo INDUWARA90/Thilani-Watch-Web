@@ -47,7 +47,7 @@ export const CheckoutPage = () => {
               <AlertCircle className="h-6 w-6" />
             </span>
             <h2 className="mt-4 font-heading text-lg font-bold text-primary">Bank slip required</h2>
-            <p className="mt-2 text-sm leading-6 text-primary/75">
+            <p className="mt-2 text-sm leading-6 text-primary">
               Please upload your bank transfer payment slip before placing the order.
             </p>
             <button
@@ -62,9 +62,9 @@ export const CheckoutPage = () => {
       )}
       <section className="relative z-10 mx-auto max-w-[1200px] min-w-0 px-4 pb-24 pt-12 sm:px-6 sm:pt-16 lg:px-10 lg:pt-20">
         <div className="mb-10">
-          <p className="mb-4 inline-flex rounded-full border border-primary/10 bg-card px-4 py-1.5 text-xs font-semibold uppercase text-primary/75">Secure checkout</p>
+          <p className="mb-4 inline-flex rounded-full border border-primary/10 bg-card px-4 py-1.5 text-xs font-semibold uppercase text-primary">Secure checkout</p>
           <h1 className="break-words font-heading text-4xl font-bold text-primary sm:text-5xl">Complete your order</h1>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-primary/75">Confirm delivery details, attach your bank transfer slip, and place the order for review.</p>
+          <p className="mt-3 max-w-2xl text-sm leading-7 text-primary">Confirm delivery details, attach your bank transfer slip, and place the order for review.</p>
         </div>
         {checkout.error && (
           <div className="mb-6 flex animate-fade-in items-center gap-2 rounded-lg border border-red-400/30 bg-red-500/10 p-4 text-sm font-medium text-red-200 shadow-sm">
@@ -87,7 +87,7 @@ export const CheckoutPage = () => {
               </svg>
             </div>
             <h2 className="mb-2 font-heading text-xl font-bold text-primary">Your cart is empty</h2>
-            <p className="mb-6 text-primary/75">Add some high-quality watches to your cart before proceeding to checkout.</p>
+            <p className="mb-6 text-primary">Add some high-quality watches to your cart before proceeding to checkout.</p>
             <Link className="inline-flex h-11 items-center justify-center rounded-full bg-white px-8 text-sm font-bold text-black no-underline shadow-md transition hover:scale-[1.02] hover:shadow-premium active:scale-[0.98]" to="/watches">
               Browse watches
             </Link>
@@ -98,7 +98,7 @@ export const CheckoutPage = () => {
               <AddressForm address={checkout.shippingAddress} legend="Shipping Address" setAddress={checkout.setShippingAddress} updateAddress={checkout.updateAddress} />
 
               <section className="rounded-lg border border-primary/10 bg-card p-5 shadow-premiumSm">
-                <label className="flex cursor-pointer items-center gap-3 text-sm font-semibold text-primary/75">
+                <label className="flex cursor-pointer items-center gap-3 text-sm font-semibold text-primary">
                   <input
                     checked={checkout.useShippingAsBilling}
                     className="h-5 w-5 rounded border-primary/10 bg-black/35 text-primary focus:ring-accent/30 focus:ring-offset-0"
@@ -112,11 +112,11 @@ export const CheckoutPage = () => {
               {!checkout.useShippingAsBilling && <AddressForm address={checkout.billingAddress} legend="Billing Address" setAddress={checkout.setBillingAddress} updateAddress={checkout.updateAddress} />}
 
               <section className="rounded-lg border border-primary/10 bg-card p-6 shadow-premiumSm">
-                <label className="grid gap-2 text-sm font-semibold text-primary/75">
+                <label className="grid gap-2 text-sm font-semibold text-primary">
                   <span className="flex items-center gap-2">
-                    <CalendarDays className="h-4 w-4 text-primary/75" />
+                    <CalendarDays className="h-4 w-4 text-primary" />
                     Wanted date
-                    <span className="text-xs font-medium text-primary/75">Optional</span>
+                    <span className="text-xs font-medium text-primary">Optional</span>
                   </span>
                   <input
                     className={inputClass}
@@ -137,7 +137,7 @@ export const CheckoutPage = () => {
                     </span>
                     <div>
                       <p className="text-sm font-bold text-primary">Bank transfer payment slip</p>
-                      <p className="mt-1 text-xs font-medium leading-5 text-primary/75">
+                      <p className="mt-1 text-xs font-medium leading-5 text-primary">
                         Upload your payment slip file. Cash on delivery is no longer available.
                       </p>
                     </div>
@@ -161,7 +161,7 @@ export const CheckoutPage = () => {
                       <div className="flex min-w-0 flex-col justify-between gap-3">
                         <div>
                           <p className="truncate text-sm font-semibold text-primary">{checkout.paymentSlipFile?.name}</p>
-                          <p className="mt-1 text-xs text-primary/75">This file will be uploaded securely before the order is created.</p>
+                          <p className="mt-1 text-xs text-primary">This file will be uploaded securely before the order is created.</p>
                         </div>
                         <button className="inline-flex h-9 w-fit cursor-pointer items-center justify-center gap-2 rounded-full border border-red-400/25 bg-red-500/10 px-3 text-xs font-bold text-red-200 transition hover:bg-red-500/20" type="button" onClick={checkout.removePaymentSlipFile}>
                           <Trash2 className="h-3.5 w-3.5" />
@@ -173,7 +173,7 @@ export const CheckoutPage = () => {
                     <label className="flex cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-primary/10 bg-card px-4 py-6 text-center transition hover:border-primary/10 hover:shadow-premiumSm">
                       <ImagePlus className="mb-2 h-7 w-7 text-primary" />
                       <span className="text-sm font-bold text-primary">Attach payment slip</span>
-                      <span className="mt-1 text-xs font-medium text-primary/75">Any file type up to 5MB</span>
+                      <span className="mt-1 text-xs font-medium text-primary">Any file type up to 5MB</span>
                       <input className="hidden" type="file" onChange={handlePaymentSlipChange} />
                     </label>
                   )}
@@ -181,7 +181,7 @@ export const CheckoutPage = () => {
               </section>
 
               <section className="grid gap-6 rounded-lg border border-primary/10 bg-card p-6 shadow-premiumSm sm:grid-cols-2">
-                <div className="flex flex-col justify-between gap-3 text-sm font-normal text-primary/75">
+                <div className="flex flex-col justify-between gap-3 text-sm font-normal text-primary">
                   <label className="grid gap-2 font-semibold">
                     Coupon code
                     <input className={inputClass} placeholder="e.g., WELCOME10" value={checkout.couponCode} onChange={(event) => checkout.updateCouponCode(event.target.value)} />
@@ -195,7 +195,7 @@ export const CheckoutPage = () => {
                     </p>
                   )}
                 </div>
-                <label className="grid gap-2 text-sm font-semibold text-primary/75">
+                <label className="grid gap-2 text-sm font-semibold text-primary">
                   Order Notes
                   <textarea className={`${inputClass} h-[115px] resize-none`} placeholder="Notes about your order, e.g. special delivery instructions." value={checkout.notes} onChange={(event) => checkout.setNotes(event.target.value)} />
                 </label>
@@ -225,14 +225,14 @@ export const CheckoutPage = () => {
   )
 }
 
-const inputClass = 'min-h-[45px] min-w-0 w-full rounded-lg border border-primary/10 bg-black/35 px-4 py-2.5 text-sm text-primary outline-none transition placeholder:text-primary/60 focus:border-primary/10 focus:ring-2 focus:ring-accent/30'
+const inputClass = 'min-h-[45px] min-w-0 w-full rounded-lg border border-primary/10 bg-black/35 px-4 py-2.5 text-sm text-primary outline-none transition placeholder:text-primary focus:border-primary/10 focus:ring-2 focus:ring-accent/30'
 
 const AddressForm = ({ address, legend, setAddress, updateAddress }) => (
   <fieldset className="grid min-w-0 gap-5 rounded-lg border border-primary/10 bg-card p-5 shadow-premiumSm sm:p-6">
     <legend className="px-2 font-heading text-lg font-bold text-primary">{legend}</legend>
     <div className="grid gap-5 sm:grid-cols-2">
       {addressFields.map(([name, label]) => (
-        <label className="grid gap-1.5 text-sm font-semibold text-primary/75" key={name}>
+        <label className="grid gap-1.5 text-sm font-semibold text-primary" key={name}>
           {label}
           {name === 'state' ? (
             <select className={inputClass} required value={address[name]} onChange={(event) => updateAddress(setAddress, name, event.target.value)}>
@@ -252,15 +252,15 @@ const AddressForm = ({ address, legend, setAddress, updateAddress }) => (
 
 const BankAccountCard = ({ account }) => (
   <article className="min-w-0 rounded-lg border border-primary/10 bg-card p-4 shadow-sm">
-    <p className="text-xs font-bold uppercase text-primary/75">{account.bank}</p>
+    <p className="text-xs font-bold uppercase text-primary">{account.bank}</p>
     <p className="mt-3 break-words font-sans text-base font-black tracking-wide text-primary sm:text-lg">{account.accountNumber}</p>
-    <p className="mt-2 text-sm font-semibold text-primary/75">{account.accountName}</p>
+    <p className="mt-2 text-sm font-semibold text-primary">{account.accountName}</p>
   </article>
 )
 
 const SummaryRow = ({ isStrong = false, label, value, isDiscount = false }) => (
   <div className="flex min-w-0 items-center justify-between gap-3">
-    <span className={`${isStrong ? 'text-base font-bold text-primary' : 'text-sm font-medium text-primary/75'}`}>{label}</span>
+    <span className={`${isStrong ? 'text-base font-bold text-primary' : 'text-sm font-medium text-primary'}`}>{label}</span>
     <strong className={`min-w-0 break-words text-right ${isStrong ? 'text-xl text-primary' : isDiscount ? 'text-sm font-semibold text-emerald-200' : 'text-sm font-semibold text-primary'}`}>
       {value}
     </strong>

@@ -4,7 +4,7 @@ export const CatalogHeader = ({ editingItem, label, onReset, plural }) => (
   <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between pb-2">
     <div>
       {/* Premium Pill Metadata */}
-      <span className="inline-flex items-center gap-1.5 rounded-md bg-teal-50 px-2.5 py-0.5 text-xs font-semibold text-teal-700 ring-1 ring-inset ring-teal-700/10">
+      <span className="inline-flex items-center gap-1.5 rounded-md bg-accent/10 px-2.5 py-0.5 text-xs font-semibold text-primary ring-1 ring-inset ring-accent/20">
         {plural}
       </span>
       
@@ -14,7 +14,7 @@ export const CatalogHeader = ({ editingItem, label, onReset, plural }) => (
       </h2>
       
       {/* Dynamic Subtext */}
-      <p className="mt-1 text-sm text-primary/60">
+      <p className="mt-1 text-sm text-primary">
         {editingItem 
           ? `Modify configuration details and update the parameters for this entry.` 
           : `Populate the required fields below to create a new ${label.toLowerCase()} record.`}
@@ -28,7 +28,7 @@ export const CatalogHeader = ({ editingItem, label, onReset, plural }) => (
         type="button" 
         onClick={onReset}
       >
-        <Plus className="h-4 w-4 text-primary/60" />
+        <Plus className="h-4 w-4 text-primary" />
         <span>New {label}</span>
       </button>
     )}

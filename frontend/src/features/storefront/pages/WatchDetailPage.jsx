@@ -93,7 +93,7 @@ export const WatchDetailPage = () => {
         </motion.div>
 
         <div className="min-w-0 flex flex-col">
-          <span className="mb-3 inline-flex w-fit rounded-full border border-primary/10 bg-card px-3 py-1 text-xs font-semibold uppercase text-primary/75">
+          <span className="mb-3 inline-flex w-fit rounded-full border border-primary/10 bg-card px-3 py-1 text-xs font-semibold uppercase text-primary">
             {getTitle(watch.brand, 'Brand')} &middot; {getTitle(watch.category, 'Category')}
           </span>
           
@@ -112,14 +112,14 @@ export const WatchDetailPage = () => {
               {watch.inStock || watch.stockQuantity > 0 ? `${watch.stockQuantity ?? 'Available'} Available` : 'Out of Stock'}
             </span>
             {watch.ratingAverage && (
-              <span className="inline-flex items-center gap-1 text-sm font-normal text-primary/75">
+              <span className="inline-flex items-center gap-1 text-sm font-normal text-primary">
                 <Star className="h-4 w-4 fill-accent text-accent" /> 
                 {Number(watch.ratingAverage).toFixed(1)} Rating
               </span>
             )}
           </div>
 
-          <p className="mb-8 text-base leading-7 text-primary/75">
+          <p className="mb-8 text-base leading-7 text-primary">
             {watch.shortDescription || watch.description || 'A refined modern classic designed to elevate any collection.'}
           </p>
 
@@ -133,7 +133,7 @@ export const WatchDetailPage = () => {
             )}
             
             <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-end">
-              <label className="flex flex-col gap-1.5 text-base font-normal text-primary/75 sm:w-28">
+              <label className="flex flex-col gap-1.5 text-base font-normal text-primary sm:w-28">
                 Qty
                 <input
                   className="h-11 min-w-0 rounded-lg border border-primary/10 bg-black/35 text-center font-normal text-primary outline-none transition focus:border-primary/10 focus:ring-2 focus:ring-accent/30"
@@ -172,7 +172,7 @@ export const WatchDetailPage = () => {
               {detailFields.map(([label, key]) => (
                 watch[key] ? (
                   <div className="flex min-w-0 flex-col gap-0.5 border-b border-primary/10 py-2 min-[420px]:flex-row min-[420px]:justify-between sm:flex-col sm:border-none" key={key}>
-                    <dt className="text-sm font-normal text-primary/75">{label}</dt>
+                    <dt className="text-sm font-normal text-primary">{label}</dt>
                     <dd className="min-w-0 break-words text-sm font-bold text-primary min-[420px]:text-right sm:text-left">{watch[key]}</dd>
                   </div>
                 ) : null

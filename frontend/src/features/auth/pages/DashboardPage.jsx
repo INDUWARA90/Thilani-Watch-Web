@@ -64,7 +64,7 @@ export const DashboardPage = () => {
 
           <div className="min-w-0">
             <div className="mb-1 flex items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/10 bg-card px-3 py-1 text-xs font-semibold text-primary/75">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/10 bg-card px-3 py-1 text-xs font-semibold text-primary">
                 {isAdmin ? <ShieldCheck className="h-3.5 w-3.5" /> : <User className="h-3.5 w-3.5" />}
                 {accountLabel}
               </span>
@@ -72,7 +72,7 @@ export const DashboardPage = () => {
             <h1 className="max-w-full break-words font-heading text-2xl font-bold tracking-tight text-primary sm:text-4xl">
               Welcome back, {displayName}
             </h1>
-            <p className="mt-1 max-w-2xl text-sm leading-6 text-primary/75 sm:text-base">
+            <p className="mt-1 max-w-2xl text-sm leading-6 text-primary sm:text-base">
               {accountDescription}
             </p>
           </div>
@@ -83,7 +83,7 @@ export const DashboardPage = () => {
           type="button"
           className="group inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-full border border-primary/10 bg-card px-5 py-2.5 text-sm font-bold text-primary shadow-sm transition hover:border-red-400/35 hover:bg-red-500/10 hover:text-red-200 active:scale-95 focus:outline-none focus:ring-2 focus:ring-accent/30"
         >
-          <LogOut className="h-4 w-4 text-primary/75 transition-all duration-300 group-hover:-translate-x-0.5 group-hover:text-red-200" />
+          <LogOut className="h-4 w-4 text-primary transition-all duration-300 group-hover:-translate-x-0.5 group-hover:text-red-200" />
           <span>Log Out</span>
         </button>
       </div>
@@ -94,15 +94,15 @@ export const DashboardPage = () => {
             {initials}
           </div>
           <div className="min-w-0">
-            <p className="mb-1 text-xs font-bold uppercase text-primary/75">Profile overview</p>
+            <p className="mb-1 text-xs font-bold uppercase text-primary">Profile overview</p>
             <h2 className="break-words font-heading text-xl font-bold text-primary">{displayName}</h2>
-            <div className="mt-3 grid gap-2 text-sm text-primary/75 sm:grid-cols-2">
+            <div className="mt-3 grid gap-2 text-sm text-primary sm:grid-cols-2">
               <span className="inline-flex min-w-0 items-center gap-2">
-                <Mail className="h-4 w-4 shrink-0 text-primary/75" />
+                <Mail className="h-4 w-4 shrink-0 text-primary" />
                 <span className="truncate">{user?.email || 'Email not added'}</span>
               </span>
               <span className="inline-flex min-w-0 items-center gap-2">
-                <Phone className="h-4 w-4 shrink-0 text-primary/75" />
+                <Phone className="h-4 w-4 shrink-0 text-primary" />
                 <span className="truncate">{user?.phone || 'Phone not added'}</span>
               </span>
             </div>
@@ -131,11 +131,11 @@ export const DashboardPage = () => {
                 <h2 className="min-w-0 break-words font-heading text-lg font-bold leading-snug text-primary">
                   {item.title}
                 </h2>
-                <div className="shrink-0 rounded-full bg-primary/5 p-2 text-primary/75 transition group-hover:bg-accent group-hover:text-black">
+                <div className="shrink-0 rounded-full bg-primary/5 p-2 text-primary transition group-hover:bg-accent group-hover:text-black">
                   <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </div>
               </div>
-              <p className="mt-3 text-sm leading-relaxed text-primary/75">
+              <p className="mt-3 text-sm leading-relaxed text-primary">
                 {item.description}
               </p>
             </div>
@@ -143,7 +143,7 @@ export const DashboardPage = () => {
             <div className="mt-6 pt-4">
               <Link
                 to={item.to}
-                className="inline-flex items-center gap-1 text-sm font-bold text-primary/75 transition after:absolute after:inset-0 hover:text-accent"
+                className="inline-flex items-center gap-1 text-sm font-bold text-primary transition after:absolute after:inset-0 hover:text-accent"
               >
                 Explore Section
               </Link>

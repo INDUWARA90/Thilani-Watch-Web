@@ -38,11 +38,11 @@ export const RegisterPage = () => {
 
   return (
     <section className="mx-auto w-full max-w-[560px] min-w-0 rounded-lg border border-primary/10 bg-card p-5 text-primary shadow-premiumSm sm:p-9">
-      <p className="mb-3 inline-flex rounded-full border border-primary/10 bg-card px-3 py-1 text-xs font-semibold uppercase text-primary/75">Create account</p>
+      <p className="mb-3 inline-flex rounded-full border border-primary/10 bg-card px-3 py-1 text-xs font-semibold uppercase text-primary">Create account</p>
       <h1 className="mb-3 font-heading text-4xl font-bold leading-[1.1] tracking-tight text-primary sm:text-[44px]">
         Register
       </h1>
-      <p className="mb-8 text-base leading-7 text-primary/75">
+      <p className="mb-8 text-base leading-7 text-primary">
         Create a customer account with your contact details.
       </p>
 
@@ -57,21 +57,21 @@ export const RegisterPage = () => {
         )}
 
         <div className="grid gap-4">
-          <label className="grid gap-2 text-sm font-medium text-primary/75">
+          <label className="grid gap-2 text-sm font-medium text-primary">
             Name
             <input className={authInputClass} name="name" placeholder="Full name" required />
           </label>
 
-          <label className="grid gap-2 text-sm font-medium text-primary/75">
+          <label className="grid gap-2 text-sm font-medium text-primary">
             Email
             <input className={authInputClass} name="email" type="email" placeholder="you@example.com" required />
           </label>
 
-          <label className="grid gap-2 text-sm font-medium text-primary/75">
+          <label className="grid gap-2 text-sm font-medium text-primary">
             Password
             <span className="flex items-center rounded-lg border border-primary/10 bg-black/35 px-[15px] transition focus-within:border-primary/10 focus-within:ring-2 focus-within:ring-accent/30">
               <input
-                className="min-h-[46px] min-w-0 flex-1 bg-transparent px-1 text-[15px] text-primary outline-none placeholder:text-primary/60"
+                className="min-h-[46px] min-w-0 flex-1 bg-transparent px-1 text-[15px] text-primary outline-none placeholder:text-primary"
                 name="password"
                 type={showPassword ? 'text' : 'password'}
                 placeholder="••••••••"
@@ -79,7 +79,7 @@ export const RegisterPage = () => {
                 required
               />
               <button
-                className="cursor-pointer text-primary/75 transition hover:text-accent"
+                className="cursor-pointer text-primary transition hover:text-accent"
                 type="button"
                 aria-label="Toggle password visibility"
                 aria-pressed={showPassword}
@@ -90,7 +90,7 @@ export const RegisterPage = () => {
             </span>
           </label>
 
-          <label className="grid gap-2 text-sm font-medium text-primary/75">
+          <label className="grid gap-2 text-sm font-medium text-primary">
             Phone
             <input className={authInputClass} name="phone" type="tel" placeholder="Optional" />
           </label>
@@ -105,7 +105,7 @@ export const RegisterPage = () => {
         </button>
       </form>
 
-      <p className="mt-6 text-sm text-primary/75">
+      <p className="mt-6 text-sm text-primary">
         Already registered?{' '}
         <Link className="font-semibold text-primary no-underline transition " to="/login">
           Log in
@@ -116,4 +116,4 @@ export const RegisterPage = () => {
 }
 
 const authInputClass =
-  'min-h-[46px] min-w-0 rounded-lg border border-primary/10 bg-black/35 px-[15px] text-[15px] text-primary outline-none placeholder:text-primary/60 transition focus:border-primary/10 focus:ring-2 focus:ring-accent/30'
+  'min-h-[46px] min-w-0 rounded-lg border border-primary/10 bg-black/35 px-[15px] text-[15px] text-primary outline-none placeholder:text-primary transition focus:border-primary/10 focus:ring-2 focus:ring-accent/30'

@@ -19,7 +19,7 @@ const getStatusStyles = (status) => {
 
 export const OrdersTable = ({ orders }) => (
   <div className="w-full overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
-    <table className="w-full min-w-[940px] border-collapse text-sm text-primary/75">
+    <table className="w-full min-w-[940px] border-collapse text-sm text-primary">
       <thead>
         <tr className="bg-slate-50/75 border-b border-slate-200">
           <th className="p-4 text-left font-semibold text-primary w-[120px]">Order</th>
@@ -70,19 +70,19 @@ export const OrdersTable = ({ orders }) => (
               </td>
 
               {/* Wanted Date */}
-              <td className="p-4 text-left align-middle text-primary/60 text-xs">
+              <td className="p-4 text-left align-middle text-primary text-xs">
                 {formatDate(order.wantedDate)}
               </td>
 
               {/* Created Date */}
-              <td className="p-4 text-left align-middle text-primary/60 text-xs">
+              <td className="p-4 text-left align-middle text-primary text-xs">
                 {formatDate(order.createdAt)}
               </td>
 
               {/* Details Action CTA */}
               <td className="p-4 text-right align-middle">
                 <Link 
-                  className="inline-flex items-center justify-center font-semibold text-teal-600 no-underline hover:text-teal-800 transition-colors group-hover:translate-x-0.5 transform duration-150" 
+                  className="inline-flex items-center justify-center font-semibold text-accent no-underline hover:text-primary transition-colors group-hover:translate-x-0.5 transform duration-150" 
                   to={`/admin/orders/${orderId}`}
                 >
                   Details <span className="ml-1 font-normal">→</span>
@@ -95,10 +95,10 @@ export const OrdersTable = ({ orders }) => (
         {/* Empty State Block */}
         {orders.length === 0 && (
           <tr>
-            <td className="p-12 text-center text-primary/45 font-medium" colSpan="8">
+            <td className="p-12 text-center text-primary font-medium" colSpan="8">
               <div className="flex flex-col items-center justify-center gap-1">
-                <span className="text-base text-primary/60">No records found</span>
-                <span className="text-xs text-primary/45 font-normal">There are no active orders available in this scope.</span>
+                <span className="text-base text-primary">No records found</span>
+                <span className="text-xs text-primary font-normal">There are no active orders available in this scope.</span>
               </div>
             </td>
           </tr>

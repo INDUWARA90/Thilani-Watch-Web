@@ -16,7 +16,7 @@ export const HomeCatalogGrid = ({ eyebrow, fallbackItems, filterKey, isLoading =
     >
       <div className="mx-auto mb-12 max-w-2xl text-center">
         {eyebrow && (
- <span className="mb-5 inline-flex min-h-8 items-center border-b border-accent/60 px-0 pb-2 text-xs font-bold uppercase tracking-[0.24em] text-primary/70">
+ <span className="mb-5 inline-flex min-h-8 items-center border-b border-accent/60 px-0 pb-2 text-xs font-bold uppercase tracking-[0.24em] text-primary">
             {eyebrow}
           </span>
         )}
@@ -46,7 +46,7 @@ export const HomeCatalogGrid = ({ eyebrow, fallbackItems, filterKey, isLoading =
                 key={itemValue}
                 to={`/watches?${filterKey}=${encodeURIComponent(itemValue)}`}
               >
- <span className="absolute left-5 top-4 font-sans text-xs text-primary/45">
+ <span className="absolute left-5 top-4 font-sans text-xs text-primary">
                     0{index + 1}
                 </span>
 
@@ -68,7 +68,7 @@ export const HomeCatalogGrid = ({ eyebrow, fallbackItems, filterKey, isLoading =
  <h3 className="mt-5 font-heading text-2xl font-bold tracking-tight text-primary">
                   {itemTitle}
                 </h3>
- <p className="mx-auto mt-3 line-clamp-2 min-h-12 max-w-[230px] text-sm leading-6 text-primary/75">
+ <p className="mx-auto mt-3 line-clamp-2 min-h-12 max-w-[230px] text-sm leading-6 text-primary">
                   {item.description || `View curated ${itemTitle} high-grade timepieces.`}
                 </p>
 

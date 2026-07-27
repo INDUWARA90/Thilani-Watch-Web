@@ -13,7 +13,7 @@ export const AdminOrdersPage = () => {
       {/* Page Header */}
       <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <span className="text-xs font-semibold tracking-wider uppercase text-primary/45">
+          <span className="text-xs font-semibold tracking-wider uppercase text-primary">
             Overview
           </span>
           <h1 className="font-heading text-2xl font-bold tracking-wide text-primary sm:text-3xl">
@@ -58,7 +58,7 @@ export const AdminOrderDetailPage = () => {
       {/* Navigation Breadcrumb / Flow Control */}
       <div>
         <Link 
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary/60 transition-colors hover:text-teal-600 group" 
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary transition-colors hover:text-accent group" 
           to="/admin/orders"
         >
           <span className="transform transition-transform group-hover:-translate-x-0.5">←</span> 
@@ -77,7 +77,7 @@ export const AdminOrderDetailPage = () => {
       {order && (
         <>
           <div className="flex flex-col gap-1">
-            <span className="text-xs font-semibold tracking-wider uppercase text-primary/45">
+            <span className="text-xs font-semibold tracking-wider uppercase text-primary">
               Order Profile
             </span>
             <h1 className="font-heading text-2xl font-bold tracking-wide text-primary sm:text-3xl">

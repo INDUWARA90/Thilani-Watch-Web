@@ -136,9 +136,9 @@ export const ProfilePage = () => {
     <main className="mx-auto grid w-full min-w-0 max-w-[1200px] animate-fade-in gap-8 bg-base pb-12 text-primary">
       <section className="relative min-w-0 overflow-hidden rounded-lg border border-primary/10 bg-card p-5 shadow-premiumSm sm:p-10">
         <div className="absolute left-0 top-0 h-px w-full bg-white/70 shadow-premium" />
-        <p className="mb-2 text-xs font-bold uppercase text-primary/75">Account settings</p>
+        <p className="mb-2 text-xs font-bold uppercase text-primary">Account settings</p>
         <h1 className="break-words font-heading text-3xl font-bold tracking-tight text-primary sm:text-4xl">Profile & Addresses</h1>
-        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-primary/75 sm:text-base">
+        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-primary sm:text-base">
           Manage your account contact details, security credentials, and shipping addresses.
         </p>
       </section>
@@ -200,13 +200,13 @@ export const ProfilePage = () => {
                       </span>
                     )}
                   </div>
-                  <div className="min-w-0 space-y-0.5 text-sm leading-relaxed text-primary/75">
+                  <div className="min-w-0 space-y-0.5 text-sm leading-relaxed text-primary">
                     <p className="font-semibold text-primary">{address.fullName}</p>
                     <p>{address.addressLine1}</p>
                     {address.addressLine2 && <p>{address.addressLine2}</p>}
                     <p>{[address.city, address.district, address.postalCode].filter(Boolean).join(', ')}</p>
-                    <p className="mt-1 text-xs font-medium uppercase text-primary/75">{address.country}</p>
-                    <p className="pt-1 font-sans text-xs text-primary/75">{address.phone}</p>
+                    <p className="mt-1 text-xs font-medium uppercase text-primary">{address.country}</p>
+                    <p className="pt-1 font-sans text-xs text-primary">{address.phone}</p>
                   </div>
                 </div>
                 
@@ -221,7 +221,7 @@ export const ProfilePage = () => {
             ))}
             {addresses.length === 0 && (
               <div className="rounded-lg border border-dashed border-primary/10 bg-card py-8 text-center md:col-span-2">
-                <p className="text-sm font-medium text-primary/75">No saved dispatch addresses found.</p>
+                <p className="text-sm font-medium text-primary">No saved dispatch addresses found.</p>
               </div>
             )}
           </div>
@@ -240,7 +240,7 @@ export const ProfilePage = () => {
             {editingAddressId && (
               <button 
                 type="button" 
-                className="inline-flex items-center gap-1.5 text-xs font-bold text-primary/75 transition hover:text-accent"
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-primary transition hover:text-accent"
                 onClick={() => {
                   setEditingAddressId('')
                   setAddressForm(emptyAddress)
@@ -269,10 +269,10 @@ export const ProfilePage = () => {
               <input 
                 checked={addressForm.isDefault} 
                 type="checkbox" 
-                className="h-4 w-4 rounded border-slate-300 text-[#F49006] focus:ring-[#F49006]/20 transition-all cursor-pointer"
+                className="h-4 w-4 cursor-pointer rounded border-slate-300 text-accent transition-all focus:ring-accent/20"
                 onChange={(event) => setAddressForm((current) => ({ ...current, isDefault: event.target.checked }))} 
               />
-              <span className="text-sm font-medium text-primary/75 transition group-hover:text-accent">Set as preferred destination</span>
+              <span className="text-sm font-medium text-primary transition group-hover:text-accent">Set as preferred destination</span>
             </label>
 
             <button className={`${primaryButtonClass} mt-0`} disabled={isSaving} type="submit">
@@ -298,12 +298,12 @@ const addressFields = [
 ]
 
 const Field = ({ label, onChange, required = false, type = 'text', value }) => (
-  <label className="flex w-full flex-col gap-1.5 text-xs font-bold uppercase text-primary/75">
+  <label className="flex w-full flex-col gap-1.5 text-xs font-bold uppercase text-primary">
     <span>
       {label} {required && <span className="font-heading text-primary">*</span>}
     </span>
     <input 
-      className="h-11 w-full rounded-lg border border-primary/10 bg-black/35 px-3.5 text-sm font-medium tracking-normal text-primary normal-case shadow-2xs outline-none transition placeholder:text-primary/60 hover:border-primary/10 focus:border-primary/10 focus:ring-2 focus:ring-accent/30" 
+      className="h-11 w-full rounded-lg border border-primary/10 bg-black/35 px-3.5 text-sm font-medium tracking-normal text-primary normal-case shadow-2xs outline-none transition placeholder:text-primary hover:border-primary/10 focus:border-primary/10 focus:ring-2 focus:ring-accent/30" 
       required={required} 
       type={type} 
       value={value} 
@@ -313,7 +313,7 @@ const Field = ({ label, onChange, required = false, type = 'text', value }) => (
 )
 
 const primaryButtonClass = 'mt-6 inline-flex h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-white px-6 text-sm font-bold text-black transition hover:shadow-premiumSm active:scale-98 disabled:cursor-not-allowed disabled:opacity-50 sm:w-fit'
-const secondaryButtonClass = 'inline-flex h-9 w-fit cursor-pointer items-center justify-center rounded-full border border-primary/10 bg-card px-3 text-xs font-bold text-primary/75 shadow-2xs transition hover:border-primary/10 hover:text-accent active:scale-98'
+const secondaryButtonClass = 'inline-flex h-9 w-fit cursor-pointer items-center justify-center rounded-full border border-primary/10 bg-card px-3 text-xs font-bold text-primary shadow-2xs transition hover:border-primary/10 hover:text-accent active:scale-98'
 
 const normalizeAddresses = (payload) => {
   if (Array.isArray(payload)) return payload

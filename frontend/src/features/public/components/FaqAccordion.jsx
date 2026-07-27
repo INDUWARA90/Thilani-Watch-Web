@@ -18,7 +18,7 @@ export const FaqAccordion = ({ items }) => {
                   </span>
                   <span className="min-w-0 font-heading text-base font-bold text-primary">{item.question}</span>
                 </span>
-                <ChevronDown className={`h-5 w-5 shrink-0 text-primary/70 transition ${isOpen ? 'rotate-180 text-accent' : ''}`} />
+                <ChevronDown className={`h-5 w-5 shrink-0 text-primary transition ${isOpen ? 'rotate-180 text-accent' : ''}`} />
               </button>
               {isOpen && <p className="border-t border-primary/10 bg-card px-5 py-4 text-sm leading-7 text-primary">{item.answer}</p>}
             </article>

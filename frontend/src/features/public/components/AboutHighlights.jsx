@@ -13,7 +13,7 @@ export const AboutHighlights = ({ items, steps }) => (
     </section>
 
     <section className="mt-8 rounded-lg border border-primary/10 bg-card p-6 text-primary shadow-premiumSm sm:p-8">
-      <p className="text-xs font-bold uppercase text-primary/60">Customer journey</p>
+      <p className="text-xs font-bold uppercase text-primary">Customer journey</p>
       <h2 className="mt-3 font-heading text-3xl font-bold">From first look to delivery update</h2>
       <div className="mt-6 grid gap-4 md:grid-cols-3">
         {steps.map((step, index) => (
