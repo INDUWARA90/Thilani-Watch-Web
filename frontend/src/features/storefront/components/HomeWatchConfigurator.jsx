@@ -78,18 +78,19 @@ export const HomeWatchConfigurator = () => {
         </motion.div>
 
         <motion.div
+          className="relative z-10 rounded-lg border border-white/10 bg-black/35 p-4 shadow-glowSm backdrop-blur-sm sm:p-0 sm:shadow-none sm:border-0 sm:bg-transparent sm:backdrop-blur-0"
           initial={{ opacity: 0, x: 24 }}
           transition={{ duration: 0.6, ease: 'easeOut' }}
           viewport={{ once: true, margin: '-90px' }}
           whileInView={{ opacity: 1, x: 0 }}
         >
-          <p className="inline-flex min-h-8 items-center rounded-full border border-white/15 bg-white/5 px-3 text-xs font-semibold uppercase text-white/75">
+          <p className="inline-flex min-h-8 items-center rounded-full border border-white/25 bg-white/10 px-3 text-xs font-bold uppercase text-white shadow-glowSm">
             Style preview
           </p>
-          <h2 className="mt-4 max-w-2xl font-heading text-3xl font-bold leading-tight text-white sm:text-5xl">
+          <h2 className="mt-4 max-w-2xl break-words font-heading text-3xl font-bold leading-tight text-white drop-shadow-[0_0_18px_rgba(255,255,255,0.24)] sm:text-5xl">
             Choose a finish that matches your style.
           </h2>
-          <p className="mt-4 max-w-xl text-sm leading-7 text-white/75 sm:text-base">
+          <p className="mt-4 max-w-xl text-sm font-medium leading-7 text-white/90 sm:text-base">
             Preview refined steel, silver, and graphite-inspired looks before exploring watches made for formal wear, gifting, and daily use.
           </p>
 
@@ -100,7 +101,7 @@ export const HomeWatchConfigurator = () => {
               return (
                 <motion.button
                   className={`flex min-h-16 w-full items-center justify-between rounded-lg border px-4 text-left transition ${
-                    isActive ? 'border-white/45 bg-white/12 shadow-glowSm' : 'border-white/12 bg-white/[0.035] hover:border-white/30 hover:bg-white/[0.07]'
+                    isActive ? 'border-white/55 bg-white/15 shadow-glowSm' : 'border-white/20 bg-black/45 hover:border-white/40 hover:bg-white/[0.08]'
                   }`}
                   key={finish.name}
                   onClick={() => setActiveFinish(finish)}
@@ -109,25 +110,25 @@ export const HomeWatchConfigurator = () => {
                   whileTap={{ scale: 0.99 }}
                 >
                   <span className="flex min-w-0 items-center gap-3">
-                    <span className={`h-9 w-9 rounded-full border border-white/20 ${finish.dial}`} />
+                    <span className={`h-9 w-9 shrink-0 rounded-full border border-white/30 ${finish.dial}`} />
                     <span className="min-w-0">
-                      <span className="block font-heading text-base font-bold text-white">{finish.name}</span>
-                      <span className="block text-xs font-medium text-white/60">Tap to preview finish</span>
+                      <span className="block break-words font-heading text-base font-bold text-white">{finish.name}</span>
+                      <span className="block text-xs font-semibold text-white/85">Tap to preview finish</span>
                     </span>
                   </span>
-                  {isActive && <Check className="h-5 w-5 text-white" />}
+                  {isActive && <Check className="h-5 w-5 shrink-0 text-white" />}
                 </motion.button>
               )
             })}
           </div>
 
-          <div className="mt-6 rounded-lg border border-white/12 bg-surface p-5 shadow-glowSm">
+          <div className="mt-6 rounded-lg border border-white/20 bg-black/55 p-5 shadow-glowSm">
             <div className="mb-4 flex items-center gap-3">
               <span className="grid h-10 w-10 place-items-center rounded-md border border-white/12 bg-white/5">
                 <CircleGauge className="h-5 w-5" />
               </span>
-              <div>
-                <p className="text-xs font-semibold uppercase text-white/60">Style score</p>
+              <div className="min-w-0">
+                <p className="text-xs font-bold uppercase text-white/85">Style score</p>
                 <h3 className="font-heading text-xl font-bold text-white">Premium daily profile</h3>
               </div>
             </div>
@@ -136,7 +137,7 @@ export const HomeWatchConfigurator = () => {
                 <div key={spec.label}>
                   <div className="mb-2 flex items-center justify-between text-sm">
                     <span className="font-semibold text-white">{spec.label}</span>
-                    <span className="text-white/65">{spec.value}%</span>
+                    <span className="font-semibold text-white/85">{spec.value}%</span>
                   </div>
                   <div className="h-2 overflow-hidden rounded-full bg-white/10">
                     <motion.div
@@ -154,9 +155,9 @@ export const HomeWatchConfigurator = () => {
 
           <div className="mt-5 grid gap-3 sm:grid-cols-3">
             {notes.map(({ icon: Icon, text }) => (
-              <div className="rounded-lg border border-white/10 bg-white/[0.035] p-4" key={text}>
+              <div className="rounded-lg border border-white/18 bg-black/45 p-4 shadow-glowSm" key={text}>
                 <Icon className="h-5 w-5 text-white" />
-                <p className="mt-3 text-xs leading-5 text-white/70">{text}</p>
+                <p className="mt-3 text-xs font-medium leading-5 text-white/90">{text}</p>
               </div>
             ))}
           </div>
