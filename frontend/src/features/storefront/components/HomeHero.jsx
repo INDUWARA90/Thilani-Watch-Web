@@ -50,10 +50,6 @@ export const HomeHero = () => (
         <HeroWatch3D />
       </motion.div>
     </motion.div>
-    <div className="pointer-events-none absolute bottom-8 left-1/2 h-24 w-[min(980px,92vw)] -translate-x-1/2" aria-hidden="true">
-      <div className="absolute left-0 top-1/2 h-px w-full bg-accent/35" />
-      <div className="absolute left-1/2 top-4 h-28 w-[80%] -translate-x-1/2 rounded-[50%] border-t border-accent/20" />
-    </div>
   </section>
 )
 

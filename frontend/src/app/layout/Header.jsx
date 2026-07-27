@@ -46,7 +46,7 @@ export const Header = () => {
           />
           <span className="min-w-0 leading-none">
             <span className="block truncate font-heading text-lg font-bold tracking-wide text-white sm:text-xl">Thilani</span>
-            <span className="block truncate text-[10px] font-bold uppercase tracking-[0.2em] text-white/62 transition group-hover:text-accent sm:text-[11px]">Watch Web</span>
+            <span className="block truncate text-[10px] font-bold uppercase tracking-[0.2em] text-white/62 transition group-hover:text-accent sm:text-[11px]">Watch center</span>
           </span>
         </Link>
 
