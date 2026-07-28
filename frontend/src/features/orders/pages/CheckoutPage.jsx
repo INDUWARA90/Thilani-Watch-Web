@@ -168,7 +168,7 @@ export const CheckoutPage = () => {
                   <input
                     aria-invalid={Boolean(checkout.fieldErrors.wantedDate)}
                     className={getInputClass(checkout.fieldErrors.wantedDate)}
-                    min={new Date().toISOString().slice(0, 10)}
+                    min={checkout.minimumWantedDate}
                     type="date"
                     value={checkout.wantedDate}
                     onChange={(event) => checkout.setWantedDate(event.target.value)}

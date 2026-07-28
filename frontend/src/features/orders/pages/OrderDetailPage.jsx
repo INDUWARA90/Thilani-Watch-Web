@@ -93,6 +93,8 @@ export const OrderDetailPage = () => {
           </div>
         )}
 
+        {order && <ShippingLogistics order={order} isPriority />}
+
         {order && (
           <div className="grid gap-8 lg:grid-cols-[1fr_360px]">
             {/* Main Content Area */}
@@ -262,7 +264,6 @@ export const OrderDetailPage = () => {
                   </a>
                 )}
 
-                <ShippingLogistics order={order} />
                 <ReturnsRefunds order={order} />
               </div>
             </aside>
@@ -351,7 +352,13 @@ const inputClass =
 const canRequestReturn = (order) => getOrderStatus(order) === 'delivered' && !order.returnRequest && !order.returnStatus
 
 const hasShippingLogistics = (order) =>
-  Boolean(order?.trackingNumber || order?.courierName || order?.estimatedDeliveryDate || order?.shippedAt || order?.deliveredAt)
+  Boolean(
+    getShippingValue(order, 'trackingNumber') ||
+      getShippingValue(order, 'courierName') ||
+      getShippingValue(order, 'estimatedDeliveryDate') ||
+      getShippingValue(order, 'shippedAt') ||
+      getShippingValue(order, 'deliveredAt'),
+  )
 
 const hasReturnsRefunds = (order) => {
   const returnRequest = order?.returnRequest
@@ -370,24 +377,51 @@ const hasReturnsRefunds = (order) => {
   )
 }
 
-const ShippingLogistics = ({ order }) => {
+const ShippingLogistics = ({ isPriority = false, order }) => {
   if (!hasShippingLogistics(order)) return null
 
+  const courierName = getShippingValue(order, 'courierName')
+  const deliveredAt = getShippingValue(order, 'deliveredAt')
+  const estimatedDeliveryDate = getShippingValue(order, 'estimatedDeliveryDate')
+  const shippedAt = getShippingValue(order, 'shippedAt')
+  const trackingNumber = getShippingValue(order, 'trackingNumber')
+
   return (
-    <section className="mt-5 rounded-2xl border border-neutral-200 bg-neutral-50 p-4">
-      <h3 className="mb-3 flex items-center gap-2 font-heading text-xs font-bold uppercase tracking-wider text-neutral-900">
-        <Truck className="h-4 w-4 text-neutral-900" aria-hidden="true" />
-        Shipping Logistics
-      </h3>
-      <div className="space-y-2 text-xs">
-        {order.trackingNumber && <InfoRow label="Tracking" value={order.trackingNumber} />}
-        {order.courierName && <InfoRow label="Courier" value={order.courierName} />}
-        {order.estimatedDeliveryDate && <InfoRow label="Estimated Delivery" value={formatDate(order.estimatedDeliveryDate)} />}
-        {order.shippedAt && <InfoRow label="Shipped Date" value={formatDate(order.shippedAt)} />}
-        {order.deliveredAt && <InfoRow label="Delivered Date" value={formatDate(order.deliveredAt)} />}
+    <section className={`${isPriority ? 'mb-8 rounded-3xl p-5 sm:p-6' : 'mt-5 rounded-2xl p-4'} border border-amber-400/35 bg-[linear-gradient(135deg,#050505_0%,#161616_58%,#050505_100%)] shadow-[0_18px_42px_rgba(0,0,0,0.22)]`}>
+      <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-3">
+          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl border border-amber-400/35 bg-amber-400 text-black shadow-[0_10px_26px_rgba(245,158,11,0.24)]">
+            <Truck className="h-5 w-5" aria-hidden="true" />
+          </span>
+          <div>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-amber-300">Delivery Priority</span>
+            <h3 className="font-heading text-base font-bold tracking-tight text-white">Shipping Logistics</h3>
+          </div>
+        </div>
+        <span className="inline-flex w-fit items-center rounded-full border border-white/10 bg-white/8 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-white/80">
+          Live order movement
+        </span>
+      </div>
+      <div className={`${isPriority ? 'grid gap-3 sm:grid-cols-2 lg:grid-cols-5' : 'space-y-2'} text-xs`}>
+        {trackingNumber && <InfoRow isDark isPriority={isPriority} label="Tracking" value={trackingNumber} />}
+        <InfoRow isDark isMuted={!courierName} isPriority={isPriority} label="Courier" value={courierName || 'Courier not assigned'} />
+        <InfoRow isDark isMuted={!estimatedDeliveryDate} isPriority={isPriority} label="Estimated Delivery" value={estimatedDeliveryDate ? formatDateOnly(estimatedDeliveryDate) : 'Delivery date not set'} />
+        <InfoRow isDark isMuted={!shippedAt} isPriority={isPriority} label="Shipped Date" value={shippedAt ? formatDateOnly(shippedAt) : 'Not shipped yet'} />
+        {deliveredAt && <InfoRow isDark isPriority={isPriority} label="Delivered Date" value={formatDateOnly(deliveredAt)} />}
       </div>
     </section>
   )
+}
+
+const getShippingValue = (order, key) => order?.[key] || order?.shipping?.[key]
+
+const formatDateOnly = (value) => {
+  if (!value) return 'Not set'
+
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return 'Not set'
+
+  return new Intl.DateTimeFormat('en', { dateStyle: 'medium' }).format(date)
 }
 
 const ReturnsRefunds = ({ order }) => {
@@ -417,10 +451,10 @@ const ReturnsRefunds = ({ order }) => {
   )
 }
 
-const InfoRow = ({ label, value }) => (
-  <div className="flex items-start justify-between gap-3 text-xs">
-    <span className="shrink-0 text-neutral-500 font-medium">{label}</span>
-    <span className="min-w-0 text-right font-bold capitalize text-neutral-900">{value}</span>
+const InfoRow = ({ isDark = false, isMuted = false, isPriority = false, label, value }) => (
+  <div className={`${isPriority ? 'min-h-20 flex-col rounded-2xl border border-white/10 bg-white/[0.06] p-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]' : ''} flex items-start justify-between gap-3 text-xs`}>
+    <span className={`shrink-0 font-medium ${isDark ? 'text-white/65' : 'text-neutral-500'}`}>{label}</span>
+    <span className={`min-w-0 font-bold capitalize ${isPriority ? 'text-left text-sm leading-snug' : 'text-right'} ${isMuted ? 'text-white/55' : isDark ? 'text-white' : 'text-neutral-900'}`}>{value}</span>
   </div>
 )
 

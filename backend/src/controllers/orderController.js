@@ -63,6 +63,17 @@ const getWantedDatePayload = (body) => {
   return wantedDate
 }
 
+const getOptionalDatePayload = (value, fieldName) => {
+  if (!value) return undefined
+
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) {
+    throw new ErrorResponse(`${fieldName} must be a valid date`, 400)
+  }
+
+  return date
+}
+
 const initializeOrderPayment = async (order) => {
   order.payment = {
     provider: 'bank_transfer',
@@ -384,23 +395,28 @@ const updateOrderStatus = asyncHandler(async (req, res, next) => {
  * Admin: Update shipping and tracking information.
  */
 const updateOrderShipping = asyncHandler(async (req, res, next) => {
-  const { trackingNumber, courierName, estimatedDeliveryDate, orderStatus } = req.body
+  const { trackingNumber, courierName, estimatedDeliveryDate, shippedAt, deliveredAt, orderStatus } = req.body
   const nextStatus = orderStatus || 'shipped'
 
   if (!ORDER_STATUSES.includes(nextStatus)) {
     return next(new ErrorResponse('Invalid order status', 400))
   }
 
+  const update = {
+    orderStatus: nextStatus,
+  }
+
+  if (trackingNumber !== undefined) update.trackingNumber = String(trackingNumber).trim()
+  if (courierName !== undefined) update.courierName = String(courierName).trim()
+  if (estimatedDeliveryDate) {
+    update.estimatedDeliveryDate = getOptionalDatePayload(estimatedDeliveryDate, 'estimatedDeliveryDate')
+  }
+  if (shippedAt) update.shippedAt = getOptionalDatePayload(shippedAt, 'shippedAt')
+  if (deliveredAt) update.deliveredAt = getOptionalDatePayload(deliveredAt, 'deliveredAt')
+
   const order = await Order.findByIdAndUpdate(
     req.params.id,
-    {
-      trackingNumber,
-      courierName,
-      estimatedDeliveryDate,
-      orderStatus: nextStatus,
-      ...(nextStatus === 'shipped' ? { shippedAt: new Date() } : {}),
-      ...(nextStatus === 'delivered' ? { deliveredAt: new Date() } : {}),
-    },
+    update,
     { new: true, runValidators: true }
   ).populate('user', 'name email')
 

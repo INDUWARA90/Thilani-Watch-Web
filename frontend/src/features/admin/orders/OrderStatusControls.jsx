@@ -10,6 +10,7 @@ export const OrderStatusControls = ({ order, onUpdated }) => {
   const [shipping, setShipping] = useState({
     courierName: order.courierName || order.shipping?.courierName || '',
     estimatedDeliveryDate: toDateInputValue(order.estimatedDeliveryDate || order.shipping?.estimatedDeliveryDate),
+    shippedAt: toDateInputValue(order.shippedAt || order.shipping?.shippedAt),
     trackingNumber: order.trackingNumber || order.shipping?.trackingNumber || '',
   })
   const [transactionId, setTransactionId] = useState(order.transactionId || order.payment?.providerPaymentId || '')
@@ -45,7 +46,7 @@ export const OrderStatusControls = ({ order, onUpdated }) => {
     handleAction(() => adminApi.updateShipping(getId(order), {
       courierName: shipping.courierName.trim(),
       estimatedDeliveryDate: shipping.estimatedDeliveryDate ? new Date(shipping.estimatedDeliveryDate).toISOString() : undefined,
-      orderStatus: 'shipped',
+      shippedAt: shipping.shippedAt ? new Date(shipping.shippedAt).toISOString() : undefined,
       trackingNumber: shipping.trackingNumber.trim(),
     }), 'Unable to update shipping.')
 
@@ -118,7 +119,7 @@ export const OrderStatusControls = ({ order, onUpdated }) => {
       {/* Shipping Section */}
       <div className="grid gap-3 border-t border-black/5 pt-4">
         <h4 className="text-xs font-semibold uppercase tracking-wider text-primary">Shipping Logistics</h4>
-        <div className="grid gap-3 sm:grid-cols-3">
+        <div className="grid gap-3 sm:grid-cols-2">
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-medium text-primary">Tracking Number</label>
             <input className={controlClass} value={shipping.trackingNumber} onChange={(e) => updateShippingField('trackingNumber', e.target.value)} />
@@ -130,6 +131,10 @@ export const OrderStatusControls = ({ order, onUpdated }) => {
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-medium text-primary">Est. Delivery Date</label>
             <input className={controlClass} type="date" value={shipping.estimatedDeliveryDate} onChange={(e) => updateShippingField('estimatedDeliveryDate', e.target.value)} />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-medium text-primary">Shipped Date</label>
+            <input className={controlClass} type="date" value={shipping.shippedAt} onChange={(e) => updateShippingField('shippedAt', e.target.value)} />
           </div>
         </div>
         <button className={`${secondaryBtnClass} w-full sm:w-fit`} type="button" onClick={updateShipping}>
@@ -197,4 +202,5 @@ const toDateInputValue = (value) => {
   if (Number.isNaN(date.getTime())) return ''
   return date.toISOString().slice(0, 10)
 }
+
 

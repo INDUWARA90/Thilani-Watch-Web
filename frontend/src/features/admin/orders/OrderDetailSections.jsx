@@ -116,7 +116,13 @@ export const OrderDetailSections = ({ order, onUpdated }) => {
 }
 
 const hasShippingLogistics = (order) =>
-  Boolean(order?.trackingNumber || order?.courierName || order?.estimatedDeliveryDate || order?.shippedAt || order?.deliveredAt)
+  Boolean(
+    getShippingValue(order, 'trackingNumber') ||
+      getShippingValue(order, 'courierName') ||
+      getShippingValue(order, 'estimatedDeliveryDate') ||
+      getShippingValue(order, 'shippedAt') ||
+      getShippingValue(order, 'deliveredAt'),
+  )
 
 const hasReturnsRefunds = (order) => {
   const returnRequest = order?.returnRequest
@@ -138,6 +144,12 @@ const hasReturnsRefunds = (order) => {
 const ShippingLogistics = ({ order }) => {
   if (!hasShippingLogistics(order)) return null
 
+  const courierName = getShippingValue(order, 'courierName')
+  const deliveredAt = getShippingValue(order, 'deliveredAt')
+  const estimatedDeliveryDate = getShippingValue(order, 'estimatedDeliveryDate')
+  const shippedAt = getShippingValue(order, 'shippedAt')
+  const trackingNumber = getShippingValue(order, 'trackingNumber')
+
   return (
     <section className="rounded-xl border border-black/5 bg-[#FAF9F5] p-4">
       <h4 className="mb-3 flex items-center gap-2 text-sm font-bold text-primary">
@@ -145,15 +157,17 @@ const ShippingLogistics = ({ order }) => {
         Shipping Logistics
       </h4>
       <div className="grid gap-2 text-xs">
-        {order.trackingNumber && <InfoRow label="Tracking" value={order.trackingNumber} />}
-        {order.courierName && <InfoRow label="Courier" value={order.courierName} />}
-        {order.estimatedDeliveryDate && <InfoRow label="Estimated delivery" value={formatDate(order.estimatedDeliveryDate)} />}
-        {order.shippedAt && <InfoRow label="Shipped" value={formatDate(order.shippedAt)} />}
-        {order.deliveredAt && <InfoRow label="Delivered" value={formatDate(order.deliveredAt)} />}
+        {trackingNumber && <InfoRow label="Tracking" value={trackingNumber} />}
+        {courierName && <InfoRow label="Courier" value={courierName} />}
+        {estimatedDeliveryDate && <InfoRow label="Estimated delivery" value={formatDate(estimatedDeliveryDate)} />}
+        {shippedAt && <InfoRow label="Shipped" value={formatDate(shippedAt)} />}
+        {deliveredAt && <InfoRow label="Delivered" value={formatDate(deliveredAt)} />}
       </div>
     </section>
   )
 }
+
+const getShippingValue = (order, key) => order?.[key] || order?.shipping?.[key]
 
 const ReturnsRefunds = ({ order }) => {
   if (!hasReturnsRefunds(order)) return null

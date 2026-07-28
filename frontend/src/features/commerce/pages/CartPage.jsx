@@ -132,7 +132,7 @@ export const CartPage = () => {
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-stone-600 font-medium">Estimated Shipping</span>
-                  <span className="text-xs font-bold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200/50">Free Express</span>
+                  <span className="text-xs font-bold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200/50">At Checkout</span>
                 </div>
               </div>
 

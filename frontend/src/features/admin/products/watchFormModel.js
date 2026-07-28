@@ -27,6 +27,8 @@ export const emptyWatchForm = {
   stockQuantity: '0',
   isFeatured: false,
   isPublished: true,
+  ownerText: '',
+  warrenty: '',
 }
 
 export const watchTextFields = [
@@ -47,6 +49,14 @@ export const watchTextFields = [
   ['size', 'Size'],
   ['stockQuantity', 'Stock quantity', false, 'number'],
   ['thumbnail', 'Thumbnail URL'],
+  ['ownerText', 'Condition Note'],
+]
+
+export const warrantyOptions = [
+  ['', 'Select warranty'],
+  ['1 year', '1 Year'],
+  ['6 month', '6 Months'],
+  ['no warrent', 'No Warranty'],
 ]
 
 export const getImageUrl = (image) => {
@@ -83,6 +93,8 @@ export const watchFromApi = (watch) => ({
   images: Array.isArray(watch.images) ? watch.images.map(getImageUrl).filter(Boolean).join('\n') : '',
   isFeatured: Boolean(watch.isFeatured),
   isPublished: watch.isPublished !== false,
+  ownerText: watch.ownerText || '',
+  warrenty: watch.warrenty || '',
 })
 
 export const buildWatchPayload = (form) => ({
@@ -111,4 +123,6 @@ export const buildWatchPayload = (form) => ({
   stockQuantity: Number.parseInt(form.stockQuantity || '0', 10),
   isFeatured: Boolean(form.isFeatured),
   isPublished: Boolean(form.isPublished),
+  ownerText: form.ownerText.trim(),
+  warrenty: form.warrenty.trim(),
 })

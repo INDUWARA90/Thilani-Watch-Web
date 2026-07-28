@@ -3,7 +3,7 @@ import { FaFacebookF, FaWhatsapp } from 'react-icons/fa'
 
 export const contactItems = [
   { icon: MapPin, label: 'Showroom', text: 'New Gall Road, Moratuwa', href: 'https://www.google.com/maps/search/?api=1&query=New+Gall+Road%2C+Moratuwa' },
-  { icon: Phone, label: 'Primary phone', text: '+94 78 9396 600', href: 'tel:+94789396600' },
+  { icon: Phone, label: 'Primary phone', text: '+94 77 215 3579', href: 'tel:+94772153579' },
   { icon: Phone, label: 'Support phone', text: '+94 78 890 7569', href: 'tel:+94788907569' },
   { icon: Mail, label: 'Email', text: 'thilaniwatchcenter@gmail.com', href: 'mailto:thilaniwatchcenter@gmail.com' },
 ]

@@ -6,10 +6,48 @@ import { useAdminOrderDetail, useAdminOrders } from '../hooks/useAdminOrders'
 import { OrderDetailSections } from '../orders/OrderDetailSections'
 import { OrdersTable } from '../orders/OrdersTable'
 
+const getOrderStatusGroup = (status) => {
+  const normalizedStatus = String(status || '').toLowerCase()
+
+  if (normalizedStatus === 'delivered') return 'delivered'
+  if (['canceled', 'cancelled'].includes(normalizedStatus)) return 'canceled'
+
+  return 'pending'
+}
+
+const orderSections = [
+  {
+    key: 'pending',
+    title: 'Pending Orders',
+    description: 'Orders still waiting to be completed.',
+    emptyMessage: 'There are no pending orders right now.',
+  },
+  {
+    key: 'canceled',
+    title: 'Canceled Orders',
+    description: 'Orders that were canceled before delivery.',
+    emptyMessage: 'There are no canceled orders right now.',
+  },
+  {
+    key: 'delivered',
+    title: 'Delivered Orders',
+    description: 'Orders already completed and delivered.',
+    emptyMessage: 'There are no delivered orders right now.',
+  },
+]
+
 export const AdminOrdersPage = () => {
   usePageTitle('Admin Orders | Thilani Watch Web')
 
   const { error, isLoading, orders } = useAdminOrders()
+  const groupedOrders = orderSections.reduce((groups, section) => {
+    groups[section.key] = []
+    return groups
+  }, {})
+
+  orders.forEach((order) => {
+    groupedOrders[getOrderStatusGroup(order.orderStatus)].push(order)
+  })
 
   return (
     <div className="flex flex-col gap-6 max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
@@ -38,7 +76,34 @@ export const AdminOrdersPage = () => {
           <LoadingState label="Loading customer orders..." variant="table" rows={6} />
         </div>
       ) : (
-        <OrdersTable orders={orders} />
+        <div className="flex flex-col gap-5">
+          {orderSections.map((section) => {
+            const sectionOrders = groupedOrders[section.key]
+
+            return (
+              <section className="flex flex-col gap-3" key={section.key}>
+                <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+                  <div>
+                    <h2 className="font-heading text-lg font-bold tracking-wide text-primary">
+                      {section.title}
+                    </h2>
+                    <p className="text-xs font-medium text-primary/70">
+                      {section.description}
+                    </p>
+                  </div>
+                  <span className="inline-flex w-fit items-center rounded-full border border-black/10 bg-[#FFFEFA] px-3 py-1 text-xs font-semibold text-primary shadow-sm">
+                    {sectionOrders.length} {sectionOrders.length === 1 ? 'order' : 'orders'}
+                  </span>
+                </div>
+                <OrdersTable
+                  emptyMessage={section.emptyMessage}
+                  emptyTitle={`No ${section.title.toLowerCase()}`}
+                  orders={sectionOrders}
+                />
+              </section>
+            )
+          })}
+        </div>
       )}
     </div>
   )

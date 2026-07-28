@@ -10,7 +10,7 @@ import {
   Check
 } from 'lucide-react'
 import { getId, getTitle, toSlug } from '../lib/adminUtils'
-import { mergeImageUrls, splitImageUrls, watchTextFields } from './watchFormModel'
+import { mergeImageUrls, splitImageUrls, warrantyOptions, watchTextFields } from './watchFormModel'
 
 export const WatchForm = ({
   brands,
@@ -153,6 +153,15 @@ export const WatchForm = ({
                 <option value="gents">Gents</option>
                 <option value="ladies">Ladies</option>
                 <option value="unisex">Unisex</option>
+              </select>
+            </label>
+
+            <label className="flex flex-col gap-1.5 text-sm font-medium text-primary sm:col-span-2">
+              <span>Warranty</span>
+              <select className="rounded-xl border border-black/10 bg-[#FAF9F5]/65 px-3.5 py-2.5 text-sm text-primary outline-none transition-all focus:border-accent focus:bg-[#FFFEFA] focus:ring-4 focus:ring-accent/20" name="warrenty" value={form.warrenty} onChange={updateForm}>
+                {warrantyOptions.map(([value, label]) => (
+                  <option key={value || 'empty'} value={value}>{label}</option>
+                ))}
               </select>
             </label>
           </div>

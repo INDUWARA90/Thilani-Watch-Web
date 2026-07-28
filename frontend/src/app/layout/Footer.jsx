@@ -9,8 +9,8 @@ const contactDetails = [
     icon: MapPin,
   },
   {
-    label: '+94 78 9396 600',
-    href: 'tel:+94789396600',
+    label: '+94 77 215 3579',
+    href: 'tel:+94772153579',
     icon: Phone,
   },
   {

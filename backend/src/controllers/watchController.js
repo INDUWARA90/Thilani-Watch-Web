@@ -20,6 +20,8 @@ const WATCH_LIST_FIELDS = [
   'brand',
   'category',
   'shortDescription',
+  'warrenty',
+  'ownerText',
   'price',
   'currency',
   'thumbnail',

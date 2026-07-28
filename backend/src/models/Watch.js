@@ -29,6 +29,16 @@ const watchSchema = new mongoose.Schema(
       default: '',
       trim: true,
     },
+    warrenty: {
+      type: String,
+      default: '',
+      trim: true,
+    },
+    ownerText: {
+      type: String,
+      default: '',
+      trim: true,
+    },
     price: {
       type: Number,
       required: true,

@@ -17,7 +17,11 @@ const getStatusStyles = (status) => {
   return 'bg-black/5 text-primary border-black/10'
 }
 
-export const OrdersTable = ({ orders }) => (
+export const OrdersTable = ({
+  orders,
+  emptyMessage = 'There are no active orders available in this scope.',
+  emptyTitle = 'No records found',
+}) => (
   <div className="w-full overflow-x-auto rounded-xl border border-black/10 bg-[#FFFEFA] shadow-sm">
     <table className="w-full min-w-[940px] border-collapse text-sm text-primary">
       <thead>
@@ -97,8 +101,8 @@ export const OrdersTable = ({ orders }) => (
           <tr>
             <td className="p-12 text-center text-primary font-medium" colSpan="8">
               <div className="flex flex-col items-center justify-center gap-1">
-                <span className="text-base text-primary">No records found</span>
-                <span className="text-xs text-primary font-normal">There are no active orders available in this scope.</span>
+                <span className="text-base text-primary">{emptyTitle}</span>
+                <span className="text-xs text-primary font-normal">{emptyMessage}</span>
               </div>
             </td>
           </tr>

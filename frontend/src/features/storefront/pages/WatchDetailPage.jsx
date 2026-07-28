@@ -19,6 +19,8 @@ const detailFields = [
   ['Dial size', 'dialSize'],
   ['Size', 'size'],
   ['Gender', 'gender'],
+  ['Warranty', 'warrenty'],
+  ['Condition Note', 'ownerText'],
   ['SKU', 'sku'],
 ]
 
@@ -188,10 +190,12 @@ export const WatchDetailPage = () => {
             <h2 className="mb-6 font-serif text-2xl font-normal text-black">Technical Specifications</h2>
             <dl className="grid gap-x-8 gap-y-3 sm:grid-cols-2">
               {detailFields.map(([label, key]) => (
-                watch[key] ? (
+                shouldShowDetailField(key, watch[key]) ? (
                   <div className="flex min-w-0 flex-col gap-0.5 border-b border-black/5 py-2.5 min-[420px]:flex-row min-[420px]:justify-between sm:flex-col sm:border-b-0" key={key}>
                     <dt className="font-mono text-[10px] font-semibold uppercase tracking-widest text-neutral-500">{label}</dt>
-                    <dd className="min-w-0 break-words font-sans text-xs font-semibold text-black min-[420px]:text-right sm:text-left">{watch[key]}</dd>
+                    <dd className={`min-w-0 break-words font-sans text-xs font-semibold min-[420px]:text-right sm:text-left ${watch[key] ? 'text-black' : 'text-neutral-500'}`}>
+                      {formatDetailValue(key, watch[key])}
+                    </dd>
                   </div>
                 ) : null
               ))}
@@ -267,6 +271,14 @@ const parseDescription = (description) => {
 }
 
 const isDescriptionSubheading = (line) => line.trim().toLowerCase() === 'key features'
+
+const formatDetailValue = (key, value) => {
+  if (key === 'ownerText' && !value) return 'No condition note added'
+  if (key === 'warrenty' && String(value).toLowerCase() === 'no warrent') return 'No Warranty'
+  return value
+}
+
+const shouldShowDetailField = (key, value) => key === 'ownerText' || Boolean(value)
 
 const readImageUrl = (image) => {
   if (typeof image === 'string') return image

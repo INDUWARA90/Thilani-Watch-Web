@@ -36,6 +36,7 @@ export const useCheckoutPage = () => {
   const [shippingAddress, setShippingAddress] = useState(emptyAddress)
   const [useShippingAsBilling, setUseShippingAsBilling] = useState(true)
   const [wantedDate, setWantedDate] = useState('')
+  const minimumWantedDate = getMinimumWantedDate()
 
   const discount = readCouponDiscount(couponResult, cart.subtotal) || Number(cart.discount || cart.discountAmount || 0)
   const shippingFee = getShippingFeeByProvince(shippingAddress.state)
@@ -205,6 +206,7 @@ export const useCheckoutPage = () => {
     handleValidateCoupon,
     isLoading,
     isPaymentSlipPopupOpen,
+    minimumWantedDate,
     isSessionRestoring: isRestoring || isLoading,
     isSubmitting,
     isValidatingCoupon,
@@ -286,12 +288,23 @@ const validateWantedDate = (value) => {
   if (!value) return ''
 
   const selectedDate = new Date(`${value}T00:00:00`)
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
+  const minimumDate = new Date(`${getMinimumWantedDate()}T00:00:00`)
 
   if (Number.isNaN(selectedDate.getTime())) return 'Enter a valid delivery date.'
-  if (selectedDate < today) return 'Wanted delivery date cannot be in the past.'
+  if (selectedDate < minimumDate) return 'Wanted delivery date must be at least 2 days from today.'
   return ''
+}
+
+const getMinimumWantedDate = () => {
+  const date = new Date()
+  date.setDate(date.getDate() + 2)
+  date.setHours(0, 0, 0, 0)
+
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+
+  return `${year}-${month}-${day}`
 }
 
 const validateAddressFields = (address, addressType) =>
