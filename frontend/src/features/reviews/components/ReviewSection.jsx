@@ -12,7 +12,7 @@ export const ReviewSection = ({ onReviewsChanged, watchId }) => {
   const reviewState = useWatchReviews({ onReviewsChanged, user, watchId })
 
   return (
-    <section className="mt-14 border-t border-primary/10 pt-10">
+    <section className="mt-14 border-t border-primary/10 pt-6">
       {/* Header Bar */}
       <div className="mb-8 flex flex-col gap-3 border-b border-primary/10 pb-6 sm:flex-row sm:items-end sm:justify-between">
         <div>

@@ -47,12 +47,13 @@ export const WatchDetailPage = () => {
   const images = normalizeImages(watch)
   const stockQuantity = Number(watch.stockQuantity || 0)
   const isAvailable = watch.inStock || stockQuantity > 0
+  const description = parseDescription(watch.description)
 
   return (
     <main className="mx-auto max-w-[1280px] min-w-0 bg-white px-4 py-12 text-black sm:px-6 lg:px-10">
       {/* Back Link */}
-      <Link 
-        className="group mb-10 inline-flex items-center gap-2 font-mono text-xs font-semibold uppercase tracking-widest text-black no-underline transition hover:text-[#F5C518]" 
+      <Link
+        className="group mb-10 inline-flex items-center gap-2 font-mono text-xs font-semibold uppercase tracking-widest text-black no-underline transition hover:text-[#F5C518]"
         to="/watches"
       >
         <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
@@ -61,31 +62,30 @@ export const WatchDetailPage = () => {
 
       <section className="grid min-w-0 gap-10 lg:grid-cols-2 lg:items-start lg:gap-14">
         {/* Gallery Section */}
-        <motion.div 
-          initial={{ opacity: 0, x: -15 }} 
-          animate={{ opacity: 1, x: 0 }} 
+        <motion.div
+          initial={{ opacity: 0, x: -15 }}
+          animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, ease: 'easeOut' }}
           className="min-w-0 flex flex-col gap-4"
         >
           <div className="relative aspect-square w-full overflow-hidden border border-black/10 bg-[#FAF9F5]">
-            <img 
-              className="h-full w-full object-cover transition-transform duration-700 hover:scale-105" 
-              src={detail.selectedImage || '/favicon.svg'} 
-              alt={watch.name} 
+            <img
+              className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
+              src={detail.selectedImage || '/favicon.svg'}
+              alt={watch.name}
             />
           </div>
 
           {images.length > 1 && (
             <div className="flex flex-wrap gap-3">
               {images.map((image) => (
-                <button 
-                  className={`relative aspect-square h-20 cursor-pointer overflow-hidden border bg-[#FAF9F5] p-0 transition-all duration-200 focus:outline-none ${
-                    detail.selectedImage === image 
-                      ? 'border-[#F5C518] ring-1 ring-[#F5C518]' 
+                <button
+                  className={`relative aspect-square h-20 cursor-pointer overflow-hidden border bg-[#FAF9F5] p-0 transition-all duration-200 focus:outline-none ${detail.selectedImage === image
+                      ? 'border-[#F5C518] ring-1 ring-[#F5C518]'
                       : 'border-black/10 opacity-70 hover:border-black hover:opacity-100'
-                  }`} 
-                  key={image} 
-                  type="button" 
+                    }`}
+                  key={image}
+                  type="button"
                   onClick={() => detail.setSelectedImage(image)}
                 >
                   <img className="h-full w-full object-cover" src={image} alt={watch.name} />
@@ -106,7 +106,7 @@ export const WatchDetailPage = () => {
               {getTitle(watch.category, 'Category')}
             </span>
           </div>
-          
+
           <h1 className="mb-4 break-words font-serif text-3xl font-normal leading-tight text-black sm:text-4xl lg:text-5xl">
             {watch.name}
           </h1>
@@ -118,9 +118,8 @@ export const WatchDetailPage = () => {
 
             <div className="h-4 w-px bg-black/10" />
 
-            <span className={`font-mono text-xs font-semibold uppercase tracking-wider ${
-              isAvailable ? 'text-black' : 'text-red-600'
-            }`}>
+            <span className={`font-mono text-xs font-semibold uppercase tracking-wider ${isAvailable ? 'text-black' : 'text-red-600'
+              }`}>
               {isAvailable ? `${watch.stockQuantity ?? 'In'} Stock` : 'Out of Stock'}
             </span>
 
@@ -128,7 +127,7 @@ export const WatchDetailPage = () => {
               <>
                 <div className="h-4 w-px bg-black/10" />
                 <span className="inline-flex items-center gap-1 font-mono text-xs font-semibold text-black">
-                  <Star className="h-3.5 w-3.5 fill-[#F5C518] text-[#F5C518]" /> 
+                  <Star className="h-3.5 w-3.5 fill-[#F5C518] text-[#F5C518]" />
                   {Number(watch.ratingAverage).toFixed(1)}
                 </span>
               </>
@@ -136,19 +135,18 @@ export const WatchDetailPage = () => {
           </div>
 
           <p className="mb-8 font-sans text-sm text-neutral-600 leading-relaxed sm:text-black">
-            {watch.shortDescription || watch.description || 'A refined timepiece crafted with precise detail and timeless aesthetic.'}
+            {watch.shortDescription || 'A refined timepiece crafted with precise detail and timeless aesthetic.'}
           </p>
 
           {/* Checkout Controls Container */}
           <div className="mb-10 border border-black/10 bg-[#FAF9F5] p-4 sm:p-6">
             {(detail.actionMessage || detail.actionError) && (
-              <div className={`mb-4 border p-3 font-mono text-xs uppercase tracking-wider ${
-                detail.actionError ? 'border-red-600/30 bg-red-50 text-red-700' : 'border-emerald-600/30 bg-emerald-50 text-emerald-800'
-              }`}>
+              <div className={`mb-4 border p-3 font-mono text-xs uppercase tracking-wider ${detail.actionError ? 'border-red-600/30 bg-red-50 text-red-700' : 'border-emerald-600/30 bg-emerald-50 text-emerald-800'
+                }`}>
                 {detail.actionError || detail.actionMessage}
               </div>
             )}
-            
+
             <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-end">
               <label className="flex w-full flex-col gap-1 font-mono text-[10px] font-semibold uppercase tracking-widest text-neutral-500 sm:w-24">
                 Qty
@@ -162,20 +160,20 @@ export const WatchDetailPage = () => {
                 />
               </label>
 
-              <button 
-                className="inline-flex h-12 w-full min-w-0 cursor-pointer items-center justify-center gap-2 border border-[#F5C518] bg-[#F5C518] px-6 font-sans text-sm font-semibold uppercase tracking-wider text-black transition duration-200 hover:border-black hover:bg-black hover:text-white disabled:opacity-40 sm:h-11 sm:flex-1 sm:text-xs" 
-                disabled={!isAvailable || detail.isBusy} 
-                type="button" 
+              <button
+                className="inline-flex h-12 w-full min-w-0 cursor-pointer items-center justify-center gap-2 border border-[#F5C518] bg-[#F5C518] px-6 font-sans text-sm font-semibold uppercase tracking-wider text-black transition duration-200 hover:border-black hover:bg-black hover:text-white disabled:opacity-40 sm:h-11 sm:flex-1 sm:text-xs"
+                disabled={!isAvailable || detail.isBusy}
+                type="button"
                 onClick={detail.handleAddToCart}
               >
-                {detail.isBusy ? <ButtonSpinner /> : <ShoppingBag className="h-5 w-5 sm:h-4 sm:w-4" />} 
+                {detail.isBusy ? <ButtonSpinner /> : <ShoppingBag className="h-5 w-5 sm:h-4 sm:w-4" />}
                 {detail.isBusy ? 'Adding to Cart...' : 'Add to Cart'}
               </button>
 
-              <button 
-                className="inline-flex h-12 w-full cursor-pointer items-center justify-center border border-black/10 bg-white text-black transition duration-200 hover:border-[#F5C518] hover:bg-[#F5C518] hover:text-black disabled:opacity-40 sm:h-11 sm:w-11" 
-                disabled={detail.isBusy} 
-                type="button" 
+              <button
+                className="inline-flex h-12 w-full cursor-pointer items-center justify-center border border-black/10 bg-white text-black transition duration-200 hover:border-[#F5C518] hover:bg-[#F5C518] hover:text-black disabled:opacity-40 sm:h-11 sm:w-11"
+                disabled={detail.isBusy}
+                type="button"
                 aria-label="Save to wishlist"
                 onClick={detail.handleWishlist}
               >
@@ -202,7 +200,33 @@ export const WatchDetailPage = () => {
       </section>
 
       {/* Reviews Section */}
-      <div className="mt-20 border-t border-black/10 pt-16">
+      <div className="mt-16 border-t border-black/10 pt-8">
+        {description.lines.length > 0 && (
+          <section className="mb-10 w-full">
+            <h2 className="mb-4 font-serif text-2xl font-normal text-black sm:text-3xl">
+              About this watch
+            </h2>
+            <div className="space-y-3 font-sans text-sm leading-7 text-neutral-700 sm:text-black">
+              {description.introLines.map((line, index) => (
+                <p key={`${line}-${index}`}>
+                  {line}
+                </p>
+              ))}
+              {description.featureLines.length > 0 && (
+                <div className="pt-4">
+                  <h3 className="mb-3 font-sans text-sm font-semibold text-black">
+                    Key Features
+                  </h3>
+                  <ul className="list-disc space-y-2 pl-5 leading-6">
+                    {description.featureLines.map((line, index) => (
+                      <li key={`${line}-${index}`}>{line}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          </section>
+        )}
         <ReviewSection onReviewsChanged={detail.refreshWatchSummary} watchId={detail.watchId} />
       </div>
     </main>
@@ -220,6 +244,28 @@ const normalizeImages = (watch) => {
 
   return images
 }
+
+const parseDescription = (description) => {
+  const lines = description
+    ? description
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean)
+    : []
+  const featuresIndex = lines.findIndex(isDescriptionSubheading)
+
+  if (featuresIndex === -1) {
+    return { featureLines: [], introLines: lines, lines }
+  }
+
+  return {
+    featureLines: lines.slice(featuresIndex + 1),
+    introLines: lines.slice(0, featuresIndex),
+    lines,
+  }
+}
+
+const isDescriptionSubheading = (line) => line.trim().toLowerCase() === 'key features'
 
 const readImageUrl = (image) => {
   if (typeof image === 'string') return image
