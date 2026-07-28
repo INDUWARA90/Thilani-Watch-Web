@@ -5,6 +5,7 @@ import { getApiErrorMessage } from '@/shared/api/apiClient'
 import { useAuth } from '@/features/auth/hooks/useAuth'
 import { authApi } from '@/features/auth/api/authApi'
 import { SRI_LANKA_PROVINCES } from '@/features/orders/lib/orderUtils'
+import { usePageTitle } from '@/shared/hooks/usePageTitle'
 
 const emptyAddress = {
   addressLine1: '',
@@ -20,6 +21,8 @@ const emptyAddress = {
 }
 
 export const ProfilePage = () => {
+  usePageTitle('Profile | Thilani Watch Web')
+
   const { updateProfile, user } = useAuth()
   const [profile, setProfile] = useState({ name: user?.name || '', phone: user?.phone || '' })
   const [addresses, setAddresses] = useState([])

@@ -1,11 +1,14 @@
 import { useState } from 'react'
 import { Plus, X, AlertCircle, CheckCircle2 } from 'lucide-react'
+import { usePageTitle } from '@/shared/hooks/usePageTitle'
 import { useAdminProducts } from '../products/useAdminProducts'
 import { WatchFilters } from '../products/WatchFilters'
 import { WatchForm } from '../products/WatchForm'
 import { WatchTable } from '../products/WatchTable'
 
 export const AdminProductsPage = () => {
+  usePageTitle('Admin Products | Thilani Watch Web')
+
   const products = useAdminProducts()
   const [isFormOpen, setIsFormOpen] = useState(false)
 

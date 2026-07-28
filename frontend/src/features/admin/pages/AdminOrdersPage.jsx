@@ -1,11 +1,14 @@
 import { Link, useParams } from 'react-router'
 import { LoadingState } from '@/shared/ui/LoadingState'
+import { usePageTitle } from '@/shared/hooks/usePageTitle'
 import { getId } from '../lib/adminUtils'
 import { useAdminOrderDetail, useAdminOrders } from '../hooks/useAdminOrders'
 import { OrderDetailSections } from '../orders/OrderDetailSections'
 import { OrdersTable } from '../orders/OrdersTable'
 
 export const AdminOrdersPage = () => {
+  usePageTitle('Admin Orders | Thilani Watch Web')
+
   const { error, isLoading, orders } = useAdminOrders()
 
   return (
@@ -44,6 +47,9 @@ export const AdminOrdersPage = () => {
 export const AdminOrderDetailPage = () => {
   const { id } = useParams()
   const { error, isLoading, loadOrder, order } = useAdminOrderDetail(id)
+  const orderLabel = order?.orderNumber || (order ? getId(order).slice(-8).toUpperCase() : id)
+
+  usePageTitle(orderLabel ? `Admin Order #${orderLabel} | Thilani Watch Web` : 'Admin Order Details | Thilani Watch Web')
 
   if (isLoading) {
     return (

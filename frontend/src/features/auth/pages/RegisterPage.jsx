@@ -4,8 +4,11 @@ import { Link, useNavigate } from 'react-router'
 import { ButtonSpinner } from '@/shared/ui/LoadingState'
 import { getApiErrorMessage } from '@/shared/api/apiClient'
 import { useAuth } from '@/features/auth/hooks/useAuth'
+import { usePageTitle } from '@/shared/hooks/usePageTitle'
 
 export const RegisterPage = () => {
+  usePageTitle('Register | Thilani Watch Web')
+
   const { register } = useAuth()
   const navigate = useNavigate()
   const [error, setError] = useState('')

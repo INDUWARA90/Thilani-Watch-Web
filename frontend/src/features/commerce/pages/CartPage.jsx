@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ShoppingBag, Trash2, ArrowRight, Sparkles, ShieldCheck, RefreshCw } from 'lucide-react'
+import { ShoppingBag, Trash2, ArrowRight, Sparkles } from 'lucide-react'
 import { Link } from 'react-router'
 import { LoadingState } from '@/shared/ui/LoadingState'
 import { formatMoney, getTitle, getWatchImage } from '@/features/storefront/lib/storefrontUtils'

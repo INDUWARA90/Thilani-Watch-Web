@@ -1,4 +1,4 @@
-import { ArrowRight, CheckCircle2, PackageCheck, ReceiptText, ShoppingBag, ShieldCheck, Clock } from 'lucide-react'
+import { ArrowRight, CheckCircle2, PackageCheck, ReceiptText, ShoppingBag } from 'lucide-react'
 import { Link, useLocation, useParams } from 'react-router'
 import { usePageTitle } from '@/shared/hooks/usePageTitle'
 import { formatOrderMoney, getOrderId, getOrderNumber, getOrderStatus, getOrderTotal, normalizeOrder } from '@/features/orders/lib/orderUtils'

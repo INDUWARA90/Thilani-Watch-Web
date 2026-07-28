@@ -4,8 +4,11 @@ import { Link, useLocation, useNavigate } from 'react-router'
 import { ButtonSpinner } from '@/shared/ui/LoadingState'
 import { getApiErrorMessage } from '@/shared/api/apiClient'
 import { useAuth } from '@/features/auth/hooks/useAuth'
+import { usePageTitle } from '@/shared/hooks/usePageTitle'
 
 export const LoginPage = () => {
+  usePageTitle('Login | Thilani Watch Web')
+
   const { login } = useAuth()
   const location = useLocation()
   const navigate = useNavigate()

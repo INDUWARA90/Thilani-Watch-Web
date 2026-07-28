@@ -14,6 +14,7 @@ import {
 } from 'lucide-react'
 import { getApiErrorMessage } from '@/shared/api/apiClient'
 import { LoadingState } from '@/shared/ui/LoadingState'
+import { usePageTitle } from '@/shared/hooks/usePageTitle'
 import { adminApi } from '../api/adminApi'
 import { formatMoney } from '../lib/adminUtils'
 
@@ -57,6 +58,8 @@ const overviewCards = [
 ]
 
 export const AdminOverviewPage = () => {
+  usePageTitle('Admin Overview | Thilani Watch Web')
+
   const [summary, setSummary] = useState(null)
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(true)

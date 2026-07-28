@@ -1,9 +1,12 @@
 import { Mail, Search, Trash2 } from 'lucide-react'
 import { ButtonSpinner, LoadingState } from '@/shared/ui/LoadingState'
+import { usePageTitle } from '@/shared/hooks/usePageTitle'
 import { useAdminContactMessages } from '@/features/admin/hooks/useAdminContactMessages'
 import { formatDate, getId, readBoolean } from '@/features/admin/lib/adminUtils'
 
 export const AdminMessagesPage = () => {
+  usePageTitle('Admin Messages | Thilani Watch Web')
+
   const {
     deleteMessage,
     error,

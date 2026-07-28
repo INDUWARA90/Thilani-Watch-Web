@@ -1,8 +1,11 @@
 import { ButtonSpinner, LoadingState } from '@/shared/ui/LoadingState'
+import { usePageTitle } from '@/shared/hooks/usePageTitle'
 import { useAdminCoupons } from '../hooks/useAdminCoupons'
 import { formatDate, formatMoney, getId } from '../lib/adminUtils'
 
 export const AdminCouponsPage = () => {
+  usePageTitle('Admin Coupons | Thilani Watch Web')
+
   const {
     closeFormWorkspace,
     coupons,

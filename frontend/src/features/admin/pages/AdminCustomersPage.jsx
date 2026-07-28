@@ -1,8 +1,11 @@
 import { ButtonSpinner, LoadingState } from '@/shared/ui/LoadingState'
+import { usePageTitle } from '@/shared/hooks/usePageTitle'
 import { useAdminCustomers } from '../hooks/useAdminCustomers'
 import { formatDate, formatMoney, getId, getTitle } from '../lib/adminUtils'
 
 export const AdminCustomersPage = () => {
+  usePageTitle('Admin Customers | Thilani Watch Web')
+
   const {
     customerOrders,
     customers,

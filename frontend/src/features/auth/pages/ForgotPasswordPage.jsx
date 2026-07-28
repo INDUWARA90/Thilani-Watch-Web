@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router'
 import { ButtonSpinner } from '@/shared/ui/LoadingState'
 import { authApi } from '@/features/auth/api/authApi'
 import { getApiErrorMessage } from '@/shared/api/apiClient'
+import { usePageTitle } from '@/shared/hooks/usePageTitle'
 
 const steps = {
   email: 'email',
@@ -13,6 +14,8 @@ const steps = {
 }
 
 export const ForgotPasswordPage = () => {
+  usePageTitle('Reset Password | Thilani Watch Web')
+
   const navigate = useNavigate()
   const [step, setStep] = useState(steps.email)
   const [email, setEmail] = useState('')

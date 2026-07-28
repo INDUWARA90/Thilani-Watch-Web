@@ -6,7 +6,6 @@ import {
   CreditCard,
   FileText,
   MapPin,
-  PackageCheck,
   RefreshCcw,
   ShieldAlert,
   Truck,

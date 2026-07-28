@@ -1,8 +1,11 @@
 import { LoadingState } from '@/shared/ui/LoadingState'
+import { usePageTitle } from '@/shared/hooks/usePageTitle'
 import { useAdminReviews } from '../hooks/useAdminReviews'
 import { formatDate, getId, getTitle } from '../lib/adminUtils'
 
 export const AdminReviewsPage = () => {
+  usePageTitle('Admin Reviews | Thilani Watch Web')
+
   const { error, isLoading, isUpdatingId, message, reviews, toggleApproval } = useAdminReviews()
 
   return (

@@ -5,8 +5,11 @@ import { LoadingState } from '@/shared/ui/LoadingState'
 import { WatchCard } from '@/features/storefront/components/WatchCard'
 import { getWishlistWatch, getWishlistWatchId } from '@/features/commerce/lib/commerceUtils'
 import { useCommerce } from '@/features/commerce/hooks/useCommerce'
+import { usePageTitle } from '@/shared/hooks/usePageTitle'
 
 export const WishlistPage = () => {
+  usePageTitle('Wishlist | Thilani Watch Web')
+
   const { error, isLoading, toggleWishlist, wishlist } = useCommerce()
   const navigate = useNavigate()
   const [actionError, setActionError] = useState('')

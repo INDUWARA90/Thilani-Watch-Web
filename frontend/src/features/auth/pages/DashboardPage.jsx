@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router'
 import { ArrowUpRight, Edit3, LogOut, Mail, Phone, ShieldCheck, User } from 'lucide-react'
 import { useAuth } from '@/features/auth/hooks/useAuth'
+import { usePageTitle } from '@/shared/hooks/usePageTitle'
 
 const adminItems = [
   {
@@ -40,6 +41,8 @@ const customerItems = [
 
 export const DashboardPage = () => {
   const { isAdmin, logout, user } = useAuth()
+  usePageTitle(isAdmin ? 'Admin Dashboard | Thilani Watch Web' : 'Dashboard | Thilani Watch Web')
+
   const navigate = useNavigate()
   const items = isAdmin ? adminItems : customerItems
   const displayName = user?.name || 'User'
