@@ -47,6 +47,7 @@ export const WatchDetailPage = () => {
   const images = normalizeImages(watch)
   const stockQuantity = Number(watch.stockQuantity || 0)
   const isAvailable = watch.inStock || stockQuantity > 0
+  const ratingAverage = Number(watch.ratingAverage || 0)
   const description = parseDescription(watch.description)
 
   return (
@@ -123,12 +124,12 @@ export const WatchDetailPage = () => {
               {isAvailable ? `${watch.stockQuantity ?? 'In'} Stock` : 'Out of Stock'}
             </span>
 
-            {watch.ratingAverage && (
+            {ratingAverage > 0 && (
               <>
                 <div className="h-4 w-px bg-black/10" />
                 <span className="inline-flex items-center gap-1 font-mono text-xs font-semibold text-black">
-                  <Star className="h-3.5 w-3.5 fill-[#F5C518] text-[#F5C518]" />
-                  {Number(watch.ratingAverage).toFixed(1)}
+                  <Star className="h-3.5 w-3.5 fill-[#F5C518] text-[#F5C518]" /> 
+                  {ratingAverage.toFixed(1)}
                 </span>
               </>
             )}
