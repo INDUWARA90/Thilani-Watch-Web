@@ -21,7 +21,7 @@ const emptyAddress = {
   postalCode: '',
 }
 
-export const ProfilePage = () => {
+const ProfilePage = () => {
   usePageTitle('Profile | Thilani Watch Web')
 
   const { updateProfile, user } = useAuth()
@@ -352,3 +352,5 @@ const trimAddress = (address) => {
 
   return clean
 }
+
+export default ProfilePage

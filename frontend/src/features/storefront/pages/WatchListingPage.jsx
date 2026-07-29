@@ -17,7 +17,7 @@ const sortOptions = [
 
 const fieldClass = 'h-11 min-w-0 w-full border border-black/20 bg-white px-3.5 text-xs font-sans text-black outline-none transition-all duration-300 placeholder:text-neutral-400 focus:border-[#F5C518] focus:ring-1 focus:ring-[#F5C518]'
 
-export const WatchListingPage = () => {
+const WatchListingPage = () => {
   usePageTitle('Shop Watches | Thilani Watch Web')
 
   const { brands, categories, error, filters, isLoading, pagination, resetFilters, searchValue, setSearchValue, updateFilter, watches } = useWatchListing()
@@ -239,6 +239,8 @@ export const WatchListingPage = () => {
     </main>
   )
 }
+
+export default WatchListingPage
 
 const FilterSelect = ({ children, label, onChange, value }) => (
   <label className="grid gap-2 text-[11px] font-semibold uppercase tracking-widest text-black">

@@ -8,7 +8,7 @@ import { getApiErrorMessage } from '@/shared/api/apiClient'
 import { useAuth } from '@/features/auth/hooks/useAuth'
 import { usePageTitle } from '@/shared/hooks/usePageTitle'
 
-export const LoginPage = () => {
+const LoginPage = () => {
   usePageTitle('Login | Thilani Watch Web')
 
   const { login } = useAuth()
@@ -146,3 +146,5 @@ export const LoginPage = () => {
     </main>
   )
 }
+
+export default LoginPage

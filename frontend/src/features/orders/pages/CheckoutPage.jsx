@@ -28,7 +28,7 @@ const bankAccounts = [
   },
 ]
 
-export const CheckoutPage = () => {
+const CheckoutPage = () => {
   usePageTitle('Checkout | Thilani Watch Web')
 
   const checkout = useCheckoutPage()
@@ -319,6 +319,8 @@ export const CheckoutPage = () => {
     </main>
   )
 }
+
+export default CheckoutPage
 
 const inputClass = 'min-h-[46px] min-w-0 w-full rounded-2xl border border-black/15 bg-stone-50/50 px-4 py-2.5 text-sm font-medium text-black outline-none transition focus:border-black focus:bg-white focus:ring-2 focus:ring-black/10 placeholder:text-stone-400'
 const errorInputClass = 'border-red-500/70 bg-red-50/40 focus:border-red-600 focus:ring-red-500/20'

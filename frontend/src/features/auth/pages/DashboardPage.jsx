@@ -39,7 +39,7 @@ const customerItems = [
   },
 ]
 
-export const DashboardPage = () => {
+const DashboardPage = () => {
   const { isAdmin, logout, user } = useAuth()
   usePageTitle(isAdmin ? 'Admin Dashboard | Thilani Watch Web' : 'Dashboard | Thilani Watch Web')
 
@@ -170,6 +170,8 @@ export const DashboardPage = () => {
     </main>
   )
 }
+
+export default DashboardPage
 
 const getInitials = (name) =>
   name

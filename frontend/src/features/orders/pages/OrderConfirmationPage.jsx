@@ -3,7 +3,7 @@ import { Link, useLocation, useParams } from 'react-router'
 import { usePageTitle } from '@/shared/hooks/usePageTitle'
 import { formatOrderMoney, getOrderId, getOrderNumber, getOrderStatus, getOrderTotal, normalizeOrder } from '@/features/orders/lib/orderUtils'
 
-export const OrderConfirmationPage = () => {
+const OrderConfirmationPage = () => {
   usePageTitle('Order Confirmation | Thilani Watch Web')
 
   const { id } = useParams()
@@ -110,6 +110,8 @@ export const OrderConfirmationPage = () => {
     </main>
   )
 }
+
+export default OrderConfirmationPage
 
 const OrderMeta = ({ label, value, isMono = false }) => (
   <div className="min-w-0">

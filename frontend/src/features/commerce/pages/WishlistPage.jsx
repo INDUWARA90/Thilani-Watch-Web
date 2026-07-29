@@ -7,7 +7,7 @@ import { getWishlistWatch, getWishlistWatchId } from '@/features/commerce/lib/co
 import { useCommerce } from '@/features/commerce/hooks/useCommerce'
 import { usePageTitle } from '@/shared/hooks/usePageTitle'
 
-export const WishlistPage = () => {
+const WishlistPage = () => {
   usePageTitle('Wishlist | Thilani Watch Web')
 
   const { error, isLoading, toggleWishlist, wishlist } = useCommerce()
@@ -109,3 +109,5 @@ export const WishlistPage = () => {
     </main>
   )
 }
+
+export default WishlistPage

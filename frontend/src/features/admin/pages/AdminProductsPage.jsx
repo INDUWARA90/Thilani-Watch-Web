@@ -6,7 +6,7 @@ import { WatchFilters } from '../products/WatchFilters'
 import { WatchForm } from '../products/WatchForm'
 import { WatchTable } from '../products/WatchTable'
 
-export const AdminProductsPage = () => {
+const AdminProductsPage = () => {
   usePageTitle('Admin Products | Thilani Watch Web')
 
   const products = useAdminProducts()
@@ -152,5 +152,7 @@ export const AdminProductsPage = () => {
     </div>
   )
 }
+
+export default AdminProductsPage
 
 

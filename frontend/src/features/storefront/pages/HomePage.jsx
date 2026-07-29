@@ -11,7 +11,7 @@ import { HomeWatchSection } from '@/features/storefront/components/HomeWatchSect
 import { useStorefrontHome } from '@/features/storefront/hooks/useStorefrontHome'
 import { fallbackBrands, fallbackCategories } from '@/features/storefront/lib/homeContent'
 
-export const HomePage = () => {
+const HomePage = () => {
   usePageTitle('Thilani Watch Web | Luxury Watches')
   const { error, home, loading } = useStorefrontHome()
 
@@ -81,3 +81,5 @@ export const HomePage = () => {
     </main>
   )
 }
+
+export default HomePage

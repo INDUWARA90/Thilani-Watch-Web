@@ -24,7 +24,7 @@ const detailFields = [
   ['SKU', 'sku'],
 ]
 
-export const WatchDetailPage = () => {
+const WatchDetailPage = () => {
   const { slug } = useParams()
   const detail = useWatchDetail(slug)
   const { error, isLoading, watch } = detail
@@ -277,6 +277,8 @@ const formatDetailValue = (key, value) => {
   if (key === 'warrenty' && String(value).toLowerCase() === 'no warrent') return 'No Warranty'
   return value
 }
+
+export default WatchDetailPage
 
 const shouldShowDetailField = (key, value) => key === 'ownerText' || Boolean(value)
 

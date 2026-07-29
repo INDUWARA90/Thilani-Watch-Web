@@ -3,7 +3,7 @@ import { usePageTitle } from '@/shared/hooks/usePageTitle'
 import { useAdminReviews } from '../hooks/useAdminReviews'
 import { formatDate, getId, getTitle } from '../lib/adminUtils'
 
-export const AdminReviewsPage = () => {
+const AdminReviewsPage = () => {
   usePageTitle('Admin Reviews | Thilani Watch Web')
 
   const { error, isLoading, isUpdatingId, message, reviews, toggleApproval } = useAdminReviews()
@@ -105,6 +105,8 @@ export const AdminReviewsPage = () => {
     </div>
   )
 }
+
+export default AdminReviewsPage
 
 const getReviewWatch = (review) => {
   const watch = review.watch || review.product || review.watchId || review.productId

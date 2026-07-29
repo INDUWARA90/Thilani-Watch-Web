@@ -5,7 +5,7 @@ import { usePageTitle } from '@/shared/hooks/usePageTitle'
 import { canCancelOrder, formatDate, formatOrderMoney, getOrderId, getOrderNumber, getOrderStatus, getOrderTotal, getPaymentStatus } from '@/features/orders/lib/orderUtils'
 import { useOrdersList } from '@/features/orders/hooks/useOrdersList'
 
-export const MyOrdersPage = () => {
+const MyOrdersPage = () => {
   usePageTitle('My Orders | Thilani Watch Web')
 
   const { error, isLoading, orders } = useOrdersList()
@@ -174,6 +174,8 @@ export const MyOrdersPage = () => {
     </main>
   )
 }
+
+export default MyOrdersPage
 
 const getStatusTone = (value) => {
   const normalized = String(value || '').toLowerCase()

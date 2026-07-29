@@ -36,7 +36,7 @@ import {
 } from '@/features/orders/lib/orderUtils'
 import { useOrderDetail } from '@/features/orders/hooks/useOrderDetail'
 
-export const OrderDetailPage = () => {
+const OrderDetailPage = () => {
   const { id } = useParams()
   usePageTitle('Order Details | Thilani Watch Web')
 
@@ -412,6 +412,8 @@ const ShippingLogistics = ({ isPriority = false, order }) => {
     </section>
   )
 }
+
+export default OrderDetailPage
 
 const getShippingValue = (order, key) => order?.[key] || order?.shipping?.[key]
 

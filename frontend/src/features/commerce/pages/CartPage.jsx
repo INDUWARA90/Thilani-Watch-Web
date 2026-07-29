@@ -6,7 +6,7 @@ import { formatMoney, getTitle, getWatchImage } from '@/features/storefront/lib/
 import { getCartItemWatch, getCartItemWatchId, getStockQuantity } from '@/features/commerce/lib/commerceUtils'
 import { useCommerce } from '@/features/commerce/hooks/useCommerce'
 import { usePageTitle } from '@/shared/hooks/usePageTitle'
-export const CartPage = () => {
+const CartPage = () => {
   usePageTitle('My cart | Thilani Watch Web')
   const { cart, clearCart, error, isLoading, removeFromCart, updateCartQuantity } = useCommerce()
   const [message, setMessage] = useState('')
@@ -168,6 +168,8 @@ export const CartPage = () => {
     </main>
   )
 }
+
+export default CartPage
 
 const CartItem = ({ item, onQuantityChange, onRemove }) => {
   const watch = getCartItemWatch(item)

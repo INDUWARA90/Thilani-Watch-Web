@@ -13,7 +13,7 @@ const steps = {
   complete: 'complete',
 }
 
-export const ForgotPasswordPage = () => {
+const ForgotPasswordPage = () => {
   usePageTitle('Reset Password | Thilani Watch Web')
 
   const navigate = useNavigate()
@@ -239,6 +239,8 @@ export const ForgotPasswordPage = () => {
     </main>
   )
 }
+
+export default ForgotPasswordPage
 
 const StepPill = ({ active, complete, label }) => (
   <span

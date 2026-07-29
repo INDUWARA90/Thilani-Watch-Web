@@ -3,7 +3,7 @@ import { usePageTitle } from '@/shared/hooks/usePageTitle'
 import { catalogSections } from '../catalog/catalogConfig'
 import { CatalogManager } from '../catalog/CatalogManager'
 
-export const AdminCatalogPage = () => {
+const AdminCatalogPage = () => {
   usePageTitle('Admin Catalog | Thilani Watch Web')
 
   return (
@@ -35,5 +35,7 @@ export const AdminCatalogPage = () => {
     </div>
   )
 }
+
+export default AdminCatalogPage
 
 

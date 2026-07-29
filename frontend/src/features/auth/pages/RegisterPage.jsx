@@ -8,7 +8,7 @@ import { getApiErrorMessage } from '@/shared/api/apiClient'
 import { useAuth } from '@/features/auth/hooks/useAuth'
 import { usePageTitle } from '@/shared/hooks/usePageTitle'
 
-export const RegisterPage = () => {
+const RegisterPage = () => {
   usePageTitle('Register | Thilani Watch Web')
 
   const { register } = useAuth()
@@ -162,6 +162,8 @@ export const RegisterPage = () => {
     </main>
   )
 }
+
+export default RegisterPage
 
 const authInputClass =
   'min-h-[46px] min-w-0 rounded-2xl border border-black/15 bg-stone-50/50 px-4 py-2.5 text-sm font-medium text-black outline-none placeholder:text-stone-400 transition focus:border-black focus:bg-white focus:ring-2 focus:ring-black/10 normal-case'

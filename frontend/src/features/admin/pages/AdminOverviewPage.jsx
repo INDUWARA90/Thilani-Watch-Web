@@ -57,7 +57,7 @@ const overviewCards = [
   },
 ]
 
-export const AdminOverviewPage = () => {
+const AdminOverviewPage = () => {
   usePageTitle('Admin Overview | Thilani Watch Web')
 
   const summaryQuery = useQuery({
@@ -145,6 +145,8 @@ export const AdminOverviewPage = () => {
     </div>
   )
 }
+
+export default AdminOverviewPage
 
 const MetricCard = ({ label, value, icon: Icon }) => (
   <section className="relative min-w-0 overflow-hidden rounded-2xl border border-black/10 bg-[#FFFEFA] p-5 shadow-sm transition-all hover:shadow-md">

@@ -3,7 +3,7 @@ import { usePageTitle } from '@/shared/hooks/usePageTitle'
 import { useAdminCustomers } from '../hooks/useAdminCustomers'
 import { formatDate, formatMoney, getId, getTitle } from '../lib/adminUtils'
 
-export const AdminCustomersPage = () => {
+const AdminCustomersPage = () => {
   usePageTitle('Admin Customers | Thilani Watch Web')
 
   const {
@@ -274,6 +274,8 @@ export const AdminCustomersPage = () => {
     </div>
   )
 }
+
+export default AdminCustomersPage
 
 // Layout configuration tokens
 const inputClass = 'w-full h-10 rounded-xl border border-black/10 bg-[#FFFEFA] pl-4 pr-3 text-sm text-primary shadow-sm placeholder:text-primary outline-none transition-all focus:border-primary focus:ring-2 focus:ring-accent/20'

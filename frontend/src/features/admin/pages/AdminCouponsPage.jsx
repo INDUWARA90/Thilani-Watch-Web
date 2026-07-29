@@ -3,7 +3,7 @@ import { usePageTitle } from '@/shared/hooks/usePageTitle'
 import { useAdminCoupons } from '../hooks/useAdminCoupons'
 import { formatDate, formatMoney, getId } from '../lib/adminUtils'
 
-export const AdminCouponsPage = () => {
+const AdminCouponsPage = () => {
   usePageTitle('Admin Coupons | Thilani Watch Web')
 
   const {
@@ -279,6 +279,8 @@ export const AdminCouponsPage = () => {
     </div>
   )
 }
+
+export default AdminCouponsPage
 
 const Field = ({ label, onChange, required = false, type = 'text', value, placeholder }) => (
   <div className="flex flex-col gap-1.5">

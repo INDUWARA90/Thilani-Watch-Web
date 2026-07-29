@@ -4,7 +4,7 @@ import { usePageTitle } from '@/shared/hooks/usePageTitle'
 import { useAdminContactMessages } from '@/features/admin/hooks/useAdminContactMessages'
 import { formatDate, getId, readBoolean } from '@/features/admin/lib/adminUtils'
 
-export const AdminMessagesPage = () => {
+const AdminMessagesPage = () => {
   usePageTitle('Admin Messages | Thilani Watch Web')
 
   const {
@@ -86,6 +86,8 @@ export const AdminMessagesPage = () => {
     </div>
   )
 }
+
+export default AdminMessagesPage
 
 const MessageRow = ({ contactMessage, isActive, isPending, onOpen }) => {
   const isRead = readBoolean(contactMessage.isRead)
