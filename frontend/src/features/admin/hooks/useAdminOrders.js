@@ -1,60 +1,37 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { getApiErrorMessage } from '@/shared/api/apiClient'
 import { adminApi } from '../api/adminApi'
 import { normalizeList } from '../lib/adminUtils'
 
 export const useAdminOrders = () => {
-  const [error, setError] = useState('')
-  const [isLoading, setIsLoading] = useState(true)
-  const [orders, setOrders] = useState([])
+  const query = useQuery({
+    queryKey: ['admin', 'orders'],
+    queryFn: adminApi.getOrders,
+    select: (payload) => normalizeList(payload, ['orders']),
+  })
 
-  useEffect(() => {
-    let isMounted = true
-
-    const loadOrders = async () => {
-      try {
-        const payload = await adminApi.getOrders()
-        if (!isMounted) return
-        setOrders(normalizeList(payload, ['orders']))
-        setError('')
-      } catch (apiError) {
-        if (isMounted) setError(getApiErrorMessage(apiError, 'Unable to load orders.'))
-      } finally {
-        if (isMounted) setIsLoading(false)
-      }
-    }
-
-    loadOrders()
-    return () => {
-      isMounted = false
-    }
-  }, [])
-
-  return { error, isLoading, orders }
+  return {
+    error: query.error ? getApiErrorMessage(query.error, 'Unable to load orders.') : '',
+    isLoading: query.isLoading,
+    orders: query.data ?? [],
+  }
 }
 
 export const useAdminOrderDetail = (id) => {
-  const [error, setError] = useState('')
-  const [isLoading, setIsLoading] = useState(true)
-  const [order, setOrder] = useState(null)
-
+  const query = useQuery({
+    enabled: Boolean(id),
+    queryKey: ['admin', 'order', id],
+    queryFn: () => adminApi.getOrder(id),
+  })
   const loadOrder = useCallback(async () => {
-    setError('')
-    setIsLoading(true)
-    try {
-      setOrder(await adminApi.getOrder(id))
-    } catch (apiError) {
-      setError(getApiErrorMessage(apiError, 'Unable to load order.'))
-    } finally {
-      setIsLoading(false)
-    }
-  }, [id])
+    await query.refetch()
+  }, [query])
 
-  useEffect(() => {
-    // Delay the first load one tick so React hook lint accepts the state updates.
-    const timer = setTimeout(loadOrder, 0)
-    return () => clearTimeout(timer)
-  }, [loadOrder])
-
-  return { error, isLoading, loadOrder, order }
+  return {
+    error: query.error ? getApiErrorMessage(query.error, 'Unable to load order.') : '',
+    isLoading: query.isLoading,
+    loadOrder,
+    order: query.data ?? null,
+  }
 }

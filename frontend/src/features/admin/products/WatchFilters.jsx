@@ -21,9 +21,9 @@ export const WatchFilters = ({ brands, categories, filters, setFilters }) => {
   }
 
   return (
-    <div className="rounded-2xl border border-black/10 bg-[#FFFEFA] p-5 shadow-sm space-y-4">
+    <div className="space-y-4 rounded-2xl border border-black/10 bg-[#FFFEFA] p-4 shadow-sm sm:p-5">
       {/* Control Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-2 text-sm font-bold text-primary">
           <SlidersHorizontal className="h-4 w-4 text-primary" />
           <span>Filter Inventory</span>
@@ -31,7 +31,7 @@ export const WatchFilters = ({ brands, categories, filters, setFilters }) => {
         {hasActiveFilters && (
           <button
             onClick={handleReset}
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-accent transition-colors hover:text-primary focus:outline-none"
+            className="inline-flex w-fit items-center gap-1.5 text-xs font-semibold text-accent transition-colors hover:text-primary focus:outline-none"
             type="button"
           >
             <RotateCcw className="h-3 w-3" />

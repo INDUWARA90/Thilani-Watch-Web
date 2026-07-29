@@ -7,9 +7,9 @@ export const OrderDetailSections = ({ order, onUpdated }) => {
   const paymentSlip = getPaymentSlip(order)
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[minmax(320px,1fr)_minmax(0,2fr)]">
+    <div className="grid min-w-0 gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
       {/* Summary Section */}
-      <section className="flex flex-col gap-5 rounded-xl border border-black/10 bg-[#FFFEFA] p-6 shadow-sm">
+      <section className="flex min-w-0 flex-col gap-5 rounded-xl border border-black/10 bg-[#FFFEFA] p-4 shadow-sm sm:p-6">
         <div>
           <h3 className="font-heading text-lg font-bold tracking-wide text-primary">Summary</h3>
           <p className="text-xs text-primary">Overview of the order details</p>
@@ -17,30 +17,30 @@ export const OrderDetailSections = ({ order, onUpdated }) => {
 
         <div className="grid gap-3 text-sm border-t border-black/5 pt-4">
           {(getOrderNumber(order) || order._id) && (
-            <div className="flex justify-between items-center py-1">
+            <div className="flex items-start justify-between gap-3 py-1">
               <span className="text-primary font-medium">Order No</span>
-              <span className="font-semibold text-primary">{getOrderNumber(order) || order._id}</span>
+              <span className="min-w-0 break-words text-right font-semibold text-primary">{getOrderNumber(order) || order._id}</span>
             </div>
           )}
-          <div className="flex justify-between items-center py-1">
+          <div className="flex items-start justify-between gap-3 py-1">
             <span className="text-primary font-medium">Customer</span>
-            <span className="font-semibold text-primary">{getTitle(order.user, 'Customer')}</span>
+            <span className="min-w-0 break-words text-right font-semibold text-primary">{getTitle(order.user, 'Customer')}</span>
           </div>
           {order.wantedDate && (
-            <div className="flex justify-between items-center py-1">
+            <div className="flex items-start justify-between gap-3 py-1">
               <span className="text-primary font-medium">Wanted Date</span>
               <span className="text-primary">{formatDate(order.wantedDate)}</span>
             </div>
           )}
-          <div className="flex justify-between items-center py-1">
+          <div className="flex items-start justify-between gap-3 py-1">
             <span className="text-primary font-medium">Created</span>
             <span className="text-primary">{formatDate(order.createdAt)}</span>
           </div>
-          <div className="flex justify-between items-center py-1">
+          <div className="flex items-start justify-between gap-3 py-1">
             <span className="text-primary font-medium">Payment Method</span>
             <span className="font-semibold capitalize text-primary">{getPaymentMethodLabel(order.paymentMethod)}</span>
           </div>
-          <div className="flex justify-between items-center py-1 bg-[#FAF9F5] -mx-6 px-6 my-1">
+          <div className="-mx-4 my-1 flex items-start justify-between gap-3 bg-[#FAF9F5] px-4 py-1 sm:-mx-6 sm:px-6">
             <span className="text-primary font-semibold">Total Amount</span>
             <span className="text-base font-bold text-primary">
               {formatMoney(order.totalAmount ?? order.total, order.currency)}
@@ -71,13 +71,30 @@ export const OrderDetailSections = ({ order, onUpdated }) => {
       </section>
 
       {/* Items Section */}
-      <section className="flex flex-col gap-4 rounded-xl border border-black/10 bg-[#FFFEFA] p-6 shadow-sm">
+      <section className="flex min-w-0 flex-col gap-4 rounded-xl border border-black/10 bg-[#FFFEFA] p-4 shadow-sm sm:p-6">
         <div>
           <h3 className="font-heading text-lg font-bold tracking-wide text-primary">Items</h3>
           <p className="text-xs text-primary">Products included in this order</p>
         </div>
 
-        <div className="w-full overflow-x-auto rounded-lg border border-black/5">
+        <div className="divide-y divide-black/5 overflow-hidden rounded-lg border border-black/5 md:hidden">
+          {(order.items || []).map((item) => (
+            <article className="p-3" key={`${item.sku}-${item.name}`}>
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <h4 className="break-words text-sm font-bold text-primary">{item.name || getTitle(item.watch)}</h4>
+                  <p className="mt-1 break-all font-sans text-xs text-primary">{item.sku}</p>
+                </div>
+                <span className="shrink-0 rounded-lg bg-[#FAF9F5] px-2 py-1 font-sans text-xs font-bold text-primary">
+                  x{item.quantity}
+                </span>
+              </div>
+              <p className="mt-3 text-right text-sm font-bold text-primary">{formatMoney(item.price, order.currency)}</p>
+            </article>
+          ))}
+        </div>
+
+        <div className="hidden w-full overflow-x-auto rounded-lg border border-black/5 md:block">
           <table className="w-full min-w-[600px] border-collapse text-sm">
             <thead>
               <tr className="bg-[#FAF9F5]/85 border-b border-black/10">

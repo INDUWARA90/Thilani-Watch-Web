@@ -1,57 +1,66 @@
-import { useEffect, useState } from 'react'
+import { useMemo, useState } from 'react'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { getApiErrorMessage } from '@/shared/api/apiClient'
 import { adminApi } from '../api/adminApi'
 import { getId, normalizeList } from '../lib/adminUtils'
 
 export const useAdminCustomers = () => {
   const [customerOrders, setCustomerOrders] = useState([])
-  const [customers, setCustomers] = useState([])
   const [error, setError] = useState('')
-  const [isLoading, setIsLoading] = useState(true)
   const [pendingId, setPendingId] = useState('')
   const [search, setSearch] = useState('')
+  const [submittedSearch, setSubmittedSearch] = useState('')
   const [selectedCustomer, setSelectedCustomer] = useState(null)
+  const queryClient = useQueryClient()
+  const filters = useMemo(() => ({ search: submittedSearch }), [submittedSearch])
+  const customersQuery = useQuery({
+    queryKey: ['admin', 'customers', filters],
+    queryFn: () => adminApi.getCustomers(filters),
+    select: (payload) => normalizeList(payload, ['customers', 'users']),
+  })
+  const statusMutation = useMutation({
+    mutationFn: ({ customerId, nextIsActive }) => adminApi.updateCustomerStatus(customerId, nextIsActive),
+    onSuccess: async (_data, { customer, customerId, nextIsActive }) => {
+      await queryClient.invalidateQueries({ queryKey: ['admin', 'customers'] })
+      if (selectedCustomer && getId(selectedCustomer) === customerId) {
+        await openCustomer({ ...customer, isActive: nextIsActive })
+      }
+    },
+    onError: (apiError) => {
+      setError(getApiErrorMessage(apiError, 'Unable to update customer status.'))
+    },
+    onSettled: () => setPendingId(''),
+  })
+  const customerDetailMutation = useMutation({
+    mutationFn: async (customer) => {
+      const customerId = getId(customer)
+      const [detail, orders] = await Promise.all([
+        adminApi.getCustomer(customerId),
+        adminApi.getCustomerOrders(customerId),
+      ])
 
-  const loadCustomers = async (filters = {}) => {
-    setError('')
-    setIsLoading(true)
-    try {
-      const payload = await adminApi.getCustomers(filters)
-      setCustomers(normalizeList(payload, ['customers', 'users']))
-    } catch (apiError) {
-      setError(getApiErrorMessage(apiError, 'Unable to load customers.'))
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    // Delay the first load one tick so React hook lint accepts the state updates.
-    const timer = setTimeout(() => loadCustomers(), 0)
-    return () => clearTimeout(timer)
-  }, [])
+      return { customer, detail, orders }
+    },
+    onSuccess: ({ customer, detail, orders }) => {
+      setSelectedCustomer(detail?.customer || detail?.user || detail || customer)
+      setCustomerOrders(normalizeList(orders, ['orders']))
+    },
+    onError: (apiError) => {
+      setError(getApiErrorMessage(apiError, 'Unable to load customer details.'))
+    },
+    onSettled: () => setPendingId(''),
+  })
 
   const handleSearch = (event) => {
     event.preventDefault()
-    loadCustomers({ search })
+    setSubmittedSearch(search.trim())
   }
 
   const openCustomer = async (customer) => {
     const customerId = getId(customer)
     setPendingId(customerId)
     setError('')
-    try {
-      const [detail, orders] = await Promise.all([
-        adminApi.getCustomer(customerId),
-        adminApi.getCustomerOrders(customerId),
-      ])
-      setSelectedCustomer(detail?.customer || detail?.user || detail || customer)
-      setCustomerOrders(normalizeList(orders, ['orders']))
-    } catch (apiError) {
-      setError(getApiErrorMessage(apiError, 'Unable to load customer details.'))
-    } finally {
-      setPendingId('')
-    }
+    await customerDetailMutation.mutateAsync(customer)
   }
 
   const toggleCustomerStatus = async (customer) => {
@@ -59,25 +68,17 @@ export const useAdminCustomers = () => {
     const nextIsActive = customer.isActive === false
     setPendingId(customerId)
     setError('')
-    try {
-      await adminApi.updateCustomerStatus(customerId, nextIsActive)
-      await loadCustomers({ search })
-      if (selectedCustomer && getId(selectedCustomer) === customerId) {
-        await openCustomer({ ...customer, isActive: nextIsActive })
-      }
-    } catch (apiError) {
-      setError(getApiErrorMessage(apiError, 'Unable to update customer status.'))
-    } finally {
-      setPendingId('')
-    }
+    await statusMutation.mutateAsync({ customer, customerId, nextIsActive })
   }
+
+  const loadError = customersQuery.error ? getApiErrorMessage(customersQuery.error, 'Unable to load customers.') : ''
 
   return {
     customerOrders,
-    customers,
-    error,
+    customers: customersQuery.data ?? [],
+    error: error || loadError,
     handleSearch,
-    isLoading,
+    isLoading: customersQuery.isLoading,
     openCustomer,
     pendingId,
     search,

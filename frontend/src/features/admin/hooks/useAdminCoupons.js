@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { getApiErrorMessage } from '@/shared/api/apiClient'
 import { adminApi } from '../api/adminApi'
 import { getId, normalizeList } from '../lib/adminUtils'
@@ -17,31 +18,35 @@ const emptyCoupon = {
 }
 
 export const useAdminCoupons = () => {
-  const [coupons, setCoupons] = useState([])
   const [editingId, setEditingId] = useState('')
   const [error, setError] = useState('')
   const [form, setForm] = useState(emptyCoupon)
   const [isFormOpen, setIsFormOpen] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
-  const [isSaving, setIsSaving] = useState(false)
-
-  const loadCoupons = async () => {
-    setError('')
-    try {
-      const payload = await adminApi.getCoupons()
-      setCoupons(normalizeList(payload, ['coupons']))
-    } catch (apiError) {
-      setError(getApiErrorMessage(apiError, 'Unable to load coupons.'))
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    // Delay the first load one tick so React hook lint accepts the state updates.
-    const timer = setTimeout(loadCoupons, 0)
-    return () => clearTimeout(timer)
-  }, [])
+  const queryClient = useQueryClient()
+  const couponsQuery = useQuery({
+    queryKey: ['admin', 'coupons'],
+    queryFn: adminApi.getCoupons,
+    select: (payload) => normalizeList(payload, ['coupons']),
+  })
+  const saveCouponMutation = useMutation({
+    mutationFn: ({ id, payload }) => (id ? adminApi.updateCoupon(id, payload) : adminApi.createCoupon(payload)),
+    onSuccess: async () => {
+      closeFormWorkspace()
+      await queryClient.invalidateQueries({ queryKey: ['admin', 'coupons'] })
+    },
+    onError: (apiError) => {
+      setError(getApiErrorMessage(apiError, 'Unable to save coupon.'))
+    },
+  })
+  const deactivateCouponMutation = useMutation({
+    mutationFn: (coupon) => adminApi.deleteCoupon(getId(coupon)),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['admin', 'coupons'] })
+    },
+    onError: (apiError) => {
+      setError(getApiErrorMessage(apiError, 'Unable to deactivate coupon.'))
+    },
+  })
 
   const updateField = (field, value) => {
     setForm((current) => ({ ...current, [field]: value }))
@@ -64,45 +69,28 @@ export const useAdminCoupons = () => {
   const handleSubmit = async (event) => {
     event.preventDefault()
     setError('')
-    setIsSaving(true)
-    try {
-      const payload = toCouponPayload(form)
-      if (editingId) {
-        await adminApi.updateCoupon(editingId, payload)
-      } else {
-        await adminApi.createCoupon(payload)
-      }
-      closeFormWorkspace()
-      await loadCoupons()
-    } catch (apiError) {
-      setError(getApiErrorMessage(apiError, 'Unable to save coupon.'))
-    } finally {
-      setIsSaving(false)
-    }
+    await saveCouponMutation.mutateAsync({ id: editingId, payload: toCouponPayload(form) })
   }
 
   const deactivateCoupon = async (coupon) => {
     setError('')
-    try {
-      await adminApi.deleteCoupon(getId(coupon))
-      await loadCoupons()
-    } catch (apiError) {
-      setError(getApiErrorMessage(apiError, 'Unable to deactivate coupon.'))
-    }
+    await deactivateCouponMutation.mutateAsync(coupon)
   }
+
+  const loadError = couponsQuery.error ? getApiErrorMessage(couponsQuery.error, 'Unable to load coupons.') : ''
 
   return {
     closeFormWorkspace,
-    coupons,
+    coupons: couponsQuery.data ?? [],
     deactivateCoupon,
     editCoupon,
     editingId,
-    error,
+    error: error || loadError,
     form,
     handleSubmit,
     isFormOpen,
-    isLoading,
-    isSaving,
+    isLoading: couponsQuery.isLoading,
+    isSaving: saveCouponMutation.isPending,
     openForm,
     updateField,
   }

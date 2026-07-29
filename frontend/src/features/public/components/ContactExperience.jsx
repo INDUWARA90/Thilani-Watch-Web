@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useMutation } from '@tanstack/react-query'
 import { CheckCircle2, ExternalLink, Mail, MapPin, Phone, Send, X } from 'lucide-react'
 import { ButtonSpinner } from '@/shared/ui/LoadingState'
 import { getApiErrorMessage } from '@/shared/api/apiClient'
@@ -17,8 +18,17 @@ const fieldClass = 'min-h-[42px] w-full rounded-lg border border-primary/15 bg-b
 export const ContactExperience = ({ contacts, social }) => {
   const [error, setError] = useState('')
   const [form, setForm] = useState(emptyForm)
-  const [isSubmitting, setIsSubmitting] = useState(false)
   const [status, setStatus] = useState('')
+  const contactMutation = useMutation({
+    mutationFn: contactApi.submitContact,
+    onSuccess: (payload) => {
+      setStatus(payload?.message || 'Your message has been sent. The team will contact you soon.')
+      setForm(emptyForm)
+    },
+    onError: (apiError) => {
+      setError(getApiErrorMessage(apiError, 'Unable to send your message.'))
+    },
+  })
 
   const updateField = (name, value) => {
     setError('')
@@ -30,23 +40,13 @@ export const ContactExperience = ({ contacts, social }) => {
     event.preventDefault()
     setError('')
     setStatus('')
-    setIsSubmitting(true)
-
-    try {
-      const payload = await contactApi.submitContact({
-        email: form.email.trim(),
-        message: form.message.trim(),
-        name: form.name.trim(),
-        phone: form.phone.trim(),
-        subject: form.subject.trim(),
-      })
-      setStatus(payload?.message || 'Your message has been sent. The team will contact you soon.')
-      setForm(emptyForm)
-    } catch (apiError) {
-      setError(getApiErrorMessage(apiError, 'Unable to send your message.'))
-    } finally {
-      setIsSubmitting(false)
-    }
+    await contactMutation.mutateAsync({
+      email: form.email.trim(),
+      message: form.message.trim(),
+      name: form.name.trim(),
+      phone: form.phone.trim(),
+      subject: form.subject.trim(),
+    })
   }
 
   const address = contacts.find((item) => item.label === 'Showroom')
@@ -59,7 +59,7 @@ export const ContactExperience = ({ contacts, social }) => {
         <ContactForm
           error={error}
           form={form}
-          isSubmitting={isSubmitting}
+          isSubmitting={contactMutation.isPending}
           onChange={updateField}
           onSubmit={submitForm}
         />

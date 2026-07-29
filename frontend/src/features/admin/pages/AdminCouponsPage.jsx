@@ -34,7 +34,7 @@ export const AdminCouponsPage = () => {
         <button
           type="button"
           onClick={openForm}
-          className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-primary px-5 text-xs font-bold text-white shadow-md shadow-black/10 transition-all hover:bg-primary hover:shadow-lg hover:shadow-black/10 active:scale-[0.98] cursor-pointer"
+          className="inline-flex h-10 w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-primary px-5 text-xs font-bold text-white shadow-md shadow-black/10 transition-all hover:bg-primary hover:shadow-lg hover:shadow-black/10 active:scale-[0.98] sm:w-fit"
         >
           <svg className="h-4 w-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -57,7 +57,76 @@ export const AdminCouponsPage = () => {
         <LoadingState label="Loading coupons" variant="table" rows={5} />
       ) : (
         <div className="w-full overflow-hidden border border-black/10 bg-[#FFFEFA] rounded-2xl shadow-sm">
-          <div className="w-full overflow-x-auto">
+          <div className="divide-y divide-black/5 md:hidden">
+            {coupons.map((coupon) => {
+              const isActive = coupon.isActive !== false
+              return (
+                <article className="p-4" key={getId(coupon)}>
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <span className="inline-block max-w-full break-all rounded border border-black/10 bg-black/5 px-2 py-1 font-sans text-xs font-bold tracking-wide text-primary">
+                        {coupon.code}
+                      </span>
+                      <p className="mt-2 text-sm font-bold text-primary">
+                        {coupon.discountType === 'fixed' ? `${formatMoney(coupon.discountValue)} Off` : `${coupon.discountValue}% Off`}
+                      </p>
+                    </div>
+                    <span className={`inline-flex shrink-0 items-center rounded-full border px-2.5 py-0.5 text-[11px] font-bold transition-colors ${
+                      isActive
+                        ? 'border-emerald-200/60 bg-emerald-50 text-emerald-700 shadow-sm shadow-emerald-100'
+                        : 'border-black/10 bg-[#FAF9F5] text-primary'
+                    }`}>
+                      <span className={`mr-1.5 h-1.5 w-1.5 rounded-full ${isActive ? 'bg-emerald-500' : 'bg-black/20'}`} />
+                      {isActive ? 'Active' : 'Archived'}
+                    </span>
+                  </div>
+
+                  <dl className="mt-4 grid grid-cols-2 gap-3 rounded-xl bg-[#FAF9F5]/80 p-3 text-xs">
+                    <div>
+                      <dt className="font-bold uppercase tracking-wide text-primary">Min spend</dt>
+                      <dd className="mt-1 font-semibold text-primary">{coupon.minimumOrderAmount ? formatMoney(coupon.minimumOrderAmount) : 'No Minimum'}</dd>
+                    </div>
+                    <div>
+                      <dt className="font-bold uppercase tracking-wide text-primary">Limit</dt>
+                      <dd className="mt-1 font-semibold text-primary">{coupon.perUserLimit ?? '1'} / account</dd>
+                    </div>
+                    <div className="col-span-2">
+                      <dt className="font-bold uppercase tracking-wide text-primary">Expires</dt>
+                      <dd className="mt-1 font-semibold text-primary">{formatDate(coupon.expiresAt)}</dd>
+                    </div>
+                  </dl>
+
+                  <div className="mt-4 grid gap-2 min-[420px]:grid-cols-2">
+                    <button className={`${smallButtonClass} h-9 w-full`} type="button" onClick={() => editCoupon(coupon)}>
+                      Modify
+                    </button>
+                    {isActive && (
+                      <button className={`${smallDeactivateClass} h-9 w-full`} type="button" onClick={() => deactivateCoupon(coupon)}>
+                        Disable
+                      </button>
+                    )}
+                  </div>
+                </article>
+              )
+            })}
+            {coupons.length === 0 && (
+              <div className="p-8 text-center">
+                <div className="mx-auto flex max-w-sm flex-col items-center justify-center">
+                  <h4 className="text-sm font-bold text-primary">No active promotions</h4>
+                  <p className="mb-4 mt-1 text-xs text-primary">There are no discount coupon configurations configured yet.</p>
+                  <button
+                    type="button"
+                    onClick={openForm}
+                    className="inline-flex h-8 cursor-pointer items-center justify-center rounded-lg border border-black/10 bg-[#FFFEFA] px-3 text-xs font-semibold text-primary shadow-sm hover:bg-[#FAF9F5]"
+                  >
+                    Add New Coupon
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="hidden w-full overflow-x-auto md:block">
             <table className="w-full min-w-[950px] border-collapse text-left">
               <thead>
                 <tr className="bg-[#FAF9F5]/90 border-b border-black/10">
@@ -162,7 +231,7 @@ export const AdminCouponsPage = () => {
               </button>
             </div>
 
-            <div className="min-h-0 overflow-y-auto p-6">
+            <div className="min-h-0 overflow-y-auto p-4 sm:p-6">
               <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
                 <div className="grid gap-5 sm:grid-cols-2 md:grid-cols-3">
                   <Field label="Coupon Code" required value={form.code} onChange={(val) => updateField('code', val.toUpperCase())} placeholder="e.g. SUMMER50" />
@@ -194,7 +263,7 @@ export const AdminCouponsPage = () => {
                   Deploy As Globally Active
                 </label>
 
-                <div className="mt-4 flex items-center justify-end gap-3 border-t border-black/5 pt-5">
+                <div className="mt-4 flex flex-col gap-3 border-t border-black/5 pt-5 sm:flex-row sm:items-center sm:justify-end">
                   <button className={secondaryBtnClass} disabled={isSaving} type="button" onClick={closeFormWorkspace}>
                     Dismiss
                   </button>

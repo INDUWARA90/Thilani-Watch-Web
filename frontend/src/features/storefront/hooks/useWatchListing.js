@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { useSearchParams } from 'react-router'
 import { getApiErrorMessage } from '@/shared/api/apiClient'
 import { storefrontApi } from '@/features/storefront/api/storefrontApi'
@@ -6,13 +7,7 @@ import { normalizeList, normalizePagination } from '@/features/storefront/lib/st
 
 export const useWatchListing = () => {
   const [searchParams, setSearchParams] = useSearchParams()
-  const [brands, setBrands] = useState([])
-  const [categories, setCategories] = useState([])
-  const [error, setError] = useState('')
-  const [isLoading, setIsLoading] = useState(true)
-  const [pagination, setPagination] = useState(normalizePagination({}))
   const [searchValue, setSearchValue] = useState(searchParams.get('search') || '')
-  const [watches, setWatches] = useState([])
 
   const filters = useMemo(
     () => ({
@@ -48,26 +43,6 @@ export const useWatchListing = () => {
   }, [setSearchParams])
 
   useEffect(() => {
-    let isActive = true
-
-    const loadReferences = async () => {
-      try {
-        const [categoryData, brandData] = await Promise.all([storefrontApi.getCategories(), storefrontApi.getBrands()])
-        if (!isActive) return
-        setBrands(normalizeList(brandData, ['brands']))
-        setCategories(normalizeList(categoryData, ['categories']))
-      } catch (apiError) {
-        if (isActive) setError(getApiErrorMessage(apiError, 'Unable to load filters.'))
-      }
-    }
-
-    loadReferences()
-    return () => {
-      isActive = false
-    }
-  }, [])
-
-  useEffect(() => {
     if (searchValue === filters.search) return undefined
 
     const timer = setTimeout(() => {
@@ -77,41 +52,39 @@ export const useWatchListing = () => {
     return () => clearTimeout(timer)
   }, [filters.search, searchValue, updateFilter])
 
-  useEffect(() => {
-    let isActive = true
+  const categoriesQuery = useQuery({
+    queryKey: ['storefront', 'categories'],
+    queryFn: storefrontApi.getCategories,
+    select: (payload) => normalizeList(payload, ['categories']),
+  })
+  const brandsQuery = useQuery({
+    queryKey: ['storefront', 'brands'],
+    queryFn: storefrontApi.getBrands,
+    select: (payload) => normalizeList(payload, ['brands']),
+  })
+  const watchesQuery = useQuery({
+    queryKey: ['storefront', 'watches', filters],
+    queryFn: () => storefrontApi.getWatches(filters),
+  })
 
-    const loadWatches = async () => {
-      setIsLoading(true)
-      setError('')
-      try {
-        const payload = await storefrontApi.getWatches(filters)
-        if (!isActive) return
-        setPagination(normalizePagination(payload))
-        setWatches(normalizeList(payload, ['watches']))
-      } catch (apiError) {
-        if (isActive) setError(getApiErrorMessage(apiError, 'Unable to load watches.'))
-      } finally {
-        if (isActive) setIsLoading(false)
-      }
-    }
-
-    loadWatches()
-    return () => {
-      isActive = false
-    }
-  }, [filters])
+  const referenceError = categoriesQuery.error || brandsQuery.error
+  const error = watchesQuery.error
+    ? getApiErrorMessage(watchesQuery.error, 'Unable to load watches.')
+    : referenceError
+      ? getApiErrorMessage(referenceError, 'Unable to load filters.')
+      : ''
 
   return {
-    brands,
-    categories,
+    brands: brandsQuery.data ?? [],
+    categories: categoriesQuery.data ?? [],
     error,
     filters,
-    isLoading,
-    pagination,
+    isLoading: watchesQuery.isLoading,
+    pagination: normalizePagination(watchesQuery.data),
     searchValue,
     resetFilters,
     setSearchValue,
     updateFilter,
-    watches,
+    watches: normalizeList(watchesQuery.data, ['watches']),
   }
 }

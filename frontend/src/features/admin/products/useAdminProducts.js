@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { getApiErrorMessage } from '@/shared/api/apiClient'
 import { adminApi } from '../api/adminApi'
 import { cloudinaryApi } from '@/shared/api/cloudinaryApi'
@@ -24,10 +25,48 @@ export const useAdminProducts = () => {
   const [uploadedImages, setUploadedImages] = useState([])
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
-  const [isSaving, setIsSaving] = useState(false)
+  const queryClient = useQueryClient()
   const setProductError = useCallback((nextError) => setError(nextError), [])
   const { brands, categories } = useProductReferences(setProductError)
-  const { isLoading, loadWatches, visibleWatches } = useWatchList(filters, setProductError)
+  const { isLoading, visibleWatches } = useWatchList(filters, setProductError)
+  const invalidateWatches = async () => {
+    await queryClient.invalidateQueries({ queryKey: ['admin', 'watches'] })
+  }
+  const saveWatchMutation = useMutation({
+    mutationFn: ({ id, payload }) => (id ? adminApi.updateWatch(id, payload) : adminApi.createWatch(payload)),
+    onSuccess: async (_data, { id }) => {
+      setMessage(id ? 'Watch updated.' : 'Watch created.')
+      resetForm()
+      await invalidateWatches()
+    },
+    onError: (apiError) => {
+      setError(getApiErrorMessage(apiError, 'Unable to save watch.'))
+    },
+  })
+  const stockMutation = useMutation({
+    mutationFn: ({ id, value }) => adminApi.updateWatchStock(id, Number.parseInt(value || '0', 10)),
+    onSuccess: invalidateWatches,
+    onError: (apiError) => {
+      setError(getApiErrorMessage(apiError, 'Unable to update stock.'))
+    },
+  })
+  const publishMutation = useMutation({
+    mutationFn: ({ id, isPublished }) => adminApi.updateWatchPublishStatus(id, isPublished),
+    onSuccess: invalidateWatches,
+    onError: (apiError) => {
+      setError(getApiErrorMessage(apiError, 'Unable to update publish status.'))
+    },
+  })
+  const deleteMutation = useMutation({
+    mutationFn: (watch) => adminApi.deleteWatch(getId(watch)),
+    onSuccess: async () => {
+      await invalidateWatches()
+      setMessage('Watch deleted.')
+    },
+    onError: (apiError) => {
+      setError(getApiErrorMessage(apiError, 'Unable to delete watch.'))
+    },
+  })
 
   const resetForm = () => {
     setEditingWatch(null)
@@ -38,25 +77,11 @@ export const useAdminProducts = () => {
   const saveWatch = async () => {
     setError('')
     setMessage('')
-    setIsSaving(true)
-
     try {
-      const payload = buildWatchPayload(form)
-      if (editingWatch) {
-        await adminApi.updateWatch(getId(editingWatch), payload)
-        setMessage('Watch updated.')
-      } else {
-        await adminApi.createWatch(payload)
-        setMessage('Watch created.')
-      }
-      resetForm()
-      await loadWatches()
+      await saveWatchMutation.mutateAsync({ id: getId(editingWatch), payload: buildWatchPayload(form) })
       return true
-    } catch (apiError) {
-      setError(getApiErrorMessage(apiError, 'Unable to save watch.'))
+    } catch {
       return false
-    } finally {
-      setIsSaving(false)
     }
   }
 
@@ -98,33 +123,17 @@ export const useAdminProducts = () => {
   }
 
   const quickStock = async (watch, value) => {
-    try {
-      await adminApi.updateWatchStock(getId(watch), Number.parseInt(value || '0', 10))
-      await loadWatches()
-    } catch (apiError) {
-      setError(getApiErrorMessage(apiError, 'Unable to update stock.'))
-    }
+    await stockMutation.mutateAsync({ id: getId(watch), value })
   }
 
   const togglePublish = async (watch) => {
-    try {
-      await adminApi.updateWatchPublishStatus(getId(watch), !watch.isPublished)
-      await loadWatches()
-    } catch (apiError) {
-      setError(getApiErrorMessage(apiError, 'Unable to update publish status.'))
-    }
+    await publishMutation.mutateAsync({ id: getId(watch), isPublished: !watch.isPublished })
   }
 
   const deleteWatch = async (watch) => {
     if (!window.confirm(`Delete ${watch.name}?`)) return
 
-    try {
-      await adminApi.deleteWatch(getId(watch))
-      await loadWatches()
-      setMessage('Watch deleted.')
-    } catch (apiError) {
-      setError(getApiErrorMessage(apiError, 'Unable to delete watch.'))
-    }
+    await deleteMutation.mutateAsync(watch)
   }
 
   return {
@@ -138,7 +147,7 @@ export const useAdminProducts = () => {
     filters,
     form,
     isLoading,
-    isSaving,
+    isSaving: saveWatchMutation.isPending,
     message,
     quickStock,
     resetForm,

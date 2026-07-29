@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useMemo, useState } from 'react'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Plus, X, AlertCircle, CheckCircle2 } from 'lucide-react'
 import { getApiErrorMessage } from '@/shared/api/apiClient'
 import { cloudinaryApi } from '@/shared/api/cloudinaryApi'
@@ -8,55 +9,41 @@ import { CatalogTable } from './CatalogTable'
 import { buildCatalogPayload, emptyCatalogForm } from './catalogConfig'
 
 export const CatalogManager = ({ api, label, plural }) => {
-  const [items, setItems] = useState([])
   const [form, setForm] = useState(emptyCatalogForm)
   const [editingItem, setEditingItem] = useState(null)
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
-  const [isLoading, setIsLoading] = useState(true)
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [isUploadingImage, setIsUploadingImage] = useState(false)
-
-  const loadItems = async () => {
-    setIsLoading(true)
-    setError('')
-    try {
-      const payload = await api.list()
-      setItems(normalizeList(payload, [plural.toLowerCase()]))
-    } catch (apiError) {
-      setError(getApiErrorMessage(apiError, `Unable to load ${plural.toLowerCase()}.`))
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    let isMounted = true
-
-    const run = async () => {
-      try {
-        const payload = await api.list()
-        if (isMounted) {
-          setItems(normalizeList(payload, [plural.toLowerCase()]))
-          setError('')
-        }
-      } catch (apiError) {
-        if (isMounted) {
-          setError(getApiErrorMessage(apiError, `Unable to load ${plural.toLowerCase()}.`))
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoading(false)
-        }
-      }
-    }
-
-    run()
-
-    return () => {
-      isMounted = false
-    }
-  }, [api, plural])
+  const queryClient = useQueryClient()
+  const catalogKey = useMemo(() => ['admin', 'catalog', plural.toLowerCase()], [plural])
+  const itemsQuery = useQuery({
+    queryKey: catalogKey,
+    queryFn: api.list,
+    select: (payload) => normalizeList(payload, [plural.toLowerCase()]),
+  })
+  const saveItemMutation = useMutation({
+    mutationFn: ({ id, payload }) => (id ? api.update(id, payload) : api.create(payload)),
+    onSuccess: async (_data, { id }) => {
+      setMessage(`${label} ${id ? 'updated' : 'created'} successfully.`)
+      resetForm()
+      setIsFormOpen(false)
+      await queryClient.invalidateQueries({ queryKey: catalogKey })
+    },
+    onError: (apiError) => {
+      setError(getApiErrorMessage(apiError, `Unable to save ${label.toLowerCase()}.`))
+    },
+  })
+  const deleteItemMutation = useMutation({
+    mutationFn: (item) => api.remove(getId(item)),
+    onSuccess: async () => {
+      setMessage(`${label} deleted successfully.`)
+      await queryClient.invalidateQueries({ queryKey: catalogKey })
+    },
+    onError: (apiError) => {
+      setError(getApiErrorMessage(apiError, `Unable to delete ${label.toLowerCase()}.`))
+    },
+  })
 
   const resetForm = () => {
     setEditingItem(null)
@@ -109,45 +96,26 @@ export const CatalogManager = ({ api, label, plural }) => {
     event.preventDefault()
     setError('')
     setMessage('')
-
-    try {
-      const payload = buildCatalogPayload(form)
-      if (editingItem) {
-        await api.update(getId(editingItem), payload)
-        setMessage(`${label} updated successfully.`)
-      } else {
-        await api.create(payload)
-        setMessage(`${label} created successfully.`)
-      }
-      resetForm()
-      await loadItems()
-      setIsFormOpen(false)
-    } catch (apiError) {
-      setError(getApiErrorMessage(apiError, `Unable to save ${label.toLowerCase()}.`))
-    }
+    await saveItemMutation.mutateAsync({ id: getId(editingItem), payload: buildCatalogPayload(form) })
   }
 
   const deleteItem = async (item) => {
     if (!window.confirm(`Are you sure you want to delete "${item.name}"?`)) return
-
-    try {
-      await api.remove(getId(item))
-      setMessage(`${label} deleted successfully.`)
-      await loadItems()
-    } catch (apiError) {
-      setError(getApiErrorMessage(apiError, `Unable to delete ${label.toLowerCase()}.`))
-    }
+    await deleteItemMutation.mutateAsync(item)
   }
 
+  const loadError = itemsQuery.error ? getApiErrorMessage(itemsQuery.error, `Unable to load ${plural.toLowerCase()}.`) : ''
+  const items = itemsQuery.data ?? []
+
   return (
-    <div className="mx-auto max-w-7xl space-y-6">
+    <div className="mx-auto min-w-0 max-w-7xl space-y-6">
       {/* Dynamic Alerts Banner Deck */}
-      {(error || message) && (
+      {(error || loadError || message) && (
         <div className="space-y-3 transition-all">
-          {error && (
+          {(error || loadError) && (
             <div className="flex items-center gap-3 rounded-2xl border border-red-100 bg-red-50/50 px-4 py-3.5 text-sm font-medium text-red-800 shadow-sm">
               <AlertCircle className="h-5 w-5 shrink-0 text-red-600" />
-              <span>{error}</span>
+              <span>{error || loadError}</span>
             </div>
           )}
           {message && (
@@ -160,10 +128,10 @@ export const CatalogManager = ({ api, label, plural }) => {
       )}
 
       {/* Main Workspace Frame */}
-      <section className="rounded-2xl border border-black/10 bg-[#FFFEFA] p-6 shadow-sm space-y-6">
+      <section className="space-y-6 rounded-2xl border border-black/10 bg-[#FFFEFA] p-4 shadow-sm sm:p-6">
         {/* Header Block */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between pb-2">
-          <div>
+          <div className="min-w-0">
             <span className="inline-flex items-center gap-1.5 rounded-md bg-accent/10 px-2.5 py-0.5 text-xs font-semibold text-primary ring-1 ring-inset ring-accent/20">
               {plural} Catalog
             </span>
@@ -176,7 +144,7 @@ export const CatalogManager = ({ api, label, plural }) => {
           </div>
           
           <button
-            className="inline-flex h-11 w-fit cursor-pointer items-center justify-center gap-2 rounded-xl bg-primary px-5 text-sm font-bold text-white shadow-sm transition-all hover:bg-primary active:scale-98 disabled:cursor-not-allowed disabled:opacity-50"
+            className="inline-flex h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-primary px-5 text-sm font-bold text-white shadow-sm transition-all hover:bg-primary active:scale-98 disabled:cursor-not-allowed disabled:opacity-50 sm:w-fit"
             type="button"
             onClick={openCreateForm}
           >
@@ -189,7 +157,7 @@ export const CatalogManager = ({ api, label, plural }) => {
         <CatalogTable 
           deleteItem={deleteItem} 
           editItem={editItem} 
-          isLoading={isLoading} 
+          isLoading={itemsQuery.isLoading} 
           items={items} 
           plural={plural} 
         />
@@ -204,11 +172,11 @@ export const CatalogManager = ({ api, label, plural }) => {
           aria-label={editingItem ? `Edit ${label}` : `Create ${label}`}
         >
           {/* Modal Box */}
-          <div className="flex max-h-[90vh] w-full max-w-3xl flex-col overflow-hidden rounded-3xl bg-[#FFFEFA] shadow-2xl ring-1 ring-black/5">
+          <div className="flex max-h-[90vh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl bg-[#FFFEFA] shadow-2xl ring-1 ring-black/5 sm:rounded-3xl">
             
             {/* Modal Header */}
-            <div className="flex items-center justify-between border-b border-black/5 px-6 py-4.5 bg-[#FAF9F5]/75">
-              <div>
+            <div className="flex items-center justify-between gap-4 border-b border-black/5 bg-[#FAF9F5]/75 px-4 py-4 sm:px-6">
+              <div className="min-w-0">
                 <span className="text-[10px] font-bold uppercase tracking-widest text-accent">
                   {plural} Manager
                 </span>
@@ -229,7 +197,7 @@ export const CatalogManager = ({ api, label, plural }) => {
 
             {/* Scrollable Form Viewport */}
             <div className="min-h-0 overflow-y-auto bg-[#FAF9F5]/65">
-              <div className="p-6">
+              <div className="p-4 sm:p-6">
                 <CatalogForm
                   editingItem={editingItem}
                   form={form}

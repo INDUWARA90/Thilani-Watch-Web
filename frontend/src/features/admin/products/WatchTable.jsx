@@ -18,7 +18,99 @@ export const WatchTable = ({ deleteWatch, editWatch, isLoading, quickStock, togg
 
   return (
     <div className="overflow-hidden rounded-2xl border border-black/10 bg-[#FFFEFA] shadow-sm">
-      <div className="w-full overflow-x-auto">
+      <div className="divide-y divide-black/5 md:hidden">
+        {watches.map((watch) => {
+          const imageSrc = getWatchImage(watch)
+          const isOutOfStock = (watch.stockQuantity ?? 0) === 0
+
+          return (
+            <article className="p-4" key={getId(watch)}>
+              <div className="flex min-w-0 items-start gap-3">
+                <div className="relative flex h-14 w-14 shrink-0 overflow-hidden rounded-xl border border-black/5 bg-[#FAF9F5]">
+                  {imageSrc ? (
+                    <img className="h-full w-full object-cover" src={imageSrc} alt={watch.name} />
+                  ) : (
+                    <Package className="m-auto h-5 w-5 text-primary" />
+                  )}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <strong className="block break-words text-sm font-bold leading-snug text-primary">{watch.name}</strong>
+                  <span className="mt-1 block break-words font-sans text-xs text-primary">{watch.sku || 'No SKU'}</span>
+                </div>
+                <span className={`shrink-0 rounded-full px-2.5 py-0.5 text-xs font-semibold ring-1 ring-inset ${watch.isPublished
+                    ? 'bg-emerald-50 text-emerald-700 ring-emerald-600/10'
+                    : 'bg-[#FAF9F5] text-primary ring-black/10'
+                  }`}>
+                  {watch.isPublished ? 'Published' : 'Draft'}
+                </span>
+              </div>
+
+              <dl className="mt-4 grid grid-cols-2 gap-3 rounded-xl bg-[#FAF9F5]/80 p-3 text-xs">
+                <div className="min-w-0">
+                  <dt className="font-bold uppercase tracking-wide text-primary">Brand</dt>
+                  <dd className="mt-1 break-words font-semibold text-primary">{getTitle(watch.brand) || '-'}</dd>
+                </div>
+                <div className="min-w-0">
+                  <dt className="font-bold uppercase tracking-wide text-primary">Category</dt>
+                  <dd className="mt-1 break-words font-semibold text-primary">{getTitle(watch.category) || '-'}</dd>
+                </div>
+              </dl>
+
+              <div className="mt-4 flex flex-col gap-3 min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between">
+                <div className="flex flex-wrap items-center gap-2.5">
+                  <input
+                    className={`w-20 rounded-xl border px-2.5 py-1.5 text-center text-sm font-semibold outline-none transition-all focus:ring-4 ${isOutOfStock
+                        ? 'border-rose-200 bg-rose-50/30 text-rose-800 focus:border-rose-500 focus:ring-rose-500/10'
+                        : 'border-black/10 bg-[#FFFEFA] text-primary focus:border-accent focus:ring-accent/20'
+                      }`}
+                    defaultValue={watch.stockQuantity ?? 0}
+                    min="0"
+                    onBlur={(event) => quickStock(watch, event.target.value)}
+                    type="number"
+                  />
+                  {isOutOfStock && (
+                    <span className="flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-rose-600">
+                      <AlertCircle className="h-3.5 w-3.5" /> Out of stock
+                    </span>
+                  )}
+                </div>
+
+                <div className="flex justify-end gap-1.5">
+                  <button
+                    className={`inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border transition-all active:scale-95 ${watch.isPublished
+                        ? 'border-black/10 bg-[#FFFEFA] text-primary hover:border-amber-100 hover:bg-amber-50/30 hover:text-amber-600'
+                        : 'border-black/10 bg-[#FFFEFA] text-primary hover:border-emerald-100 hover:bg-emerald-50/30 hover:text-emerald-600'
+                      }`}
+                    title={watch.isPublished ? 'Unpublish Product' : 'Publish Product'}
+                    type="button"
+                    onClick={() => togglePublish(watch)}
+                  >
+                    {watch.isPublished ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                  <button
+                    className="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-black/10 bg-[#FFFEFA] text-primary transition-all hover:border-accent/25 hover:bg-accent/10 hover:text-accent active:scale-95"
+                    title="Edit Product"
+                    type="button"
+                    onClick={() => editWatch(watch)}
+                  >
+                    <Edit2 className="h-4 w-4" />
+                  </button>
+                  <button
+                    className="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-black/10 bg-[#FFFEFA] text-primary transition-all hover:border-rose-100 hover:bg-rose-50/40 hover:text-rose-600 active:scale-95"
+                    title="Delete Product"
+                    type="button"
+                    onClick={() => deleteWatch(watch)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+            </article>
+          )
+        })}
+      </div>
+
+      <div className="hidden w-full overflow-x-auto md:block">
         <table className="w-full min-w-[800px] border-collapse text-left">
           <thead>
             <tr className="border-b border-black/5 bg-[#FAF9F5]/85">

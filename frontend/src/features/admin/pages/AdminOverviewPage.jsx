@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { Link } from 'react-router'
 import { 
   Package, 
@@ -60,38 +60,13 @@ const overviewCards = [
 export const AdminOverviewPage = () => {
   usePageTitle('Admin Overview | Thilani Watch Web')
 
-  const [summary, setSummary] = useState(null)
-  const [error, setError] = useState('')
-  const [isLoading, setIsLoading] = useState(true)
-
-  useEffect(() => {
-    let isMounted = true
-
-    const run = async () => {
-      try {
-        const summaryPayload = await adminApi.getDashboardSummary()
-        if (isMounted) {
-          setSummary(summaryPayload || {})
-          setError('')
-        }
-      } catch (apiError) {
-        if (isMounted) {
-          setError(getApiErrorMessage(apiError, 'Unable to load dashboard metrics.'))
-        }
-      } finally {
-        if (isMounted) {
-          isMounted && setIsLoading(false)
-        }
-      }
-    }
-
-    run()
-
-    return () => {
-      isMounted = false
-    }
-  }, [])
-
+  const summaryQuery = useQuery({
+    queryKey: ['admin', 'dashboard', 'summary'],
+    queryFn: adminApi.getDashboardSummary,
+  })
+  const error = summaryQuery.error ? getApiErrorMessage(summaryQuery.error, 'Unable to load dashboard metrics.') : ''
+  const isLoading = summaryQuery.isLoading
+  const summary = summaryQuery.data ?? null
   const metrics = summary || {}
 
   return (

@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from 'react-router'
 import { getApiErrorMessage } from '@/shared/api/apiClient'
 import { useAuth } from '@/features/auth/hooks/useAuth'
@@ -12,40 +13,27 @@ export const useWatchDetail = (slug) => {
   const navigate = useNavigate()
   const [actionError, setActionError] = useState('')
   const [actionMessage, setActionMessage] = useState('')
-  const [error, setError] = useState('')
-  const [isLoading, setIsLoading] = useState(true)
   const [quantity, setQuantity] = useState(1)
-  const [selectedImage, setSelectedImage] = useState('')
-  const [watch, setWatch] = useState(null)
+  const [selectedImageState, setSelectedImageState] = useState({ image: '', slug: '' })
+  const {
+    data: watch = null,
+    error: watchError,
+    isLoading,
+    refetch,
+  } = useQuery({
+    enabled: Boolean(slug),
+    queryKey: ['storefront', 'watch', slug],
+    queryFn: () => findWatch(slug),
+  })
 
   const watchId = getId(watch)
   const isBusy = isPending(watchId)
+  const selectedImage = selectedImageState.slug === slug && selectedImageState.image
+    ? selectedImageState.image
+    : getWatchImage(watch)
+  const setSelectedImage = (image) => setSelectedImageState({ image, slug })
 
-  useEffect(() => {
-    let isMounted = true
-
-    const loadWatch = async () => {
-      setIsLoading(true)
-      try {
-        const nextWatch = await findWatch(slug)
-        if (!isMounted) return
-        setWatch(nextWatch)
-        setSelectedImage(getWatchImage(nextWatch))
-        setError('')
-      } catch (apiError) {
-        if (!isMounted) return
-        setError(getApiErrorMessage(apiError, 'Unable to load this watch.'))
-        setWatch(null)
-      } finally {
-        if (isMounted) setIsLoading(false)
-      }
-    }
-
-    loadWatch()
-    return () => {
-      isMounted = false
-    }
-  }, [slug])
+  const error = watchError ? getApiErrorMessage(watchError, 'Unable to load this watch.') : ''
 
   const requireLogin = () => {
     navigate('/login', { state: { from: { pathname: `/watches/${slug}` } } })
@@ -79,7 +67,7 @@ export const useWatchDetail = (slug) => {
   }
 
   const refreshWatchSummary = async () => {
-    setWatch(await findWatch(slug))
+    await refetch()
   }
 
   return {

@@ -1,35 +1,29 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { getApiErrorMessage } from '@/shared/api/apiClient'
 import { adminApi } from '../api/adminApi'
 import { normalizeList, readBoolean } from '../lib/adminUtils'
 
 export const useWatchList = (filters, setError) => {
-  const [isLoading, setIsLoading] = useState(true)
-  const [watches, setWatches] = useState([])
-
+  const query = useQuery({
+    queryKey: ['admin', 'watches', filters],
+    queryFn: () => adminApi.getWatches({ ...filters, limit: 100 }),
+    select: (payload) => normalizeList(payload, ['watches']),
+  })
   const loadWatches = useCallback(async () => {
-    setError('')
-    setIsLoading(true)
-    try {
-      const payload = await adminApi.getWatches({ ...filters, limit: 100 })
-      setWatches(normalizeList(payload, ['watches']))
-    } catch (apiError) {
-      setError(getApiErrorMessage(apiError, 'Unable to load watches.'))
-    } finally {
-      setIsLoading(false)
-    }
-  }, [filters, setError])
+    await query.refetch()
+  }, [query])
 
   useEffect(() => {
-    // Delay the first load one tick so React hook lint accepts the state updates.
-    const timer = setTimeout(loadWatches, 0)
-    return () => clearTimeout(timer)
-  }, [loadWatches])
+    if (query.error) {
+      setError(getApiErrorMessage(query.error, 'Unable to load watches.'))
+    }
+  }, [query.error, setError])
 
-  let visibleWatches = watches
+  let visibleWatches = query.data ?? []
   if (filters.published !== '') {
-    visibleWatches = watches.filter((watch) => Boolean(watch.isPublished) === readBoolean(filters.published))
+    visibleWatches = visibleWatches.filter((watch) => Boolean(watch.isPublished) === readBoolean(filters.published))
   }
 
-  return { isLoading, loadWatches, visibleWatches }
+  return { isLoading: query.isLoading, loadWatches, visibleWatches }
 }

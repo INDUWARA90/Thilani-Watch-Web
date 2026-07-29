@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { getApiErrorMessage } from '@/shared/api/apiClient'
 import { adminApi } from '@/features/admin/api/adminApi'
 import { getId, normalizeList, readBoolean } from '@/features/admin/lib/adminUtils'
@@ -6,11 +7,10 @@ import { getId, normalizeList, readBoolean } from '@/features/admin/lib/adminUti
 export const useAdminContactMessages = () => {
   const [error, setError] = useState('')
   const [filters, setFilters] = useState({ read: '', search: '' })
-  const [isLoading, setIsLoading] = useState(true)
   const [message, setMessage] = useState('')
-  const [messages, setMessages] = useState([])
   const [pendingId, setPendingId] = useState('')
-  const [selectedMessage, setSelectedMessage] = useState(null)
+  const [selectedMessageDetail, setSelectedMessageDetail] = useState(null)
+  const queryClient = useQueryClient()
 
   const apiFilters = useMemo(
     () => ({
@@ -20,28 +20,60 @@ export const useAdminContactMessages = () => {
     [filters],
   )
 
-  const loadMessages = useCallback(async () => {
-    setError('')
-    setIsLoading(true)
-    try {
-      const payload = await adminApi.getContactMessages(apiFilters)
-      const nextMessages = normalizeList(payload, ['messages', 'contacts', 'contactMessages'])
-      setMessages(nextMessages)
-      setSelectedMessage((current) => {
-        if (!current) return nextMessages[0] || null
-        return nextMessages.find((item) => getId(item) === getId(current)) || nextMessages[0] || null
-      })
-    } catch (apiError) {
-      setError(getApiErrorMessage(apiError, 'Unable to load contact messages.'))
-    } finally {
-      setIsLoading(false)
-    }
-  }, [apiFilters])
+  const messagesQuery = useQuery({
+    queryKey: ['admin', 'contactMessages', apiFilters],
+    queryFn: () => adminApi.getContactMessages(apiFilters),
+    select: (payload) => normalizeList(payload, ['messages', 'contacts', 'contactMessages']),
+  })
+  const messages = messagesQuery.data ?? []
+  const selectedMessage = selectedMessageDetail && messages.some((item) => getId(item) === getId(selectedMessageDetail))
+    ? selectedMessageDetail
+    : messages[0] || null
 
-  useEffect(() => {
-    const timer = setTimeout(loadMessages, 0)
-    return () => clearTimeout(timer)
-  }, [loadMessages])
+  const invalidateMessages = () => queryClient.invalidateQueries({ queryKey: ['admin', 'contactMessages'] })
+  const readStatusMutation = useMutation({
+    mutationFn: ({ messageId, nextReadStatus }) => adminApi.updateContactReadStatus(messageId, nextReadStatus),
+    onSuccess: async (_data, { nextReadStatus, showMessage }) => {
+      if (showMessage) setMessage(nextReadStatus ? 'Message marked as read.' : 'Message marked as unread.')
+      await invalidateMessages()
+    },
+    onError: (apiError) => {
+      setError(getApiErrorMessage(apiError, 'Unable to update message status.'))
+    },
+    onSettled: () => setPendingId(''),
+  })
+  const deleteMutation = useMutation({
+    mutationFn: (messageId) => adminApi.deleteContactMessage(messageId),
+    onSuccess: async (_data, messageId) => {
+      setMessage('Contact message deleted.')
+      setSelectedMessageDetail((current) => (getId(current) === messageId ? null : current))
+      await invalidateMessages()
+    },
+    onError: (apiError) => {
+      setError(getApiErrorMessage(apiError, 'Unable to delete contact message.'))
+    },
+    onSettled: () => setPendingId(''),
+  })
+  const messageDetailMutation = useMutation({
+    mutationFn: async (contactMessage) => {
+      const messageId = getId(contactMessage)
+      const payload = await adminApi.getContactMessage(messageId)
+      return {
+        detail: payload?.message || payload?.contact || payload,
+        messageId,
+      }
+    },
+    onSuccess: async ({ detail, messageId }) => {
+      setSelectedMessageDetail(detail)
+      if (!readBoolean(detail?.isRead)) {
+        await readStatusMutation.mutateAsync({ messageId, nextReadStatus: true, showMessage: false })
+      }
+    },
+    onError: (apiError) => {
+      setError(getApiErrorMessage(apiError, 'Unable to open contact message.'))
+    },
+    onSettled: () => setPendingId(''),
+  })
 
   const updateFilter = (name, value) => {
     setFilters((current) => ({ ...current, [name]: value }))
@@ -51,19 +83,7 @@ export const useAdminContactMessages = () => {
     const messageId = getId(contactMessage)
     setError('')
     setPendingId(messageId)
-    try {
-      const payload = await adminApi.getContactMessage(messageId)
-      const detail = payload?.message || payload?.contact || payload
-      setSelectedMessage(detail)
-      if (!readBoolean(detail?.isRead)) {
-        await adminApi.updateContactReadStatus(messageId, true)
-        await loadMessages()
-      }
-    } catch (apiError) {
-      setError(getApiErrorMessage(apiError, 'Unable to open contact message.'))
-    } finally {
-      setPendingId('')
-    }
+    await messageDetailMutation.mutateAsync(contactMessage)
   }
 
   const toggleReadStatus = async (contactMessage) => {
@@ -72,15 +92,7 @@ export const useAdminContactMessages = () => {
     setError('')
     setMessage('')
     setPendingId(messageId)
-    try {
-      await adminApi.updateContactReadStatus(messageId, nextReadStatus)
-      setMessage(nextReadStatus ? 'Message marked as read.' : 'Message marked as unread.')
-      await loadMessages()
-    } catch (apiError) {
-      setError(getApiErrorMessage(apiError, 'Unable to update message status.'))
-    } finally {
-      setPendingId('')
-    }
+    await readStatusMutation.mutateAsync({ messageId, nextReadStatus, showMessage: true })
   }
 
   const deleteMessage = async (contactMessage) => {
@@ -88,23 +100,16 @@ export const useAdminContactMessages = () => {
     setError('')
     setMessage('')
     setPendingId(messageId)
-    try {
-      await adminApi.deleteContactMessage(messageId)
-      setMessage('Contact message deleted.')
-      setSelectedMessage((current) => (getId(current) === messageId ? null : current))
-      await loadMessages()
-    } catch (apiError) {
-      setError(getApiErrorMessage(apiError, 'Unable to delete contact message.'))
-    } finally {
-      setPendingId('')
-    }
+    await deleteMutation.mutateAsync(messageId)
   }
+
+  const loadError = messagesQuery.error ? getApiErrorMessage(messagesQuery.error, 'Unable to load contact messages.') : ''
 
   return {
     deleteMessage,
-    error,
+    error: error || loadError,
     filters,
-    isLoading,
+    isLoading: messagesQuery.isLoading,
     message,
     messages,
     openMessage,

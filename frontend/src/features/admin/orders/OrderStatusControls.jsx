@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useMutation } from '@tanstack/react-query'
 import { getApiErrorMessage } from '@/shared/api/apiClient'
 import { adminApi } from '../api/adminApi'
 import { getId } from '../lib/adminUtils'
@@ -18,19 +19,20 @@ export const OrderStatusControls = ({ order, onUpdated }) => {
   const [refund, setRefund] = useState({ amount: order.totalAmount ?? order.total ?? '', reason: 'requested_by_customer' })
   
   const [error, setError] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
+  const actionMutation = useMutation({
+    mutationFn: ({ apiCall }) => apiCall(),
+    onSuccess: async () => {
+      await onUpdated()
+    },
+    onError: (apiError, { fallbackMessage }) => {
+      setError(getApiErrorMessage(apiError, fallbackMessage))
+    },
+  })
+  const isLoading = actionMutation.isPending
 
   const handleAction = async (apiCall, fallbackMessage) => {
     setError('')
-    setIsLoading(true)
-    try {
-      await apiCall()
-      await onUpdated()
-    } catch (apiError) {
-      setError(getApiErrorMessage(apiError, fallbackMessage))
-    } finally {
-      setIsLoading(false)
-    }
+    await actionMutation.mutateAsync({ apiCall, fallbackMessage })
   }
 
   const updateOrderStatus = () => 
@@ -78,7 +80,7 @@ export const OrderStatusControls = ({ order, onUpdated }) => {
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-1.5">
           <label className="font-semibold text-primary">Order Status</label>
-          <div className="flex gap-2">
+          <div className="flex flex-col gap-2 min-[420px]:flex-row">
             <select className={controlClass} value={orderStatus} onChange={(e) => setOrderStatus(e.target.value)}>
               {orderStatuses.map((status) => (
                 <option key={status} value={status}>{status}</option>
@@ -92,7 +94,7 @@ export const OrderStatusControls = ({ order, onUpdated }) => {
 
         <div className="flex flex-col gap-1.5">
           <label className="font-semibold text-primary">Payment Status</label>
-          <div className="flex gap-2">
+          <div className="flex flex-col gap-2 min-[420px]:flex-row">
             <select className={controlClass} value={paymentStatus} onChange={(e) => setPaymentStatus(e.target.value)}>
               {paymentStatuses.map((status) => (
                 <option key={status} value={status}>{status}</option>
@@ -108,7 +110,7 @@ export const OrderStatusControls = ({ order, onUpdated }) => {
       {/* Transaction Management Block */}
       <div className="flex flex-col gap-1.5 border-t border-black/5 pt-4">
         <label className="font-semibold text-primary">Transaction ID</label>
-        <div className="flex gap-2">
+        <div className="flex flex-col gap-2 min-[420px]:flex-row">
           <input className={controlClass} value={transactionId} onChange={(e) => setTransactionId(e.target.value)} placeholder="e.g. ch_3Mxs2B..." />
           <button className={emeraldBtnClass} type="button" onClick={confirmPayment}>
             Confirm Paid
@@ -160,7 +162,7 @@ export const OrderStatusControls = ({ order, onUpdated }) => {
             <input className={controlClass} value={returnAction.notes} onChange={(e) => setReturnAction((c) => ({ ...c, notes: e.target.value }))} placeholder="Reason for status change..." />
           </div>
           <div className="sm:col-span-2 mt-1">
-            <button className={secondaryBtnClass} type="button" onClick={processReturn}>
+            <button className={`${secondaryBtnClass} w-full sm:w-fit`} type="button" onClick={processReturn}>
               Process Return Request
             </button>
           </div>
@@ -176,7 +178,7 @@ export const OrderStatusControls = ({ order, onUpdated }) => {
             <input className={controlClass} value={refund.reason} onChange={(e) => setRefund((c) => ({ ...c, reason: e.target.value }))} />
           </div>
           <div className="sm:col-span-2 mt-1">
-            <button className={roseBtnClass} type="button" onClick={refundOrder}>
+            <button className={`${roseBtnClass} w-full sm:w-fit`} type="button" onClick={refundOrder}>
               Issue Order Refund
             </button>
           </div>

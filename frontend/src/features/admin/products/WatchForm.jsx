@@ -73,7 +73,7 @@ export const WatchForm = ({
   }
 
   return (
-    <div className="mx-auto max-w-5xl space-y-8 bg-[#FAF9F5]/75 p-4 sm:p-6 lg:p-8">
+    <div className="mx-auto max-w-5xl space-y-6 bg-[#FAF9F5]/75 p-0 sm:space-y-8 sm:p-2 lg:p-4">
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -87,7 +87,7 @@ export const WatchForm = ({
         </div>
         {editingWatch && (
           <button 
-            className="inline-flex h-10 w-fit cursor-pointer items-center justify-center gap-2 rounded-xl border border-black/10 bg-[#FFFEFA] px-4 text-sm font-semibold text-primary transition-all hover:bg-[#FAF9F5] active:scale-98" 
+            className="inline-flex h-10 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-black/10 bg-[#FFFEFA] px-4 text-sm font-semibold text-primary transition-all hover:bg-[#FAF9F5] active:scale-98 sm:w-fit" 
             type="button" 
             onClick={onReset}
           >
@@ -99,7 +99,7 @@ export const WatchForm = ({
 
       <form className="space-y-8" onSubmit={submitWatch}>
         {/* Section 1: Specifications */}
-        <section className="rounded-2xl border border-black/10 bg-[#FFFEFA] p-6 shadow-sm">
+        <section className="rounded-2xl border border-black/10 bg-[#FFFEFA] p-4 shadow-sm sm:p-6">
           <h3 className="mb-6 font-heading text-lg font-bold tracking-wide text-primary">1. Watch Specifications</h3>
           
           <div className="grid gap-5 sm:grid-cols-2">
@@ -168,7 +168,7 @@ export const WatchForm = ({
         </section>
 
         {/* Section 2: Copywriting */}
-        <section className="rounded-2xl border border-black/10 bg-[#FFFEFA] p-6 shadow-sm">
+        <section className="rounded-2xl border border-black/10 bg-[#FFFEFA] p-4 shadow-sm sm:p-6">
           <h3 className="mb-6 font-heading text-lg font-bold tracking-wide text-primary">2. Marketing & Description</h3>
           
           <div className="space-y-5">
@@ -197,7 +197,7 @@ export const WatchForm = ({
         </section>
 
         {/* Section 3: Media Hub */}
-        <section className="rounded-2xl border border-black/10 bg-[#FFFEFA] p-6 shadow-sm">
+        <section className="rounded-2xl border border-black/10 bg-[#FFFEFA] p-4 shadow-sm sm:p-6">
           <div className="mb-6">
             <h3 className="font-heading text-lg font-bold tracking-wide text-primary">3. Media Assets Manager</h3>
             <p className="text-xs text-primary mt-1">Associate imagery strings directly or use Cloudinary pipelines.</p>
@@ -220,11 +220,11 @@ export const WatchForm = ({
             </label>
 
             {/* Upload Zone & Draft Utilities */}
-            <div className="rounded-xl border border-dashed border-black/10 bg-[#FAF9F5]/75 p-5 space-y-5">
+            <div className="space-y-5 rounded-xl border border-dashed border-black/10 bg-[#FAF9F5]/75 p-4 sm:p-5">
               {/* Draft paste */}
               <label className="flex flex-col gap-1.5 text-xs font-semibold uppercase tracking-wider text-primary">
                 <span>Manually Register Cloudinary Link</span>
-                <div className="flex gap-2 mt-1.5">
+                <div className="mt-1.5 flex flex-col gap-2 sm:flex-row">
                   <input
                     className="min-w-0 flex-1 rounded-xl border border-black/10 bg-[#FFFEFA] px-3.5 py-2 text-sm text-primary placeholder:text-primary outline-none transition-all focus:border-accent focus:ring-4 focus:ring-accent/20"
                     name="imageUrlDraft"
@@ -234,7 +234,7 @@ export const WatchForm = ({
                     onChange={updateForm}
                   />
                   <button 
-                    className="inline-flex h-10 cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-black/10 bg-[#FFFEFA] px-4 text-xs font-bold text-primary transition-all hover:bg-[#FAF9F5] active:scale-95" 
+                    className="inline-flex h-10 w-full cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-black/10 bg-[#FFFEFA] px-4 text-xs font-bold text-primary transition-all hover:bg-[#FAF9F5] active:scale-95 sm:w-fit" 
                     type="button" 
                     onClick={addImageUrl}
                   >
@@ -260,7 +260,7 @@ export const WatchForm = ({
                   <span className="text-xs font-semibold uppercase tracking-wider text-primary">Linked Previews</span>
                   <div className="grid gap-2">
                     {splitImageUrls(form.images).map((url) => (
-                      <div className="flex items-center gap-3 rounded-xl border border-black/5 bg-[#FFFEFA] p-2" key={url}>
+                      <div className="flex min-w-0 items-center gap-3 rounded-xl border border-black/5 bg-[#FFFEFA] p-2" key={url}>
                         <img className="h-12 w-12 rounded-lg bg-[#FAF9F5] object-cover border border-black/5" src={url} alt="Watch preview" />
                         <span className="min-w-0 flex-1 truncate font-sans text-[11px] text-primary">{url}</span>
                         <button 
@@ -281,16 +281,16 @@ export const WatchForm = ({
 
         {/* Server Cleanups */}
         {uploadedImages.length > 0 && (
-          <section className="rounded-2xl border border-red-100 bg-red-50/10 p-5">
+          <section className="rounded-2xl border border-red-100 bg-red-50/10 p-4 sm:p-5">
             <h4 className="text-xs font-bold uppercase tracking-wider text-red-800 mb-3 flex items-center gap-1.5">
               <Info className="h-4 w-4" /> Session Upload Cache
             </h4>
             <div className="grid gap-2">
               {uploadedImages.map((image) => (
-                <div className="flex items-center justify-between gap-3 rounded-xl border border-red-100/50 bg-[#FFFEFA] p-3 text-xs" key={image.publicId || image.public_id || image.url}>
+                <div className="flex min-w-0 flex-col gap-3 rounded-xl border border-red-100/50 bg-[#FFFEFA] p-3 text-xs sm:flex-row sm:items-center sm:justify-between" key={image.publicId || image.public_id || image.url}>
                   <span className="truncate font-sans text-primary">{image.url || image.path}</span>
                   <button 
-                    className="inline-flex h-8 cursor-pointer items-center justify-center rounded-lg bg-red-50 px-3 font-semibold text-red-600 transition-all hover:bg-red-100" 
+                    className="inline-flex h-8 w-full cursor-pointer items-center justify-center rounded-lg bg-red-50 px-3 font-semibold text-red-600 transition-all hover:bg-red-100 sm:w-fit" 
                     type="button" 
                     onClick={() => deleteUploadedImage(image)}
                   >
@@ -303,7 +303,7 @@ export const WatchForm = ({
         )}
 
         {/* Section 4: Visibility Flags & Save */}
-        <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between rounded-2xl border border-black/10 bg-[#FFFEFA] p-6 shadow-sm">
+        <div className="flex flex-col gap-5 rounded-2xl border border-black/10 bg-[#FFFEFA] p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:p-6">
           <div className="flex flex-wrap gap-6">
             <label className="inline-flex cursor-pointer items-center gap-2.5 select-none">
               <div className="relative flex items-center">
@@ -335,7 +335,7 @@ export const WatchForm = ({
           </div>
 
           <button 
-            className="inline-flex h-11 cursor-pointer items-center justify-center gap-2 rounded-xl bg-primary px-6 font-bold text-white transition-all hover:bg-primary active:scale-98 disabled:cursor-not-allowed disabled:opacity-50" 
+            className="inline-flex h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-primary px-6 text-sm font-bold text-white transition-all hover:bg-primary active:scale-98 disabled:cursor-not-allowed disabled:opacity-50 sm:w-fit" 
             disabled={isSaving} 
             type="submit"
           >

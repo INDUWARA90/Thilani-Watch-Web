@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { useMutation } from '@tanstack/react-query'
+import { useForm } from 'react-hook-form'
 import { Eye, EyeOff, LockKeyhole, Mail } from 'lucide-react'
 import { Link, useLocation, useNavigate } from 'react-router'
 import { ButtonSpinner } from '@/shared/ui/LoadingState'
@@ -13,30 +15,34 @@ export const LoginPage = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const [error, setError] = useState('')
-  const [isSubmitting, setIsSubmitting] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
+  const {
+    formState: { errors },
+    handleSubmit,
+    register: registerField,
+  } = useForm({
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  })
 
   const redirectTo = location.state?.from?.pathname || '/dashboard'
-
-  const handleSubmit = async (event) => {
-    event.preventDefault()
-    setError('')
-    setIsSubmitting(true)
-
-    try {
-      const formData = new FormData(event.currentTarget)
-
-      await login({
-        email: formData.get('email').trim(),
-        password: formData.get('password'),
-      })
-
-      navigate(redirectTo, { replace: true })
-    } catch (apiError) {
+  const loginMutation = useMutation({
+    mutationFn: login,
+    onSuccess: () => navigate(redirectTo, { replace: true }),
+    onError: (apiError) => {
       setError(getApiErrorMessage(apiError, 'Login failed. Check your email and password.'))
-    } finally {
-      setIsSubmitting(false)
-    }
+    },
+  })
+  const isSubmitting = loginMutation.isPending
+
+  const submitLogin = async (values) => {
+    setError('')
+    await loginMutation.mutateAsync({
+      email: values.email.trim(),
+      password: values.password,
+    })
   }
 
   return (
@@ -61,7 +67,7 @@ export const LoginPage = () => {
           Access your account, saved addresses, wishlist, and orders.
         </p>
 
-        <form className="grid gap-5" onSubmit={handleSubmit} noValidate>
+        <form className="grid gap-5" onSubmit={handleSubmit(submitLogin)} noValidate>
           {error && (
             <div
               role="alert"
@@ -77,12 +83,16 @@ export const LoginPage = () => {
               <Mail className="h-4 w-4 shrink-0 text-stone-400" />
               <input
                 className="min-h-[46px] min-w-0 flex-1 bg-transparent px-3 text-sm text-black outline-none placeholder:text-stone-400 font-normal normal-case"
-                name="email"
                 type="email"
                 placeholder="you@example.com"
-                required
+                aria-invalid={Boolean(errors.email)}
+                {...registerField('email', {
+                  required: 'Email is required.',
+                  setValueAs: (value) => value.trim(),
+                })}
               />
             </span>
+            {errors.email && <span className="text-xs font-semibold normal-case tracking-normal text-red-700">{errors.email.message}</span>}
           </label>
 
           <label className="grid gap-2 text-xs font-bold uppercase tracking-wider text-black">
@@ -91,10 +101,12 @@ export const LoginPage = () => {
               <LockKeyhole className="h-4 w-4 shrink-0 text-stone-400" />
               <input
                 className="min-h-[46px] min-w-0 flex-1 bg-transparent px-3 text-sm text-black outline-none placeholder:text-stone-400 font-normal normal-case"
-                name="password"
                 type={showPassword ? 'text' : 'password'}
                 placeholder="••••••••"
-                required
+                aria-invalid={Boolean(errors.password)}
+                {...registerField('password', {
+                  required: 'Password is required.',
+                })}
               />
               <button
                 className="cursor-pointer text-stone-500 transition hover:text-black p-1"
@@ -106,6 +118,7 @@ export const LoginPage = () => {
                 {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </button>
             </span>
+            {errors.password && <span className="text-xs font-semibold normal-case tracking-normal text-red-700">{errors.password.message}</span>}
           </label>
 
           <div className="-mt-1 flex justify-end">

@@ -1,5 +1,4 @@
 import { apiClient, unwrapApiData } from '@/shared/api/apiClient'
-import { cachedRequest } from '@/shared/api/cachedRequest'
 
 const buildParams = (params = {}) => {
   const cleanParams = {}
@@ -41,10 +40,10 @@ export const storefrontApi = {
   },
 
   async getCategories() {
-    return cachedRequest('storefront:categories', async () => unwrapApiData(await apiClient.get('/categories')))
+    return unwrapApiData(await apiClient.get('/categories'))
   },
 
   async getBrands() {
-    return cachedRequest('storefront:brands', async () => unwrapApiData(await apiClient.get('/brands')))
+    return unwrapApiData(await apiClient.get('/brands'))
   },
 }

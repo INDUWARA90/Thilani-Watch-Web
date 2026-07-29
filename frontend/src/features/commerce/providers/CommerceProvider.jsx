@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { getApiErrorMessage } from '@/shared/api/apiClient'
 import { useAuth } from '@/features/auth/hooks/useAuth'
 import { getId } from '@/features/storefront/lib/storefrontUtils'
@@ -10,11 +11,24 @@ const emptyCart = { items: [], subtotal: 0 }
 
 export const CommerceProvider = ({ children }) => {
   const { isAuthenticated, isRestoring } = useAuth()
-  const [cart, setCart] = useState(emptyCart)
   const [error, setError] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
   const [pendingIds, setPendingIds] = useState([])
-  const [wishlist, setWishlist] = useState([])
+  const queryClient = useQueryClient()
+  const canLoadCommerce = isAuthenticated && !isRestoring
+  const cartQuery = useQuery({
+    enabled: canLoadCommerce,
+    queryKey: ['commerce', 'cart'],
+    queryFn: commerceApi.getCart,
+    select: normalizeCart,
+  })
+  const wishlistQuery = useQuery({
+    enabled: canLoadCommerce,
+    queryKey: ['commerce', 'wishlist'],
+    queryFn: commerceApi.getWishlist,
+    select: normalizeWishlist,
+  })
+  const cart = canLoadCommerce ? cartQuery.data ?? emptyCart : emptyCart
+  const wishlist = canLoadCommerce ? wishlistQuery.data ?? [] : []
 
   const setPending = (watchId, isPending) => {
     setPendingIds((current) => {
@@ -24,15 +38,15 @@ export const CommerceProvider = ({ children }) => {
     })
   }
 
-  const refreshCart = async () => {
-    if (!isAuthenticated) return setCart(emptyCart)
-    setCart(normalizeCart(await commerceApi.getCart()))
-  }
+  const refreshCart = useCallback(async () => {
+    if (!canLoadCommerce) return
+    await queryClient.invalidateQueries({ queryKey: ['commerce', 'cart'] })
+  }, [canLoadCommerce, queryClient])
 
-  const refreshWishlist = async () => {
-    if (!isAuthenticated) return setWishlist([])
-    setWishlist(normalizeWishlist(await commerceApi.getWishlist()))
-  }
+  const refreshWishlist = useCallback(async () => {
+    if (!canLoadCommerce) return
+    await queryClient.invalidateQueries({ queryKey: ['commerce', 'wishlist'] })
+  }, [canLoadCommerce, queryClient])
 
   const handleActionError = (apiError, fallbackMessage) => {
     const message = getApiErrorMessage(apiError, fallbackMessage)
@@ -41,31 +55,31 @@ export const CommerceProvider = ({ children }) => {
   }
 
   const loadCommerce = useCallback(async () => {
-    if (!isAuthenticated) {
-      setCart(emptyCart)
-      setWishlist([])
-      return
-    }
-
-    setIsLoading(true)
-    try {
-      const [cartPayload, wishlistPayload] = await Promise.all([commerceApi.getCart(), commerceApi.getWishlist()])
-      setCart(normalizeCart(cartPayload))
-      setWishlist(normalizeWishlist(wishlistPayload))
-      setError('')
-    } catch (apiError) {
-      setError(getApiErrorMessage(apiError, 'Unable to load cart and wishlist.'))
-    } finally {
-      setIsLoading(false)
-    }
-  }, [isAuthenticated])
-
-  useEffect(() => {
-    if (isRestoring) return
-    // Delay the first load one tick so React hook lint accepts the state updates.
-    const timer = setTimeout(loadCommerce, 0)
-    return () => clearTimeout(timer)
-  }, [isRestoring, loadCommerce])
+    if (!canLoadCommerce) return
+    await Promise.all([cartQuery.refetch(), wishlistQuery.refetch()])
+  }, [canLoadCommerce, cartQuery, wishlistQuery])
+  const addCartMutation = useMutation({
+    mutationFn: ({ watchId, quantity }) => commerceApi.addCartItem(watchId, quantity),
+    onSuccess: refreshCart,
+  })
+  const updateCartMutation = useMutation({
+    mutationFn: ({ watchId, quantity }) => commerceApi.updateCartItem(watchId, quantity),
+    onSuccess: refreshCart,
+  })
+  const removeCartMutation = useMutation({
+    mutationFn: (watchId) => commerceApi.removeCartItem(watchId),
+    onSuccess: refreshCart,
+  })
+  const clearCartMutation = useMutation({
+    mutationFn: commerceApi.clearCart,
+    onSuccess: refreshCart,
+  })
+  const wishlistMutation = useMutation({
+    mutationFn: ({ wasWishlisted, watchId }) => (
+      wasWishlisted ? commerceApi.removeWishlistItem(watchId) : commerceApi.addWishlistItem(watchId)
+    ),
+    onSuccess: refreshWishlist,
+  })
 
   const addToCart = async (watch, quantity = 1) => {
     const watchId = getId(watch)
@@ -80,8 +94,7 @@ export const CommerceProvider = ({ children }) => {
 
     setPending(watchId, true)
     try {
-      await commerceApi.addCartItem(watchId, requestedQuantity)
-      await refreshCart()
+      await addCartMutation.mutateAsync({ watchId, quantity: requestedQuantity })
       setError('')
     } catch (apiError) {
       handleActionError(apiError, 'Unable to add this watch to cart.')
@@ -104,8 +117,7 @@ export const CommerceProvider = ({ children }) => {
 
     setPending(watchId, true)
     try {
-      await commerceApi.updateCartItem(watchId, nextQuantity)
-      await refreshCart()
+      await updateCartMutation.mutateAsync({ watchId, quantity: nextQuantity })
       setError('')
     } catch (apiError) {
       handleActionError(apiError, 'Unable to update cart quantity.')
@@ -120,8 +132,7 @@ export const CommerceProvider = ({ children }) => {
 
     setPending(watchId, true)
     try {
-      await commerceApi.removeCartItem(watchId)
-      await refreshCart()
+      await removeCartMutation.mutateAsync(watchId)
       setError('')
     } catch (apiError) {
       handleActionError(apiError, 'Unable to remove this item.')
@@ -132,8 +143,7 @@ export const CommerceProvider = ({ children }) => {
 
   const clearCart = async () => {
     try {
-      await commerceApi.clearCart()
-      await refreshCart()
+      await clearCartMutation.mutateAsync()
       setError('')
     } catch (apiError) {
       handleActionError(apiError, 'Unable to clear cart.')
@@ -149,12 +159,7 @@ export const CommerceProvider = ({ children }) => {
     const wasWishlisted = isWishlisted(watchId)
     setPending(watchId, true)
     try {
-      if (wasWishlisted) {
-        await commerceApi.removeWishlistItem(watchId)
-      } else {
-        await commerceApi.addWishlistItem(watchId)
-      }
-      await refreshWishlist()
+      await wishlistMutation.mutateAsync({ wasWishlisted, watchId })
       setError('')
     } catch (apiError) {
       handleActionError(apiError, 'Unable to update wishlist.')
@@ -167,8 +172,10 @@ export const CommerceProvider = ({ children }) => {
     addToCart,
     cart,
     clearCart,
-    error,
-    isLoading,
+    error: error || (cartQuery.error || wishlistQuery.error
+      ? getApiErrorMessage(cartQuery.error || wishlistQuery.error, 'Unable to load cart and wishlist.')
+      : ''),
+    isLoading: cartQuery.isLoading || wishlistQuery.isLoading,
     isRestoring,
     isPending: (watchId) => pendingIds.includes(watchId),
     isWishlisted,

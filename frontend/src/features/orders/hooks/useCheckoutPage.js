@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router'
 import { cloudinaryApi } from '@/shared/api/cloudinaryApi'
 import { getApiErrorMessage } from '@/shared/api/apiClient'
@@ -20,6 +21,7 @@ const MAX_PAYMENT_SLIP_SIZE = 5 * 1024 * 1024
 export const useCheckoutPage = () => {
   const { cart, isLoading, isRestoring, loadCommerce } = useCommerce()
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
   const [billingAddress, setBillingAddress] = useState(emptyAddress)
   const [couponCode, setCouponCode] = useState('')
   const [couponMessage, setCouponMessage] = useState('')
@@ -27,8 +29,6 @@ export const useCheckoutPage = () => {
   const [error, setError] = useState('')
   const [fieldErrors, setFieldErrors] = useState({})
   const [touchedFields, setTouchedFields] = useState({})
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isValidatingCoupon, setIsValidatingCoupon] = useState(false)
   const [notes, setNotes] = useState('')
   const [paymentSlipFile, setPaymentSlipFile] = useState(null)
   const [paymentSlipPreview, setPaymentSlipPreview] = useState('')
@@ -41,6 +41,32 @@ export const useCheckoutPage = () => {
   const discount = readCouponDiscount(couponResult, cart.subtotal) || Number(cart.discount || cart.discountAmount || 0)
   const shippingFee = getShippingFeeByProvince(shippingAddress.state)
   const total = Math.max(0, Number(cart.subtotal || 0) + shippingFee - discount)
+  const couponMutation = useMutation({
+    mutationFn: ordersApi.validateCoupon,
+    onSuccess: (payload) => {
+      setCouponResult(payload)
+      setCouponMessage('Coupon applied.')
+    },
+    onError: (apiError) => {
+      setCouponMessage(getApiErrorMessage(apiError, 'Coupon is not valid for this cart.'))
+    },
+  })
+  const orderMutation = useMutation({
+    mutationFn: async (payload) => {
+      const paymentSlip = await cloudinaryApi.uploadPaymentSlip(paymentSlipFile)
+      return normalizeOrder(await ordersApi.createOrder({ ...payload, paymentSlip }))
+    },
+    onSuccess: async (order) => {
+      await Promise.all([
+        loadCommerce(),
+        queryClient.invalidateQueries({ queryKey: ['orders', 'mine'] }),
+      ])
+      navigate(`/orders/confirmation/${order?._id || order?.id || order?.orderNumber}`, { replace: true, state: { order } })
+    },
+    onError: (submitError) => {
+      setError(submitError?.response ? getApiErrorMessage(submitError, 'Unable to place order.') : submitError.message)
+    },
+  })
 
   const updateAddress = (setter, name, value, addressType = 'shipping') => {
     const fieldKey = `${addressType}.${name}`
@@ -127,19 +153,10 @@ export const useCheckoutPage = () => {
       return
     }
 
-    setIsValidatingCoupon(true)
-    try {
-      const payload = await ordersApi.validateCoupon({
-        code: couponCode.trim(),
-        cartTotal: Number(cart.subtotal || 0),
-      })
-      setCouponResult(payload)
-      setCouponMessage('Coupon applied.')
-    } catch (apiError) {
-      setCouponMessage(getApiErrorMessage(apiError, 'Coupon is not valid for this cart.'))
-    } finally {
-      setIsValidatingCoupon(false)
-    }
+    await couponMutation.mutateAsync({
+      code: couponCode.trim(),
+      cartTotal: Number(cart.subtotal || 0),
+    })
   }
 
   const handleSubmit = async (event) => {
@@ -167,31 +184,17 @@ export const useCheckoutPage = () => {
       return
     }
 
-    setIsSubmitting(true)
-
-    try {
-      const payload = buildOrderPayload({
-        billingAddress,
-        cart,
-        couponCode,
-        notes,
-        paymentSlipFile,
-        shippingFee,
-        shippingAddress,
-        useShippingAsBilling,
-        wantedDate,
-      })
-      const paymentSlip = await cloudinaryApi.uploadPaymentSlip(paymentSlipFile)
-      payload.paymentSlip = paymentSlip
-
-      const order = normalizeOrder(await ordersApi.createOrder(payload))
-      await loadCommerce()
-      navigate(`/orders/confirmation/${order?._id || order?.id || order?.orderNumber}`, { replace: true, state: { order } })
-    } catch (submitError) {
-      setError(submitError?.response ? getApiErrorMessage(submitError, 'Unable to place order.') : submitError.message)
-    } finally {
-      setIsSubmitting(false)
-    }
+    await orderMutation.mutateAsync(buildOrderPayload({
+      billingAddress,
+      cart,
+      couponCode,
+      notes,
+      paymentSlipFile,
+      shippingFee,
+      shippingAddress,
+      useShippingAsBilling,
+      wantedDate,
+    }))
   }
 
   return {
@@ -208,8 +211,8 @@ export const useCheckoutPage = () => {
     isPaymentSlipPopupOpen,
     minimumWantedDate,
     isSessionRestoring: isRestoring || isLoading,
-    isSubmitting,
-    isValidatingCoupon,
+    isSubmitting: orderMutation.isPending,
+    isValidatingCoupon: couponMutation.isPending,
     notes,
     paymentSlipFile,
     paymentSlipPreview,

@@ -68,7 +68,7 @@ export const CatalogForm = ({ editingItem, form, isUploadingImage, label, setFor
       </div>
 
       {/* Asset Manager Section */}
-      <div className="rounded-2xl border border-black/10 bg-[#FAF9F5]/75 p-5 space-y-4">
+      <div className="space-y-4 rounded-2xl border border-black/10 bg-[#FAF9F5]/75 p-4 sm:p-5">
         <div>
           <h3 className="flex items-center gap-1.5 font-heading text-sm font-bold tracking-wide text-primary">
             <ImageIcon className="h-4 w-4 text-primary" />
@@ -110,7 +110,7 @@ export const CatalogForm = ({ editingItem, form, isUploadingImage, label, setFor
 
         {/* Active Upload Preview */}
         {form.imageUrl && (
-          <div className="flex items-center gap-4 rounded-xl border border-black/10 bg-[#FFFEFA] p-3 shadow-sm">
+          <div className="flex min-w-0 items-center gap-3 rounded-xl border border-black/10 bg-[#FFFEFA] p-3 shadow-sm sm:gap-4">
             <img 
               className="h-14 w-14 rounded-lg bg-[#FAF9F5] object-cover border border-black/5" 
               src={form.imageUrl} 
@@ -159,7 +159,7 @@ export const CatalogForm = ({ editingItem, form, isUploadingImage, label, setFor
         </label>
 
         <button 
-          className="inline-flex h-11 cursor-pointer items-center justify-center gap-2 rounded-xl bg-primary px-5 text-sm font-bold text-white shadow-sm transition-all hover:bg-primary active:scale-98 disabled:cursor-not-allowed disabled:opacity-50" 
+          className="inline-flex h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-primary px-5 text-sm font-bold text-white shadow-sm transition-all hover:bg-primary active:scale-98 disabled:cursor-not-allowed disabled:opacity-50 sm:w-fit" 
           type="submit"
         >
           <span>{editingItem ? `Update ${label}` : `Create ${label}`}</span>

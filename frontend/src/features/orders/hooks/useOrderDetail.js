@@ -1,60 +1,67 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useState } from 'react'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { getApiErrorMessage } from '@/shared/api/apiClient'
 import { getOrderId, normalizeOrder } from '@/features/orders/lib/orderUtils'
 import { ordersApi } from '@/features/orders/api/ordersApi'
 
 export const useOrderDetail = (id) => {
   const [error, setError] = useState('')
-  const [isLoading, setIsLoading] = useState(true)
   const [message, setMessage] = useState('')
-  const [order, setOrder] = useState(null)
   const [returnForm, setReturnForm] = useState({ notes: '', reason: '' })
+  const queryClient = useQueryClient()
+  const orderQuery = useQuery({
+    enabled: Boolean(id),
+    queryKey: ['orders', 'detail', id],
+    queryFn: () => ordersApi.getOrder(id),
+    select: normalizeOrder,
+  })
+  const invalidateOrder = async () => {
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: ['orders', 'detail', id] }),
+      queryClient.invalidateQueries({ queryKey: ['orders', 'mine'] }),
+    ])
+  }
+  const cancelMutation = useMutation({
+    mutationFn: ordersApi.cancelOrder,
+    onSuccess: async () => {
+      setMessage('Order cancelled successfully.')
+      await invalidateOrder()
+    },
+    onError: (apiError) => {
+      setError(getApiErrorMessage(apiError, 'Unable to cancel order.'))
+    },
+  })
+  const returnMutation = useMutation({
+    mutationFn: ({ orderId, payload }) => ordersApi.requestReturn(orderId, payload),
+    onSuccess: async () => {
+      setReturnForm({ notes: '', reason: '' })
+      setMessage('Return request submitted successfully.')
+      await invalidateOrder()
+    },
+    onError: (apiError) => {
+      setError(getApiErrorMessage(apiError, 'Unable to request return.'))
+    },
+  })
 
-  const loadOrder = useCallback(async () => {
-    setIsLoading(true)
-    setError('')
-    try {
-      setOrder(normalizeOrder(await ordersApi.getOrder(id)))
-    } catch (apiError) {
-      setError(getApiErrorMessage(apiError, 'Unable to load order.'))
-    } finally {
-      setIsLoading(false)
-    }
-  }, [id])
-
-  useEffect(() => {
-    // Delay the first load one tick so React hook lint accepts the state updates.
-    const timer = setTimeout(loadOrder, 0)
-    return () => clearTimeout(timer)
-  }, [loadOrder])
+  const order = orderQuery.data ?? null
 
   const cancelOrder = async () => {
     setError('')
     setMessage('')
-    try {
-      await ordersApi.cancelOrder(getOrderId(order))
-      setMessage('Order cancelled successfully.')
-      await loadOrder()
-    } catch (apiError) {
-      setError(getApiErrorMessage(apiError, 'Unable to cancel order.'))
-    }
+    await cancelMutation.mutateAsync(getOrderId(order))
   }
 
   const requestReturn = async (event) => {
     event.preventDefault()
     setError('')
     setMessage('')
-    try {
-      await ordersApi.requestReturn(getOrderId(order), {
+    await returnMutation.mutateAsync({
+      orderId: getOrderId(order),
+      payload: {
         notes: returnForm.notes.trim(),
         reason: returnForm.reason.trim(),
-      })
-      setReturnForm({ notes: '', reason: '' })
-      setMessage('Return request submitted successfully.')
-      await loadOrder()
-    } catch (apiError) {
-      setError(getApiErrorMessage(apiError, 'Unable to request return.'))
-    }
+      },
+    })
   }
 
   const updateReturnField = (name, value) => {
@@ -63,8 +70,8 @@ export const useOrderDetail = (id) => {
 
   return {
     cancelOrder,
-    error,
-    isLoading,
+    error: error || (orderQuery.error ? getApiErrorMessage(orderQuery.error, 'Unable to load order.') : ''),
+    isLoading: orderQuery.isLoading,
     message,
     order,
     requestReturn,

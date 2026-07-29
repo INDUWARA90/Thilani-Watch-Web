@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { useMutation } from '@tanstack/react-query'
+import { useForm } from 'react-hook-form'
 import { Eye, EyeOff } from 'lucide-react'
 import { Link, useNavigate } from 'react-router'
 import { ButtonSpinner } from '@/shared/ui/LoadingState'
@@ -12,31 +14,38 @@ export const RegisterPage = () => {
   const { register } = useAuth()
   const navigate = useNavigate()
   const [error, setError] = useState('')
-  const [isSubmitting, setIsSubmitting] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
+  const {
+    formState: { errors },
+    handleSubmit,
+    register: registerField,
+  } = useForm({
+    defaultValues: {
+      email: '',
+      name: '',
+      password: '',
+      phone: '',
+    },
+  })
 
-  const handleSubmit = async (event) => {
-    event.preventDefault()
-    setError('')
-    setIsSubmitting(true)
-
-    try {
-      const formData = new FormData(event.currentTarget)
-      const phone = formData.get('phone').trim()
-      const payload = {
-        name: formData.get('name').trim(),
-        email: formData.get('email').trim(),
-        password: formData.get('password'),
-        ...(phone && { phone }),
-      }
-
-      await register(payload)
-      navigate('/dashboard', { replace: true })
-    } catch (apiError) {
+  const registerMutation = useMutation({
+    mutationFn: register,
+    onSuccess: () => navigate('/dashboard', { replace: true }),
+    onError: (apiError) => {
       setError(getApiErrorMessage(apiError, 'Registration failed. Please check your details.'))
-    } finally {
-      setIsSubmitting(false)
+    },
+  })
+  const isSubmitting = registerMutation.isPending
+
+  const submitRegister = async (values) => {
+    setError('')
+    const payload = {
+      email: values.email.trim(),
+      name: values.name.trim(),
+      password: values.password,
     }
+    const phone = values.phone.trim()
+    await registerMutation.mutateAsync(phone ? { ...payload, phone } : payload)
   }
 
   return (
@@ -52,7 +61,7 @@ export const RegisterPage = () => {
           Create a customer account with your contact details to begin shopping.
         </p>
 
-        <form className="grid gap-5" onSubmit={handleSubmit} noValidate>
+        <form className="grid gap-5" onSubmit={handleSubmit(submitRegister)} noValidate>
           {error && (
             <div
               role="alert"
@@ -65,12 +74,31 @@ export const RegisterPage = () => {
           <div className="grid gap-4">
             <label className="grid gap-2 text-xs font-bold uppercase tracking-wider text-black">
               Name 
-              <input className={authInputClass} name="name" placeholder="Full name" required />
+              <input
+                className={authInputClass}
+                placeholder="Full name"
+                aria-invalid={Boolean(errors.name)}
+                {...registerField('name', {
+                  required: 'Name is required.',
+                  setValueAs: (value) => value.trim(),
+                })}
+              />
+              {errors.name && <span className="text-xs font-semibold normal-case tracking-normal text-red-700">{errors.name.message}</span>}
             </label>
 
             <label className="grid gap-2 text-xs font-bold uppercase tracking-wider text-black">
               Email 
-              <input className={authInputClass} name="email" type="email" placeholder="you@example.com" required />
+              <input
+                className={authInputClass}
+                type="email"
+                placeholder="you@example.com"
+                aria-invalid={Boolean(errors.email)}
+                {...registerField('email', {
+                  required: 'Email is required.',
+                  setValueAs: (value) => value.trim(),
+                })}
+              />
+              {errors.email && <span className="text-xs font-semibold normal-case tracking-normal text-red-700">{errors.email.message}</span>}
             </label>
 
             <label className="grid gap-2 text-xs font-bold uppercase tracking-wider text-black">
@@ -78,11 +106,16 @@ export const RegisterPage = () => {
               <span className="flex items-center rounded-2xl border border-black/15 bg-stone-50/50 px-4 transition focus-within:border-black focus-within:bg-white focus-within:ring-2 focus-within:ring-black/10">
                 <input
                   className="min-h-[46px] min-w-0 flex-1 bg-transparent py-2.5 text-sm text-black outline-none placeholder:text-stone-400 font-normal normal-case"
-                  name="password"
                   type={showPassword ? 'text' : 'password'}
                   placeholder="••••••••"
-                  minLength={6}
-                  required
+                  aria-invalid={Boolean(errors.password)}
+                  {...registerField('password', {
+                    minLength: {
+                      value: 6,
+                      message: 'Password must be at least 6 characters.',
+                    },
+                    required: 'Password is required.',
+                  })}
                 />
                 <button
                   className="cursor-pointer text-stone-500 transition hover:text-black p-1"
@@ -94,11 +127,19 @@ export const RegisterPage = () => {
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </span>
+              {errors.password && <span className="text-xs font-semibold normal-case tracking-normal text-red-700">{errors.password.message}</span>}
             </label>
 
             <label className="grid gap-2 text-xs font-bold uppercase tracking-wider text-black">
               Phone (Optional)
-              <input className={authInputClass} name="phone" type="tel" placeholder="+94 77 123 4567" />
+              <input
+                className={authInputClass}
+                type="tel"
+                placeholder="+94 77 123 4567"
+                {...registerField('phone', {
+                  setValueAs: (value) => value.trim(),
+                })}
+              />
             </label>
           </div>
 

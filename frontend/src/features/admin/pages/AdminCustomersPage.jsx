@@ -28,7 +28,7 @@ export const AdminCustomersPage = () => {
           <p className="mb-1 text-xs font-bold uppercase tracking-wider text-accent">Admin Dashboard</p>
           <h1 className="m-0 font-heading text-2xl font-black tracking-wide text-primary sm:text-3xl">Customer Management</h1>
         </div>
-        <form className="flex w-full max-w-md gap-2" onSubmit={handleSearch}>
+        <form className="flex w-full flex-col gap-2 min-[420px]:flex-row sm:max-w-md" onSubmit={handleSearch}>
           <div className="relative flex-1">
             <input 
               className={inputClass} 
@@ -51,11 +51,75 @@ export const AdminCustomersPage = () => {
       {/* Main split grid */}
       <div className="grid gap-8 items-start xl:grid-cols-[1fr_400px]">
         {/* Table View Component */}
-        <main className="rounded-2xl border border-black/10 bg-[#FFFEFA] shadow-sm overflow-hidden">
+        <main className="min-w-0 overflow-hidden rounded-2xl border border-black/10 bg-[#FFFEFA] shadow-sm">
           {isLoading ? (
             <div className="p-6"><LoadingState label="Loading accounts..." variant="table" rows={6} /></div>
           ) : (
-            <div className="w-full overflow-x-auto">
+            <>
+            <div className="divide-y divide-black/5 md:hidden">
+              {customers.map((customer) => {
+                const customerId = getId(customer)
+                const isPending = pendingId === customerId
+                const isCurrentSelection = selectedCustomer && getId(selectedCustomer) === customerId
+                const isActive = customer.isActive !== false
+
+                return (
+                  <article className={`p-4 ${isCurrentSelection ? 'bg-accent/10' : 'bg-[#FFFEFA]'}`} key={customerId}>
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <h3 className="break-words text-sm font-bold text-primary">{getTitle(customer, 'Customer')}</h3>
+                        <p className="mt-1 break-all font-sans text-xs text-primary">{customer.email}</p>
+                      </div>
+                      <span className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ${
+                        isActive
+                          ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/10'
+                          : 'bg-black/5 text-primary'
+                      }`}>
+                        <span className={`h-1.5 w-1.5 rounded-full ${isActive ? 'bg-emerald-500' : 'bg-black/35'}`} />
+                        {isActive ? 'Active' : 'Inactive'}
+                      </span>
+                    </div>
+
+                    <dl className="mt-4 grid grid-cols-2 gap-3 rounded-xl bg-[#FAF9F5]/80 p-3 text-xs">
+                      <div className="min-w-0">
+                        <dt className="font-bold uppercase tracking-wide text-primary">Phone</dt>
+                        <dd className="mt-1 break-words font-semibold text-primary">{customer.phone || 'Not configured'}</dd>
+                      </div>
+                      <div className="min-w-0">
+                        <dt className="font-bold uppercase tracking-wide text-primary">Registration</dt>
+                        <dd className="mt-1 font-semibold text-primary">{formatDate(customer.createdAt)}</dd>
+                      </div>
+                    </dl>
+
+                    <div className="mt-4 grid gap-2 min-[420px]:grid-cols-2">
+                      <button
+                        className={`${smallButtonClass} h-9 w-full ${isCurrentSelection ? 'border-primary bg-accent/10/50 text-primary' : ''}`}
+                        disabled={isPending}
+                        type="button"
+                        onClick={() => openCustomer(customer)}
+                      >
+                        {isPending ? <ButtonSpinner /> : 'Inspect'}
+                      </button>
+                      <button
+                        className={`${actionButtonClass} h-9 w-full border border-black/10 ${isActive ? 'hover:bg-red-50 hover:text-red-600' : 'hover:bg-emerald-50 hover:text-emerald-600'}`}
+                        disabled={isPending}
+                        type="button"
+                        onClick={() => toggleCustomerStatus(customer)}
+                      >
+                        {isActive ? 'Deactivate' : 'Activate'}
+                      </button>
+                    </div>
+                  </article>
+                )
+              })}
+              {customers.length === 0 && (
+                <div className="p-8 text-center text-sm text-primary">
+                  No records match the requested parameters.
+                </div>
+              )}
+            </div>
+
+            <div className="hidden w-full overflow-x-auto md:block">
               <table className="w-full min-w-[700px] border-collapse text-left">
                 <thead>
                   <tr className="bg-[#FAF9F5]/85 border-b border-black/10">
@@ -133,11 +197,12 @@ export const AdminCustomersPage = () => {
                 </tbody>
               </table>
             </div>
+            </>
           )}
         </main>
 
         {/* Inspection Panel Side Drawer / Card */}
-        <aside className="sticky top-6 rounded-2xl border border-black/10 bg-[#FFFEFA] shadow-sm p-6 overflow-hidden">
+        <aside className="min-w-0 overflow-hidden rounded-2xl border border-black/10 bg-[#FFFEFA] p-4 shadow-sm sm:p-6 xl:sticky xl:top-6">
           {selectedCustomer ? (
             <div className="space-y-6">
               <div className="border-b border-black/5 pb-4">
@@ -212,7 +277,7 @@ export const AdminCustomersPage = () => {
 
 // Layout configuration tokens
 const inputClass = 'w-full h-10 rounded-xl border border-black/10 bg-[#FFFEFA] pl-4 pr-3 text-sm text-primary shadow-sm placeholder:text-primary outline-none transition-all focus:border-primary focus:ring-2 focus:ring-accent/20'
-const primaryButtonClass = 'inline-flex h-10 cursor-pointer items-center justify-center rounded-xl bg-black px-5 text-sm font-semibold text-white shadow-sm hover:bg-black/85 transition-colors shrink-0'
+const primaryButtonClass = 'inline-flex h-10 w-full cursor-pointer items-center justify-center rounded-xl bg-black px-5 text-sm font-semibold text-white shadow-sm hover:bg-black/85 transition-colors min-[420px]:w-fit min-[420px]:shrink-0'
 const smallButtonClass = 'inline-flex h-8 min-w-[64px] cursor-pointer items-center justify-center rounded-lg border border-black/10 bg-[#FFFEFA] px-3 text-xs font-semibold text-primary shadow-sm hover:bg-[#FAF9F5] hover:text-primary disabled:cursor-not-allowed disabled:opacity-50 transition-all'
 const actionButtonClass = 'inline-flex h-8 cursor-pointer items-center justify-center rounded-lg px-2.5 text-xs font-medium text-primary hover:bg-[#FAF9F5] disabled:cursor-not-allowed disabled:opacity-50 transition-all'
 

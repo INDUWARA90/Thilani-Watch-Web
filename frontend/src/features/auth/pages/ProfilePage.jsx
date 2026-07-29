@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { CheckCircle2, AlertCircle, MapPin, User, Plus, X } from 'lucide-react'
 import { ButtonSpinner, LoadingState } from '@/shared/ui/LoadingState'
 import { getApiErrorMessage } from '@/shared/api/apiClient'
@@ -25,86 +26,68 @@ export const ProfilePage = () => {
 
   const { updateProfile, user } = useAuth()
   const [profile, setProfile] = useState({ name: user?.name || '', phone: user?.phone || '' })
-  const [addresses, setAddresses] = useState([])
   const [addressForm, setAddressForm] = useState(emptyAddress)
   const [editingAddressId, setEditingAddressId] = useState('')
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
-  const [isLoading, setIsLoading] = useState(true)
-  const [isSaving, setIsSaving] = useState(false)
-
-  const loadAddresses = async () => {
-    const payload = await authApi.getAddresses()
-    setAddresses(normalizeAddresses(payload))
-  }
-
-  useEffect(() => {
-    let isMounted = true
-
-    const run = async () => {
-      try {
-        const payload = await authApi.getAddresses()
-        if (isMounted) {
-          setAddresses(normalizeAddresses(payload))
-          setError('')
-        }
-      } catch (apiError) {
-        if (isMounted) {
-          setError(getApiErrorMessage(apiError, 'Unable to load addresses.'))
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoading(false)
-        }
-      }
-    }
-
-    run()
-
-    return () => {
-      isMounted = false
-    }
-  }, [])
+  const queryClient = useQueryClient()
+  const addressesQuery = useQuery({
+    queryKey: ['auth', 'addresses'],
+    queryFn: authApi.getAddresses,
+    select: normalizeAddresses,
+  })
+  const addresses = addressesQuery.data ?? []
+  const refreshAddresses = () => queryClient.invalidateQueries({ queryKey: ['auth', 'addresses'] })
+  const profileMutation = useMutation({
+    mutationFn: updateProfile,
+    onSuccess: () => setMessage('Profile updated successfully.'),
+    onError: (apiError) => setError(getApiErrorMessage(apiError, 'Unable to update profile.')),
+  })
+  const saveAddressMutation = useMutation({
+    mutationFn: ({ addressId, payload }) => (
+      addressId ? authApi.updateAddress(addressId, payload) : authApi.createAddress(payload)
+    ),
+    onSuccess: async (_data, { addressId }) => {
+      setAddressForm(emptyAddress)
+      setEditingAddressId('')
+      await refreshAddresses()
+      setMessage(addressId ? 'Address updated successfully.' : 'Address added successfully.')
+    },
+    onError: (apiError) => setError(getApiErrorMessage(apiError, 'Unable to save address.')),
+  })
+  const deleteAddressMutation = useMutation({
+    mutationFn: (address) => authApi.deleteAddress(getAddressId(address)),
+    onSuccess: async () => {
+      await refreshAddresses()
+      setMessage('Address removed successfully.')
+    },
+    onError: (apiError) => setError(getApiErrorMessage(apiError, 'Unable to remove address.')),
+  })
+  const defaultAddressMutation = useMutation({
+    mutationFn: (address) => authApi.setDefaultAddress(getAddressId(address)),
+    onSuccess: async () => {
+      await refreshAddresses()
+      setMessage('Default address updated.')
+    },
+    onError: (apiError) => setError(getApiErrorMessage(apiError, 'Unable to set default address.')),
+  })
+  const isSaving = profileMutation.isPending || saveAddressMutation.isPending
 
   const saveProfile = async (event) => {
     event.preventDefault()
     setError('')
     setMessage('')
-    setIsSaving(true)
-    try {
-      await updateProfile({
-        name: profile.name.trim(),
-        phone: profile.phone.trim(),
-      })
-      setMessage('Profile updated successfully.')
-    } catch (apiError) {
-      setError(getApiErrorMessage(apiError, 'Unable to update profile.'))
-    } finally {
-      setIsSaving(false)
-    }
+    await profileMutation.mutateAsync({
+      name: profile.name.trim(),
+      phone: profile.phone.trim(),
+    })
   }
 
   const saveAddress = async (event) => {
     event.preventDefault()
     setError('')
     setMessage('')
-    setIsSaving(true)
-    try {
-      const payload = trimAddress(addressForm)
-      if (editingAddressId) {
-        await authApi.updateAddress(editingAddressId, payload)
-      } else {
-        await authApi.createAddress(payload)
-      }
-      setAddressForm(emptyAddress)
-      setEditingAddressId('')
-      await loadAddresses()
-      setMessage(editingAddressId ? 'Address updated successfully.' : 'Address added successfully.')
-    } catch (apiError) {
-      setError(getApiErrorMessage(apiError, 'Unable to save address.'))
-    } finally {
-      setIsSaving(false)
-    }
+    await saveAddressMutation.mutateAsync({ addressId: editingAddressId, payload: trimAddress(addressForm) })
   }
 
   const editAddress = (address) => {
@@ -115,26 +98,16 @@ export const ProfilePage = () => {
   const deleteAddress = async (address) => {
     setError('')
     setMessage('')
-    try {
-      await authApi.deleteAddress(getAddressId(address))
-      await loadAddresses()
-      setMessage('Address removed successfully.')
-    } catch (apiError) {
-      setError(getApiErrorMessage(apiError, 'Unable to remove address.'))
-    }
+    await deleteAddressMutation.mutateAsync(address)
   }
 
   const setDefaultAddress = async (address) => {
     setError('')
     setMessage('')
-    try {
-      await authApi.setDefaultAddress(getAddressId(address))
-      await loadAddresses()
-      setMessage('Default address updated.')
-    } catch (apiError) {
-      setError(getApiErrorMessage(apiError, 'Unable to set default address.'))
-    }
+    await defaultAddressMutation.mutateAsync(address)
   }
+
+  const addressLoadError = addressesQuery.error ? getApiErrorMessage(addressesQuery.error, 'Unable to load addresses.') : ''
 
   return (
     <main className="min-h-screen bg-base pb-24 text-black">
@@ -160,10 +133,10 @@ export const ProfilePage = () => {
       {/* Main Container */}
       <div className="mx-auto max-w-[1200px] px-4 pt-12 sm:px-6 lg:px-10 grid gap-8">
         {/* Notifications */}
-        {error && (
+        {(error || addressLoadError) && (
           <div className="flex items-center gap-3 rounded-2xl border border-red-500/20 bg-red-500/10 p-5 text-sm font-medium text-red-700 shadow-sm backdrop-blur-sm">
             <AlertCircle className="h-5 w-5 shrink-0 text-red-600" />
-            <span>{error}</span>
+            <span>{error || addressLoadError}</span>
           </div>
         )}
         {message && (
@@ -203,7 +176,7 @@ export const ProfilePage = () => {
             <h2 className="font-heading text-xl font-bold tracking-tight text-black">Saved Addresses</h2>
           </div>
 
-          {isLoading ? (
+          {addressesQuery.isLoading ? (
             <LoadingState label="Loading address records" variant="table" rows={2} />
           ) : (
             <div className="grid gap-5 md:grid-cols-2">

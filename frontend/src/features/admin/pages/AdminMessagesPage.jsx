@@ -22,14 +22,14 @@ export const AdminMessagesPage = () => {
   } = useAdminContactMessages()
 
   return (
-    <div className="mx-auto grid max-w-[1500px] gap-6">
+    <div className="mx-auto grid min-w-0 max-w-[1500px] gap-6">
       <div className="flex flex-col gap-4 border-b border-black/5 pb-6 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <p className="mb-1 text-xs font-bold uppercase tracking-wider text-accent">Customer Inbox</p>
           <h1 className="m-0 font-heading text-2xl font-black tracking-wide text-primary sm:text-3xl">Contact Messages</h1>
         </div>
 
-        <div className="flex flex-col gap-3 sm:flex-row">
+        <div className="flex w-full flex-col gap-3 sm:flex-row lg:w-auto">
           <label className="relative min-w-0 sm:w-72">
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-primary" />
             <input
@@ -50,8 +50,8 @@ export const AdminMessagesPage = () => {
       {error && <Notice tone="danger">{error}</Notice>}
       {message && <Notice tone="success">{message}</Notice>}
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_430px]">
-        <section className="rounded-2xl border border-black/10 bg-[#FFFEFA] shadow-sm">
+      <div className="grid min-w-0 gap-6 xl:grid-cols-[minmax(0,1fr)_430px]">
+        <section className="min-w-0 rounded-2xl border border-black/10 bg-[#FFFEFA] shadow-sm">
           {isLoading ? (
             <div className="p-5">
               <LoadingState label="Loading contact messages" variant="reviews" rows={5} />
@@ -130,7 +130,7 @@ const MessageDetail = ({ contactMessage, isPending, onDelete, onToggleRead }) =>
   const isRead = readBoolean(contactMessage.isRead)
 
   return (
-    <aside className="sticky top-6 rounded-2xl border border-black/10 bg-[#FFFEFA] p-6 shadow-sm">
+    <aside className="min-w-0 rounded-2xl border border-black/10 bg-[#FFFEFA] p-4 shadow-sm sm:p-6 xl:sticky xl:top-6">
       <div className="mb-5 flex items-start justify-between gap-4 border-b border-black/5 pb-5">
         <div className="min-w-0">
           <p className="mb-2 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-accent">
@@ -184,7 +184,7 @@ const Notice = ({ children, tone }) => (
 )
 
 const inputClass = 'h-10 w-full rounded-xl border border-black/10 bg-[#FFFEFA] pl-9 pr-3 text-sm font-medium text-primary outline-none transition focus:border-primary focus:ring-2 focus:ring-accent/20'
-const selectClass = 'h-10 rounded-xl border border-black/10 bg-[#FFFEFA] px-3 text-sm font-medium text-primary outline-none transition focus:border-primary focus:ring-2 focus:ring-accent/20'
+const selectClass = 'h-10 w-full rounded-xl border border-black/10 bg-[#FFFEFA] px-3 text-sm font-medium text-primary outline-none transition focus:border-primary focus:ring-2 focus:ring-accent/20 sm:w-auto'
 const secondaryButtonClass = 'inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-xl border border-black/10 bg-[#FFFEFA] px-4 text-sm font-semibold text-primary transition hover:bg-[#FAF9F5] disabled:cursor-not-allowed disabled:opacity-60'
 const dangerButtonClass = 'inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 text-sm font-semibold text-red-700 transition hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-60'
 
