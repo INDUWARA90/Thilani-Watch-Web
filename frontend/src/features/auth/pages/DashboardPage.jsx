@@ -1,3 +1,4 @@
+import React from 'react'
 import { Link, useNavigate } from 'react-router'
 import { ArrowUpRight, Edit3, LogOut, Mail, Phone, ShieldCheck, User } from 'lucide-react'
 import { useAuth } from '@/features/auth/hooks/useAuth'
@@ -15,9 +16,14 @@ const adminItems = [
     to: '/admin/orders',
   },
   {
-    title: 'Catalog Setup',
-    description: 'Manage brands, categories, and store structure.',
+    title: 'Category Setup',
+    description: 'Manage category records, slugs, sorting, images, and visibility.',
     to: '/admin/catalog',
+  },
+  {
+    title: 'Brand Management',
+    description: 'Manage brand records, slugs, sorting, images, and visibility.',
+    to: '/admin/brands',
   },
 ]
 
@@ -59,114 +65,124 @@ const DashboardPage = () => {
 
   return (
     <main className="min-h-screen bg-base pb-24 text-black">
-      {/* Hero Header Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-stone-100/80 via-base to-base px-4 pb-16 pt-16 sm:px-6 sm:pt-20 lg:px-10 border-b border-black/5">
-        <div className="absolute inset-0 pointer-events-none opacity-40">
-          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[350px] w-[700px] rounded-full bg-gradient-to-tr from-amber-200/20 via-orange-100/10 to-transparent blur-3xl" />
-        </div>
+      <div className="mx-auto max-w-[1200px] px-4 pt-8 sm:px-6 lg:px-10">
+        
+        {/* Workspace Executive Split Header */}
+        <section className="mb-10 grid gap-6 lg:grid-cols-12 lg:items-stretch">
+          
+          {/* Main User Identity Box */}
+          <div className="relative flex flex-col justify-between overflow-hidden rounded-3xl border border-black/10 bg-gradient-to-b from-stone-100/80 via-base to-base p-6 sm:p-8 shadow-sm lg:col-span-7">
+            <div>
+              <div className="flex items-center justify-between gap-4">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-black/10 bg-white/80 px-4 py-1.5 text-sm font-bold uppercase tracking-wider text-black shadow-sm backdrop-blur-md">
+                  {isAdmin ? <ShieldCheck className="h-4 w-4 text-amber-600" /> : <User className="h-4 w-4 text-amber-600" />}
+                  {accountLabel}
+                </span>
 
-        <div className="relative z-10 mx-auto max-w-[1200px] min-w-0">
-          <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex min-w-0 items-start gap-5 sm:items-center sm:gap-6">
-              <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-black text-lg font-extrabold text-white shadow-xl sm:h-20 sm:w-20 sm:text-2xl font-mono">
-                {initials}
+                <button
+                  onClick={handleLogout}
+                  type="button"
+                  className="group inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-full border border-red-500/20 bg-red-500/5 px-4 py-2 text-sm font-bold text-red-600 shadow-sm transition-all duration-200 hover:bg-red-500 hover:text-white active:scale-95 cursor-pointer"
+                >
+                  <LogOut className="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-0.5" />
+                  <span>Log out</span>
+                </button>
               </div>
 
-              <div className="min-w-0">
-                <div className="mb-2 flex items-center gap-2">
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-black/10 bg-white/80 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-black shadow-sm backdrop-blur-md">
-                    {isAdmin ? <ShieldCheck className="h-3.5 w-3.5 text-amber-600" /> : <User className="h-3.5 w-3.5 text-amber-600" />}
-                    {accountLabel}
-                  </span>
+              <div className="mt-8 flex items-center gap-5">
+                <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-black text-2xl font-extrabold text-white shadow-xl font-mono">
+                  {initials}
                 </div>
-                <h1 className="max-w-full break-words font-heading text-[34px] font-extrabold tracking-tight leading-[1.05] text-black sm:text-[46px] lg:text-[54px]">
-                  Welcome back, {displayName}
-                </h1>
-                <p className="mt-2 max-w-2xl text-sm font-normal leading-relaxed text-stone-600 sm:text-black">
-                  {accountDescription}
-                </p>
+                <div className="min-w-0">
+                  <h1 className="max-w-full break-words font-heading text-3xl font-extrabold tracking-tight text-black sm:text-4xl">
+                    Welcome back, {displayName}
+                  </h1>
+                  <p className="mt-1.5 text-sm font-normal leading-relaxed text-stone-600 sm:text-base">
+                    {accountDescription}
+                  </p>
+                </div>
               </div>
             </div>
 
-            <button
-              onClick={handleLogout}
-              type="button"
-              className="group inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-full border border-red-500/20 bg-red-500/5 px-6 py-3 text-sm font-bold text-red-600 shadow-sm transition-all duration-200 hover:bg-red-500 hover:text-white active:scale-95 cursor-pointer"
-            >
-              <LogOut className="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-0.5" />
-              <span>Log out</span>
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* Main Content Container */}
-      <section className="mx-auto max-w-[1200px] px-4 pt-12 sm:px-6 lg:px-10">
-        {/* Profile Overview Card */}
-        <div className="mb-10 flex flex-col gap-6 rounded-3xl border border-black/10 bg-white p-6 sm:p-8 shadow-[0_10px_30px_rgba(0,0,0,0.04)] lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex min-w-0 items-start gap-4 sm:gap-5">
-            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-stone-100 text-sm font-bold text-black font-mono shadow-inner">
-              {initials}
+            <div className="mt-8 border-t border-black/5 pt-4">
+              <Link
+                to="/profile"
+                className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-black transition-colors hover:text-amber-600"
+              >
+                <Edit3 className="h-4 w-4" />
+                Edit Profile Details
+              </Link>
             </div>
-            <div className="min-w-0">
-              <p className="mb-1 text-[11px] font-bold uppercase tracking-wider text-stone-500">Profile Overview</p>
+          </div>
+
+          {/* Quick Profile Summary Panel */}
+          <div className="flex flex-col justify-between rounded-3xl border border-black/10 bg-white p-6 sm:p-8 shadow-[0_10px_30px_rgba(0,0,0,0.04)] lg:col-span-5">
+            <div>
+              <p className="mb-1 text-xs font-bold uppercase tracking-wider text-stone-500">Account Contact Overview</p>
               <h2 className="break-words font-heading text-xl font-bold tracking-tight text-black">{displayName}</h2>
-              <div className="mt-3 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-stone-600">
-                <span className="inline-flex min-w-0 items-center gap-2">
-                  <Mail className="h-4 w-4 shrink-0 text-stone-400" />
-                  <span className="truncate">{user?.email || 'Email not added'}</span>
-                </span>
-                <span className="inline-flex min-w-0 items-center gap-2">
-                  <Phone className="h-4 w-4 shrink-0 text-stone-400" />
-                  <span className="truncate">{user?.phone || 'Phone not added'}</span>
-                </span>
+              
+              <div className="mt-6 grid gap-3 text-base text-stone-600">
+                <div className="flex items-center gap-3 rounded-2xl bg-stone-50 p-3.5 border border-black/5">
+                  <Mail className="h-4.5 w-4.5 shrink-0 text-stone-400" />
+                  <span className="truncate text-sm font-medium text-black">{user?.email || 'Email not added'}</span>
+                </div>
+                <div className="flex items-center gap-3 rounded-2xl bg-stone-50 p-3.5 border border-black/5">
+                  <Phone className="h-4.5 w-4.5 shrink-0 text-stone-400" />
+                  <span className="truncate text-sm font-medium text-black">{user?.phone || 'Phone not added'}</span>
+                </div>
               </div>
             </div>
+
+            <p className="mt-6 text-xs text-stone-400">
+              Need assistance? Access settings from your profile hub.
+            </p>
+          </div>
+        </section>
+
+        {/* Dynamic Navigational Grid */}
+        <section>
+          <div className="mb-5 flex items-center justify-between">
+            <h2 className="font-heading text-2xl font-bold tracking-tight text-black">
+              Workspace Actions
+            </h2>
           </div>
 
-          <Link
-            to="/profile"
-            className="inline-flex min-h-11 w-fit items-center justify-center gap-2 rounded-full bg-black px-6 text-sm font-bold text-white no-underline shadow-md transition-all hover:bg-stone-800 active:scale-98"
-          >
-            <Edit3 className="h-4 w-4" />
-            Edit profile
-          </Link>
-        </div>
-
-        {/* Action Grid */}
-        <div className="grid gap-6 md:grid-cols-3">
-          {items.map((item) => (
-            <article
-              key={item.title}
-              className="group relative flex min-w-0 flex-col justify-between overflow-hidden rounded-3xl border border-black/10 bg-white p-6 sm:p-8 shadow-[0_10px_30px_rgba(0,0,0,0.04)] transition-all duration-300 hover:-translate-y-1 hover:border-black/25 hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)]"
-            >
-              <div>
+          <div className="grid gap-5 md:grid-cols-2">
+            {items.map((item, idx) => (
+              <article
+                key={item.title}
+                className="group relative flex min-w-0 flex-col justify-between rounded-3xl border border-black/10 bg-white p-6 sm:p-7 shadow-[0_10px_30px_rgba(0,0,0,0.04)] transition-all duration-300 hover:border-black/25 hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)]"
+              >
                 <div className="flex items-start justify-between gap-4">
-                  <h2 className="min-w-0 break-words font-heading text-xl font-bold tracking-tight text-black leading-snug">
-                    {item.title}
-                  </h2>
-                  <div className="shrink-0 rounded-2xl bg-stone-100 p-3 text-stone-700 transition-all duration-300 group-hover:bg-black group-hover:text-white shadow-inner">
-                    <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  <div className="min-w-0">
+                    <h3 className="mt-1 break-words font-heading text-xl font-bold tracking-tight text-black">
+                      {item.title}
+                    </h3>
+                    <p className="mt-2 text-sm leading-relaxed text-stone-600">
+                      {item.description}
+                    </p>
+                  </div>
+
+                  <div className="shrink-0 rounded-2xl bg-stone-100 p-3.5 text-stone-700 transition-all duration-300 group-hover:bg-black group-hover:text-white shadow-inner">
+                    <ArrowUpRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                   </div>
                 </div>
-                <p className="mt-3 text-sm leading-relaxed text-stone-600">
-                  {item.description}
-                </p>
-              </div>
 
-              <div className="mt-8 pt-4 border-t border-black/5">
-                <Link
-                  to={item.to}
-                  className="inline-flex items-center gap-1.5 text-sm font-bold text-black transition-colors hover:text-amber-600 after:absolute after:inset-0"
-                >
-                  Explore section
-                  <ArrowUpRight className="h-3.5 w-3.5" />
-                </Link>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
+                <div className="mt-6 pt-4 border-t border-black/5">
+                  <Link
+                    to={item.to}
+                    className="inline-flex items-center gap-1.5 text-sm font-bold text-black transition-colors hover:text-amber-600 after:absolute after:inset-0"
+                  >
+                    Explore section
+                    <ArrowUpRight className="h-4 w-4" />
+                  </Link>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+
+      </div>
     </main>
   )
 }

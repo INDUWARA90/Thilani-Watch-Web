@@ -18,25 +18,26 @@ export const buildCatalogPayload = (form) => ({
   sortOrder: Number.parseInt(form.sortOrder || '0', 10),
 })
 
-export const catalogSections = [
-  {
-    api: {
-      list: adminApi.getCategories,
-      create: adminApi.createCategory,
-      update: adminApi.updateCategory,
-      remove: adminApi.deleteCategory,
-    },
-    label: 'Category',
-    plural: 'Categories',
+export const categoryCatalogSection = {
+  api: {
+    list: adminApi.getCategories,
+    create: adminApi.createCategory,
+    update: adminApi.updateCategory,
+    remove: adminApi.deleteCategory,
   },
-  {
-    api: {
-      list: adminApi.getBrands,
-      create: adminApi.createBrand,
-      update: adminApi.updateBrand,
-      remove: adminApi.deleteBrand,
-    },
-    label: 'Brand',
-    plural: 'Brands',
+  label: 'Category',
+  plural: 'Categories',
+}
+
+export const brandCatalogSection = {
+  api: {
+    list: adminApi.getBrands,
+    create: adminApi.createBrand,
+    update: adminApi.updateBrand,
+    remove: adminApi.deleteBrand,
   },
-]
+  label: 'Brand',
+  plural: 'Brands',
+}
+
+export const catalogSections = [categoryCatalogSection, brandCatalogSection]

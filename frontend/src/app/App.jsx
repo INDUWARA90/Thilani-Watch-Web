@@ -33,6 +33,7 @@ const OrderDetailPage = lazy(() => import('@/features/orders/pages/OrderDetailPa
 const AdminOverviewPage = lazy(() => import('@/features/admin/pages/AdminOverviewPage'))
 const AdminProductsPage = lazy(() => import('@/features/admin/pages/AdminProductsPage'))
 const AdminCatalogPage = lazy(() => import('@/features/admin/pages/AdminCatalogPage'))
+const AdminBrandsPage = lazy(() => import('@/features/admin/pages/AdminBrandsPage'))
 const AdminOrdersPage = lazy(() => import('@/features/admin/pages/AdminOrdersPage'))
 const AdminOrderDetailPage = lazy(() => import('@/features/admin/pages/AdminOrderDetailPage'))
 const AdminReviewsPage = lazy(() => import('@/features/admin/pages/AdminReviewsPage'))
@@ -79,6 +80,7 @@ const AppRoutes = () => {
                 <Route index element={<AdminOverviewPage />} />
                 <Route path="products" element={<AdminProductsPage />} />
                 <Route path="catalog" element={<AdminCatalogPage />} />
+                <Route path="brands" element={<AdminBrandsPage />} />
                 <Route path="orders" element={<AdminOrdersPage />} />
                 <Route path="orders/:id" element={<AdminOrderDetailPage />} />
                 <Route path="messages" element={<AdminMessagesPage />} />

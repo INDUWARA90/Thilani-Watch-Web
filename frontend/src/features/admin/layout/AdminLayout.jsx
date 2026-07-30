@@ -1,13 +1,14 @@
 import { useState } from 'react'
 import { Link, NavLink, Navigate, Outlet, useLocation } from 'react-router'
-import { ArrowUpRight, BarChart3, Boxes, ClipboardList, Home, LayoutDashboard, Menu, MessageSquareText, ShieldAlert, Tags, TicketPercent, Users, X } from 'lucide-react'
+import { ArrowUpRight, BadgeCheck, BarChart3, Boxes, ClipboardList, Home, LayoutDashboard, Menu, MessageSquareText, ShieldAlert, Tags, TicketPercent, Users, X } from 'lucide-react'
 import { LoadingState } from '@/shared/ui/LoadingState'
 import { useAuth } from '@/features/auth/hooks/useAuth'
 
 const adminLinks = [
   { to: '/admin', label: 'Overview', end: true, icon: LayoutDashboard },
   { to: '/admin/products', label: 'Products', icon: Boxes },
-  { to: '/admin/catalog', label: 'Categories & Brands', icon: Tags },
+  { to: '/admin/catalog', label: 'Categories', icon: Tags },
+  { to: '/admin/brands', label: 'Brands', icon: BadgeCheck },
   { to: '/admin/orders', label: 'Orders', icon: ClipboardList },
   { to: '/admin/messages', label: 'Messages', icon: MessageSquareText },
   { to: '/admin/reviews', label: 'Reviews', icon: MessageSquareText },

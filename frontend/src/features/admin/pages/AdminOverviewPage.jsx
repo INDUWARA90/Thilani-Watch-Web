@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Link } from 'react-router'
 import { 
   Package, 
+  BadgeCheck,
   FolderTree, 
   ShoppingBag, 
   MessageSquare, 
@@ -26,10 +27,16 @@ const overviewCards = [
     icon: Package,
   },
   {
-    title: 'Categories & Brands',
-    text: 'Maintain catalog entry points with active state, sort order, image URLs, and slugs.',
+    title: 'Categories',
+    text: 'Maintain category entry points with active state, sort order, image URLs, and slugs.',
     to: '/admin/catalog',
     icon: FolderTree,
+  },
+  {
+    title: 'Brands',
+    text: 'Maintain brand records with active state, sort order, image URLs, and slugs.',
+    to: '/admin/brands',
+    icon: BadgeCheck,
   },
   {
     title: 'Orders',
