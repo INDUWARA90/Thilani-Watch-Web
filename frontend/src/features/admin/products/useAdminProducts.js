@@ -68,6 +68,11 @@ export const useAdminProducts = () => {
     },
   })
 
+  const clearProductFeedback = () => {
+    setError('')
+    setMessage('')
+  }
+
   const resetForm = () => {
     setEditingWatch(null)
     setUploadedImages([])
@@ -144,6 +149,7 @@ export const useAdminProducts = () => {
     editWatch,
     editingWatch,
     error,
+    clearProductFeedback,
     filters,
     form,
     isLoading,

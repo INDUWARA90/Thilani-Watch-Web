@@ -13,17 +13,20 @@ const AdminProductsPage = () => {
   const [isFormOpen, setIsFormOpen] = useState(false)
 
   const openCreateForm = () => {
+    products.clearProductFeedback()
     products.resetForm()
     setIsFormOpen(true)
   }
 
   const openEditForm = (watch) => {
+    products.clearProductFeedback()
     products.editWatch(watch)
     setIsFormOpen(true)
   }
 
   const closeForm = () => {
     if (products.isSaving) return
+    products.clearProductFeedback()
     products.resetForm()
     setIsFormOpen(false)
   }
@@ -36,7 +39,7 @@ const AdminProductsPage = () => {
   return (
     <div className="mx-auto min-w-0 max-w-7xl space-y-6">
       {/* Dynamic Alerts Container */}
-      {(products.error || products.message) && (
+      {!isFormOpen && (products.error || products.message) && (
         <div className="space-y-3 transition-all">
           {products.error && (
             <div className="flex items-center gap-3 rounded-2xl border border-red-100 bg-red-50/50 px-4 py-3.5 text-sm font-medium text-red-800 shadow-sm">
@@ -136,6 +139,7 @@ const AdminProductsPage = () => {
                   categories={products.categories}
                   deleteUploadedImage={products.deleteUploadedImage}
                   editingWatch={products.editingWatch}
+                  error={products.error}
                   form={products.form}
                   isSaving={products.isSaving}
                   onReset={openCreateForm}

@@ -7,7 +7,8 @@ import {
   RotateCcw, 
   Sparkles,
   Info,
-  Check
+  Check,
+  AlertCircle
 } from 'lucide-react'
 import { getId, getTitle, toSlug } from '../lib/adminUtils'
 import { mergeImageUrls, splitImageUrls, warrantyOptions, watchTextFields } from './watchFormModel'
@@ -18,6 +19,7 @@ export const WatchForm = ({
   deleteUploadedImage,
   editingWatch,
   form,
+  error,
   isSaving,
   onReset,
   onSave,
@@ -98,6 +100,20 @@ export const WatchForm = ({
       </div>
 
       <form className="space-y-8" onSubmit={submitWatch}>
+        {error && (
+          <div
+            className="flex items-start gap-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-3.5 text-sm font-medium text-red-800 shadow-sm"
+            role="alert"
+            aria-live="assertive"
+          >
+            <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-600" />
+            <div className="min-w-0">
+              <p className="font-bold">Unable to save this watch</p>
+              <p className="mt-0.5 break-words">{error}</p>
+            </div>
+          </div>
+        )}
+
         {/* Section 1: Specifications */}
         <section className="rounded-2xl border border-black/10 bg-[#FFFEFA] p-4 shadow-sm sm:p-6">
           <h3 className="mb-6 font-heading text-lg font-bold tracking-wide text-primary">1. Watch Specifications</h3>
