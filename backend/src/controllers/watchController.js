@@ -192,6 +192,7 @@ const getWatchBySlug = asyncHandler(async (req, res, next) => {
     slug: req.params.slug,
     ...publishedFilter(),
   })
+    .sort({ createdAt: -1 })
     .populate('brand', 'name slug')
     .populate('category', 'name slug')
     .lean()

@@ -11,10 +11,15 @@ import {
 } from "@/features/auth/lib/authStorage";
 
 export const AuthProvider = ({ children }) => {
-  const [initialToken] = useState(() => loadStoredAuth().token);
-  const [token, setToken] = useState(initialToken);
-  const [user, setUser] = useState(null);
-  const [isRestoring, setIsRestoring] = useState(true);
+  const [initialAuth] = useState(() => {
+    const storedAuth = loadStoredAuth();
+    setAuthToken(storedAuth.token);
+    return storedAuth;
+  });
+  const initialToken = initialAuth.token;
+  const [token, setToken] = useState(initialAuth.token);
+  const [user, setUser] = useState(initialAuth.user);
+  const [isRestoring, setIsRestoring] = useState(Boolean(initialAuth.token && !initialAuth.user));
 
   const saveAuth = useCallback((auth) => {
     setToken(auth.token);
@@ -46,7 +51,7 @@ export const AuthProvider = ({ children }) => {
 
         if (isMounted) {
           setUser(currentUser);
-          saveStoredAuth({ token: initialToken });
+          saveStoredAuth({ token: initialToken, user: currentUser });
         }
       } catch {
         if (isMounted) {

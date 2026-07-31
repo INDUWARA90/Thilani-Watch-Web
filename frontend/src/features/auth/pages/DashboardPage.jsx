@@ -1,4 +1,3 @@
-import React from 'react'
 import { Link, useNavigate } from 'react-router'
 import { ArrowUpRight, Edit3, LogOut, Mail, Phone, ShieldCheck, User } from 'lucide-react'
 import { useAuth } from '@/features/auth/hooks/useAuth'
@@ -148,7 +147,7 @@ const DashboardPage = () => {
           </div>
 
           <div className="grid gap-5 md:grid-cols-2">
-            {items.map((item, idx) => (
+            {items.map((item) => (
               <article
                 key={item.title}
                 className="group relative flex min-w-0 flex-col justify-between rounded-3xl border border-black/10 bg-white p-6 sm:p-7 shadow-[0_10px_30px_rgba(0,0,0,0.04)] transition-all duration-300 hover:border-black/25 hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)]"

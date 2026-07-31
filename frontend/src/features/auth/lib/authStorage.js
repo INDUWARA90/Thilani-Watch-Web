@@ -14,7 +14,7 @@ export const loadStoredAuth = () => {
       }
 
       if (typeof parsedValue?.token === 'string') {
-        return { token: parsedValue.token, user: null };
+        return { token: parsedValue.token, user: parsedValue.user ?? null };
       }
     } catch {
       return { token: storedValue, user: null };
@@ -26,9 +26,9 @@ export const loadStoredAuth = () => {
   }
 };
 
-export const saveStoredAuth = ({ token }) => {
+export const saveStoredAuth = ({ token, user = null }) => {
   if (token) {
-    localStorage.setItem(AUTH_STORAGE_KEY, token);
+    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify({ token, user }));
     return;
   }
 
